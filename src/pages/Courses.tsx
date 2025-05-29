@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
@@ -116,7 +117,7 @@ const Courses = () => {
       <section className="py-6 px-6 mt-20">
         <div className="container mx-auto max-w-4xl text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-8">
-            Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
+            Kurser
           </h1>
         </div>
       </section>
