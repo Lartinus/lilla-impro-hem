@@ -48,37 +48,35 @@ const Hero = () => {
               </p>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Video section with white background */}
-      <section className="bg-white py-20 px-6">
-        <div className="container mx-auto max-w-4xl">
-          <div className="space-y-12 border-4 border-theatre-tertiary p-12">
-            <div className="text-center space-y-4">
-              <h3 className="text-3xl md:text-4xl font-medium text-theatre-primary">
-                Vad är improv comedy egentligen?
-              </h3>
-              <p className="text-lg text-theatre-primary/80 font-light max-w-2xl mx-auto">
-                Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-3 gap-8">
-              {[1, 2, 3].map((video) => (
-                <div key={video} className="group">
-                  <div className="bg-theatre-light/10 backdrop-blur-sm border border-theatre-primary/20 rounded-2xl p-6 hover:bg-theatre-primary/5 transition-all duration-500 hover:border-theatre-primary/30 hover:transform hover:scale-105 aspect-video flex items-center justify-center">
-                    <div className="text-centre space-y-4">
-                      <div className="w-16 h-16 bg-theatre-primary/20 rounded-full flex items-center justify-center mx-auto">
-                        <div className="w-0 h-0 border-l-[12px] border-l-theatre-primary border-y-[8px] border-y-transparent ml-1"></div>
+          {/* Video section moved back to red background */}
+          <div className="container mx-auto max-w-4xl mt-12">
+            <div className="space-y-12 border-4 border-white p-12 bg-white">
+              <div className="text-center space-y-4">
+                <h3 className="text-3xl md:text-4xl font-medium text-theatre-primary">
+                  Vad är improv comedy egentligen?
+                </h3>
+                <p className="text-lg text-theatre-primary/80 font-light max-w-2xl mx-auto">
+                  Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+                {[1, 2, 3].map((video) => (
+                  <div key={video} className="group">
+                    <div className="bg-theatre-light/10 backdrop-blur-sm border border-theatre-primary/20 rounded-2xl p-6 hover:bg-theatre-primary/5 transition-all duration-500 hover:border-theatre-primary/30 hover:transform hover:scale-105 aspect-video flex items-center justify-center">
+                      <div className="text-centre space-y-4">
+                        <div className="w-16 h-16 bg-theatre-primary/20 rounded-full flex items-center justify-center mx-auto">
+                          <div className="w-0 h-0 border-l-[12px] border-l-theatre-primary border-y-[8px] border-y-transparent ml-1"></div>
+                        </div>
+                        <p className="text-theatre-primary/80 text-sm font-light">
+                          Video {video}
+                        </p>
                       </div>
-                      <p className="text-theatre-primary/80 text-sm font-light">
-                        Video {video}
-                      </p>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
