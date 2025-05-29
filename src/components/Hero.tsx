@@ -14,16 +14,16 @@ const Hero = () => {
         ></div>
         
         <div className="container mx-auto max-w-5xl relative z-10">
-          <div className="text-left space-y-16 p-12 bg-white">
+          <div className="text-left space-y-12 p-12 bg-white">
             {/* Main heading */}
-            <div className="space-y-8 pt-20">
-              <h1 className="text-lg md:text-xl lg:text-2xl font-bold leading-tight text-theatre-primary tracking-normal">
+            <div className="space-y-6 pt-20">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-primary tracking-normal">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
             </div>
 
             {/* Description */}
-            <div className="max-w-4xl space-y-6">
+            <div className="max-w-4xl space-y-4">
               <p className="text-base md:text-lg leading-relaxed text-theatre-primary/90 font-light">
                 Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, 
@@ -32,12 +32,12 @@ const Hero = () => {
             </div>
 
             {/* Services section */}
-            <div className="space-y-12">
+            <div className="space-y-8">
               <ServiceBoxes />
             </div>
 
             {/* Mission statement */}
-            <div className="max-w-4xl space-y-8 pt-16">
+            <div className="max-w-4xl space-y-6 pt-12">
               <p className="text-base md:text-lg leading-relaxed text-theatre-primary/90 font-light">
                 Vi bygger långsamt, med kvalitet, nyfikenhet och ett stort fokus på att göra 
                 improvisatörerna bättre och publiken gladare – och på att skapa ett community 

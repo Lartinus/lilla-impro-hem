@@ -6,19 +6,19 @@ import { Link } from 'react-router-dom';
 const ServiceBoxes = () => {
   const services = [
     {
-      icon: <GraduationCap className="h-6 w-6 text-theatre-primary" />,
+      icon: <GraduationCap className="h-6 w-6 text-white" />,
       title: "Kurser i Improv Comedy – från nybörjare till ensemble.",
       cta: "Utforska våra kurser",
       link: "/kurser"
     },
     {
-      icon: <Theater className="h-6 w-6 text-theatre-primary" />,
+      icon: <Theater className="h-6 w-6 text-white" />,
       title: "Föreställningar i hög variation med fokus på komik",
       cta: "Se kommande föreställningar",
       link: "#forestallningar"
     },
     {
-      icon: <Building className="h-6 w-6 text-theatre-primary" />,
+      icon: <Building className="h-6 w-6 text-white" />,
       title: "Workshops och events för företag, myndigheter och organisationer",
       cta: "Läs mer",
       link: "#kontakt"
@@ -26,17 +26,17 @@ const ServiceBoxes = () => {
   ];
 
   return (
-    <div className="grid md:grid-cols-3 gap-8 mt-12">
+    <div className="grid md:grid-cols-3 gap-8 mt-8">
       {services.map((service, index) => (
         <div key={index} className="group">
-          <div className="bg-white border border-gray-200 rounded-none p-10 hover:shadow-lg transition-all duration-300">
-            <div className="space-y-6">
+          <div className="bg-theatre-primary border border-gray-200 rounded-none p-10 hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+            <div className="space-y-6 flex-1">
               <div className="flex items-center space-x-3">
                 {service.icon}
-                <div className="w-full h-px bg-theatre-primary/30"></div>
+                <div className="w-full h-px bg-white/30"></div>
               </div>
               
-              <p className="text-theatre-primary leading-relaxed text-lg font-light max-w-xs">
+              <p className="text-white leading-relaxed text-lg font-light max-w-xs flex-1">
                 {service.title}
               </p>
               
@@ -44,7 +44,7 @@ const ServiceBoxes = () => {
                 <Link to={service.link}>
                   <Button 
                     variant="ghost"
-                    className="text-theatre-primary hover:bg-theatre-primary/10 px-0 font-light text-base underline underline-offset-4 decoration-theatre-primary/50 hover:decoration-theatre-primary transition-all"
+                    className="text-white hover:bg-white/10 px-0 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all"
                   >
                     {service.cta} →
                   </Button>
@@ -52,7 +52,7 @@ const ServiceBoxes = () => {
               ) : (
                 <Button 
                   variant="ghost"
-                  className="text-theatre-primary hover:bg-theatre-primary/10 px-0 font-light text-base underline underline-offset-4 decoration-theatre-primary/50 hover:decoration-theatre-primary transition-all"
+                  className="text-white hover:bg-white/10 px-0 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all"
                 >
                   {service.cta} →
                 </Button>
