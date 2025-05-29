@@ -26,7 +26,7 @@ interface CourseCardProps {
 const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
-      <CardContent className="p-3 md:p-4 lg:p-6 flex flex-col flex-1">
+      <CardContent className="p-2 md:p-4 lg:p-6 flex flex-col flex-1">
         <div className="mb-4">
           <h2 className="text-xl font-bold text-theatre-primary mb-2">
             {course.title}
