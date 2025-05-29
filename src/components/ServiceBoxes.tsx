@@ -8,13 +8,13 @@ const ServiceBoxes = () => {
       title: "Kurser i Improv Comedy – från nybörjare till ensemble.",
       cta: "Utforska våra kurser",
       link: "/kurser",
-      image: "/lovable-uploads/a018eb4f-8f59-4895-b9b0-565c2b8ad636.png"
+      image: "/lovable-uploads/f96ff1ae-f9cb-4df9-8aa9-846ef0297538.png"
     },
     {
       title: "Föreställningar i hög variation med fokus på komik",
       cta: "Se kommande föreställningar", 
       link: "#forestallningar",
-      image: "/lovable-uploads/f96ff1ae-f9cb-4df9-8aa9-846ef0297538.png"
+      image: "/lovable-uploads/a018eb4f-8f59-4895-b9b0-565c2b8ad636.png"
     },
     {
       title: "Workshops och events för företag, myndigheter och organisationer",
@@ -40,33 +40,33 @@ const ServiceBoxes = () => {
             </div>
             
             {/* Content section */}
-            <div className="bg-red-700 p-4 md:p-8 flex-1 flex flex-col">
-              <div className="space-y-6 flex-1">
+            <div className="bg-red-700 p-4 md:p-8 flex-1 flex flex-col justify-between">
+              <div className="space-y-6">
                 <div className="w-full h-px bg-white/30"></div>
                 
-                <p className="text-white leading-relaxed text-lg font-light flex-1">
+                <p className="text-white leading-relaxed text-lg font-light">
                   {service.title}
                 </p>
-                
-                <div className="pt-2">
-                  {service.link.startsWith('/') ? (
-                    <Link to={service.link} className="inline-block w-full">
-                      <Button 
-                        variant="default"
-                        className="bg-red-700 text-white hover:bg-red-800 px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all w-full text-left justify-start h-auto whitespace-normal"
-                      >
-                        {service.cta} →
-                      </Button>
-                    </Link>
-                  ) : (
+              </div>
+              
+              <div className="pt-6">
+                {service.link.startsWith('/') ? (
+                  <Link to={service.link} className="inline-block w-full">
                     <Button 
                       variant="default"
                       className="bg-red-700 text-white hover:bg-red-800 px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all w-full text-left justify-start h-auto whitespace-normal"
                     >
                       {service.cta} →
                     </Button>
-                  )}
-                </div>
+                  </Link>
+                ) : (
+                  <Button 
+                    variant="default"
+                    className="bg-red-700 text-white hover:bg-red-800 px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all w-full text-left justify-start h-auto whitespace-normal"
+                  >
+                    {service.cta} →
+                  </Button>
+                )}
               </div>
             </div>
           </div>
