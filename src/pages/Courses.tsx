@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
@@ -190,7 +191,7 @@ const Courses = () => {
       {/* Combined Content Section */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="space-y-16 border-4 border-white p-16 bg-white rounded-none">
+          <div className="space-y-12 border-4 border-white p-16 bg-white rounded-none">
             <div className="text-left">
               <h2 className="text-xl font-bold text-gray-800 mb-2">Vår vision</h2>
               <h3 className="text-theatre-secondary font-medium mb-4">
@@ -228,7 +229,7 @@ const Courses = () => {
               <h3 className="text-theatre-secondary font-medium leading-relaxed mb-4">
                 Du är varmt välkommen oavsett om du:
               </h3>
-              <div className="space-y-3 mb-8">
+              <div className="space-y-3 mb-6">
                 {whoCanCome.map((item, index) => (
                   <div key={index} className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
@@ -255,7 +256,7 @@ const Courses = () => {
 
             <div className="text-left">
               <h2 className="text-xl font-bold text-gray-800 mb-2">Vanliga frågor</h2>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {faq.map((item, index) => (
                   <div key={index} className="bg-theatre-light/10 border-4 border-white px-0 py-4 rounded-none">
                     <h3 className="text-theatre-secondary font-medium mb-3">
