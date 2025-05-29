@@ -2,6 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import CourseBookingForm from '@/components/CourseBookingForm';
 
 const Courses = () => {
   const courseLeaders = [
@@ -173,16 +174,10 @@ const Courses = () => {
                     </div>
                   )}
                   
-                  <Button 
-                    className={`w-full ${
-                      course.available 
-                        ? 'bg-theatre-primary hover:bg-theatre-tertiary text-white' 
-                        : 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                    }`}
-                    disabled={!course.available}
-                  >
-                    {course.available ? 'Boka din plats' : 'Anmäl ditt intresse'}
-                  </Button>
+                  <CourseBookingForm 
+                    courseTitle={course.title}
+                    isAvailable={course.available}
+                  />
                 </CardContent>
               </Card>
             ))}
