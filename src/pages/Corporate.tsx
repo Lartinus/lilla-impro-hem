@@ -80,7 +80,7 @@ const Corporate = () => {
                 
                 <Button 
                   onClick={handleContact}
-                  className="bg-theatre-primary hover:bg-theatre-tertiary text-white px-8 py-3 text-lg"
+                  className="bg-theatre-primary hover:bg-theatre-tertiary text-white px-8 py-3 text-sm font-medium"
                 >
                   Gör en förfrågan
                 </Button>
