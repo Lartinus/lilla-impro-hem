@@ -1,5 +1,6 @@
+
 import { useState } from 'react';
-import { Menu, X, Phone, Mail } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -7,48 +8,36 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="bg-theatre-cream shadow-sm relative z-50 font-gopher">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <header className="bg-theatre-burgundy text-white relative z-50 font-gopher border-b border-white/10">
+      <div className="container mx-auto px-6">
+        <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
             <Link to="/">
-              <h1 className="text-2xl font-bold text-theatre-burgundy">
+              <h1 className="text-2xl font-bold text-white">
                 Lilla Improteatern
               </h1>
             </Link>
           </div>
           
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-theatre-charcoal hover:text-theatre-burgundy transition-colors duration-200">
+          <nav className="hidden md:flex items-center space-x-12">
+            <Link to="/" className="text-white/80 hover:text-white transition-colors duration-200 text-lg">
               Hem
             </Link>
-            <Link to="/kurser" className="text-theatre-charcoal hover:text-theatre-burgundy transition-colors duration-200">
+            <Link to="/kurser" className="text-white/80 hover:text-white transition-colors duration-200 text-lg">
               Kurser
             </Link>
-            <a href="#forestallningar" className="text-theatre-charcoal hover:text-theatre-burgundy transition-colors duration-200">
+            <a href="#forestallningar" className="text-white/80 hover:text-white transition-colors duration-200 text-lg">
               Föreställningar
             </a>
-            <a href="#foretag" className="text-theatre-charcoal hover:text-theatre-burgundy transition-colors duration-200">
-              Företag
-            </a>
-            <a href="#kontakt" className="text-theatre-charcoal hover:text-theatre-burgundy transition-colors duration-200">
+            <a href="#kontakt" className="text-white/80 hover:text-white transition-colors duration-200 text-lg">
               Kontakt
             </a>
           </nav>
 
-          <div className="hidden md:flex items-center space-x-4">
-            <a href="tel:+46123456789" className="text-theatre-charcoal hover:text-theatre-burgundy transition-colors">
-              <Phone size={20} />
-            </a>
-            <a href="mailto:info@lillaimproteatern.se" className="text-theatre-charcoal hover:text-theatre-burgundy transition-colors">
-              <Mail size={20} />
-            </a>
-          </div>
-
           <Button
             variant="ghost"
             size="sm"
-            className="md:hidden"
+            className="md:hidden text-white hover:bg-white/10"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -56,21 +45,18 @@ const Header = () => {
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-theatre-cream shadow-lg border-t animate-fade-in">
-            <nav className="flex flex-col p-4 space-y-4">
-              <Link to="/" className="text-theatre-charcoal hover:text-theatre-burgundy transition-colors">
+          <div className="md:hidden pb-6 animate-fade-in">
+            <nav className="flex flex-col space-y-6">
+              <Link to="/" className="text-white/80 hover:text-white transition-colors text-lg">
                 Hem
               </Link>
-              <Link to="/kurser" className="text-theatre-charcoal hover:text-theatre-burgundy transition-colors">
+              <Link to="/kurser" className="text-white/80 hover:text-white transition-colors text-lg">
                 Kurser
               </Link>
-              <a href="#forestallningar" className="text-theatre-charcoal hover:text-theatre-burgundy transition-colors">
+              <a href="#forestallningar" className="text-white/80 hover:text-white transition-colors text-lg">
                 Föreställningar
               </a>
-              <a href="#foretag" className="text-theatre-charcoal hover:text-theatre-burgundy transition-colors">
-                Företag
-              </a>
-              <a href="#kontakt" className="text-theatre-charcoal hover:text-theatre-burgundy transition-colors">
+              <a href="#kontakt" className="text-white/80 hover:text-white transition-colors text-lg">
                 Kontakt
               </a>
             </nav>
