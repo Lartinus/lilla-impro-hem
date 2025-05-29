@@ -13,7 +13,7 @@ const Hero = () => {
         ></div>
         
         <div className="container mx-auto max-w-5xl relative z-10">
-          <div className="text-left space-y-4 p-2 md:p-6 lg:p-12 bg-white mt-20">
+          <div className="text-left space-y-4 p-6 md:p-6 lg:p-12 bg-white mt-20 mx-1 md:mx-0">
             {/* Main heading */}
             <div className="space-y-3 pt-4">
               <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal">
@@ -49,8 +49,8 @@ const Hero = () => {
           </div>
 
           {/* Video section moved back to red background */}
-          <div className="max-w-5xl mt-8">
-            <div className="space-y-8 border-4 border-white p-2 md:p-6 lg:p-12 bg-white">
+          <div className="max-w-5xl mt-8 mx-1 md:mx-0">
+            <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white">
               <div className="text-center space-y-4">
                 <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4">
                   Vad är improv comedy egentligen?

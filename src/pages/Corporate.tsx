@@ -1,7 +1,13 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { Button } from '@/components/ui/button';
 
 const Corporate = () => {
+  const handleContact = () => {
+    // Navigate to contact section or form
+    console.log('Contact button clicked');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex flex-col">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
@@ -20,7 +26,7 @@ const Corporate = () => {
         {/* Content Section */}
         <section className="px-1 md:px-4 pb-8">
           <div className="container mx-auto max-w-5xl">
-            <div className="space-y-8 border-4 border-white p-2 md:p-6 lg:p-12 bg-white rounded-none">
+            <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
               <div className="text-left">
                 <h3 className="text-theatre-secondary font-medium mb-6">
                   Vill ni ha skratt, samarbete och kunskap i samma paket? Då är ni välkomna till oss.
