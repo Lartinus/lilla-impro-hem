@@ -1,4 +1,5 @@
 
+
 import ServiceBoxes from './ServiceBoxes';
 
 const Hero = () => {
@@ -24,7 +25,7 @@ const Hero = () => {
 
             {/* Description */}
             <div className="max-w-4xl space-y-2">
-              <p className="text-base md:text-lg leading-relaxed text-theatre-primary/90 font-light">
+              <p className="text-base md:text-lg leading-relaxed text-black font-light">
                 Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, 
                 och samtidigt ta del av roliga, smarta och lekfulla föreställningar.
@@ -38,12 +39,12 @@ const Hero = () => {
 
             {/* Mission statement */}
             <div className="max-w-4xl space-y-3 pt-4">
-              <p className="text-base md:text-lg leading-relaxed text-theatre-primary/90 font-light">
+              <p className="text-base md:text-lg leading-relaxed text-black font-light">
                 Vi bygger långsamt, med kvalitet, nyfikenhet och ett stort fokus på att göra 
                 improvisatörerna bättre och publiken gladare – och på att skapa ett community 
                 där du som elev, improvisatör och publik blir en del av något större.
               </p>
-              <p className="text-base md:text-lg leading-relaxed text-theatre-primary/90 font-light">
+              <p className="text-base md:text-lg leading-relaxed text-black font-light">
                 Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
             </div>
@@ -56,9 +57,9 @@ const Hero = () => {
                 <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-black tracking-normal mb-4">
                   Vad är improv comedy egentligen?
                 </h1>
-                <p className="text-lg text-theatre-primary/80 font-light max-w-2xl mx-auto">
+                <h4 className="text-black font-bold mb-3 max-w-2xl mx-auto">
                   Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
-                </p>
+                </h4>
               </div>
               
               <div className="grid md:grid-cols-3 gap-8">
@@ -86,3 +87,4 @@ const Hero = () => {
 };
 
 export default Hero;
+
