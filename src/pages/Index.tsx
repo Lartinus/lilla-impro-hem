@@ -5,7 +5,7 @@ import Footer from '@/components/Footer';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-theatre-burgundy text-white font-gopher">
+    <div className="min-h-screen bg-theatre-dark text-theatre-text-primary font-gopher">
       <Header />
       <Hero />
       <Footer />

@@ -66,13 +66,15 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				theatre: {
-					burgundy: '#8B1538',
-					'burgundy-light': '#A61E4D',
-					'burgundy-dark': '#6D1027',
-					cream: '#FFF8F0',
-					gold: '#D4AF37',
-					'warm-gray': '#F5F5F0',
-					charcoal: '#2D2D2D'
+					'dark': '#0A0A0A',
+					'dark-secondary': '#111111', 
+					'gray-light': '#1A1A1A',
+					'gray-medium': '#2A2A2A',
+					'accent': '#3B82F6',
+					'accent-light': '#60A5FA',
+					'text-primary': '#FFFFFF',
+					'text-secondary': '#A1A1AA',
+					'text-muted': '#71717A'
 				}
 			},
 			borderRadius: {
