@@ -253,7 +253,7 @@ const Courses = () => {
             </div>
 
             <div className="text-left">
-              <h3 className="text-theatre-secondary mb-4">Du kommer att:</h3>
+              <h3 className="text-theatre-secondary font-medium mb-4">Du kommer att:</h3>
               <div className="space-y-3">
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center space-x-3">
