@@ -14,16 +14,16 @@ const Hero = () => {
         ></div>
         
         <div className="container mx-auto max-w-5xl relative z-10">
-          <div className="text-left space-y-8 p-12 bg-white">
+          <div className="text-left space-y-4 p-12 bg-white mt-20">
             {/* Main heading */}
-            <div className="space-y-4 pt-8">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-theatre-primary tracking-normal">
+            <div className="space-y-3 pt-4">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-primary tracking-normal">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
             </div>
 
             {/* Description */}
-            <div className="max-w-4xl space-y-3">
+            <div className="max-w-4xl space-y-2">
               <p className="text-base md:text-lg leading-relaxed text-theatre-primary/90 font-light">
                 Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, 
@@ -32,12 +32,12 @@ const Hero = () => {
             </div>
 
             {/* Services section */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <ServiceBoxes />
             </div>
 
             {/* Mission statement */}
-            <div className="max-w-4xl space-y-4 pt-6">
+            <div className="max-w-4xl space-y-3 pt-4">
               <p className="text-base md:text-lg leading-relaxed text-theatre-primary/90 font-light">
                 Vi bygger långsamt, med kvalitet, nyfikenhet och ett stort fokus på att göra 
                 improvisatörerna bättre och publiken gladare – och på att skapa ett community 
@@ -50,7 +50,7 @@ const Hero = () => {
           </div>
 
           {/* Video section moved back to red background */}
-          <div className="container mx-auto max-w-4xl mt-12">
+          <div className="container mx-auto max-w-5xl mt-12">
             <div className="space-y-12 border-4 border-white p-12 bg-white">
               <div className="text-center space-y-4">
                 <h3 className="text-3xl md:text-4xl font-medium text-theatre-primary">
