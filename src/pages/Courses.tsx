@@ -102,27 +102,32 @@ const Courses = () => {
     }
   ];
 
+  const practicalInfo = [
+    "8 tillfällen á 2,5h",
+    "Startdatum: 28 oktober", 
+    "12 deltagare",
+    "2 800 kr (ordinarie)",
+    "2 200 kr (pensionär, student eller omtag)"
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       
       {/* Hero */}
-      <section className="py-12 px-6 mt-20">
+      <section className="py-6 px-6 mt-20">
         <div className="container mx-auto max-w-4xl text-center">
           <h1 className="text-5xl font-bold mb-8 text-theatre-light">Kurser</h1>
-          <p className="text-xl leading-relaxed text-theatre-light/90">
-            Från grundläggande scenträning till långformsformat och ensemblearbete
-          </p>
         </div>
       </section>
 
       {/* Courses Grid */}
-      <section className="py-12 px-6">
+      <section className="py-6 px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 mb-20">
             {courses.map((course, index) => (
-              <Card key={index} className="group hover:shadow-2xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none">
+              <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white">
                 <CardContent className="p-8">
                   <div className="flex items-start space-x-4 mb-6">
                     <div className="text-theatre-primary">
@@ -144,6 +149,7 @@ const Courses = () => {
                   
                   {course.courseLeaders.length > 0 && (
                     <div className="mb-6">
+                      <h4 className="text-theatre-primary font-semibold mb-3">Kursledare</h4>
                       <div className="flex flex-wrap gap-3">
                         {course.courseLeaders.map((leader) => (
                           <div key={leader.id} className="flex items-center space-x-2 bg-theatre-light/10 rounded p-2 cursor-pointer hover:bg-theatre-light/20 transition-colors">
@@ -160,7 +166,7 @@ const Courses = () => {
                   )}
                   
                   {course.info && (
-                    <div className="bg-theatre-light/20 p-4 mb-6 rounded-none">
+                    <div className="bg-theatre-light/20 p-4 mb-6">
                       <p className="font-semibold text-theatre-primary text-sm">
                         {course.info}
                       </p>
@@ -187,7 +193,7 @@ const Courses = () => {
       {/* Vision, Philosophy & Method */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="space-y-16 border-4 border-white p-16 bg-white rounded-none">
+          <div className="space-y-16 border-4 border-white p-16 bg-white">
             <div className="text-left">
               <h2 className="text-xl font-bold text-theatre-primary mb-4">Vår vision</h2>
               <h3 className="text-theatre-secondary font-medium mb-6">
@@ -217,13 +223,13 @@ const Courses = () => {
               </div>
             </div>
 
-            <div className="bg-theatre-light/10 p-12 border-4 border-white rounded-none">
-              <h2 className="text-xl font-bold text-theatre-primary mb-4 text-left">Vår metod</h2>
+            <div className="text-left">
+              <h2 className="text-xl font-bold text-theatre-primary mb-4">Vår metod</h2>
               <div className="space-y-6 text-gray-700 leading-relaxed">
                 <p>
                   Vi bygger vårt kursprogram på traditioner från iO, The Free Association, The Annoyance m.fl. – med en stark förankring i scen- och ensemblearbete. Hos oss finns också influenser från fysisk teater, närvaro, deals och dynamics.
                 </p>
-                <div className="bg-theatre-primary text-white p-6 border-4 border-white rounded-none">
+                <div className="bg-theatre-primary text-white p-6 border-4 border-white">
                   <h3 className="text-theatre-secondary font-medium mb-4">"Lär dig spela det som redan är kul"</h3>
                   <p className="leading-relaxed">
                     Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the Scene", att följa det roliga och att få det att växa.
@@ -238,9 +244,9 @@ const Courses = () => {
       {/* Who Can Come */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="border-4 border-white p-16 bg-white text-left rounded-none">
+          <div className="border-4 border-white p-16 bg-white text-left">
             <h2 className="text-xl font-bold text-theatre-primary mb-4">Vem kan komma till Lilla Improteatern?</h2>
-            <div className="bg-theatre-light/10 p-12 border-4 border-white rounded-none">
+            <div className="bg-theatre-light/10 p-12 border-4 border-white">
               <p className="text-theatre-secondary font-medium leading-relaxed mb-8">
                 Du är varmt välkommen oavsett om du:
               </p>
@@ -265,12 +271,29 @@ const Courses = () => {
       {/* Benefits */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="border-4 border-white p-16 bg-white text-left rounded-none">
+          <div className="border-4 border-white p-16 bg-white text-left">
             <h2 className="text-xl font-bold text-theatre-primary mb-4">Du kommer att:</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {benefits.map((benefit, index) => (
-                <div key={index} className="bg-theatre-light/10 p-6 text-left border-4 border-white rounded-none">
+                <div key={index} className="bg-theatre-light/10 p-6 text-left border-4 border-white">
                   <p className="text-gray-700">{benefit}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Practical Information */}
+      <section className="py-20 px-6">
+        <div className="container mx-auto max-w-5xl">
+          <div className="border-4 border-white p-16 bg-white">
+            <h2 className="text-xl font-bold text-theatre-primary mb-12 text-left">Praktisk information</h2>
+            <div className="space-y-4">
+              {practicalInfo.map((item, index) => (
+                <div key={index} className="flex items-center space-x-3">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                  <p className="text-gray-700">{item}</p>
                 </div>
               ))}
             </div>
@@ -281,11 +304,11 @@ const Courses = () => {
       {/* FAQ */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="border-4 border-white p-16 bg-white rounded-none">
+          <div className="border-4 border-white p-16 bg-white">
             <h2 className="text-xl font-bold text-theatre-primary mb-12 text-left">Vanliga frågor</h2>
             <div className="space-y-6">
               {faq.map((item, index) => (
-                <div key={index} className="bg-theatre-light/10 border-4 border-white p-6 rounded-none">
+                <div key={index} className="bg-theatre-light/10 border-4 border-white p-6">
                   <h3 className="text-left font-medium text-theatre-secondary mb-4">
                     {item.question}
                   </h3>
