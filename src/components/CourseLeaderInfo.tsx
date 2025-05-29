@@ -1,5 +1,4 @@
 
-
 interface CourseLeader {
   id: number;
   name: string;
@@ -15,12 +14,12 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
   return (
     <div className="mb-6">
       <h4 className="text-gray-800 font-bold mb-3">Kursledare</h4>
-      <div className="bg-theatre-light/10 rounded-none border border-theatre-primary p-4">
+      <div className="bg-theatre-light/10 rounded-none border-4 border-red-800 p-4">
         <div className="flex items-start space-x-4">
           <img 
             src={courseLeader.image} 
             alt={courseLeader.name}
-            className="w-32 h-32 rounded-none object-cover object-center flex-shrink-0"
+            className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0"
           />
           <div className="flex-1">
             <h5 className="font-bold text-gray-800 mb-2">
@@ -37,4 +36,3 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
 };
 
 export default CourseLeaderInfo;
-
