@@ -1,15 +1,8 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import CourseBookingForm from '@/components/CourseBookingForm';
-import CourseLeaderModal from '@/components/CourseLeaderModal';
-import { useState } from 'react';
+import CourseCard from '@/components/CourseCard';
 
 const Courses = () => {
-  const [selectedLeader, setSelectedLeader] = useState<typeof courseLeaders[0] | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const courseLeaders = [
     {
       id: 1,
@@ -24,16 +17,6 @@ const Courses = () => {
       bio: "Hjalmar har undervisat på flera improvisationsscener runtom i Sverige. Han är baserad i Stockholm men har tidigare undervisat på Improverket och Gbgimpro i Göteborg och på Dramaverket i Karlstad. Han driver även Göteborg Improv Comedy Club samt podcasten Impropodden. Hjalmar har spelat på flera europeiska festivaler – bland annat i Amsterdam, Edinburgh och Nottingham – och är utbildad vid Improv Olympic och The Annoyance i Chicago samt The Free Association i London."
     }
   ];
-
-  const handleLeaderClick = (leader: typeof courseLeaders[0]) => {
-    setSelectedLeader(leader);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedLeader(null);
-  };
 
   const courses = [
     {
@@ -146,61 +129,11 @@ const Courses = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             {courses.map((course, index) => (
-              <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
-                <CardContent className="p-8 flex flex-col flex-1">
-                  <div className="mb-6">
-                    <h2 className="text-xl font-bold text-theatre-primary mb-2">
-                      {course.title}
-                    </h2>
-                    <h3 className="text-theatre-secondary font-medium mb-2">
-                      {course.subtitle}
-                    </h3>
-                  </div>
-                  
-                  <p className="text-gray-700 leading-relaxed mb-6">
-                    {course.description}
-                  </p>
-                  
-                  {course.courseLeader && (
-                    <div className="mb-6">
-                      <h4 className="text-gray-800 font-bold mb-3">Kursledare</h4>
-                      <div 
-                        className="flex items-center space-x-4 bg-theatre-light/10 rounded-none p-4 cursor-pointer hover:bg-theatre-light/20 transition-all duration-300 hover:border-theatre-secondary hover:shadow-sm"
-                        onClick={() => handleLeaderClick(course.courseLeader)}
-                      >
-                        <img 
-                          src={course.courseLeader.image} 
-                          alt={course.courseLeader.name}
-                          className="w-16 h-16 rounded-full object-cover object-top"
-                        />
-                        <span className="font-medium text-gray-700 hover:text-theatre-secondary transition-colors duration-300">{course.courseLeader.name}</span>
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className="flex-1"></div>
-                  
-                  {course.available && (
-                    <div className="mb-6">
-                      <h4 className="text-gray-800 font-bold mb-1">Praktisk information</h4>
-                      <div className="space-y-2">
-                        {practicalInfo.map((item, index) => (
-                          <div key={index} className="flex items-center space-x-3">
-                            <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                            <p className="text-gray-700">{item}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  <CourseBookingForm 
-                    courseTitle={course.title}
-                    isAvailable={course.available}
-                    showButton={course.showButton}
-                  />
-                </CardContent>
-              </Card>
+              <CourseCard 
+                key={index} 
+                course={course} 
+                practicalInfo={practicalInfo}
+              />
             ))}
           </div>
         </div>
@@ -283,12 +216,6 @@ const Courses = () => {
           </div>
         </div>
       </section>
-
-      <CourseLeaderModal 
-        leader={selectedLeader}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
 
       <Footer />
     </div>
