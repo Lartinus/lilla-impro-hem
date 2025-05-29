@@ -14,17 +14,17 @@ const Hero = () => {
         ></div>
         
         <div className="container mx-auto max-w-5xl relative z-10">
-          <div className="text-left space-y-16 border-4 border-theatre-tertiary p-12 bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary bg-opacity-50">
+          <div className="text-left space-y-16 p-12 bg-white">
             {/* Main heading */}
             <div className="space-y-8 pt-20">
-              <h1 className="text-lg md:text-xl lg:text-2xl font-bold leading-tight text-theatre-light tracking-normal">
+              <h1 className="text-lg md:text-xl lg:text-2xl font-bold leading-tight text-theatre-primary tracking-normal">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
             </div>
 
             {/* Description */}
             <div className="max-w-4xl space-y-6">
-              <p className="text-base md:text-lg leading-relaxed text-theatre-light/90 font-light">
+              <p className="text-base md:text-lg leading-relaxed text-theatre-primary/90 font-light">
                 Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, 
                 och samtidigt ta del av roliga, smarta och lekfulla föreställningar.
@@ -38,12 +38,12 @@ const Hero = () => {
 
             {/* Mission statement */}
             <div className="max-w-4xl space-y-8 pt-16">
-              <p className="text-base md:text-lg leading-relaxed text-theatre-light/90 font-light">
+              <p className="text-base md:text-lg leading-relaxed text-theatre-primary/90 font-light">
                 Vi bygger långsamt, med kvalitet, nyfikenhet och ett stort fokus på att göra 
                 improvisatörerna bättre och publiken gladare – och på att skapa ett community 
                 där du som elev, improvisatör och publik blir en del av något större.
               </p>
-              <p className="text-base md:text-lg leading-relaxed text-theatre-light/90 font-light">
+              <p className="text-base md:text-lg leading-relaxed text-theatre-primary/90 font-light">
                 Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
             </div>
