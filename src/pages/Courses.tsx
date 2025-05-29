@@ -127,8 +127,8 @@ const Courses = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 mb-20">
             {courses.map((course, index) => (
-              <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none">
-                <CardContent className="p-8">
+              <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
+                <CardContent className="p-8 flex flex-col flex-1">
                   <div className="mb-6">
                     <h2 className="text-xl font-bold text-theatre-primary mb-2">
                       {course.title}
@@ -159,6 +159,8 @@ const Courses = () => {
                       </div>
                     </div>
                   )}
+                  
+                  <div className="flex-1"></div>
                   
                   {course.available && (
                     <div className="mb-6">
