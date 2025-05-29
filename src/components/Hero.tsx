@@ -14,10 +14,10 @@ const Hero = () => {
         ></div>
         
         <div className="container mx-auto max-w-5xl relative z-10">
-          <div className="text-left space-y-4 p-4 md:p-6 lg:p-12 bg-white mt-20 mx-[18px] md:mx-0">
+          <div className="text-left space-y-4 p-3 md:p-6 lg:p-12 bg-white mt-20 mx-[9px] md:mx-0">
             {/* Main heading */}
             <div className="space-y-3 pt-4">
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal">
+              <h1 className="text-lg md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
             </div>
@@ -50,13 +50,13 @@ const Hero = () => {
           </div>
 
           {/* Video section moved back to red background */}
-          <div className="max-w-5xl mt-8 mx-[18px] md:mx-0">
-            <div className="space-y-8 border-4 border-white p-4 md:p-6 lg:p-12 bg-white">
+          <div className="max-w-5xl mt-8 mx-[9px] md:mx-0">
+            <div className="space-y-8 border-4 border-white p-3 md:p-6 lg:p-12 bg-red-700">
               <div className="text-center space-y-4">
-                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4">
-                  Vad är improv comedy egentligen?
+                <h1 className="text-lg md:text-2xl lg:text-3xl font-bold leading-tight text-white tracking-normal mb-4">
+                  Lär dig spela det som redan är kul
                 </h1>
-                <h3 className="text-theatre-secondary font-medium mb-4 max-w-2xl mx-auto">
+                <h3 className="text-white font-medium mb-4 max-w-2xl mx-auto">
                   Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
                 </h3>
               </div>
