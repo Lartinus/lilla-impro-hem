@@ -4,12 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Users, Star, Calendar, GraduationCap } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { 
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 
 const Courses = () => {
   const courseLeaders = [
@@ -114,7 +108,7 @@ const Courses = () => {
       <Header />
       
       {/* Hero */}
-      <section className="py-20 px-6 mt-20">
+      <section className="py-12 px-6 mt-20">
         <div className="container mx-auto max-w-4xl text-center">
           <h1 className="text-5xl font-bold mb-8 text-theatre-light">Kurser</h1>
           <p className="text-xl leading-relaxed text-theatre-light/90">
@@ -124,11 +118,11 @@ const Courses = () => {
       </section>
 
       {/* Courses Grid */}
-      <section className="py-20 px-6">
+      <section className="py-12 px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 mb-20">
             {courses.map((course, index) => (
-              <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white">
+              <Card key={index} className="group hover:shadow-2xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none">
                 <CardContent className="p-8">
                   <div className="flex items-start space-x-4 mb-6">
                     <div className="text-theatre-primary">
@@ -150,7 +144,6 @@ const Courses = () => {
                   
                   {course.courseLeaders.length > 0 && (
                     <div className="mb-6">
-                      <h4 className="text-theatre-primary font-semibold mb-3">Kursledare:</h4>
                       <div className="flex flex-wrap gap-3">
                         {course.courseLeaders.map((leader) => (
                           <div key={leader.id} className="flex items-center space-x-2 bg-theatre-light/10 rounded p-2 cursor-pointer hover:bg-theatre-light/20 transition-colors">
@@ -167,7 +160,7 @@ const Courses = () => {
                   )}
                   
                   {course.info && (
-                    <div className="bg-theatre-light/20 p-4 mb-6">
+                    <div className="bg-theatre-light/20 p-4 mb-6 rounded-none">
                       <p className="font-semibold text-theatre-primary text-sm">
                         {course.info}
                       </p>
@@ -191,10 +184,10 @@ const Courses = () => {
         </div>
       </section>
 
-      {/* Vision & Philosophy */}
+      {/* Vision, Philosophy & Method */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="space-y-16 border-4 border-white p-16 bg-white">
+          <div className="space-y-16 border-4 border-white p-16 bg-white rounded-none">
             <div className="text-left">
               <h2 className="text-xl font-bold text-theatre-primary mb-4">Vår vision</h2>
               <h3 className="text-theatre-secondary font-medium mb-6">
@@ -223,44 +216,19 @@ const Courses = () => {
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Method & Benefits */}
-      <section className="py-20 px-6">
-        <div className="container mx-auto max-w-5xl">
-          <div className="space-y-16 border-4 border-white p-16 bg-white">
-            <div className="text-left">
-              <h2 className="text-xl font-bold text-theatre-primary mb-4">Kursledare</h2>
-              <p className="text-gray-700 leading-relaxed">
-                Kurserna leds av Hjalmar Hardestam och Ellen – två passionerade pedagoger med hjärtat i Improv Comedy och många års erfarenhet från scen och klassrum. Båda har utbildat sig internationellt och brinner för att göra lärandet konkret, roligt och utvecklande.
-              </p>
-            </div>
-
-            <div className="bg-theatre-light/10 p-12 border-4 border-white">
+            <div className="bg-theatre-light/10 p-12 border-4 border-white rounded-none">
               <h2 className="text-xl font-bold text-theatre-primary mb-4 text-left">Vår metod</h2>
               <div className="space-y-6 text-gray-700 leading-relaxed">
                 <p>
                   Vi bygger vårt kursprogram på traditioner från iO, The Free Association, The Annoyance m.fl. – med en stark förankring i scen- och ensemblearbete. Hos oss finns också influenser från fysisk teater, närvaro, deals och dynamics.
                 </p>
-                <div className="bg-theatre-primary text-white p-6 border-4 border-white">
+                <div className="bg-theatre-primary text-white p-6 border-4 border-white rounded-none">
                   <h3 className="text-theatre-secondary font-medium mb-4">"Lär dig spela det som redan är kul"</h3>
                   <p className="leading-relaxed">
                     Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the Scene", att följa det roliga och att få det att växa.
                   </p>
                 </div>
-              </div>
-            </div>
-
-            <div className="text-left">
-              <h2 className="text-xl font-bold text-theatre-primary mb-4">Du kommer att:</h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                {benefits.map((benefit, index) => (
-                  <div key={index} className="bg-theatre-light/10 p-6 text-left border-4 border-white">
-                    <p className="text-gray-700">{benefit}</p>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
@@ -270,9 +238,9 @@ const Courses = () => {
       {/* Who Can Come */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="border-4 border-white p-16 bg-white text-left">
+          <div className="border-4 border-white p-16 bg-white text-left rounded-none">
             <h2 className="text-xl font-bold text-theatre-primary mb-4">Vem kan komma till Lilla Improteatern?</h2>
-            <div className="bg-theatre-light/10 p-12 border-4 border-white">
+            <div className="bg-theatre-light/10 p-12 border-4 border-white rounded-none">
               <p className="text-theatre-secondary font-medium leading-relaxed mb-8">
                 Du är varmt välkommen oavsett om du:
               </p>
@@ -294,23 +262,39 @@ const Courses = () => {
         </div>
       </section>
 
+      {/* Benefits */}
+      <section className="py-20 px-6">
+        <div className="container mx-auto max-w-5xl">
+          <div className="border-4 border-white p-16 bg-white text-left rounded-none">
+            <h2 className="text-xl font-bold text-theatre-primary mb-4">Du kommer att:</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              {benefits.map((benefit, index) => (
+                <div key={index} className="bg-theatre-light/10 p-6 text-left border-4 border-white rounded-none">
+                  <p className="text-gray-700">{benefit}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="border-4 border-white p-16 bg-white">
+          <div className="border-4 border-white p-16 bg-white rounded-none">
             <h2 className="text-xl font-bold text-theatre-primary mb-12 text-left">Vanliga frågor</h2>
-            <Accordion type="single" collapsible className="space-y-4">
+            <div className="space-y-6">
               {faq.map((item, index) => (
-                <AccordionItem key={index} value={`item-${index}`} className="bg-theatre-light/10 border-4 border-white">
-                  <AccordionTrigger className="px-6 py-4 text-left font-medium text-theatre-secondary hover:no-underline">
+                <div key={index} className="bg-theatre-light/10 border-4 border-white p-6 rounded-none">
+                  <h3 className="text-left font-medium text-theatre-secondary mb-4">
                     {item.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="px-6 pb-4 text-gray-700 leading-relaxed">
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed">
                     {item.answer}
-                  </AccordionContent>
-                </AccordionItem>
-                ))}
-            </Accordion>
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
