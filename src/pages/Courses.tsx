@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
@@ -144,7 +145,7 @@ const Courses = () => {
       {/* Courses Grid */}
       <section className="py-2 px-6">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-8 mb-4">
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
             {courses.map((course, index) => (
               <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
                 <CardContent className="p-8 flex flex-col flex-1">
@@ -168,7 +169,7 @@ const Courses = () => {
                         {course.courseLeaders.map((leader) => (
                           <div 
                             key={leader.id} 
-                            className="flex items-center space-x-2 bg-theatre-light/10 rounded p-2 cursor-pointer hover:bg-theatre-light/20 transition-colors"
+                            className="flex items-center space-x-2 bg-theatre-light/10 rounded-none p-3 cursor-pointer hover:bg-theatre-primary hover:text-white transition-all duration-200 border-2 border-transparent hover:border-theatre-primary hover:shadow-md transform hover:scale-105"
                             onClick={() => handleLeaderClick(leader)}
                           >
                             <img 
@@ -176,7 +177,7 @@ const Courses = () => {
                               alt={leader.name}
                               className="w-8 h-8 rounded-full object-cover object-center"
                             />
-                            <span className="text-gray-700 font-medium">{leader.name}</span>
+                            <span className="font-medium">{leader.name}</span>
                           </div>
                         ))}
                       </div>
@@ -212,7 +213,7 @@ const Courses = () => {
       </section>
 
       {/* Combined Content Section */}
-      <section className="py-20 px-6">
+      <section className="py-12 px-6">
         <div className="container mx-auto max-w-5xl">
           <div className="space-y-12 border-4 border-white p-16 bg-white rounded-none">
             <div className="text-left">
