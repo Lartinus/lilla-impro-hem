@@ -36,7 +36,7 @@ const About = () => {
       <div className="flex-grow">
         {/* Hero */}
         <section className="px-6 mt-20 py-12">
-          <div className="container mx-auto max-w-4xl text-center">
+          <div className="text-center">
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
               Om oss
             </h1>
@@ -45,48 +45,46 @@ const About = () => {
 
         {/* Content Section */}
         <section className="px-6 pb-12">
-          <div className="container mx-auto max-w-5xl">
-            <div className="space-y-12 border-4 border-white p-8 md:p-16 bg-white rounded-none mx-[3px] md:mx-0">
-              <div className="text-left">
-                <p className="text-gray-700 leading-relaxed mb-8">
-                  Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy – och en stark vilja att skapa en plats där både skratten, hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron – och i viljan att bygga något nytt tillsammans.
-                </p>
-                
-                <h2 className="text-xl font-bold text-gray-800 mb-8">Produktionsteam</h2>
-                
-                <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4 mb-8">
-                  <div className="space-y-8">
-                    {productionTeam.map((member) => (
-                      <div key={member.id} className="flex items-start space-x-4">
-                        <img 
-                          src={member.image} 
-                          alt={member.name}
-                          className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0"
-                        />
-                        <div className="flex-1">
-                          <h5 className="font-bold text-gray-800 mb-2">
-                            {member.name}
-                          </h5>
-                          <p className="text-gray-700 leading-relaxed text-sm text-left">
-                            {member.bio}
-                          </p>
-                        </div>
+          <div className="space-y-12 border-4 border-white p-8 md:p-16 bg-white rounded-none mx-[6px] md:mx-0">
+            <div className="text-left">
+              <p className="text-gray-700 leading-relaxed mb-8">
+                Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy – och en stark vilja att skapa en plats där både skratten, hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron – och i viljan att bygga något nytt tillsammans.
+              </p>
+              
+              <h2 className="text-xl font-bold text-gray-800 mb-8">Produktionsteam</h2>
+              
+              <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4 mb-8">
+                <div className="space-y-8">
+                  {productionTeam.map((member) => (
+                    <div key={member.id} className="flex items-start space-x-4">
+                      <img 
+                        src={member.image} 
+                        alt={member.name}
+                        className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0"
+                      />
+                      <div className="flex-1">
+                        <h5 className="font-bold text-gray-800 mb-2">
+                          {member.name}
+                        </h5>
+                        <p className="text-gray-700 leading-relaxed text-sm text-left">
+                          {member.bio}
+                        </p>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-                
-                <p className="text-gray-700 leading-relaxed mb-8">
-                  Tillsammans vill vi skapa en plats där människor inte bara lär sig impro, utan blir en del av ett sammanhang. Lilla Improteatern ska vara ett hem för alla som vill utvecklas, spela, skratta – och växa tillsammans.
-                </p>
-                
-                <Button 
-                  onClick={handleContact}
-                  className="px-8 py-3 text-base font-medium"
-                >
-                  Kontakt
-                </Button>
               </div>
+              
+              <p className="text-gray-700 leading-relaxed mb-8">
+                Tillsammans vill vi skapa en plats där människor inte bara lär sig impro, utan blir en del av ett sammanhang. Lilla Improteatern ska vara ett hem för alla som vill utvecklas, spela, skratta – och växa tillsammans.
+              </p>
+              
+              <Button 
+                onClick={handleContact}
+                className="px-8 py-3 text-base font-medium"
+              >
+                Kontakt
+              </Button>
             </div>
           </div>
         </section>
