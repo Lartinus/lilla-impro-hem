@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
@@ -153,7 +152,7 @@ const Courses = () => {
                               alt={leader.name}
                               className="w-8 h-8 rounded-full object-cover"
                             />
-                            <span className="text-theatre-primary font-medium">{leader.name}</span>
+                            <span className="text-black font-medium">{leader.name}</span>
                           </div>
                         ))}
                       </div>
