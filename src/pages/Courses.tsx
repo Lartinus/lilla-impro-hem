@@ -27,7 +27,6 @@ const Courses = () => {
       subtitle: "För rutinerade improvisatörer och nybörjare",
       description: "Här lägger vi grunden. Fokus ligger på scenarbete; notera, basera, konstatera och att bygga scener tillsammans. Du får lära dig hur man spelar \"Game of the Scene\" och hur ni som grupp spelar samma scen. Kursen är öppen för alla nivåer – oavsett om du är en rutinerad improvisatör eller precis har börjat – Det viktiga är att du vill utvecklas som scenimprovisatör. I slutet av kursen får du skriftlig personlig feedback.",
       courseLeaders: [courseLeaders[0], courseLeaders[1]],
-      info: "8 tillfällen à 2,5h | 12 deltagare | 2800 kr (ord.) / 2200 kr (rabatt vid omtag)",
       icon: <GraduationCap className="h-8 w-8" />,
       available: true
     },
@@ -36,7 +35,6 @@ const Courses = () => {
       subtitle: "För dig som gått Nivå 1 hos oss",
       description: "Fördjupning med särskilt fokus på longform comedy. Vi tränar på mönsterigenkänning, spelbarhet, återkopplingar, tag-outs, group games och scener som bygger humor över tid. Vi arbetar med att förstå vad publiken tycker är kul och hur ni tillsammans kan skapa underhållande scener. I slutet av kursen får du skriftlig personlig feedback.",
       courseLeaders: [courseLeaders[0]],
-      info: "8 tillfällen à 2,5h | 12 deltagare | 2800 kr (ord.) / 2200 kr (rabatt vid omtag)",
       icon: <Star className="h-8 w-8" />,
       available: true
     },
@@ -45,7 +43,6 @@ const Courses = () => {
       subtitle: "Auditions hålls regelbundet",
       description: "Efter Nivå 2 kan du söka till ett av våra House Teams – ensembler som spelar tillsammans under en längre tid. Här fortsätter du utvecklas i grupp med stöd av coach och får spela regelbundet inför publik. Målet är att växa både som grupp och individ – och lära sig skapa hela föreställningar tillsammans. Antagning sker efter nivå, gruppkemi och vilja att utvecklas.",
       courseLeaders: [],
-      info: "",
       icon: <Users className="h-8 w-8" />,
       available: false
     },
@@ -54,7 +51,6 @@ const Courses = () => {
       subtitle: "Med oss och inbjudna gästpedagoger",
       description: "Utöver våra nivåbaserade kurser erbjuder vi workshops med oss och inbjudna gästpedagoger. Här kan du fördjupa dig i format, tekniker och tematiska områden – från karaktärsarbete och space work till musikal, sketch eller storytelling.",
       courseLeaders: [],
-      info: "",
       icon: <Calendar className="h-8 w-8" />,
       available: false
     }
@@ -127,7 +123,7 @@ const Courses = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 mb-20">
             {courses.map((course, index) => (
-              <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white">
+              <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none">
                 <CardContent className="p-8">
                   <div className="flex items-start space-x-4 mb-6">
                     <div className="text-theatre-primary">
@@ -165,11 +161,17 @@ const Courses = () => {
                     </div>
                   )}
                   
-                  {course.info && (
-                    <div className="bg-theatre-light/20 p-4 mb-6">
-                      <p className="font-semibold text-theatre-primary text-sm">
-                        {course.info}
-                      </p>
+                  {course.available && (
+                    <div className="mb-6">
+                      <h4 className="text-theatre-primary font-semibold mb-3">Praktisk information</h4>
+                      <div className="space-y-2">
+                        {practicalInfo.map((item, index) => (
+                          <div key={index} className="flex items-center space-x-3">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                            <p className="text-gray-700 text-sm">{item}</p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                   
@@ -193,7 +195,7 @@ const Courses = () => {
       {/* Vision, Philosophy & Method */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="space-y-16 border-4 border-white p-16 bg-white">
+          <div className="space-y-16 border-4 border-white p-16 bg-white rounded-none">
             <div className="text-left">
               <h2 className="text-xl font-bold text-theatre-primary mb-4">Vår vision</h2>
               <h3 className="text-theatre-secondary font-medium mb-6">
@@ -229,7 +231,7 @@ const Courses = () => {
                 <p>
                   Vi bygger vårt kursprogram på traditioner från iO, The Free Association, The Annoyance m.fl. – med en stark förankring i scen- och ensemblearbete. Hos oss finns också influenser från fysisk teater, närvaro, deals och dynamics.
                 </p>
-                <div className="bg-theatre-primary text-white p-6 border-4 border-white">
+                <div className="bg-theatre-primary text-white p-6 border-4 border-white rounded-none">
                   <h3 className="text-theatre-secondary font-medium mb-4">"Lär dig spela det som redan är kul"</h3>
                   <p className="leading-relaxed">
                     Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the Scene", att följa det roliga och att få det att växa.
@@ -244,9 +246,9 @@ const Courses = () => {
       {/* Who Can Come */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="border-4 border-white p-16 bg-white text-left">
+          <div className="border-4 border-white p-16 bg-white text-left rounded-none">
             <h2 className="text-xl font-bold text-theatre-primary mb-4">Vem kan komma till Lilla Improteatern?</h2>
-            <div className="bg-theatre-light/10 p-12 border-4 border-white">
+            <div className="bg-theatre-light/10 p-12 border-4 border-white rounded-none">
               <p className="text-theatre-secondary font-medium leading-relaxed mb-8">
                 Du är varmt välkommen oavsett om du:
               </p>
@@ -271,29 +273,12 @@ const Courses = () => {
       {/* Benefits */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="border-4 border-white p-16 bg-white text-left">
+          <div className="border-4 border-white p-16 bg-white text-left rounded-none">
             <h2 className="text-xl font-bold text-theatre-primary mb-4">Du kommer att:</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {benefits.map((benefit, index) => (
-                <div key={index} className="bg-theatre-light/10 p-6 text-left border-4 border-white">
+                <div key={index} className="bg-theatre-light/10 p-6 text-left border-4 border-white rounded-none">
                   <p className="text-gray-700">{benefit}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Practical Information */}
-      <section className="py-20 px-6">
-        <div className="container mx-auto max-w-5xl">
-          <div className="border-4 border-white p-16 bg-white">
-            <h2 className="text-xl font-bold text-theatre-primary mb-12 text-left">Praktisk information</h2>
-            <div className="space-y-4">
-              {practicalInfo.map((item, index) => (
-                <div key={index} className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                  <p className="text-gray-700">{item}</p>
                 </div>
               ))}
             </div>
@@ -304,11 +289,11 @@ const Courses = () => {
       {/* FAQ */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
-          <div className="border-4 border-white p-16 bg-white">
+          <div className="border-4 border-white p-16 bg-white rounded-none">
             <h2 className="text-xl font-bold text-theatre-primary mb-12 text-left">Vanliga frågor</h2>
             <div className="space-y-6">
               {faq.map((item, index) => (
-                <div key={index} className="bg-theatre-light/10 border-4 border-white p-6">
+                <div key={index} className="bg-theatre-light/10 border-4 border-white p-6 rounded-none">
                   <h3 className="text-left font-medium text-theatre-secondary mb-4">
                     {item.question}
                   </h3>
