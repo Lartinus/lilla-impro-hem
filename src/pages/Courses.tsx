@@ -125,7 +125,7 @@ const Courses = () => {
       {/* Courses Grid */}
       <section className="py-2 px-6">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-8 mb-20">
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
             {courses.map((course, index) => (
               <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
                 <CardContent className="p-8 flex flex-col flex-1">
@@ -144,7 +144,7 @@ const Courses = () => {
                   
                   {course.courseLeaders.length > 0 && (
                     <div className="mb-6">
-                      <h4 className="text-gray-800 font-bold mb-3">Kursledare</h4>
+                      <h4 className="text-gray-800 font-bold mb-2">Kursledare</h4>
                       <div className="flex flex-wrap gap-3">
                         {course.courseLeaders.map((leader) => (
                           <div key={leader.id} className="flex items-center space-x-2 bg-theatre-light/10 rounded p-2 cursor-pointer hover:bg-theatre-light/20 transition-colors">
@@ -164,7 +164,7 @@ const Courses = () => {
                   
                   {course.available && (
                     <div className="mb-6">
-                      <h4 className="text-gray-800 font-bold mb-3">Praktisk information</h4>
+                      <h4 className="text-gray-800 font-bold mb-2">Praktisk information</h4>
                       <div className="space-y-2">
                         {practicalInfo.map((item, index) => (
                           <div key={index} className="flex items-center space-x-3">
@@ -236,13 +236,9 @@ const Courses = () => {
                   </div>
                 ))}
               </div>
-              <p className="text-gray-700 leading-relaxed">
-                Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa.
+              <p className="text-gray-700 leading-relaxed mb-6">
+                Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa på. Du kommer att:
               </p>
-            </div>
-
-            <div className="text-left">
-              <h3 className="text-theatre-secondary font-medium mb-4">Du kommer att:</h3>
               <div className="space-y-3">
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center space-x-3">
