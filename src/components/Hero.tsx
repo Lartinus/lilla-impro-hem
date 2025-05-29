@@ -1,4 +1,3 @@
-
 import ServiceBoxes from './ServiceBoxes';
 
 const Hero = () => {
@@ -53,9 +52,9 @@ const Hero = () => {
           <div className="max-w-5xl mt-12">
             <div className="space-y-12 border-4 border-white p-12 bg-white">
               <div className="text-center space-y-4">
-                <h3 className="text-3xl md:text-4xl font-medium text-theatre-primary">
+                <h2 className="text-xl font-bold text-black mb-4">
                   Vad är improv comedy egentligen?
-                </h3>
+                </h2>
                 <p className="text-lg text-theatre-primary/80 font-light max-w-2xl mx-auto">
                   Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
                 </p>
