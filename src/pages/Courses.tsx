@@ -256,9 +256,9 @@ const Courses = () => {
 
             <div className="text-left">
               <h2 className="text-xl font-bold text-gray-800 mb-2">Vanliga frågor</h2>
-              <div className="space-y-1">
+              <div className="space-y-0">
                 {faq.map((item, index) => (
-                  <div key={index} className="bg-theatre-light/10 border-4 border-white px-0 py-4 rounded-none">
+                  <div key={index} className="bg-theatre-light/10 border-4 border-white px-0 py-2 rounded-none">
                     <h3 className="text-theatre-secondary font-medium mb-3">
                       {item.question}
                     </h3>
