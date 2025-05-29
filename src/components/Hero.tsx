@@ -14,7 +14,7 @@ const Hero = () => {
         ></div>
         
         <div className="container mx-auto max-w-5xl relative z-10">
-          <div className="text-left space-y-4 p-12 bg-white mt-20">
+          <div className="text-left space-y-4 p-16 bg-white mt-20">
             {/* Main heading */}
             <div className="space-y-3 pt-4">
               <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-primary tracking-normal">
@@ -50,7 +50,7 @@ const Hero = () => {
           </div>
 
           {/* Video section moved back to red background */}
-          <div className="container mx-auto max-w-5xl mt-12">
+          <div className="max-w-5xl mt-12">
             <div className="space-y-12 border-4 border-white p-12 bg-white">
               <div className="text-center space-y-4">
                 <h3 className="text-3xl md:text-4xl font-medium text-theatre-primary">
