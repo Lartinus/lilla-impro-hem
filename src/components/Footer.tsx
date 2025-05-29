@@ -1,15 +1,17 @@
 
-import { MapPin, Phone, Mail, Clock, Facebook, Instagram } from 'lucide-react';
+import { MapPin, Phone, Mail, Facebook, Instagram } from 'lucide-react';
 
 const Footer = () => {
   return (
     <footer className="bg-theatre-tertiary text-theatre-light py-16">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-3 gap-8">
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-theatre-light">
-              Lilla Improteatern
-            </h3>
+            <img 
+              src="/lovable-uploads/ac906279-978d-4e9c-b9a1-eb3a90b48aef.png" 
+              alt="Lilla Improteatern" 
+              className="h-16 w-auto"
+            />
             <p className="text-theatre-light/80 leading-relaxed">
               Ditt nya hem för Improv Comedy i Stockholm. Vi skapar tillsammans genom humor, kreativitet och gemenskap.
             </p>
@@ -30,33 +32,15 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <MapPin size={18} className="text-theatre-light/70" />
-                <span className="text-theatre-light/80">Stockholm, Sverige</span>
+                <span className="text-theatre-light/80">Stockholm</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone size={18} className="text-theatre-light/70" />
-                <span className="text-theatre-light/80">+46 123 456 789</span>
+                <span className="text-theatre-light/80">+46 70 245 04 74</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail size={18} className="text-theatre-light/70" />
                 <span className="text-theatre-light/80">info@lillaimproteatern.se</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-theatre-light">
-              Öppettider
-            </h4>
-            <div className="space-y-3">
-              <div className="flex items-start space-x-3">
-                <Clock size={18} className="text-theatre-light/70 mt-1" />
-                <div className="text-theatre-light/80">
-                  <div>Mån-Fre: 18:00-22:00</div>
-                  <div>Lör-Sön: 14:00-20:00</div>
-                  <div className="text-sm mt-1 text-theatre-light/60">
-                    (Eller enligt föreställningsschema)
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -80,12 +64,6 @@ const Footer = () => {
               </a>
             </div>
           </div>
-        </div>
-
-        <div className="border-t border-theatre-light/20 mt-12 pt-8 text-center">
-          <p className="text-theatre-light/60">
-            © 2024 Lilla Improteatern. Alla rättigheter förbehållna.
-          </p>
         </div>
       </div>
     </footer>
