@@ -236,9 +236,9 @@ const Courses = () => {
 
             <div className="text-left">
               <h2 className="text-xl font-bold text-black mb-4">Vem kan komma till Lilla Improteatern?</h2>
-              <p className="text-theatre-secondary font-medium leading-relaxed mb-8">
+              <h3 className="text-theatre-secondary font-medium leading-relaxed mb-8">
                 Du är varmt välkommen oavsett om du:
-              </p>
+              </h3>
               <div className="space-y-3 mb-8">
                 {whoCanCome.map((item, index) => (
                   <div key={index} className="flex items-center space-x-3">
