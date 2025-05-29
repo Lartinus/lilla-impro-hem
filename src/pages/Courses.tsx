@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, Star, Calendar, GraduationCap } from 'lucide-react';
@@ -151,7 +152,7 @@ const Courses = () => {
                   
                   {course.courseLeaders.length > 0 && (
                     <div className="mb-6">
-                      <h4 className="text-black font-bold text-sm mb-3">Kursledare</h4>
+                      <h4 className="text-black font-bold mb-3">Kursledare</h4>
                       <div className="flex flex-wrap gap-3">
                         {course.courseLeaders.map((leader) => (
                           <div key={leader.id} className="flex items-center space-x-2 bg-theatre-light/10 rounded p-2 cursor-pointer hover:bg-theatre-light/20 transition-colors">
@@ -160,7 +161,7 @@ const Courses = () => {
                               alt={leader.name}
                               className="w-8 h-8 rounded-full object-cover"
                             />
-                            <span className="text-theatre-primary text-sm font-medium">{leader.name}</span>
+                            <span className="text-theatre-primary font-medium">{leader.name}</span>
                           </div>
                         ))}
                       </div>
