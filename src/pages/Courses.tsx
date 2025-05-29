@@ -152,7 +152,7 @@ const Courses = () => {
                     <h2 className="text-xl font-bold text-theatre-primary mb-2">
                       {course.title}
                     </h2>
-                    <h3 className="text-theatre-secondary font-medium mb-4">
+                    <h3 className="text-theatre-secondary font-medium mb-2">
                       {course.subtitle}
                     </h3>
                   </div>
