@@ -1,7 +1,5 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, Star, Calendar, GraduationCap } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -27,7 +25,6 @@ const Courses = () => {
       subtitle: "För rutinerade improvisatörer och nybörjare",
       description: "Här lägger vi grunden. Fokus ligger på scenarbete; notera, basera, konstatera och att bygga scener tillsammans. Du får lära dig hur man spelar \"Game of the Scene\" och hur ni som grupp spelar samma scen. Kursen är öppen för alla nivåer – oavsett om du är en rutinerad improvisatör eller precis har börjat – Det viktiga är att du vill utvecklas som scenimprovisatör. I slutet av kursen får du skriftlig personlig feedback.",
       courseLeaders: [courseLeaders[0], courseLeaders[1]],
-      icon: <GraduationCap className="h-8 w-8" />,
       available: true
     },
     {
@@ -35,7 +32,6 @@ const Courses = () => {
       subtitle: "För dig som gått Nivå 1 hos oss",
       description: "Fördjupning med särskilt fokus på longform comedy. Vi tränar på mönsterigenkänning, spelbarhet, återkopplingar, tag-outs, group games och scener som bygger humor över tid. Vi arbetar med att förstå vad publiken tycker är kul och hur ni tillsammans kan skapa underhållande scener. I slutet av kursen får du skriftlig personlig feedback.",
       courseLeaders: [courseLeaders[0]],
-      icon: <Star className="h-8 w-8" />,
       available: true
     },
     {
@@ -43,7 +39,6 @@ const Courses = () => {
       subtitle: "Auditions hålls regelbundet",
       description: "Efter Nivå 2 kan du söka till ett av våra House Teams – ensembler som spelar tillsammans under en längre tid. Här fortsätter du utvecklas i grupp med stöd av coach och får spela regelbundet inför publik. Målet är att växa både som grupp och individ – och lära sig skapa hela föreställningar tillsammans. Antagning sker efter nivå, gruppkemi och vilja att utvecklas.",
       courseLeaders: [],
-      icon: <Users className="h-8 w-8" />,
       available: false
     },
     {
@@ -51,7 +46,6 @@ const Courses = () => {
       subtitle: "Med oss och inbjudna gästpedagoger",
       description: "Utöver våra nivåbaserade kurser erbjuder vi workshops med oss och inbjudna gästpedagoger. Här kan du fördjupa dig i format, tekniker och tematiska områden – från karaktärsarbete och space work till musikal, sketch eller storytelling.",
       courseLeaders: [],
-      icon: <Calendar className="h-8 w-8" />,
       available: false
     }
   ];
@@ -134,18 +128,13 @@ const Courses = () => {
             {courses.map((course, index) => (
               <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none">
                 <CardContent className="p-8">
-                  <div className="flex items-start space-x-4 mb-6">
-                    <div className="text-theatre-primary">
-                      {course.icon}
-                    </div>
-                    <div className="flex-1">
-                      <h2 className="text-xl font-bold text-theatre-primary mb-2">
-                        {course.title}
-                      </h2>
-                      <h3 className="text-theatre-secondary font-medium mb-4">
-                        {course.subtitle}
-                      </h3>
-                    </div>
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-theatre-primary mb-2">
+                      {course.title}
+                    </h2>
+                    <h3 className="text-theatre-secondary font-medium mb-4">
+                      {course.subtitle}
+                    </h3>
                   </div>
                   
                   <p className="text-gray-700 leading-relaxed mb-6">
