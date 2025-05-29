@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
@@ -169,7 +168,7 @@ const Courses = () => {
                         {course.courseLeaders.map((leader) => (
                           <div 
                             key={leader.id} 
-                            className="flex items-center space-x-2 bg-theatre-light/10 rounded-none p-3 cursor-pointer hover:bg-theatre-primary hover:text-white transition-all duration-200 border-2 border-transparent hover:border-theatre-primary hover:shadow-md transform hover:scale-105"
+                            className="flex items-center space-x-2 bg-theatre-light/10 rounded-none p-3 cursor-pointer hover:bg-theatre-light/20 transition-all duration-300 border border-gray-200 hover:border-theatre-secondary hover:shadow-sm"
                             onClick={() => handleLeaderClick(leader)}
                           >
                             <img 
@@ -177,7 +176,7 @@ const Courses = () => {
                               alt={leader.name}
                               className="w-8 h-8 rounded-full object-cover object-center"
                             />
-                            <span className="font-medium">{leader.name}</span>
+                            <span className="font-medium text-gray-700 hover:text-theatre-secondary transition-colors duration-300">{leader.name}</span>
                           </div>
                         ))}
                       </div>
