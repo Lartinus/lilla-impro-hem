@@ -50,7 +50,7 @@ const Hero = () => {
           </div>
 
           {/* Video section moved back to red background */}
-          <div className="max-w-5xl mt-8 mx-[18px] md:mx-0">
+          <div className="max-w-5xl mt-8 mx-[9px] md:mx-0">
             <div className="space-y-8 border-4 border-white p-3 md:p-6 lg:p-12 bg-red-700">
               <div className="text-center space-y-4">
                 <h1 className="text-lg md:text-2xl lg:text-3xl font-bold leading-tight text-white tracking-normal mb-4">
