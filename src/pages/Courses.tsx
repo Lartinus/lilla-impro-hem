@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, Star, Calendar, GraduationCap } from 'lucide-react';
@@ -203,7 +204,7 @@ const Courses = () => {
         <div className="container mx-auto max-w-5xl">
           <div className="space-y-16 border-4 border-white p-16 bg-white rounded-none">
             <div className="text-left">
-              <h2 className="text-xl font-bold text-theatre-primary mb-4">Vår vision</h2>
+              <h2 className="text-xl text-black mb-4">Vår vision</h2>
               <h3 className="text-theatre-secondary font-medium mb-6">
                 Ett hem för dig som vill lära dig Improv Comedy – med målet att själv stå på scen.
               </h3>
@@ -235,27 +236,25 @@ const Courses = () => {
             </div>
 
             <div className="text-left">
-              <h2 className="text-xl font-bold text-theatre-primary mb-4">Vem kan komma till Lilla Improteatern?</h2>
-              <div className="bg-theatre-light/10 p-12 border-4 border-white rounded-none">
-                <p className="text-theatre-secondary font-medium leading-relaxed mb-8">
-                  Du är varmt välkommen oavsett om du:
-                </p>
-                <div className="space-y-3 mb-8">
-                  {whoCanCome.map((item, index) => (
-                    <div key={index} className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                      <p className="text-gray-700">{item}</p>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-theatre-primary font-semibold">
-                  Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa.
-                </p>
+              <h2 className="text-xl text-black mb-4">Vem kan komma till Lilla Improteatern?</h2>
+              <p className="text-theatre-secondary font-medium leading-relaxed mb-8">
+                Du är varmt välkommen oavsett om du:
+              </p>
+              <div className="space-y-3 mb-8">
+                {whoCanCome.map((item, index) => (
+                  <div key={index} className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                    <p className="text-gray-700">{item}</p>
+                  </div>
+                ))}
               </div>
+              <p className="text-gray-700 leading-relaxed">
+                Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa.
+              </p>
             </div>
 
             <div className="text-left">
-              <h2 className="text-xl font-bold text-theatre-primary mb-4">Du kommer att:</h2>
+              <h2 className="text-xl text-theatre-secondary mb-4">Du kommer att:</h2>
               <div className="space-y-3">
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center space-x-3">
@@ -267,11 +266,11 @@ const Courses = () => {
             </div>
 
             <div className="text-left">
-              <h2 className="text-xl font-bold text-theatre-primary mb-12">Vanliga frågor</h2>
-              <div className="space-y-6">
+              <h2 className="text-xl text-black mb-6">Vanliga frågor</h2>
+              <div className="space-y-4">
                 {faq.map((item, index) => (
                   <div key={index} className="bg-theatre-light/10 border-4 border-white p-6 rounded-none">
-                    <h3 className="text-left font-medium text-theatre-secondary mb-4">
+                    <h3 className="text-left font-medium text-theatre-secondary mb-3">
                       {item.question}
                     </h3>
                     <p className="text-gray-700 leading-relaxed">
