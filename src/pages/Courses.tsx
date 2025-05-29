@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, Star, Calendar, GraduationCap } from 'lucide-react';
@@ -121,7 +120,7 @@ const Courses = () => {
       {/* Hero */}
       <section className="py-6 px-6 mt-20">
         <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-5xl text-black mb-8">Kurser</h1>
+          <h1 className="text-5xl font-bold mb-8 text-theatre-light">Kurser</h1>
         </div>
       </section>
 
@@ -137,10 +136,10 @@ const Courses = () => {
                       {course.icon}
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl text-black mb-2">
+                      <h3 className="text-xl font-bold text-theatre-primary mb-2">
                         {course.title}
                       </h3>
-                      <p className="text-theatre-secondary mb-4">
+                      <p className="text-theatre-secondary font-medium mb-4">
                         {course.subtitle}
                       </p>
                     </div>
@@ -152,7 +151,7 @@ const Courses = () => {
                   
                   {course.courseLeaders.length > 0 && (
                     <div className="mb-6">
-                      <h4 className="text-theatre-secondary mb-3">Kursledare</h4>
+                      <h4 className="text-theatre-primary font-semibold mb-3">Kursledare</h4>
                       <div className="flex flex-wrap gap-3">
                         {course.courseLeaders.map((leader) => (
                           <div key={leader.id} className="flex items-center space-x-2 bg-theatre-light/10 rounded p-2 cursor-pointer hover:bg-theatre-light/20 transition-colors">
@@ -161,7 +160,7 @@ const Courses = () => {
                               alt={leader.name}
                               className="w-8 h-8 rounded-full object-cover"
                             />
-                            <span className="text-theatre-primary text-sm">{leader.name}</span>
+                            <span className="text-theatre-primary text-sm font-medium">{leader.name}</span>
                           </div>
                         ))}
                       </div>
@@ -170,7 +169,7 @@ const Courses = () => {
                   
                   {course.available && (
                     <div className="mb-6">
-                      <h4 className="text-theatre-secondary mb-3">Praktisk information</h4>
+                      <h4 className="text-theatre-primary font-semibold mb-3">Praktisk information</h4>
                       <div className="space-y-2">
                         {practicalInfo.map((item, index) => (
                           <div key={index} className="flex items-center space-x-3">
@@ -204,22 +203,43 @@ const Courses = () => {
         <div className="container mx-auto max-w-5xl">
           <div className="space-y-16 border-4 border-white p-16 bg-white rounded-none">
             <div className="text-left">
-              <h2 className="text-xl text-black mb-4">Vår vision</h2>
-              <h3 className="text-theatre-secondary mb-6">Ett hem för dig som vill lära dig Improv Comedy – med målet att själv stå på scen.</h3>
+              <h2 className="text-xl font-bold text-theatre-primary mb-4">Vår vision</h2>
+              <h3 className="text-theatre-secondary font-medium mb-6">
+                Ett hem för dig som vill lära dig Improv Comedy – med målet att själv stå på scen.
+              </h3>
               <div className="space-y-6 text-gray-700 leading-relaxed">
-                <p>Lilla Improteatern är platsen för dig som vill bli skickligare på att skapa roliga scener tillsammans med andra. Här lär du dig inte bara hur man improviserar – du förstår varför det funkar, vad som gör en scen rolig och hur du skapar det tillsammans med andra. Vi ser på improv comedy som ett hantverk. Genom ett tydligt pedagogiskt upplägg – förankrat i många års erfarenhet som både improvisatörer och pedagoger – erbjuder vi ett kurssystem som sträcker sig från grundläggande scenträning till långformsformat och ensemblearbete. Hos oss lär du dig att spela komiska scener med glädje, tydliga verktyg och ett fokus på samspelet.</p>
-                <p>Vi älskar att skratta. Men ännu mer älskar vi att förstå varför något är roligt – och hur man gör det tillsammans. Därför bygger vår undervisning på att steg för steg utveckla dina färdigheter som improvisatör. Inte genom att tvinga fram skämt, utan genom att spela scener som känns levande, enkla och roliga i stunden. Vi tränar dig i att upptäcka det roliga och följa det – i en trygg, tydlig och lekfull struktur där du får växa som improvisatör. Vi bygger vårt kursprogram på traditioner från iO, The Free Association, The Annoyance m.fl. – med en stark förankring i scen- och ensemblearbete. Hos oss finns också influenser från fysisk teater, närvaro, deals och dynamics.</p>
+                <p>
+                  Lilla Improteatern är platsen för dig som vill bli skickligare på att skapa roliga scener tillsammans med andra. 
+                  Här lär du dig inte bara hur man improviserar – du förstår varför det funkar, vad som gör en scen rolig och hur du skapar det tillsammans med andra.
+                </p>
+                <p>
+                  Vi ser på improv comedy som ett hantverk. Genom ett tydligt pedagogiskt upplägg – förankrat i många års erfarenhet som både improvisatörer och pedagoger – erbjuder vi ett kurssystem som sträcker sig från grundläggande scenträning till långformsformat och ensemblearbete. Hos oss lär du dig att spela komiska scener med glädje, tydliga verktyg och ett fokus på samspelet.
+                </p>
+                <p>
+                  Vi älskar att skratta. Men ännu mer älskar vi att förstå varför något är roligt – och hur man gör det tillsammans. 
+                  Därför bygger vår undervisning på att steg för steg utveckla dina färdigheter som improvisatör. Inte genom att tvinga fram skämt, utan genom att spela scener som känns levande, enkla och roliga i stunden.
+                </p>
+                <p>
+                  Vi tränar dig i att upptäcka det roliga och följa det – i en trygg, tydlig och lekfull struktur där du får växa som improvisatör.
+                </p>
+                <p>
+                  Vi bygger vårt kursprogram på traditioner från iO, The Free Association, The Annoyance m.fl. – med en stark förankring i scen- och ensemblearbete. Hos oss finns också influenser från fysisk teater, närvaro, deals och dynamics.
+                </p>
                 <div className="bg-theatre-primary text-white p-6 border-4 border-white rounded-none">
-                  <h3 className="text-theatre-secondary mb-4">"Lär dig spela det som redan är kul"</h3>
-                  <p className="leading-relaxed">Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the Scene", att följa det roliga och att få det att växa.</p>
+                  <h3 className="text-theatre-secondary font-medium mb-4">"Lär dig spela det som redan är kul"</h3>
+                  <p className="leading-relaxed">
+                    Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the Scene", att följa det roliga och att få det att växa.
+                  </p>
                 </div>
               </div>
             </div>
 
             <div className="text-left">
-              <h2 className="text-xl text-black mb-4">Vem kan komma till Lilla Improteatern?</h2>
+              <h2 className="text-xl font-bold text-theatre-primary mb-4">Vem kan komma till Lilla Improteatern?</h2>
               <div className="bg-theatre-light/10 p-12 border-4 border-white rounded-none">
-                <p className="text-theatre-secondary leading-relaxed mb-8">Du är varmt välkommen oavsett om du:</p>
+                <p className="text-theatre-secondary font-medium leading-relaxed mb-8">
+                  Du är varmt välkommen oavsett om du:
+                </p>
                 <div className="space-y-3 mb-8">
                   {whoCanCome.map((item, index) => (
                     <div key={index} className="flex items-center space-x-3">
@@ -228,12 +248,14 @@ const Courses = () => {
                     </div>
                   ))}
                 </div>
-                <p className="text-theatre-primary">Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa.</p>
+                <p className="text-theatre-primary font-semibold">
+                  Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa.
+                </p>
               </div>
             </div>
 
             <div className="text-left">
-              <h2 className="text-xl text-black mb-4">Du kommer att:</h2>
+              <h2 className="text-xl font-bold text-theatre-primary mb-4">Du kommer att:</h2>
               <div className="space-y-3">
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center space-x-3">
@@ -245,12 +267,16 @@ const Courses = () => {
             </div>
 
             <div className="text-left">
-              <h2 className="text-xl text-black mb-12">Vanliga frågor</h2>
+              <h2 className="text-xl font-bold text-theatre-primary mb-12">Vanliga frågor</h2>
               <div className="space-y-6">
                 {faq.map((item, index) => (
                   <div key={index} className="bg-theatre-light/10 border-4 border-white p-6 rounded-none">
-                    <h3 className="text-left text-theatre-secondary mb-4">{item.question}</h3>
-                    <p className="text-gray-700 leading-relaxed">{item.answer}</p>
+                    <h3 className="text-left font-medium text-theatre-secondary mb-4">
+                      {item.question}
+                    </h3>
+                    <p className="text-gray-700 leading-relaxed">
+                      {item.answer}
+                    </p>
                   </div>
                 ))}
               </div>
