@@ -123,7 +123,7 @@ const Courses = () => {
       </section>
 
       {/* Courses Grid */}
-      <section className="py-6 px-6">
+      <section className="py-2 px-6">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 mb-20">
             {courses.map((course, index) => (
