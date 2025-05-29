@@ -1,4 +1,5 @@
 
+
 import ServiceBoxes from './ServiceBoxes';
 
 const Hero = () => {
@@ -14,7 +15,7 @@ const Hero = () => {
         ></div>
         
         <div className="relative z-10">
-          <div className="text-left space-y-4 p-4 md:p-6 lg:p-12 bg-white mt-20 mx-[3px] md:mx-0 md:max-w-5xl md:mx-auto">
+          <div className="text-left space-y-4 p-6 md:p-6 lg:p-12 bg-white mt-20 mx-[3px] md:mx-0 md:max-w-5xl md:mx-auto">
             {/* Main heading */}
             <div className="space-y-3 pt-4">
               <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal">
@@ -51,7 +52,7 @@ const Hero = () => {
 
           {/* Video section moved back to red background */}
           <div className="mt-8 mx-[3px] md:mx-0 md:max-w-5xl md:mx-auto">
-            <div className="space-y-8 border-4 border-white p-4 md:p-6 lg:p-12 bg-white">
+            <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white">
               <div className="text-center space-y-4">
                 <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4">
                   Vad är improv comedy egentligen?
@@ -86,3 +87,4 @@ const Hero = () => {
 };
 
 export default Hero;
+

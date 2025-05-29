@@ -127,7 +127,7 @@ const Courses = () => {
       {/* Courses Grid */}
       <section className="py-2 px-0.5 md:px-4">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[18px] md:mx-0">
+          <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[3px] md:mx-0">
             {courses.map((course, index) => (
               <CourseCard 
                 key={index} 
@@ -142,7 +142,7 @@ const Courses = () => {
       {/* Combined Content Section */}
       <section className="py-8 px-0.5 md:px-4">
         <div className="container mx-auto max-w-5xl">
-          <div className="space-y-8 border-4 border-white p-4 md:p-6 lg:p-12 bg-white rounded-none mx-[18px] md:mx-0">
+          <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-[3px] md:mx-0">
             <div className="text-left">
               <h2 className="text-xl font-bold text-gray-800 mb-2">Vår vision</h2>
               <h3 className="text-theatre-secondary font-medium mb-4">

@@ -26,7 +26,7 @@ const Corporate = () => {
         {/* Content Section */}
         <section className="px-0.5 md:px-4 pb-8">
           <div className="container mx-auto max-w-5xl">
-            <div className="space-y-8 border-4 border-white p-4 md:p-6 lg:p-12 bg-white rounded-none mx-[18px] md:mx-0">
+            <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-[3px] md:mx-0">
               <div className="text-left">
                 <h3 className="text-theatre-secondary font-medium mb-6">
                   Vill ni ha skratt, samarbete och kunskap i samma paket? Då är ni välkomna till oss.
