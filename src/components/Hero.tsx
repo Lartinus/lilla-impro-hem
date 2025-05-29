@@ -1,5 +1,3 @@
-
-
 import ServiceBoxes from './ServiceBoxes';
 
 const Hero = () => {
@@ -57,9 +55,9 @@ const Hero = () => {
                 <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-black tracking-normal mb-4">
                   Vad är improv comedy egentligen?
                 </h1>
-                <h4 className="text-black font-bold mb-3 max-w-2xl mx-auto">
+                <h3 className="text-theatre-secondary font-medium mb-4 max-w-2xl mx-auto">
                   Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
-                </h4>
+                </h3>
               </div>
               
               <div className="grid md:grid-cols-3 gap-8">
@@ -87,4 +85,3 @@ const Hero = () => {
 };
 
 export default Hero;
-
