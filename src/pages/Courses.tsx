@@ -56,11 +56,26 @@ const Courses = () => {
     }
   ];
 
+  const practicalInfo = [
+    "8 tillfällen á 2,5h",
+    "Startdatum: 28 oktober", 
+    "12 deltagare",
+    "2 800 kr (ordinarie)",
+    "2 200 kr (pensionär, student eller omtag)"
+  ];
+
   const benefits = [
     "Få konkreta verktyg för att skapa humoristiska scener",
     "Utveckla ditt scenspråk, lyssnande och komiska timing",
     "Bli modigare, säkrare och mer initiativtagande",
     "Och få scentid. Massor."
+  ];
+
+  const whoCanCome = [
+    "Aldrig har testat Improv Comedy förut",
+    "Vill utvecklas som komisk scenperson",
+    "Är rutinerad och vill vässa ditt hantverk",
+    "Söker en trygg, tydlig och inspirerande plats att växa på"
   ];
 
   const faq = [
@@ -96,14 +111,6 @@ const Courses = () => {
       question: "Kan jag ta igen missade tillfällen?",
       answer: "Vi försöker alltid hjälpa dig att ta igen missade tillfällen om det finns plats i andra grupper. Hör av dig så ser vi vad som går att ordna."
     }
-  ];
-
-  const practicalInfo = [
-    "8 tillfällen á 2,5h",
-    "Startdatum: 28 oktober", 
-    "12 deltagare",
-    "2 800 kr (ordinarie)",
-    "2 200 kr (pensionär, student eller omtag)"
   ];
 
   return (
@@ -192,7 +199,7 @@ const Courses = () => {
         </div>
       </section>
 
-      {/* Vision, Philosophy & Method */}
+      {/* Combined Vision, Philosophy, Method & More */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
           <div className="space-y-16 border-4 border-white p-16 bg-white rounded-none">
@@ -239,69 +246,53 @@ const Courses = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Who Can Come */}
-      <section className="py-20 px-6">
-        <div className="container mx-auto max-w-5xl">
-          <div className="border-4 border-white p-16 bg-white text-left rounded-none">
-            <h2 className="text-xl font-bold text-theatre-primary mb-4">Vem kan komma till Lilla Improteatern?</h2>
-            <div className="bg-theatre-light/10 p-12 border-4 border-white rounded-none">
-              <p className="text-theatre-secondary font-medium leading-relaxed mb-8">
-                Du är varmt välkommen oavsett om du:
-              </p>
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
-                <div className="text-left space-y-3">
-                  <p className="text-gray-700">• Aldrig har testat Improv Comedy förut</p>
-                  <p className="text-gray-700">• Vill utvecklas som komisk scenperson</p>
+            <div className="text-left">
+              <h2 className="text-xl font-bold text-theatre-primary mb-4">Vem kan komma till Lilla Improteatern?</h2>
+              <div className="bg-theatre-light/10 p-12 border-4 border-white rounded-none">
+                <p className="text-theatre-secondary font-medium leading-relaxed mb-8">
+                  Du är varmt välkommen oavsett om du:
+                </p>
+                <div className="space-y-3 mb-8">
+                  {whoCanCome.map((item, index) => (
+                    <div key={index} className="flex items-center space-x-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                      <p className="text-gray-700">{item}</p>
+                    </div>
+                  ))}
                 </div>
-                <div className="text-left space-y-3">
-                  <p className="text-gray-700">• Är rutinerad och vill vässa ditt hantverk</p>
-                  <p className="text-gray-700">• Söker en trygg, tydlig och inspirerande plats att växa på</p>
-                </div>
+                <p className="text-theatre-primary font-semibold">
+                  Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa.
+                </p>
               </div>
-              <p className="text-theatre-primary font-semibold">
-                Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa.
-              </p>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Benefits */}
-      <section className="py-20 px-6">
-        <div className="container mx-auto max-w-5xl">
-          <div className="border-4 border-white p-16 bg-white text-left rounded-none">
-            <h2 className="text-xl font-bold text-theatre-primary mb-4">Du kommer att:</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="bg-theatre-light/10 p-6 text-left border-4 border-white rounded-none">
-                  <p className="text-gray-700">{benefit}</p>
-                </div>
-              ))}
+            <div className="text-left">
+              <h2 className="text-xl font-bold text-theatre-primary mb-4">Du kommer att:</h2>
+              <div className="space-y-3">
+                {benefits.map((benefit, index) => (
+                  <div key={index} className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                    <p className="text-gray-700">{benefit}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* FAQ */}
-      <section className="py-20 px-6">
-        <div className="container mx-auto max-w-5xl">
-          <div className="border-4 border-white p-16 bg-white rounded-none">
-            <h2 className="text-xl font-bold text-theatre-primary mb-12 text-left">Vanliga frågor</h2>
-            <div className="space-y-6">
-              {faq.map((item, index) => (
-                <div key={index} className="bg-theatre-light/10 border-4 border-white p-6 rounded-none">
-                  <h3 className="text-left font-medium text-theatre-secondary mb-4">
-                    {item.question}
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    {item.answer}
-                  </p>
-                </div>
-              ))}
+            <div className="text-left">
+              <h2 className="text-xl font-bold text-theatre-primary mb-12">Vanliga frågor</h2>
+              <div className="space-y-6">
+                {faq.map((item, index) => (
+                  <div key={index} className="bg-theatre-light/10 border-4 border-white p-6 rounded-none">
+                    <h3 className="text-left font-medium text-theatre-secondary mb-4">
+                      {item.question}
+                    </h3>
+                    <p className="text-gray-700 leading-relaxed">
+                      {item.answer}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
