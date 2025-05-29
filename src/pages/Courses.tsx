@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CourseCard from '@/components/CourseCard';
@@ -119,7 +118,7 @@ const Courses = () => {
       {/* Hero */}
       <section className="px-6 mt-20 py-12">
         <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-8">
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
             Kurser
           </h1>
         </div>
