@@ -4,7 +4,7 @@ import ServiceBoxes from './ServiceBoxes';
 const Hero = () => {
   return (
     <>
-      <section className="min-h-screen flex flex-col justify-center py-20 px-6 relative overflow-hidden">
+      <section className="min-h-screen flex flex-col justify-center py-12 px-4 relative overflow-hidden">
         {/* Noise texture overlay */}
         <div 
           className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -14,7 +14,7 @@ const Hero = () => {
         ></div>
         
         <div className="container mx-auto max-w-5xl relative z-10">
-          <div className="text-left space-y-4 p-16 bg-white mt-20">
+          <div className="text-left space-y-4 p-6 md:p-12 bg-white mt-20">
             {/* Main heading */}
             <div className="space-y-3 pt-4">
               <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal">
@@ -50,8 +50,8 @@ const Hero = () => {
           </div>
 
           {/* Video section moved back to red background */}
-          <div className="max-w-5xl mt-12">
-            <div className="space-y-12 border-4 border-white p-12 bg-white">
+          <div className="max-w-5xl mt-8">
+            <div className="space-y-8 border-4 border-white p-6 md:p-12 bg-white">
               <div className="text-center space-y-4">
                 <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4">
                   Vad är improv comedy egentligen?
@@ -61,7 +61,7 @@ const Hero = () => {
                 </h3>
               </div>
               
-              <div className="grid md:grid-cols-3 gap-8">
+              <div className="grid md:grid-cols-3 gap-6">
                 {[1, 2, 3].map((video) => (
                   <div key={video} className="group">
                     <div className="bg-theatre-light/10 backdrop-blur-sm border border-theatre-primary/20 rounded-2xl p-6 hover:bg-theatre-primary/5 transition-all duration-500 hover:border-theatre-primary/30 hover:transform hover:scale-105 aspect-video flex items-center justify-center">

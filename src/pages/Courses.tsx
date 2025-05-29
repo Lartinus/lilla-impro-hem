@@ -116,7 +116,7 @@ const Courses = () => {
       <Header />
       
       {/* Hero */}
-      <section className="px-6 mt-20 py-12">
+      <section className="px-4 mt-20 py-6">
         <div className="container mx-auto max-w-4xl text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
             Kurser
@@ -125,9 +125,9 @@ const Courses = () => {
       </section>
 
       {/* Courses Grid */}
-      <section className="py-2 px-6">
+      <section className="py-2 px-4">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
             {courses.map((course, index) => (
               <CourseCard 
                 key={index} 
@@ -140,9 +140,9 @@ const Courses = () => {
       </section>
 
       {/* Combined Content Section */}
-      <section className="py-12 px-6">
+      <section className="py-8 px-4">
         <div className="container mx-auto max-w-5xl">
-          <div className="space-y-12 border-4 border-white p-16 bg-white rounded-none">
+          <div className="space-y-8 border-4 border-white p-6 md:p-12 bg-white rounded-none">
             <div className="text-left">
               <h2 className="text-xl font-bold text-gray-800 mb-2">Vår vision</h2>
               <h3 className="text-theatre-secondary font-medium mb-4">

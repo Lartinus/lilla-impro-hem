@@ -27,8 +27,8 @@ interface CourseCardProps {
 const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
-      <CardContent className="p-8 flex flex-col flex-1">
-        <div className="mb-6">
+      <CardContent className="p-4 md:p-6 flex flex-col flex-1">
+        <div className="mb-4">
           <h2 className="text-xl font-bold text-theatre-primary mb-2">
             {course.title}
           </h2>
@@ -37,7 +37,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           </h3>
         </div>
         
-        <p className="text-gray-700 leading-relaxed mb-6">
+        <p className="text-gray-700 leading-relaxed mb-4">
           {course.description}
         </p>
         
@@ -48,7 +48,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         <div className="flex-1"></div>
         
         {course.available && (
-          <div className="mb-6">
+          <div className="mb-4">
             <h4 className="text-gray-800 font-bold mb-1">Praktisk information</h4>
             <div className="space-y-2">
               {practicalInfo.map((item, index) => (
