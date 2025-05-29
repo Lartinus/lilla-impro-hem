@@ -136,12 +136,12 @@ const Courses = () => {
                       {course.icon}
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-theatre-secondary font-medium mb-2">
+                      <h2 className="text-xl font-bold text-theatre-primary mb-2">
                         {course.title}
-                      </h3>
-                      <p className="text-theatre-secondary font-medium mb-4">
+                      </h2>
+                      <h3 className="text-theatre-secondary font-medium mb-4">
                         {course.subtitle}
-                      </p>
+                      </h3>
                     </div>
                   </div>
                   
