@@ -14,7 +14,7 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
   return (
     <div className="mb-6">
       <h4 className="text-gray-800 font-bold mb-3">Kursledare</h4>
-      <div className="bg-theatre-light/10 rounded-none border-4 border-red-800 p-4">
+      <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
         <div className="flex items-start space-x-4">
           <img 
             src={courseLeader.image} 
