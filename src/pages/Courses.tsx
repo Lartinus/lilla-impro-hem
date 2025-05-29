@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, Star, Calendar, GraduationCap } from 'lucide-react';
@@ -152,7 +151,7 @@ const Courses = () => {
                   
                   {course.courseLeaders.length > 0 && (
                     <div className="mb-6">
-                      <h4 className="text-theatre-primary font-semibold mb-3">Kursledare</h4>
+                      <h4 className="text-black font-bold mb-3">Kursledare</h4>
                       <div className="flex flex-wrap gap-3">
                         {course.courseLeaders.map((leader) => (
                           <div key={leader.id} className="flex items-center space-x-2 bg-theatre-light/10 rounded p-2 cursor-pointer hover:bg-theatre-light/20 transition-colors">
@@ -170,7 +169,7 @@ const Courses = () => {
                   
                   {course.available && (
                     <div className="mb-6">
-                      <h4 className="text-theatre-primary font-semibold mb-3">Praktisk information</h4>
+                      <h4 className="text-black font-bold mb-3">Praktisk information</h4>
                       <div className="space-y-2">
                         {practicalInfo.map((item, index) => (
                           <div key={index} className="flex items-center space-x-3">
@@ -204,7 +203,7 @@ const Courses = () => {
         <div className="container mx-auto max-w-5xl">
           <div className="space-y-16 border-4 border-white p-16 bg-white rounded-none">
             <div className="text-left">
-              <h2 className="text-xl text-black mb-4">Vår vision</h2>
+              <h2 className="text-xl font-bold text-black mb-4">Vår vision</h2>
               <h3 className="text-theatre-secondary font-medium mb-6">
                 Ett hem för dig som vill lära dig Improv Comedy – med målet att själv stå på scen.
               </h3>
@@ -236,7 +235,7 @@ const Courses = () => {
             </div>
 
             <div className="text-left">
-              <h2 className="text-xl text-black mb-4">Vem kan komma till Lilla Improteatern?</h2>
+              <h2 className="text-xl font-bold text-black mb-4">Vem kan komma till Lilla Improteatern?</h2>
               <p className="text-theatre-secondary font-medium leading-relaxed mb-8">
                 Du är varmt välkommen oavsett om du:
               </p>
@@ -266,7 +265,7 @@ const Courses = () => {
             </div>
 
             <div className="text-left">
-              <h2 className="text-xl text-black mb-6">Vanliga frågor</h2>
+              <h2 className="text-xl font-bold text-black mb-6">Vanliga frågor</h2>
               <div className="space-y-4">
                 {faq.map((item, index) => (
                   <div key={index} className="bg-theatre-light/10 border-4 border-white p-6 rounded-none">
