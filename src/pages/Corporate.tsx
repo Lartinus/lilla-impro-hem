@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -19,9 +18,9 @@ const Corporate = () => {
       
       <div className="flex-grow">
         {/* Hero */}
-        <section className="px-6 mt-20 py-8">
+        <section className="px-6 mt-20 py-12">
           <div className="container mx-auto max-w-4xl text-center">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-8">
               Workshops, teambuilding & underhållning
             </h1>
           </div>
@@ -80,7 +79,7 @@ const Corporate = () => {
                 
                 <Button 
                   onClick={handleContact}
-                  className="bg-theatre-primary hover:bg-theatre-tertiary text-white px-8 py-3 text-sm font-medium"
+                  className="px-8 py-3 text-sm font-medium"
                 >
                   Gör en förfrågan
                 </Button>

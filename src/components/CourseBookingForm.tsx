@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -116,7 +115,7 @@ const CourseBookingForm = ({ courseTitle, isAvailable, showButton = true }: Cour
         <Button 
           className={`w-full ${
             isAvailable 
-              ? 'bg-theatre-primary hover:bg-theatre-tertiary text-white' 
+              ? '' 
               : 'bg-gray-300 text-gray-600 hover:bg-blue-500 hover:text-white'
           }`}
         >
@@ -263,7 +262,7 @@ const CourseBookingForm = ({ courseTitle, isAvailable, showButton = true }: Cour
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
-                className="flex-1 bg-theatre-primary hover:bg-theatre-tertiary"
+                className="flex-1"
               >
                 {isSubmitting ? "Skickar..." : (isAvailable ? "Skicka bokning" : "Skicka intresse")}
               </Button>
