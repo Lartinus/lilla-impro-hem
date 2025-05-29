@@ -4,7 +4,10 @@
 Based on the formatting established on the home page and courses page, these are the standard heading styles to be used throughout the website:
 
 ## H1 - Main Page Headings
-- Classes: `text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-primary tracking-normal`
+- Classes: `text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-normal`
+- Color variants:
+  - On white/light backgrounds: `text-black`
+  - On red/dark backgrounds: `text-theatre-light`
 - Example text: "Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy."
 - Usage: Main heading on each page, describes the core purpose or main content
 
@@ -25,4 +28,5 @@ Based on the formatting established on the home page and courses page, these are
 - Maintain consistent spacing with mb-4, mb-6, etc.
 - H1 should be responsive (text-xl md:text-2xl lg:text-3xl)
 - H2-H4 can be fixed size as they work well on all devices
-- Use text-theatre-primary for H1, text-black for H2/H4, text-theatre-secondary for H3
+- H1 color should adapt to background: black on light, white on dark
+- Use text-black for H2/H4, text-theatre-secondary for H3
