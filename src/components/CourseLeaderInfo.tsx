@@ -20,10 +20,10 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
           <img 
             src={courseLeader.image} 
             alt={courseLeader.name}
-            className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0 mx-auto md:mx-0"
+            className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0 md:mx-0"
           />
           <div className="flex-1 min-w-0">
-            <h5 className="font-bold text-gray-800 mb-2 text-center md:text-left">
+            <h5 className="font-bold text-gray-800 mb-2 md:text-left">
               {courseLeader.name}
             </h5>
             <p className="text-gray-700 leading-relaxed text-sm break-words">
@@ -37,3 +37,4 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
 };
 
 export default CourseLeaderInfo;
+

@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CourseCard from '@/components/CourseCard';
@@ -116,16 +117,16 @@ const Courses = () => {
       <Header />
       
       {/* Hero */}
-      <section className="px-1 md:px-4 mt-20 py-6">
+      <section className="px-0.5 md:px-4 mt-20 py-6">
         <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
+          <h1 className="text-2xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
             Kurser
           </h1>
         </div>
       </section>
 
       {/* Courses Grid */}
-      <section className="py-2 px-1 md:px-4">
+      <section className="py-2 px-0.5 md:px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             {courses.map((course, index) => (
@@ -140,7 +141,7 @@ const Courses = () => {
       </section>
 
       {/* Combined Content Section */}
-      <section className="py-8 px-1 md:px-4">
+      <section className="py-8 px-0.5 md:px-4">
         <div className="container mx-auto max-w-5xl">
           <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
             <div className="text-left">
@@ -223,3 +224,4 @@ const Courses = () => {
 };
 
 export default Courses;
+

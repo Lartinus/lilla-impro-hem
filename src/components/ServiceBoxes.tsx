@@ -1,4 +1,5 @@
 
+
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -37,16 +38,16 @@ const ServiceBoxes = () => {
                 {service.link.startsWith('/') ? (
                   <Link to={service.link} className="inline-block w-full">
                     <Button 
-                      variant="ghost"
-                      className="text-white hover:bg-white hover:text-theatre-primary px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-theatre-primary transition-all w-full text-left justify-start h-auto whitespace-normal"
+                      variant="default"
+                      className="bg-red-700 text-white hover:bg-red-800 px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all w-full text-left justify-start h-auto whitespace-normal"
                     >
                       {service.cta} →
                     </Button>
                   </Link>
                 ) : (
                   <Button 
-                    variant="ghost"
-                    className="text-white hover:bg-white hover:text-theatre-primary px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-theatre-primary transition-all w-full text-left justify-start h-auto whitespace-normal"
+                    variant="default"
+                    className="bg-red-700 text-white hover:bg-red-800 px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all w-full text-left justify-start h-auto whitespace-normal"
                   >
                     {service.cta} →
                   </Button>
@@ -61,3 +62,4 @@ const ServiceBoxes = () => {
 };
 
 export default ServiceBoxes;
+
