@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
@@ -216,7 +215,7 @@ const Courses = () => {
                   Vi bygger vårt kursprogram på traditioner från iO, The Free Association, The Annoyance m.fl. – med en stark förankring i scen- och ensemblearbete. Hos oss finns också influenser från fysisk teater, närvaro, deals och dynamics.
                 </p>
                 <div className="bg-theatre-primary text-white p-6 border-4 border-white rounded-none">
-                  <h3 className="text-theatre-secondary font-medium mb-4">"Lär dig spela det som redan är kul"</h3>
+                  <h3 className="text-white font-bold mb-4">Lär dig spela det som redan är kul</h3>
                   <p className="leading-relaxed">
                     Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the Scene", att följa det roliga och att få det att växa.
                   </p>
