@@ -125,7 +125,7 @@ const Courses = () => {
       </section>
 
       {/* Courses Grid */}
-      <section className="py-2 px-0.5 md:px-4">
+      <section className="py-2 px-1 md:px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             {courses.map((course, index) => (
@@ -140,7 +140,7 @@ const Courses = () => {
       </section>
 
       {/* Combined Content Section */}
-      <section className="py-8 px-0.5 md:px-4">
+      <section className="py-8 px-1 md:px-4">
         <div className="container mx-auto max-w-5xl">
           <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
             <div className="text-left">

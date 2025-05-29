@@ -1,4 +1,5 @@
 
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -25,7 +26,7 @@ const Corporate = () => {
         </section>
 
         {/* Content Section */}
-        <section className="px-0.5 md:px-4 pb-8">
+        <section className="px-1 md:px-4 pb-8">
           <div className="container mx-auto max-w-5xl">
             <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
               <div className="text-left">
