@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Users, Laugh, Lightbulb } from 'lucide-react';
 
@@ -8,23 +7,14 @@ const Hero = () => {
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 animate-fade-in">
-            <h1 className="text-5xl lg:text-6xl font-bold text-theatre-charcoal leading-tight">
-              Ditt nya hem för
-              <span className="text-theatre-burgundy block">Improv Comedy</span>
-              <span className="text-lg font-normal text-theatre-charcoal/70 block mt-2">
-                i Stockholm
-              </span>
+            <h1 className="text-4xl lg:text-5xl font-gopher font-bold text-theatre-charcoal leading-tight">
+              Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy. Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans.
             </h1>
-            
-            <p className="text-xl text-theatre-charcoal/80 leading-relaxed max-w-2xl">
-              Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy. 
-              Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans.
-            </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
                 size="lg" 
-                className="bg-theatre-burgundy hover:bg-theatre-burgundy-dark text-white px-8 py-4 text-lg group"
+                className="bg-theatre-burgundy hover:bg-theatre-burgundy-dark text-white px-8 py-4 text-lg group font-gopher"
               >
                 Utforska våra kurser
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -32,7 +22,7 @@ const Hero = () => {
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="border-theatre-burgundy text-theatre-burgundy hover:bg-theatre-burgundy hover:text-white px-8 py-4 text-lg"
+                className="border-theatre-burgundy text-theatre-burgundy hover:bg-theatre-burgundy hover:text-white px-8 py-4 text-lg font-gopher"
               >
                 Se kommande föreställningar
               </Button>
@@ -41,15 +31,15 @@ const Hero = () => {
             <div className="flex items-center space-x-8 pt-8">
               <div className="flex items-center space-x-2 animate-float">
                 <Users className="h-6 w-6 text-theatre-burgundy" />
-                <span className="text-theatre-charcoal font-medium">Community</span>
+                <span className="text-theatre-charcoal font-medium font-gopher">Community</span>
               </div>
               <div className="flex items-center space-x-2 animate-float" style={{ animationDelay: '1s' }}>
                 <Laugh className="h-6 w-6 text-theatre-burgundy" />
-                <span className="text-theatre-charcoal font-medium">Komik</span>
+                <span className="text-theatre-charcoal font-medium font-gopher">Komik</span>
               </div>
               <div className="flex items-center space-x-2 animate-float" style={{ animationDelay: '2s' }}>
                 <Lightbulb className="h-6 w-6 text-theatre-burgundy" />
-                <span className="text-theatre-charcoal font-medium">Kreativitet</span>
+                <span className="text-theatre-charcoal font-medium font-gopher">Kreativitet</span>
               </div>
             </div>
           </div>
@@ -60,10 +50,10 @@ const Hero = () => {
             <div className="w-48 h-48 bg-theatre-burgundy/20 rounded-full absolute top-24 right-24 animate-float" style={{ animationDelay: '2s' }}></div>
             <div className="relative z-10 bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
               <div className="text-4xl font-bold text-theatre-burgundy mb-2">🎭</div>
-              <h3 className="text-xl font-semibold text-theatre-charcoal mb-4">
+              <h3 className="text-xl font-semibold text-theatre-charcoal mb-4 font-gopher">
                 Skapa tillsammans
               </h3>
-              <p className="text-theatre-charcoal/70">
+              <p className="text-theatre-charcoal/70 font-gopher">
                 I trygga, tydliga och inspirerande kursmiljöer utvecklas du som improvisatör tillsammans med andra.
               </p>
             </div>

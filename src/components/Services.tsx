@@ -2,6 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { GraduationCap, Theater, Building, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Services = () => {
   const services = [
@@ -10,26 +11,29 @@ const Services = () => {
       title: "Kurser i Improv Comedy",
       description: "Från nybörjare till ensemble",
       content: "Vi erbjuder kurser för alla nivåer där du utvecklas i trygga och inspirerande miljöer. Lär dig grunderna i improvisationsteater eller fördjupa dina färdigheter tillsammans med andra som delar din passion.",
-      cta: "Se kursutbud"
+      cta: "Se kursutbud",
+      link: "/kurser"
     },
     {
       icon: <Theater className="h-12 w-12 text-theatre-burgundy mb-4" />,
       title: "Föreställningar",
       description: "Hög variation med fokus på komik",
       content: "Upplev roliga, smarta och lekfulla föreställningar som visar upp improvisationskonstens bredd. Från klassisk improv till experimentella format – alltid med komiken i centrum.",
-      cta: "Boka biljetter"
+      cta: "Boka biljetter",
+      link: "#forestallningar"
     },
     {
       icon: <Building className="h-12 w-12 text-theatre-burgundy mb-4" />,
       title: "Företag & Organisationer",
       description: "Workshops och events",
       content: "Skräddarsydda workshops för företag, myndigheter och organisationer. Utveckla teamwork, kreativitet och kommunikation genom improvisationstekniker i en rolig och lärorik miljö.",
-      cta: "Kontakta oss"
+      cta: "Kontakta oss",
+      link: "#kontakt"
     }
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white font-gopher">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-theatre-charcoal mb-4">
@@ -58,13 +62,25 @@ const Services = () => {
                 <p className="text-theatre-charcoal/80 leading-relaxed">
                   {service.content}
                 </p>
-                <Button 
-                  variant="outline" 
-                  className="group/btn border-theatre-burgundy text-theatre-burgundy hover:bg-theatre-burgundy hover:text-white w-full"
-                >
-                  {service.cta}
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
-                </Button>
+                {service.link.startsWith('/') ? (
+                  <Link to={service.link}>
+                    <Button 
+                      variant="outline" 
+                      className="group/btn border-theatre-burgundy text-theatre-burgundy hover:bg-theatre-burgundy hover:text-white w-full"
+                    >
+                      {service.cta}
+                      <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button 
+                    variant="outline" 
+                    className="group/btn border-theatre-burgundy text-theatre-burgundy hover:bg-theatre-burgundy hover:text-white w-full"
+                  >
+                    {service.cta}
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ))}
