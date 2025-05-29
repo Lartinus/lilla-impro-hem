@@ -3,20 +3,43 @@ import ServiceBoxes from './ServiceBoxes';
 
 const Hero = () => {
   return (
-    <section className="py-16 px-6">
-      <div className="container mx-auto max-w-4xl">
-        <div className="text-left space-y-8">
-          <h1 className="text-3xl md:text-4xl font-bold leading-tight text-white">
-            Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
-          </h1>
+    <section className="min-h-screen flex flex-col justify-center py-20 px-6">
+      <div className="container mx-auto max-w-5xl">
+        <div className="text-left space-y-16">
+          {/* Main heading with modern typography */}
+          <div className="space-y-8">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-light leading-tight text-white tracking-tight">
+              Lilla Improteatern är en plats för dig som vill{' '}
+              <span className="font-medium">lära dig</span>,{' '}
+              <span className="font-medium">utöva</span> och{' '}
+              <span className="font-medium">uppleva</span>{' '}
+              Improv Comedy.
+            </h1>
+          </div>
 
-          <p className="text-lg md:text-xl leading-relaxed text-white/90 font-light">
-            Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, och samtidigt ta del av roliga, smarta och lekfulla föreställningar.
-          </p>
+          {/* Description with better spacing */}
+          <div className="max-w-3xl">
+            <p className="text-xl md:text-2xl leading-relaxed text-white/80 font-light">
+              Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, och samtidigt ta del av roliga, smarta och lekfulla föreställningar.
+            </p>
+          </div>
 
-          <div className="space-y-6">
-            <p className="text-lg text-white font-medium">Här hittar du:</p>
+          {/* Services section */}
+          <div className="space-y-12">
+            <p className="text-xl text-white/90 font-light">Här hittar du:</p>
             <ServiceBoxes />
+          </div>
+
+          {/* Mission statement */}
+          <div className="max-w-4xl space-y-8 pt-16">
+            <p className="text-xl md:text-2xl leading-relaxed text-white/80 font-light">
+              Vi bygger långsamt, med kvalitet, nyfikenhet och ett stort fokus på att göra 
+              improvisatörerna bättre och publiken gladare – och på att skapa ett community 
+              där du som elev, improvisatör och publik blir en del av något större.
+            </p>
+            <p className="text-2xl md:text-3xl font-light text-white">
+              Välkommen till ett nytt hem för Improv Comedy i Stockholm.
+            </p>
           </div>
         </div>
       </div>
