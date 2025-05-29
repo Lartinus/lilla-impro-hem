@@ -3,8 +3,13 @@ import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CourseBookingForm from '@/components/CourseBookingForm';
+import CourseLeaderModal from '@/components/CourseLeaderModal';
+import { useState } from 'react';
 
 const Courses = () => {
+  const [selectedLeader, setSelectedLeader] = useState<typeof courseLeaders[0] | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const courseLeaders = [
     {
       id: 1,
@@ -19,6 +24,16 @@ const Courses = () => {
       bio: "Hjalmar har undervisat på flera improvisationsscener runtom i Sverige. Han är baserad i Stockholm men har tidigare undervisat på Improverket och Gbgimpro i Göteborg och på Dramaverket i Karlstad. Han driver även Göteborg Improv Comedy Club samt podcasten Impropodden. Hjalmar har spelat på flera europeiska festivaler – bland annat i Amsterdam, Edinburgh och Nottingham – och är utbildad vid Improv Olympic och The Annoyance i Chicago samt The Free Association i London."
     }
   ];
+
+  const handleLeaderClick = (leader: typeof courseLeaders[0]) => {
+    setSelectedLeader(leader);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedLeader(null);
+  };
 
   const courses = [
     {
@@ -151,7 +166,11 @@ const Courses = () => {
                       <h4 className="text-gray-800 font-bold mb-1">Kursledare</h4>
                       <div className="flex flex-wrap gap-3">
                         {course.courseLeaders.map((leader) => (
-                          <div key={leader.id} className="flex items-center space-x-2 bg-theatre-light/10 rounded p-2 cursor-pointer hover:bg-theatre-light/20 transition-colors">
+                          <div 
+                            key={leader.id} 
+                            className="flex items-center space-x-2 bg-theatre-light/10 rounded p-2 cursor-pointer hover:bg-theatre-light/20 transition-colors"
+                            onClick={() => handleLeaderClick(leader)}
+                          >
                             <img 
                               src={leader.image} 
                               alt={leader.name}
@@ -269,6 +288,12 @@ const Courses = () => {
           </div>
         </div>
       </section>
+
+      <CourseLeaderModal 
+        leader={selectedLeader}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
 
       <Footer />
     </div>
