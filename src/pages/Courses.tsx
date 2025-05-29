@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, Star, Calendar, GraduationCap } from 'lucide-react';
@@ -90,14 +89,15 @@ const Courses = () => {
   ];
 
   return (
-    <div className="min-h-screen font-gopher bg-theatre-cream">
+    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+      <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       
       {/* Hero */}
-      <section className="py-20 px-6 bg-theatre-burgundy text-white">
+      <section className="py-20 px-6 mt-20">
         <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-5xl font-bold mb-8">Kurser</h1>
-          <p className="text-xl leading-relaxed text-white/90">
+          <h1 className="text-5xl font-bold mb-8 text-theatre-light">Kurser</h1>
+          <p className="text-xl leading-relaxed text-theatre-light/90">
             Från grundläggande scenträning till långformsformat och ensemblearbete
           </p>
         </div>
@@ -111,26 +111,26 @@ const Courses = () => {
               <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg bg-white">
                 <CardContent className="p-8">
                   <div className="flex items-start space-x-4 mb-6">
-                    <div className="text-theatre-burgundy">
+                    <div className="text-theatre-primary">
                       {course.icon}
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-theatre-charcoal mb-2">
+                      <h3 className="text-xl font-bold text-theatre-primary mb-2">
                         {course.title}
                       </h3>
-                      <p className="text-theatre-burgundy font-medium mb-4">
+                      <p className="text-theatre-secondary font-medium mb-4">
                         {course.subtitle}
                       </p>
                     </div>
                   </div>
                   
-                  <p className="text-theatre-charcoal/80 leading-relaxed mb-6">
+                  <p className="text-theatre-primary/80 leading-relaxed mb-6">
                     {course.description}
                   </p>
                   
                   {course.details && (
-                    <div className="bg-theatre-warm-gray p-4 rounded-lg mb-6">
-                      <p className="font-semibold text-theatre-charcoal text-sm">
+                    <div className="bg-theatre-light/20 p-4 rounded-lg mb-6">
+                      <p className="font-semibold text-theatre-primary text-sm">
                         {course.details}
                       </p>
                     </div>
@@ -139,7 +139,7 @@ const Courses = () => {
                   <Button 
                     className={`w-full ${
                       course.available 
-                        ? 'bg-theatre-burgundy hover:bg-theatre-burgundy-dark text-white' 
+                        ? 'bg-theatre-primary hover:bg-theatre-tertiary text-white' 
                         : 'bg-gray-300 text-gray-600 cursor-not-allowed'
                     }`}
                     disabled={!course.available}
@@ -153,119 +153,127 @@ const Courses = () => {
         </div>
       </section>
 
-      {/* Vision & Philosophy */}
-      <section className="py-20 px-6 bg-white">
-        <div className="container mx-auto max-w-4xl space-y-16">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold text-theatre-charcoal mb-8">Vår vision</h2>
-            <h3 className="text-2xl font-semibold text-theatre-burgundy mb-6">
-              Ett hem för dig som vill lära dig Improv Comedy – med målet att själv stå på scen.
-            </h3>
-            <div className="space-y-6 text-lg text-theatre-charcoal/80 leading-relaxed">
-              <p>
-                Lilla Improteatern är platsen för dig som vill bli skickligare på att skapa roliga scener tillsammans med andra. 
-                Här lär du dig inte bara hur man improviserar – du förstår varför det funkar, vad som gör en scen rolig och hur du skapar det tillsammans med andra.
-              </p>
-              <p>
-                Vi ser på improv comedy som ett hantverk. Genom ett tydligt pedagogiskt upplägg – förankrat i många års erfarenhet som både improvisatörer och pedagoger – erbjuder vi ett kurssystem som sträcker sig från grundläggande scenträning till långformsformat och ensemblearbete. Hos oss lär du dig att spela komiska scener med glädje, tydliga verktyg och ett fokus på samspelet.
-              </p>
+      {/* Vision & Philosophy - Updated with homepage styling */}
+      <section className="py-20 px-6">
+        <div className="container mx-auto max-w-5xl">
+          <div className="space-y-16 border-4 border-white p-16 bg-white">
+            <div className="text-center">
+              <h2 className="text-4xl font-bold text-theatre-primary mb-8">Vår vision</h2>
+              <h3 className="text-2xl font-semibold text-theatre-secondary mb-6">
+                Ett hem för dig som vill lära dig Improv Comedy – med målet att själv stå på scen.
+              </h3>
+              <div className="space-y-6 text-lg text-theatre-primary/80 leading-relaxed">
+                <p>
+                  Lilla Improteatern är platsen för dig som vill bli skickligare på att skapa roliga scener tillsammans med andra. 
+                  Här lär du dig inte bara hur man improviserar – du förstår varför det funkar, vad som gör en scen rolig och hur du skapar det tillsammans med andra.
+                </p>
+                <p>
+                  Vi ser på improv comedy som ett hantverk. Genom ett tydligt pedagogiskt upplägg – förankrat i många års erfarenhet som både improvisatörer och pedagoger – erbjuder vi ett kurssystem som sträcker sig från grundläggande scenträning till långformsformat och ensemblearbete. Hos oss lär du dig att spela komiska scener med glädje, tydliga verktyg och ett fokus på samspelet.
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className="text-center">
-            <h2 className="text-4xl font-bold text-theatre-charcoal mb-8">Vår filosofi</h2>
-            <div className="space-y-6 text-lg text-theatre-charcoal/80 leading-relaxed">
-              <p>
-                Vi älskar att skratta. Men ännu mer älskar vi att förstå varför något är roligt – och hur man gör det tillsammans. 
-                Därför bygger vår undervisning på att steg för steg utveckla dina färdigheter som improvisatör. Inte genom att tvinga fram skämt, utan genom att spela scener som känns levande, enkla och roliga i stunden.
-              </p>
-              <p>
-                Vi tränar dig i att upptäcka det roliga och följa det – i en trygg, tydlig och lekfull struktur där du får växa som improvisatör.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Method & Benefits */}
-      <section className="py-20 px-6 bg-theatre-warm-gray">
-        <div className="container mx-auto max-w-4xl space-y-16">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold text-theatre-charcoal mb-8">Kursledare</h2>
-            <p className="text-xl text-theatre-charcoal/80 leading-relaxed">
-              Kurserna leds av Hjalmar Hardestam och Ellen – två passionerade pedagoger med hjärtat i Improv Comedy och många års erfarenhet från scen och klassrum. Båda har utbildat sig internationellt och brinner för att göra lärandet konkret, roligt och utvecklande.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-8 md:p-12">
-            <h2 className="text-3xl font-bold text-theatre-charcoal mb-8 text-center">Vår metod</h2>
-            <div className="space-y-6 text-lg text-theatre-charcoal/80 leading-relaxed">
-              <p>
-                Vi bygger vårt kursprogram på traditioner från iO, The Free Association, The Annoyance m.fl. – med en stark förankring i scen- och ensemblearbete. Hos oss finns också influenser från fysisk teater, närvaro, deals och dynamics.
-              </p>
-              <div className="bg-theatre-burgundy text-white rounded-xl p-6">
-                <h3 className="text-xl font-bold mb-4">"Lär dig spela det som redan är kul"</h3>
-                <p className="leading-relaxed">
-                  Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the Scene", att följa det roliga och att få det att växa.
+            <div className="text-center">
+              <h2 className="text-4xl font-bold text-theatre-primary mb-8">Vår filosofi</h2>
+              <div className="space-y-6 text-lg text-theatre-primary/80 leading-relaxed">
+                <p>
+                  Vi älskar att skratta. Men ännu mer älskar vi att förstå varför något är roligt – och hur man gör det tillsammans. 
+                  Därför bygger vår undervisning på att steg för steg utveckla dina färdigheter som improvisatör. Inte genom att tvinga fram skämt, utan genom att spela scener som känns levande, enkla och roliga i stunden.
+                </p>
+                <p>
+                  Vi tränar dig i att upptäcka det roliga och följa det – i en trygg, tydlig och lekfull struktur där du får växa som improvisatör.
                 </p>
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-theatre-charcoal mb-8">Du kommer att:</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="bg-white rounded-lg p-6 text-left">
-                  <p className="text-theatre-charcoal/80 text-lg">{benefit}</p>
+      {/* Method & Benefits - Updated with homepage styling */}
+      <section className="py-20 px-6">
+        <div className="container mx-auto max-w-5xl">
+          <div className="space-y-16 border-4 border-white p-16 bg-white">
+            <div className="text-center">
+              <h2 className="text-4xl font-bold text-theatre-primary mb-8">Kursledare</h2>
+              <p className="text-xl text-theatre-primary/80 leading-relaxed">
+                Kurserna leds av Hjalmar Hardestam och Ellen – två passionerade pedagoger med hjärtat i Improv Comedy och många års erfarenhet från scen och klassrum. Båda har utbildat sig internationellt och brinner för att göra lärandet konkret, roligt och utvecklande.
+              </p>
+            </div>
+
+            <div className="bg-theatre-light/10 rounded-2xl p-12">
+              <h2 className="text-3xl font-bold text-theatre-primary mb-8 text-center">Vår metod</h2>
+              <div className="space-y-6 text-lg text-theatre-primary/80 leading-relaxed">
+                <p>
+                  Vi bygger vårt kursprogram på traditioner från iO, The Free Association, The Annoyance m.fl. – med en stark förankring i scen- och ensemblearbete. Hos oss finns också influenser från fysisk teater, närvaro, deals och dynamics.
+                </p>
+                <div className="bg-theatre-primary text-white rounded-xl p-6">
+                  <h3 className="text-xl font-bold mb-4">"Lär dig spela det som redan är kul"</h3>
+                  <p className="leading-relaxed">
+                    Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the Scene", att följa det roliga och att få det att växa.
+                  </p>
                 </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-theatre-primary mb-8">Du kommer att:</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                {benefits.map((benefit, index) => (
+                  <div key={index} className="bg-theatre-light/10 rounded-lg p-6 text-left">
+                    <p className="text-theatre-primary/80 text-lg">{benefit}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Who Can Come - Updated with homepage styling */}
+      <section className="py-20 px-6">
+        <div className="container mx-auto max-w-5xl">
+          <div className="border-4 border-white p-16 bg-white text-center">
+            <h2 className="text-4xl font-bold text-theatre-primary mb-8">Vem kan komma till Lilla Improteatern?</h2>
+            <div className="bg-theatre-light/10 rounded-2xl p-12">
+              <p className="text-xl text-theatre-primary/80 leading-relaxed mb-8">
+                Du är varmt välkommen oavsett om du:
+              </p>
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div className="text-left space-y-3">
+                  <p className="text-theatre-primary/80">• Aldrig har testat Improv Comedy förut</p>
+                  <p className="text-theatre-primary/80">• Vill utvecklas som komisk scenperson</p>
+                </div>
+                <div className="text-left space-y-3">
+                  <p className="text-theatre-primary/80">• Är rutinerad och vill vässa ditt hantverk</p>
+                  <p className="text-theatre-primary/80">• Söker en trygg, tydlig och inspirerande plats att växa på</p>
+                </div>
+              </div>
+              <p className="text-lg text-theatre-primary font-semibold">
+                Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ - Updated with homepage styling */}
+      <section className="py-20 px-6">
+        <div className="container mx-auto max-w-5xl">
+          <div className="border-4 border-white p-16 bg-white">
+            <h2 className="text-4xl font-bold text-theatre-primary mb-12 text-center">Vanliga frågor</h2>
+            <Accordion type="single" collapsible className="space-y-4">
+              {faq.map((item, index) => (
+                <AccordionItem key={index} value={`item-${index}`} className="bg-theatre-light/10 rounded-lg border-0">
+                  <AccordionTrigger className="px-6 py-4 text-left font-semibold text-theatre-primary hover:no-underline">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-4 text-theatre-primary/80 leading-relaxed">
+                    {item.answer}
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </div>
-        </div>
-      </section>
-
-      {/* Who Can Come */}
-      <section className="py-20 px-6 bg-white">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-4xl font-bold text-theatre-charcoal mb-8">Vem kan komma till Lilla Improteatern?</h2>
-          <div className="bg-theatre-warm-gray rounded-2xl p-8 md:p-12">
-            <p className="text-xl text-theatre-charcoal/80 leading-relaxed mb-8">
-              Du är varmt välkommen oavsett om du:
-            </p>
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <div className="text-left space-y-3">
-                <p className="text-theatre-charcoal/80">• Aldrig har testat Improv Comedy förut</p>
-                <p className="text-theatre-charcoal/80">• Vill utvecklas som komisk scenperson</p>
-              </div>
-              <div className="text-left space-y-3">
-                <p className="text-theatre-charcoal/80">• Är rutinerad och vill vässa ditt hantverk</p>
-                <p className="text-theatre-charcoal/80">• Söker en trygg, tydlig och inspirerande plats att växa på</p>
-              </div>
-            </div>
-            <p className="text-lg text-theatre-charcoal font-semibold">
-              Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="py-20 px-6 bg-theatre-warm-gray">
-        <div className="container mx-auto max-w-4xl">
-          <h2 className="text-4xl font-bold text-theatre-charcoal mb-12 text-center">Vanliga frågor</h2>
-          <Accordion type="single" collapsible className="space-y-4">
-            {faq.map((item, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="bg-white rounded-lg border-0">
-                <AccordionTrigger className="px-6 py-4 text-left font-semibold text-theatre-charcoal hover:no-underline">
-                  {item.question}
-                </AccordionTrigger>
-                <AccordionContent className="px-6 pb-4 text-theatre-charcoal/80 leading-relaxed">
-                  {item.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
         </div>
       </section>
 
