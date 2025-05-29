@@ -9,14 +9,14 @@ const Courses = () => {
     {
       id: 1,
       name: "Ellen Bobeck",
-      image: "/lovable-uploads/8137df73-dcb4-4e44-9fb8-b0d0317e9bc4.png",
-      bio: "Ellen har jobbat med improvisationsteater sedan 2018, hon både spelar och undervisar på flera olika skolor och teatrar i Stockholm. Hon har spelat på flera stora teatrar i Europa - Berlin, Oslo, Dublin, m.fl. I Stockholm och Förutom Spinoff spelar hon också med trion Britta. Hon står även bakom musikalgruppen Floden STHLM som hon både leder och spelar i."
+      image: "/lovable-uploads/df0cb53d-072e-4970-b9fa-e175209d1cf7.png",
+      bio: "Ellen har arbetat med improvisationsteater sedan 2018, både som skådespelare och pedagog. Hon undervisar på flera olika skolor och teatrar i Stockholm, och har stått på scen på festivaler i bland annat Berlin, Oslo, Dublin och Edinburgh. Förutom Spinoff spelar hon även med trion Britta, och är konstnärlig ledare för musikalensemblen Floden STHLM – där hon kombinerar musikalisk känsla med improviserat berättande."
     },
     {
       id: 2,
       name: "Hjalmar Hardestam",
-      image: "/placeholder.svg",
-      bio: "Hjalmar är en erfaren improvisatör och pedagog med många års erfarenhet från scen och klassrum."
+      image: "/lovable-uploads/192352b9-7e67-447a-aa36-9b17372a4155.png",
+      bio: "Hjalmar har undervisat på flera improvisationsscener runtom i Sverige. Han är baserad i Stockholm men har tidigare undervisat på Improverket och Gbgimpro i Göteborg och på Dramaverket i Karlstad. Han driver även Göteborg Improv Comedy Club samt podcasten Impropodden. Hjalmar har spelat på flera europeiska festivaler – bland annat i Amsterdam, Edinburgh och Nottingham – och är utbildad vid Improv Olympic och The Annoyance i Chicago samt The Free Association i London."
     }
   ];
 
@@ -129,7 +129,7 @@ const Courses = () => {
       {/* Courses Grid */}
       <section className="py-2 px-6">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-2 gap-8 mb-8">
+          <div className="grid md:grid-cols-2 gap-8 mb-4">
             {courses.map((course, index) => (
               <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
                 <CardContent className="p-8 flex flex-col flex-1">
@@ -148,14 +148,14 @@ const Courses = () => {
                   
                   {course.courseLeaders.length > 0 && (
                     <div className="mb-6">
-                      <h4 className="text-gray-800 font-bold mb-2">Kursledare</h4>
+                      <h4 className="text-gray-800 font-bold mb-1">Kursledare</h4>
                       <div className="flex flex-wrap gap-3">
                         {course.courseLeaders.map((leader) => (
                           <div key={leader.id} className="flex items-center space-x-2 bg-theatre-light/10 rounded p-2 cursor-pointer hover:bg-theatre-light/20 transition-colors">
                             <img 
                               src={leader.image} 
                               alt={leader.name}
-                              className="w-8 h-8 rounded-full object-cover"
+                              className="w-8 h-8 rounded-full object-cover object-center"
                             />
                             <span className="text-gray-700 font-medium">{leader.name}</span>
                           </div>
@@ -168,7 +168,7 @@ const Courses = () => {
                   
                   {course.available && (
                     <div className="mb-6">
-                      <h4 className="text-gray-800 font-bold mb-2">Praktisk information</h4>
+                      <h4 className="text-gray-800 font-bold mb-1">Praktisk information</h4>
                       <div className="space-y-2">
                         {practicalInfo.map((item, index) => (
                           <div key={index} className="flex items-center space-x-3">
@@ -214,10 +214,7 @@ const Courses = () => {
                   Därför bygger vår undervisning på att steg för steg utveckla dina färdigheter som improvisatör. Inte genom att tvinga fram skämt, utan genom att spela scener som känns levande, enkla och roliga i stunden.
                 </p>
                 <p>
-                  Vi tränar dig i att upptäcka det roliga och följa det – i en trygg, tydlig och lekfull struktur där du får växa som improvisatör.
-                </p>
-                <p>
-                  Vi bygger vårt kursprogram på traditioner från iO, The Free Association, The Annoyance m.fl. – med en stark förankring i scen- och ensemblearbete. Hos oss finns också influenser från fysisk teater, närvaro, deals och dynamics.
+                  Vi tränar dig i att upptäcka det roliga och följa det – i en trygg, tydlig och lekfull struktur där du får växa som improvisatör. Du kommer att:
                 </p>
                 <div className="bg-theatre-primary text-white p-6 border-4 border-white rounded-none">
                   <h3 className="text-white font-bold mb-4">Lär dig spela det som redan är kul</h3>
@@ -242,7 +239,7 @@ const Courses = () => {
                 ))}
               </div>
               <p className="text-gray-700 leading-relaxed mb-6">
-                Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa på. Du kommer att:
+                Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa på.
               </p>
               <div className="space-y-3">
                 {benefits.map((benefit, index) => (

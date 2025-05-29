@@ -46,12 +46,31 @@ const CourseBookingForm = ({ courseTitle, isAvailable, showButton = true }: Cour
     setIsSubmitting(true);
     
     try {
+      // Prepare data based on form type
+      const submitData = isAvailable 
+        ? {
+            course_title: courseTitle,
+            name: data.name,
+            phone: data.phone,
+            email: data.email,
+            address: data.address || '',
+            postal_code: data.postal_code || '',
+            city: data.city || '',
+          }
+        : {
+            course_title: courseTitle,
+            name: data.name,
+            phone: data.phone,
+            email: data.email,
+            address: '',
+            postal_code: '',
+            city: '',
+            message: data.message || '',
+          };
+
       const { error } = await supabase
         .from('course_bookings')
-        .insert({
-          course_title: courseTitle,
-          ...data,
-        });
+        .insert(submitData);
 
       if (error) {
         console.error('Error submitting booking:', error);
