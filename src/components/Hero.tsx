@@ -1,3 +1,4 @@
+
 import ServiceBoxes from './ServiceBoxes';
 
 const Hero = () => {
@@ -13,14 +14,16 @@ const Hero = () => {
         ></div>
         
         <div className="relative z-10">
-          <div className="text-left space-y-4 p-12 md:p-16 lg:p-20 bg-white mt-20 mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
-            {/* Main heading */}
-            <div className="space-y-3 pt-4">
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal">
+          {/* Hero heading outside the box */}
+          <section className="px-0.5 md:px-4 mt-20 py-6">
+            <div className="text-center">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
             </div>
+          </section>
 
+          <div className="text-left space-y-4 p-12 md:p-16 lg:p-20 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
             {/* Description */}
             <div className="max-w-4xl space-y-2">
               <p className="text-sm md:text-lg leading-relaxed text-gray-700 font-light">
