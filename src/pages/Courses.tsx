@@ -114,9 +114,9 @@ const Courses = () => {
       <Header />
       
       {/* Hero */}
-      <section className="py-6 px-6 mt-20">
+      <section className="py-16 px-6 mt-20">
         <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-8">
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-16">
             Kurser
           </h1>
         </div>
