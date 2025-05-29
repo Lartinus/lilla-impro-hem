@@ -1,13 +1,14 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Button } from "@/components/ui/button";
 
 const About = () => {
   const productionTeam = [
     {
       id: 1,
       name: "David Rosenqvist",
-      image: "/lovable-uploads/8137df73-dcb4-4e44-9fb8-b0d0317e9bc4.png", // Using placeholder image
+      image: "/lovable-uploads/5cb42dd8-59bc-49e4-ae83-9bb0da74f658.png",
       bio: "David började med improvisationsteater 2013 och har sedan dess varit en aktiv del av improscenerna i Karlstad, Örebro och Stockholm. Han var med och startade Dramaverket 2014 och senare Spinoff 2021. I dag spelar han både med Dramaverket och Floden STHLM, och gästar under våren 2025 även Stockholm Improvisationsteater. Till vardags jobbar David som producent inom event och teater – med ett öga för struktur, sammanhang och att få saker att hända."
     },
     {
@@ -24,6 +25,10 @@ const About = () => {
     }
   ];
 
+  const handleContact = () => {
+    window.location.href = 'mailto:info@lillaimproteatern.se';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex flex-col">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
@@ -31,7 +36,7 @@ const About = () => {
       
       <div className="flex-grow">
         {/* Hero */}
-        <section className="px-6 mt-20 py-8">
+        <section className="px-6 mt-20 py-12">
           <div className="container mx-auto max-w-4xl text-center">
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
               Om oss
@@ -50,10 +55,10 @@ const About = () => {
                 
                 <h2 className="text-xl font-bold text-gray-800 mb-8">Produktionsteam</h2>
                 
-                <div className="space-y-8">
-                  {productionTeam.map((member) => (
-                    <div key={member.id} className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
-                      <div className="flex items-start space-x-4">
+                <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4 mb-8">
+                  <div className="space-y-8">
+                    {productionTeam.map((member) => (
+                      <div key={member.id} className="flex items-start space-x-4">
                         <img 
                           src={member.image} 
                           alt={member.name}
@@ -68,13 +73,20 @@ const About = () => {
                           </p>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
                 
-                <p className="text-gray-700 leading-relaxed mt-8">
+                <p className="text-gray-700 leading-relaxed mb-8">
                   Tillsammans vill vi skapa en plats där människor inte bara lär sig impro, utan blir en del av ett sammanhang. Lilla Improteatern ska vara ett hem för alla som vill utvecklas, spela, skratta – och växa tillsammans.
                 </p>
+                
+                <Button 
+                  onClick={handleContact}
+                  className="bg-red-700 hover:bg-red-800 text-white px-8 py-3 text-base font-medium"
+                >
+                  Kontakt
+                </Button>
               </div>
             </div>
           </div>
