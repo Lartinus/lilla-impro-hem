@@ -168,7 +168,7 @@ const Courses = () => {
                         {course.courseLeaders.map((leader) => (
                           <div 
                             key={leader.id} 
-                            className="flex items-center space-x-2 bg-theatre-light/10 rounded-none p-3 cursor-pointer hover:bg-theatre-light/20 transition-all duration-300 border border-gray-200 hover:border-theatre-secondary hover:shadow-sm"
+                            className="flex items-center space-x-2 bg-theatre-light/10 rounded-none p-3 cursor-pointer hover:bg-theatre-light/20 transition-all duration-300 border border-transparent hover:border-theatre-secondary hover:shadow-sm"
                             onClick={() => handleLeaderClick(leader)}
                           >
                             <img 
