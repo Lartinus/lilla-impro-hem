@@ -18,7 +18,7 @@ const Corporate = () => {
       
       <div className="flex-grow">
         {/* Hero */}
-        <section className="px-4 mt-20 py-6">
+        <section className="px-2 md:px-4 mt-20 py-6">
           <div className="container mx-auto max-w-4xl text-center">
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
               Workshops, teambuilding & underhållning
@@ -27,9 +27,9 @@ const Corporate = () => {
         </section>
 
         {/* Content Section */}
-        <section className="px-4 pb-8">
+        <section className="px-2 md:px-4 pb-8">
           <div className="container mx-auto max-w-5xl">
-            <div className="space-y-8 border-4 border-white p-6 md:p-12 bg-white rounded-none">
+            <div className="space-y-8 border-4 border-white p-4 md:p-6 lg:p-12 bg-white rounded-none">
               <div className="text-left">
                 <h3 className="text-theatre-secondary font-medium mb-6">
                   Vill ni ha skratt, samarbete och kunskap i samma paket? Då är ni välkomna till oss.
