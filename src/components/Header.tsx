@@ -12,7 +12,12 @@ const Header = () => {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <Link to="/">
+            <Link to="/" className="flex items-center space-x-3">
+              <img 
+                src="/lovable-uploads/8c70d3b3-4ad3-4d2d-a831-b759a5ec35eb.png" 
+                alt="Lilla Improteatern" 
+                className="h-8 w-auto"
+              />
               <h1 className="text-xl font-medium text-theatre-light tracking-wide">
                 Lilla Improteatern
               </h1>
