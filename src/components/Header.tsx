@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,15 +11,12 @@ const Header = () => {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-3">
+            <Link to="/" className="flex items-center">
               <img 
-                src="/lovable-uploads/8c70d3b3-4ad3-4d2d-a831-b759a5ec35eb.png" 
+                src="/lovable-uploads/ac906279-978d-4e9c-b9a1-eb3a90b48aef.png" 
                 alt="Lilla Improteatern" 
-                className="h-8 w-auto"
+                className="h-12 w-auto"
               />
-              <h1 className="text-xl font-medium text-theatre-light tracking-wide">
-                Lilla Improteatern
-              </h1>
             </Link>
           </div>
           
