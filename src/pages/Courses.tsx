@@ -190,8 +190,8 @@ const Courses = () => {
         <div className="container mx-auto max-w-5xl">
           <div className="space-y-16 border-4 border-white p-16 bg-white rounded-none">
             <div className="text-left">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Vår vision</h2>
-              <h3 className="text-theatre-secondary font-medium mb-6">
+              <h2 className="text-xl font-bold text-gray-800 mb-2">Vår vision</h2>
+              <h3 className="text-theatre-secondary font-medium mb-4">
                 Ett hem för dig som vill lära dig Improv Comedy – med målet att själv stå på scen.
               </h3>
               <div className="space-y-6 text-gray-700 leading-relaxed">
@@ -222,8 +222,8 @@ const Courses = () => {
             </div>
 
             <div className="text-left">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Vem kan komma till Lilla Improteatern?</h2>
-              <h3 className="text-theatre-secondary font-medium leading-relaxed mb-8">
+              <h2 className="text-xl font-bold text-gray-800 mb-2">Vem kan komma till Lilla Improteatern?</h2>
+              <h3 className="text-theatre-secondary font-medium leading-relaxed mb-4">
                 Du är varmt välkommen oavsett om du:
               </h3>
               <div className="space-y-3 mb-8">
@@ -252,7 +252,7 @@ const Courses = () => {
             </div>
 
             <div className="text-left">
-              <h2 className="text-xl font-bold text-gray-800 mb-6">Vanliga frågor</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-2">Vanliga frågor</h2>
               <div className="space-y-4">
                 {faq.map((item, index) => (
                   <div key={index} className="bg-theatre-light/10 border-4 border-white p-6 rounded-none">
