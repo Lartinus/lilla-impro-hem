@@ -83,7 +83,7 @@ const About = () => {
                 
                 <Button 
                   onClick={handleContact}
-                  className="bg-red-700 hover:bg-red-800 text-white px-8 py-3 text-base font-medium"
+                  className="px-8 py-3 text-base font-medium"
                 >
                   Kontakt
                 </Button>

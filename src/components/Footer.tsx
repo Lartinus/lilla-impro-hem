@@ -62,9 +62,6 @@ const Footer = () => {
               <a href="#forestallningar" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
                 Föreställningar
               </a>
-              <a href="#kontakt" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
-                Kontakt
-              </a>
             </div>
           </div>
         </div>
