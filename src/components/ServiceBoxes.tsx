@@ -29,34 +29,36 @@ const ServiceBoxes = () => {
     <div className="grid md:grid-cols-3 gap-8 mt-8">
       {services.map((service, index) => (
         <div key={index} className="group">
-          <div className="bg-theatre-primary border border-gray-200 rounded-none p-10 hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+          <div className="bg-theatre-primary border border-gray-200 rounded-none p-8 hover:shadow-lg transition-all duration-300 h-full flex flex-col min-h-[300px]">
             <div className="space-y-6 flex-1">
               <div className="flex items-center space-x-3">
                 {service.icon}
                 <div className="w-full h-px bg-white/30"></div>
               </div>
               
-              <p className="text-white leading-relaxed text-lg font-light max-w-xs flex-1">
+              <p className="text-white leading-relaxed text-lg font-light flex-1">
                 {service.title}
               </p>
               
-              {service.link.startsWith('/') ? (
-                <Link to={service.link}>
+              <div className="pt-2">
+                {service.link.startsWith('/') ? (
+                  <Link to={service.link} className="inline-block">
+                    <Button 
+                      variant="ghost"
+                      className="text-white hover:bg-white hover:text-theatre-primary px-3 py-2 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-theatre-primary transition-all hover:no-underline max-w-full break-words"
+                    >
+                      {service.cta} →
+                    </Button>
+                  </Link>
+                ) : (
                   <Button 
                     variant="ghost"
-                    className="text-white hover:bg-white/10 px-0 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all"
+                    className="text-white hover:bg-white hover:text-theatre-primary px-3 py-2 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-theatre-primary transition-all hover:no-underline max-w-full break-words"
                   >
                     {service.cta} →
                   </Button>
-                </Link>
-              ) : (
-                <Button 
-                  variant="ghost"
-                  className="text-white hover:bg-white/10 px-0 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all"
-                >
-                  {service.cta} →
-                </Button>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
