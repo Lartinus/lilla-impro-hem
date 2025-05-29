@@ -116,7 +116,7 @@ const CourseBookingForm = ({ courseTitle, isAvailable, showButton = true }: Cour
           className={`w-full ${
             isAvailable 
               ? '' 
-              : 'bg-gray-300 text-gray-600 hover:bg-blue-500 hover:text-white'
+              : 'bg-blue-500 text-white hover:bg-blue-700'
           }`}
         >
           {buttonText}

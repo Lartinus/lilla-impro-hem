@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -26,7 +25,7 @@ const Corporate = () => {
 
         {/* Content Section */}
         <section className="px-0.5 md:px-4 pb-8">
-          <div className="space-y-8 border-4 border-white p-8 md:p-6 lg:p-12 bg-white rounded-none mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
+          <div className="space-y-8 border-4 border-white p-8 md:p-6 lg:p-12 bg-white rounded-none mx-6 md:mx-0 md:max-w-5xl md:mx-auto">
             <div className="text-left">
               <h3 className="text-theatre-secondary font-medium mb-6">
                 Vill ni ha skratt, samarbete och kunskap i samma paket? Då är ni välkomna till oss.
@@ -42,28 +41,28 @@ const Corporate = () => {
               
               <div className="space-y-3 mb-8">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-blue-500 text-sm font-bold">→</span>
                   <p className="text-gray-700 text-sm md:text-base">
                     <span className="font-semibold">Teambuilding-workshops</span> – stärk samspel och gruppdynamik
                   </p>
                 </div>
                 
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-blue-500 text-sm font-bold">→</span>
                   <p className="text-gray-700 text-sm md:text-base">
                     <span className="font-semibold">Kreativitetsboosters</span> – lås upp nya sätt att tänka tillsammans
                   </p>
                 </div>
                 
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-blue-500 text-sm font-bold">→</span>
                   <p className="text-gray-700 text-sm md:text-base">
                     <span className="font-semibold">Kommunikation</span> – öva på att lyssna, leda och följa
                   </p>
                 </div>
                 
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-blue-500 text-sm font-bold">→</span>
                   <p className="text-gray-700 text-sm md:text-base">
                     <span className="font-semibold">Improföreställningar på er konferens eller kickoff</span> – smart humor och stor igenkänning
                   </p>

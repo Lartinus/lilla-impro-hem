@@ -139,7 +139,7 @@ const Courses = () => {
 
       {/* Combined Content Section */}
       <section className="py-8 px-0.5 md:px-4">
-        <div className="space-y-8 border-4 border-white p-8 md:p-6 lg:p-12 bg-white rounded-none mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
+        <div className="space-y-8 border-4 border-white p-8 md:p-6 lg:p-12 bg-white rounded-none mx-6 md:mx-0 md:max-w-5xl md:mx-auto">
           <div className="text-left">
             <h2 className="text-xl font-bold text-gray-800 mb-2">Vår vision</h2>
             <h3 className="text-theatre-secondary font-medium mb-4">
@@ -177,7 +177,7 @@ const Courses = () => {
             <div className="space-y-3 mb-6">
               {whoCanCome.map((item, index) => (
                 <div key={index} className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-blue-500 text-sm font-bold">→</span>
                   <p className="text-gray-700 text-sm md:text-base">{item}</p>
                 </div>
               ))}
@@ -188,7 +188,7 @@ const Courses = () => {
             <div className="space-y-3">
               {benefits.map((benefit, index) => (
                 <div key={index} className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-blue-500 text-sm font-bold">→</span>
                   <p className="text-gray-700 text-sm md:text-base">{benefit}</p>
                 </div>
               ))}
