@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, Star, Calendar, GraduationCap } from 'lucide-react';
@@ -170,12 +169,12 @@ const Courses = () => {
                   
                   {course.available && (
                     <div className="mb-6">
-                      <h4 className="text-black font-bold text-sm mb-3">Praktisk information</h4>
+                      <h4 className="text-black font-bold mb-3">Praktisk information</h4>
                       <div className="space-y-2">
                         {practicalInfo.map((item, index) => (
                           <div key={index} className="flex items-center space-x-3">
                             <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                            <p className="text-gray-700 text-sm">{item}</p>
+                            <p className="text-gray-700">{item}</p>
                           </div>
                         ))}
                       </div>
