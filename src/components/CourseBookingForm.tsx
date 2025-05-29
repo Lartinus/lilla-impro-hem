@@ -89,7 +89,7 @@ const CourseBookingForm = ({ courseTitle, isAvailable }: CourseBookingFormProps)
           className={`w-full ${
             isAvailable 
               ? 'bg-theatre-primary hover:bg-theatre-tertiary text-white' 
-              : 'bg-gray-300 text-gray-600'
+              : 'bg-gray-300 text-gray-600 hover:bg-blue-500 hover:text-white'
           }`}
         >
           {buttonText}
