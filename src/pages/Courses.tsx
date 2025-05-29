@@ -145,7 +145,7 @@ const Courses = () => {
                     </div>
                   </div>
                   
-                  <p className="text-gray-700 leading-relaxed mb-6">
+                  <p className="text-gray-700 text-sm leading-relaxed mb-6">
                     {course.description}
                   </p>
                   
@@ -207,7 +207,7 @@ const Courses = () => {
               <h3 className="text-theatre-secondary font-medium mb-6">
                 Ett hem för dig som vill lära dig Improv Comedy – med målet att själv stå på scen.
               </h3>
-              <div className="space-y-6 text-gray-700 leading-relaxed">
+              <div className="space-y-6 text-gray-700 text-sm leading-relaxed">
                 <p>
                   Lilla Improteatern är platsen för dig som vill bli skickligare på att skapa roliga scener tillsammans med andra. 
                   Här lär du dig inte bara hur man improviserar – du förstår varför det funkar, vad som gör en scen rolig och hur du skapar det tillsammans med andra.
@@ -227,7 +227,7 @@ const Courses = () => {
                 </p>
                 <div className="bg-theatre-primary text-white p-6 border-4 border-white rounded-none">
                   <h3 className="text-theatre-secondary font-medium mb-4">"Lär dig spela det som redan är kul"</h3>
-                  <p className="leading-relaxed">
+                  <p className="text-sm leading-relaxed">
                     Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the Scene", att följa det roliga och att få det att växa.
                   </p>
                 </div>
@@ -243,11 +243,11 @@ const Courses = () => {
                 {whoCanCome.map((item, index) => (
                   <div key={index} className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                    <p className="text-gray-700">{item}</p>
+                    <p className="text-gray-700 text-sm">{item}</p>
                   </div>
                 ))}
               </div>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-gray-700 text-sm leading-relaxed">
                 Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa.
               </p>
             </div>
@@ -258,7 +258,7 @@ const Courses = () => {
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                    <p className="text-gray-700">{benefit}</p>
+                    <p className="text-gray-700 text-sm">{benefit}</p>
                   </div>
                 ))}
               </div>
@@ -272,7 +272,7 @@ const Courses = () => {
                     <h3 className="text-theatre-secondary font-medium mb-3">
                       {item.question}
                     </h3>
-                    <p className="text-gray-700 leading-relaxed">
+                    <p className="text-gray-700 text-sm leading-relaxed">
                       {item.answer}
                     </p>
                   </div>
