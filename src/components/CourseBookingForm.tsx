@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,17 +13,19 @@ interface BookingFormData {
   name: string;
   phone: string;
   email: string;
-  address: string;
-  postal_code: string;
-  city: string;
+  address?: string;
+  postal_code?: string;
+  city?: string;
+  message?: string;
 }
 
 interface CourseBookingFormProps {
   courseTitle: string;
   isAvailable: boolean;
+  showButton?: boolean;
 }
 
-const CourseBookingForm = ({ courseTitle, isAvailable }: CourseBookingFormProps) => {
+const CourseBookingForm = ({ courseTitle, isAvailable, showButton = true }: CourseBookingFormProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -36,6 +38,7 @@ const CourseBookingForm = ({ courseTitle, isAvailable }: CourseBookingFormProps)
       address: '',
       postal_code: '',
       city: '',
+      message: '',
     },
   });
 
@@ -61,8 +64,10 @@ const CourseBookingForm = ({ courseTitle, isAvailable }: CourseBookingFormProps)
       }
 
       toast({
-        title: "Bokning skickad!",
-        description: "Vi har tagit emot din kursbokning och kommer att kontakta dig snart.",
+        title: isAvailable ? "Bokning skickad!" : "Intresse anmält!",
+        description: isAvailable 
+          ? "Vi har tagit emot din kursbokning och kommer att kontakta dig snart."
+          : "Vi har tagit emot din intresseanmälan och kommer att kontakta dig snart.",
       });
       
       form.reset();
@@ -78,6 +83,10 @@ const CourseBookingForm = ({ courseTitle, isAvailable }: CourseBookingFormProps)
       setIsSubmitting(false);
     }
   };
+
+  if (!showButton) {
+    return null;
+  }
 
   const buttonText = isAvailable ? 'Boka din plats' : 'Anmäl ditt intresse';
   const dialogTitle = isAvailable ? `Boka plats - ${courseTitle}` : `Anmäl intresse - ${courseTitle}`;
@@ -152,52 +161,76 @@ const CourseBookingForm = ({ courseTitle, isAvailable }: CourseBookingFormProps)
               )}
             />
             
-            <FormField
-              control={form.control}
-              name="address"
-              rules={{ required: "Adress är obligatorisk" }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Adress *</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Gatuadress och nummer" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <div className="grid grid-cols-2 gap-4">
+            {isAvailable ? (
+              // Original booking form fields for available courses
+              <>
+                <FormField
+                  control={form.control}
+                  name="address"
+                  rules={{ required: "Adress är obligatorisk" }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Adress *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Gatuadress och nummer" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="postal_code"
+                    rules={{ required: "Postnummer är obligatoriskt" }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Postnummer *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="123 45" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    rules={{ required: "Ort är obligatorisk" }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ort *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Stockholm" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </>
+            ) : (
+              // Interest form with free text field
               <FormField
                 control={form.control}
-                name="postal_code"
-                rules={{ required: "Postnummer är obligatoriskt" }}
+                name="message"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Postnummer *</FormLabel>
+                    <FormLabel>Om dig som improvisatör</FormLabel>
                     <FormControl>
-                      <Input placeholder="123 45" {...field} />
+                      <Textarea 
+                        placeholder="Här kan du skriva en kort text om dig som improvisatör och hur du vill utvecklas"
+                        className="min-h-[120px]"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
-              <FormField
-                control={form.control}
-                name="city"
-                rules={{ required: "Ort är obligatorisk" }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ort *</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Stockholm" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            )}
             
             <div className="flex gap-2 pt-4">
               <Button 
@@ -213,7 +246,7 @@ const CourseBookingForm = ({ courseTitle, isAvailable }: CourseBookingFormProps)
                 disabled={isSubmitting}
                 className="flex-1 bg-theatre-primary hover:bg-theatre-tertiary"
               >
-                {isSubmitting ? "Skickar..." : "Skicka bokning"}
+                {isSubmitting ? "Skickar..." : (isAvailable ? "Skicka bokning" : "Skicka intresse")}
               </Button>
             </div>
           </form>

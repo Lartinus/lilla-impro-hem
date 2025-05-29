@@ -26,28 +26,32 @@ const Courses = () => {
       subtitle: "För rutinerade improvisatörer och nybörjare",
       description: "Här lägger vi grunden. Fokus ligger på scenarbete; notera, basera, konstatera och att bygga scener tillsammans. Du får lära dig hur man spelar \"Game of the Scene\" och hur ni som grupp spelar samma scen. Kursen är öppen för alla nivåer – oavsett om du är en rutinerad improvisatör eller precis har börjat – Det viktiga är att du vill utvecklas som scenimprovisatör. I slutet av kursen får du skriftlig personlig feedback.",
       courseLeaders: [courseLeaders[0], courseLeaders[1]],
-      available: true
+      available: true,
+      showButton: true
     },
     {
       title: "Nivå 2 – Långform & improviserad komik",
       subtitle: "För dig som gått Nivå 1 hos oss",
       description: "Fördjupning med särskilt fokus på longform comedy. Vi tränar på mönsterigenkänning, spelbarhet, återkopplingar, tag-outs, group games och scener som bygger humor över tid. Vi arbetar med att förstå vad publiken tycker är kul och hur ni tillsammans kan skapa underhållande scener. I slutet av kursen får du skriftlig personlig feedback.",
       courseLeaders: [courseLeaders[0]],
-      available: true
+      available: true,
+      showButton: true
     },
     {
       title: "House Teams & fortsättning",
       subtitle: "Auditions hålls regelbundet",
       description: "Efter Nivå 2 kan du söka till ett av våra House Teams – ensembler som spelar tillsammans under en längre tid. Här fortsätter du utvecklas i grupp med stöd av coach och får spela regelbundet inför publik. Målet är att växa både som grupp och individ – och lära sig skapa hela föreställningar tillsammans. Antagning sker efter nivå, gruppkemi och vilja att utvecklas.",
       courseLeaders: [],
-      available: false
+      available: false,
+      showButton: true
     },
     {
       title: "Helgworkshops & specialkurser",
       subtitle: "Med oss och inbjudna gästpedagoger",
       description: "Utöver våra nivåbaserade kurser erbjuder vi workshops med oss och inbjudna gästpedagoger. Här kan du fördjupa dig i format, tekniker och tematiska områden – från karaktärsarbete och space work till musikal, sketch eller storytelling.",
       courseLeaders: [],
-      available: false
+      available: false,
+      showButton: false
     }
   ];
 
@@ -179,6 +183,7 @@ const Courses = () => {
                   <CourseBookingForm 
                     courseTitle={course.title}
                     isAvailable={course.available}
+                    showButton={course.showButton}
                   />
                 </CardContent>
               </Card>
