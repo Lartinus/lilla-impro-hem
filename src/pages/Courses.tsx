@@ -136,7 +136,7 @@ const Courses = () => {
                       {course.icon}
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-theatre-primary mb-2">
+                      <h3 className="text-theatre-secondary font-medium mb-2">
                         {course.title}
                       </h3>
                       <p className="text-theatre-secondary font-medium mb-4">
@@ -269,7 +269,7 @@ const Courses = () => {
               <div className="space-y-4">
                 {faq.map((item, index) => (
                   <div key={index} className="bg-theatre-light/10 border-4 border-white p-6 rounded-none">
-                    <h3 className="text-left font-medium text-theatre-secondary mb-3">
+                    <h3 className="text-theatre-secondary font-medium mb-3">
                       {item.question}
                     </h3>
                     <p className="text-gray-700 leading-relaxed">
