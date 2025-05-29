@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -19,7 +20,7 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'gopher': ['gopher', 'sans-serif'],
+				'satoshi': ['Satoshi', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -66,6 +67,10 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				theatre: {
+					'primary': '#772424',
+					'secondary': '#b64b46', 
+					'tertiary': '#3a1212',
+					'light': '#fbf9f6',
 					'dark': '#0A0A0A',
 					'dark-secondary': '#111111', 
 					'gray-light': '#1A1A1A',
