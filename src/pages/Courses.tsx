@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, Star, Calendar, GraduationCap } from 'lucide-react';
@@ -199,7 +198,7 @@ const Courses = () => {
         </div>
       </section>
 
-      {/* Combined Vision, Philosophy, Method & More */}
+      {/* Combined Content Section */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-5xl">
           <div className="space-y-16 border-4 border-white p-16 bg-white rounded-none">
@@ -216,12 +215,6 @@ const Courses = () => {
                 <p>
                   Vi ser på improv comedy som ett hantverk. Genom ett tydligt pedagogiskt upplägg – förankrat i många års erfarenhet som både improvisatörer och pedagoger – erbjuder vi ett kurssystem som sträcker sig från grundläggande scenträning till långformsformat och ensemblearbete. Hos oss lär du dig att spela komiska scener med glädje, tydliga verktyg och ett fokus på samspelet.
                 </p>
-              </div>
-            </div>
-
-            <div className="text-left">
-              <h2 className="text-xl font-bold text-theatre-primary mb-4">Vår filosofi</h2>
-              <div className="space-y-6 text-gray-700 leading-relaxed">
                 <p>
                   Vi älskar att skratta. Men ännu mer älskar vi att förstå varför något är roligt – och hur man gör det tillsammans. 
                   Därför bygger vår undervisning på att steg för steg utveckla dina färdigheter som improvisatör. Inte genom att tvinga fram skämt, utan genom att spela scener som känns levande, enkla och roliga i stunden.
@@ -229,12 +222,6 @@ const Courses = () => {
                 <p>
                   Vi tränar dig i att upptäcka det roliga och följa det – i en trygg, tydlig och lekfull struktur där du får växa som improvisatör.
                 </p>
-              </div>
-            </div>
-
-            <div className="text-left">
-              <h2 className="text-xl font-bold text-theatre-primary mb-4">Vår metod</h2>
-              <div className="space-y-6 text-gray-700 leading-relaxed">
                 <p>
                   Vi bygger vårt kursprogram på traditioner från iO, The Free Association, The Annoyance m.fl. – med en stark förankring i scen- och ensemblearbete. Hos oss finns också influenser från fysisk teater, närvaro, deals och dynamics.
                 </p>
