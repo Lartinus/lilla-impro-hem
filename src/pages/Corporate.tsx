@@ -1,5 +1,3 @@
-
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -19,7 +17,7 @@ const Corporate = () => {
         {/* Hero */}
         <section className="px-0.5 md:px-4 mt-20 py-6">
           <div className="container mx-auto max-w-4xl text-center">
-            <h1 className="text-2xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
               Workshops, teambuilding & underhållning
             </h1>
           </div>
@@ -28,7 +26,7 @@ const Corporate = () => {
         {/* Content Section */}
         <section className="px-0.5 md:px-4 pb-8">
           <div className="container mx-auto max-w-5xl">
-            <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
+            <div className="space-y-8 border-4 border-white p-4 md:p-6 lg:p-12 bg-white rounded-none mx-[18px] md:mx-0">
               <div className="text-left">
                 <h3 className="text-theatre-secondary font-medium mb-6">
                   Vill ni ha skratt, samarbete och kunskap i samma paket? Då är ni välkomna till oss.
@@ -94,4 +92,3 @@ const Corporate = () => {
 };
 
 export default Corporate;
-

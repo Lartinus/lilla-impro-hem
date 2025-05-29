@@ -1,5 +1,4 @@
 
-
 import ServiceBoxes from './ServiceBoxes';
 
 const Hero = () => {
@@ -15,10 +14,10 @@ const Hero = () => {
         ></div>
         
         <div className="container mx-auto max-w-5xl relative z-10">
-          <div className="text-left space-y-4 p-6 md:p-6 lg:p-12 bg-white mt-20 mx-0.5 md:mx-0">
+          <div className="text-left space-y-4 p-4 md:p-6 lg:p-12 bg-white mt-20 mx-[18px] md:mx-0">
             {/* Main heading */}
             <div className="space-y-3 pt-4">
-              <h1 className="text-2xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
             </div>
@@ -51,10 +50,10 @@ const Hero = () => {
           </div>
 
           {/* Video section moved back to red background */}
-          <div className="max-w-5xl mt-8 mx-0.5 md:mx-0">
-            <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white">
+          <div className="max-w-5xl mt-8 mx-[18px] md:mx-0">
+            <div className="space-y-8 border-4 border-white p-4 md:p-6 lg:p-12 bg-white">
               <div className="text-center space-y-4">
-                <h1 className="text-2xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4">
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4">
                   Vad är improv comedy egentligen?
                 </h1>
                 <h3 className="text-theatre-secondary font-medium mb-4 max-w-2xl mx-auto">
@@ -65,12 +64,12 @@ const Hero = () => {
               <div className="grid md:grid-cols-3 gap-6">
                 {[1, 2, 3].map((video) => (
                   <div key={video} className="group">
-                    <div className="bg-theatre-light/10 backdrop-blur-sm border border-theatre-primary/20 rounded-2xl p-6 hover:bg-theatre-primary/5 transition-all duration-500 hover:border-theatre-primary/30 hover:transform hover:scale-105 aspect-video flex items-center justify-center">
+                    <div className="bg-red-700 backdrop-blur-sm border border-theatre-primary/20 rounded-2xl p-6 hover:bg-red-800 transition-all duration-500 hover:border-theatre-primary/30 hover:transform hover:scale-105 aspect-video flex items-center justify-center">
                       <div className="text-centre space-y-4">
-                        <div className="w-16 h-16 bg-theatre-primary/20 rounded-full flex items-center justify-center mx-auto">
-                          <div className="w-0 h-0 border-l-[12px] border-l-theatre-primary border-y-[8px] border-y-transparent ml-1"></div>
+                        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto">
+                          <div className="w-0 h-0 border-l-[12px] border-l-white border-y-[8px] border-y-transparent ml-1"></div>
                         </div>
-                        <p className="text-theatre-primary/80 text-sm font-light">
+                        <p className="text-white text-sm font-light">
                           Video {video}
                         </p>
                       </div>
@@ -87,4 +86,3 @@ const Hero = () => {
 };
 
 export default Hero;
-

@@ -1,5 +1,4 @@
 
-
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -26,7 +25,7 @@ const ServiceBoxes = () => {
     <div className="grid md:grid-cols-3 gap-8 mt-8">
       {services.map((service, index) => (
         <div key={index} className="group">
-          <div className="bg-theatre-primary border border-gray-200 rounded-none p-8 hover:shadow-lg transition-all duration-300 h-full flex flex-col min-h-[300px]">
+          <div className="bg-red-700 border border-gray-200 rounded-none p-4 md:p-8 hover:shadow-lg transition-all duration-300 h-full flex flex-col min-h-[300px]">
             <div className="space-y-6 flex-1">
               <div className="w-full h-px bg-white/30"></div>
               
@@ -62,4 +61,3 @@ const ServiceBoxes = () => {
 };
 
 export default ServiceBoxes;
-
