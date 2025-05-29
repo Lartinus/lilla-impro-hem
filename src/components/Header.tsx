@@ -28,6 +28,9 @@ const Header = () => {
             <Link to="/kurser" className="text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light" style={{ fontSize: '16px' }}>
               Kurser
             </Link>
+            <Link to="/foretag" className="text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light" style={{ fontSize: '16px' }}>
+              Företag
+            </Link>
             <a href="#forestallningar" className="text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light" style={{ fontSize: '16px' }}>
               Föreställningar
             </a>
@@ -54,6 +57,9 @@ const Header = () => {
               </Link>
               <Link to="/kurser" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
                 Kurser
+              </Link>
+              <Link to="/foretag" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
+                Företag
               </Link>
               <a href="#forestallningar" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
                 Föreställningar

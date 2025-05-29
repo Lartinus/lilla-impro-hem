@@ -50,14 +50,14 @@ const Footer = () => {
               Snabblänkar
             </h4>
             <div className="space-y-2">
-              <a href="#kurser" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
+              <a href="/kurser" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
                 Kurser
+              </a>
+              <a href="/foretag" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
+                Företag
               </a>
               <a href="#forestallningar" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
                 Föreställningar
-              </a>
-              <a href="#foretag" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
-                Företagsworkshops
               </a>
               <a href="#kontakt" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
                 Kontakt

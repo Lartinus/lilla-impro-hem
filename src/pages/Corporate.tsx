@@ -19,7 +19,7 @@ const Corporate = () => {
       
       <div className="flex-grow">
         {/* Hero */}
-        <section className="px-6 mt-20">
+        <section className="px-6 mt-20 py-8">
           <div className="container mx-auto max-w-4xl text-center">
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
               Workshops, teambuilding & underhållning
@@ -80,8 +80,7 @@ const Corporate = () => {
                 
                 <Button 
                   onClick={handleContact}
-                  variant="outline"
-                  className="border-2 border-gray-600 bg-transparent text-gray-800 hover:bg-gray-600 hover:text-white px-8 py-3 text-lg transition-all duration-300"
+                  className="bg-theatre-primary hover:bg-theatre-tertiary text-white px-8 py-3 text-lg"
                 >
                   Gör en förfrågan
                 </Button>
