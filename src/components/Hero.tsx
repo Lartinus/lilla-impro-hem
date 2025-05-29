@@ -14,7 +14,7 @@ const Hero = () => {
         ></div>
         
         <div className="relative z-10">
-          <div className="text-left space-y-4 p-6 md:p-6 lg:p-12 bg-white mt-20 mx-[6px] md:mx-0 md:max-w-5xl md:mx-auto">
+          <div className="text-left space-y-4 p-8 md:p-6 lg:p-12 bg-white mt-20 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
             {/* Main heading */}
             <div className="space-y-3 pt-4">
               <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal">
@@ -24,7 +24,7 @@ const Hero = () => {
 
             {/* Description */}
             <div className="max-w-4xl space-y-2">
-              <p className="text-base md:text-lg leading-relaxed text-gray-700 font-light">
+              <p className="text-sm md:text-lg leading-relaxed text-gray-700 font-light">
                 Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, 
                 och samtidigt ta del av roliga, smarta och lekfulla föreställningar.
@@ -38,20 +38,20 @@ const Hero = () => {
 
             {/* Mission statement */}
             <div className="max-w-4xl space-y-3 pt-4">
-              <p className="text-base md:text-lg leading-relaxed text-gray-700 font-light">
+              <p className="text-sm md:text-lg leading-relaxed text-gray-700 font-light">
                 Vi bygger långsamt, med kvalitet, nyfikenhet och ett stort fokus på att göra 
                 improvisatörerna bättre och publiken gladare – och på att skapa ett community 
                 där du som elev, improvisatör och publik blir en del av något större.
               </p>
-              <p className="text-base md:text-lg leading-relaxed text-gray-700 font-light">
+              <p className="text-sm md:text-lg leading-relaxed text-gray-700 font-light">
                 Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
             </div>
           </div>
 
           {/* Video section moved back to red background */}
-          <div className="mt-8 mx-[6px] md:mx-0 md:max-w-5xl md:mx-auto">
-            <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white">
+          <div className="mt-8 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
+            <div className="space-y-8 border-4 border-white p-8 md:p-6 lg:p-12 bg-white">
               <div className="text-center space-y-4">
                 <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4">
                   Vad är improv comedy egentligen?

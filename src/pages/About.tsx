@@ -45,9 +45,9 @@ const About = () => {
 
         {/* Content Section */}
         <section className="px-6 pb-12">
-          <div className="space-y-12 border-4 border-white p-8 md:p-16 bg-white rounded-none mx-[6px] md:mx-0">
+          <div className="space-y-12 border-4 border-white p-8 md:p-16 bg-white rounded-none mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
             <div className="text-left">
-              <p className="text-gray-700 leading-relaxed mb-8">
+              <p className="text-gray-700 leading-relaxed mb-8 text-sm md:text-base">
                 Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy – och en stark vilja att skapa en plats där både skratten, hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron – och i viljan att bygga något nytt tillsammans.
               </p>
               
@@ -66,7 +66,7 @@ const About = () => {
                         <h5 className="font-bold text-gray-800 mb-2">
                           {member.name}
                         </h5>
-                        <p className="text-gray-700 leading-relaxed text-sm text-left">
+                        <p className="text-gray-700 leading-relaxed text-sm md:text-sm text-left">
                           {member.bio}
                         </p>
                       </div>
@@ -75,7 +75,7 @@ const About = () => {
                 </div>
               </div>
               
-              <p className="text-gray-700 leading-relaxed mb-8">
+              <p className="text-gray-700 leading-relaxed mb-8 text-sm md:text-base">
                 Tillsammans vill vi skapa en plats där människor inte bara lär sig impro, utan blir en del av ett sammanhang. Lilla Improteatern ska vara ett hem för alla som vill utvecklas, spela, skratta – och växa tillsammans.
               </p>
               
