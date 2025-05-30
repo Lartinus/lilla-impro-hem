@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +21,11 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
   const [errors, setErrors] = useState({
     phone: '',
     email: ''
+  });
+
+  const [touched, setTouched] = useState({
+    phone: false,
+    email: false
   });
 
   // Calculate total with potential discount
@@ -59,13 +63,23 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPurchaseData({...purchaseData, phone: value});
+    // Update error state but don't show until touched
     setErrors({...errors, phone: validatePhone(value)});
+  };
+
+  const handlePhoneBlur = () => {
+    setTouched({...touched, phone: true});
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPurchaseData({...purchaseData, email: value});
+    // Update error state but don't show until touched
     setErrors({...errors, email: validateEmail(value)});
+  };
+
+  const handleEmailBlur = () => {
+    setTouched({...touched, email: true});
   };
 
   const isFormValid = () => {
@@ -88,6 +102,10 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
       setErrors({
         phone: phoneError,
         email: emailError
+      });
+      setTouched({
+        phone: true,
+        email: true
       });
       return;
     }
@@ -149,10 +167,11 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
             type="email"
             value={purchaseData.email}
             onChange={handleEmailChange}
+            onBlur={handleEmailBlur}
             className="rounded-none text-gray-900"
             placeholder="din@email.se"
           />
-          {errors.email && (
+          {touched.email && errors.email && (
             <p className="text-red-600 text-sm mt-1">{errors.email}</p>
           )}
         </div>
@@ -162,10 +181,11 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
             type="tel"
             value={purchaseData.phone}
             onChange={handlePhoneChange}
+            onBlur={handlePhoneBlur}
             className="rounded-none text-gray-900"
             placeholder="070-123 45 67"
           />
-          {errors.phone && (
+          {touched.phone && errors.phone && (
             <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
           )}
         </div>
