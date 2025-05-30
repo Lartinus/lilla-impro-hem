@@ -10,6 +10,7 @@ import Corporate from "./pages/Corporate";
 import About from "./pages/About";
 import Shows from "./pages/Shows";
 import ShowDetails from "./pages/ShowDetails";
+import Mohippa from "./pages/Mohippa";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/kurser" element={<Courses />} />
           <Route path="/foretag" element={<Corporate />} />
+          <Route path="/mohippa" element={<Mohippa />} />
           <Route path="/om-oss" element={<About />} />
           <Route path="/shows" element={<Shows />} />
           <Route path="/shows/:slug" element={<ShowDetails />} />
