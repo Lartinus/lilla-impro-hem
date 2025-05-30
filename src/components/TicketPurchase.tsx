@@ -48,14 +48,6 @@ const TicketPurchase = ({ onPurchase }: TicketPurchaseProps) => {
               </button>
             </div>
           </div>
-          <div className="w-32">
-            <Input
-              placeholder="Ev. rabattkod"
-              value={discountCode}
-              onChange={(e) => setDiscountCode(e.target.value)}
-              className="rounded-none border-red-800 text-gray-600 text-sm h-8 focus:border-red-800 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-            />
-          </div>
         </div>
       </div>
 
@@ -80,6 +72,15 @@ const TicketPurchase = ({ onPurchase }: TicketPurchaseProps) => {
             </button>
           </div>
         </div>
+      </div>
+
+      <div className="mb-4">
+        <Input
+          placeholder="Ev. rabattkod"
+          value={discountCode}
+          onChange={(e) => setDiscountCode(e.target.value)}
+          className="rounded-none border-red-800 text-gray-600 text-sm h-8 focus:border-red-800 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 w-32"
+        />
       </div>
       
       <Button 
