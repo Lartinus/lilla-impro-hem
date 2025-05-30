@@ -16,9 +16,12 @@ serve(async (req) => {
   }
 
   try {
-    console.log(`Fetching courses from Strapi: ${strapiUrl}/api/courses?populate=*`);
+    // Populate kursledare relation with image
+    const endpoint = '/api/courses?populate[kursledare][populate]=image';
+    
+    console.log(`Fetching courses from Strapi: ${strapiUrl}${endpoint}`);
 
-    const response = await fetch(`${strapiUrl}/api/courses?populate=*`, {
+    const response = await fetch(`${strapiUrl}${endpoint}`, {
       headers: {
         'Authorization': `Bearer ${strapiToken}`,
         'Content-Type': 'application/json',

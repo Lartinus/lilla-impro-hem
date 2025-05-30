@@ -1,4 +1,3 @@
-
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'http://localhost:1337') => {
   if (!image) return null;
@@ -51,11 +50,23 @@ export const formatStrapiCourse = (strapiCourse: any) => {
   
   const attrs = strapiCourse.attributes;
   
+  // Handle kursledare (instructor) relation
+  const instructor = attrs.kursledare?.data?.attributes;
+  
   return {
     id: strapiCourse.id,
     title: attrs.title,
+    subtitle: attrs.undertitel,
     description: attrs.description,
-    longDescription: attrs.long_description,
+    practicalInfo: attrs.praktisk_info ? 
+      attrs.praktisk_info.split('\n').filter((item: string) => item.trim()) : 
+      [],
+    instructor: instructor ? {
+      id: attrs.kursledare.data.id,
+      name: instructor.name,
+      bio: instructor.bio,
+      image: getStrapiImageUrl(instructor.image),
+    } : null,
     price: attrs.price,
     duration: attrs.duration,
     level: attrs.level,
@@ -65,11 +76,5 @@ export const formatStrapiCourse = (strapiCourse: any) => {
     endDate: attrs.end_date,
     schedule: attrs.schedule,
     image: getStrapiImageUrl(attrs.image),
-    instructor: attrs.instructor?.data ? {
-      id: attrs.instructor.data.id,
-      name: attrs.instructor.data.attributes.name,
-      bio: attrs.instructor.data.attributes.bio,
-      image: getStrapiImageUrl(attrs.instructor.data.attributes.image),
-    } : null,
   };
 };
