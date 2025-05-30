@@ -48,7 +48,7 @@ const TicketPurchase = ({ onPurchase }: TicketPurchaseProps) => {
               </button>
             </div>
           </div>
-          <div className="w-24">
+          <div className="w-32">
             <Input
               placeholder="Ev. rabattkod"
               value={discountCode}
