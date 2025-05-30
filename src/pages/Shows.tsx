@@ -63,7 +63,7 @@ const Shows = () => {
                   </h2>
                   <div className="flex items-center mb-3">
                     <MapPin size={16} className="text-red-800 mr-2" />
-                    <p className="text-gray-600">{show.location}</p>
+                    <p className="text-red-800">{show.location}</p>
                   </div>
                   <div className="text-blue-500 group-hover:text-blue-700 transition-colors">
                     <span className="text-sm">Läs mer →</span>

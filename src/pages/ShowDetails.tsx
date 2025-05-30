@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useParams, Link } from 'react-router-dom';
@@ -175,7 +176,7 @@ const ShowDetails = () => {
             <div className="mb-4">
               <div className="flex items-center mb-1">
                 <MapPin size={16} className="text-red-800 mr-2" />
-                <h3 className="text-theatre-secondary font-medium">
+                <h3 className="text-red-800 font-medium">
                   <a 
                     href={show.mapLink} 
                     target="_blank" 
@@ -383,7 +384,7 @@ const ShowDetails = () => {
                           </div>
                           <div className="flex items-center mb-2">
                             <MapPin size={14} className="text-red-800 mr-1" />
-                            <p className="text-gray-600 text-sm">{otherShow.location}</p>
+                            <p className="text-red-800 text-sm">{otherShow.location}</p>
                           </div>
                           <div className="text-blue-500 group-hover:text-blue-700 transition-colors">
                             <span className="text-sm">Läs mer →</span>
