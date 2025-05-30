@@ -22,9 +22,10 @@ interface CourseBookingFormProps {
   courseTitle: string;
   isAvailable: boolean;
   showButton?: boolean;
+  buttonText?: string;
 }
 
-const CourseBookingForm = ({ courseTitle, isAvailable, showButton = true }: CourseBookingFormProps) => {
+const CourseBookingForm = ({ courseTitle, isAvailable, showButton = true, buttonText }: CourseBookingFormProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -106,7 +107,7 @@ const CourseBookingForm = ({ courseTitle, isAvailable, showButton = true }: Cour
     return null;
   }
 
-  const buttonText = isAvailable ? 'Boka din plats' : 'Anmäl ditt intresse';
+  const displayButtonText = buttonText || (isAvailable ? 'Boka din plats' : 'Anmäl ditt intresse');
   const dialogTitle = isAvailable ? `Boka plats - ${courseTitle}` : `Anmäl intresse - ${courseTitle}`;
 
   return (
@@ -119,7 +120,7 @@ const CourseBookingForm = ({ courseTitle, isAvailable, showButton = true }: Cour
               : 'bg-blue-500 text-white hover:bg-blue-700'
           }`}
         >
-          {buttonText}
+          {displayButtonText}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
