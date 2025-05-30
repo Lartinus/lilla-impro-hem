@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useParams, Link } from 'react-router-dom';
@@ -43,6 +44,7 @@ const ShowDetails = () => {
     }
   ];
 
+  // Use the same shows data as in Shows.tsx
   const allShows = [
     {
       id: 1,
@@ -76,7 +78,7 @@ const ShowDetails = () => {
       date: "27 oktober 19.00",
       location: "Metropole",
       mapLink: "https://maps.google.com/?q=Metropole+Mäster+Samuelsgatan+1+Stockholm",
-      description: "Lilla Improteaterns ensemble ger er några av Sveriges bästa improvisatörer.\n\nFöreställningen är helt improviserad, vilket innebär att inget är förberett och allt skapas i stunden, inspirerat av publikens idéer. Du får uppleva karaktärer, relationer och situationer som växer fram mitt framför ögonen på dig – från vardagskaos till drömlika världar.\n\nImprov comedy är en teaterform där skådespelarna arbetar utan manus, men med tydliga verktyg och starkt samspel. Resultatet? En kväll fylld av skratt, igenkänning och överraskningar.\n\nTa med kollegorna, vännerna eller dejten. Beställ något gott från baren, luta dig tillbaka och låt dig svepas med.",
+      description: "Lilla Improteaterns ensemble ger er några av Sveriges bästa improvisatörer.\n\nFöreställningen är helt improviserad, vilket innebär att inget är förberett och allt skapas i stunden, inspirerat av publikens idéer. Du får uppleva karaktärer, relationer och situationer som växer fram mitt framför ögonen på dig – från vardagskaos till drömlika världar.\n\nImprov comedy är en teaterform där skådespelarna arbetar utan manus, men med tydliga verktyg och starkt samspel. Resultatet? En kväll fylld med skratt, igenkänning och överraskningar.\n\nTa med kollegorna, vännerna eller dejten. Beställ något gott från baren, luta dig tillbaka och låt dig svepas med.",
       performers: performers,
       practicalInfo: [
         "Dörrar: 18.00",
