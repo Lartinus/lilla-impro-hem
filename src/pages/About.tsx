@@ -1,7 +1,6 @@
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { useEffect } from 'react';
 
 const About = () => {
@@ -9,12 +8,12 @@ const About = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const productionTeam = [
+  const teamMembers = [
     {
       id: 1,
-      name: "David Rosenqvist",
-      image: "/lovable-uploads/5cb42dd8-59bc-49e4-ae83-9bb0da74f658.png",
-      bio: "David började med improvisationsteater 2013 och har sedan dess varit en aktiv del av improscenerna i Karlstad, Örebro och Stockholm. Han var med och startade Dramaverket 2014 och senare Spinoff 2021. I dag spelar han både med Dramaverket och Floden STHLM, och gästar under våren 2025 även Stockholm Improvisationsteater. Till vardags jobbar David som producent inom event och teater – med ett öga för struktur, sammanhang och att få saker att hända."
+      name: "Hjalmar Hardestam",
+      image: "/lovable-uploads/192352b9-7e67-447a-aa36-9b17372a4155.png",
+      bio: "Hjalmar har undervisat på flera improvisationsscener runtom i Sverige. Han är baserad i Stockholm men har tidigare undervisat på Improverket och Gbgimpro i Göteborg och på Dramaverket i Karlstad. Han driver även Göteborg Improv Comedy Club samt podcasten Impropodden. Hjalmar har spelat på flera europeiska festivaler – bland annat i Amsterdam, Edinburgh och Nottingham – och är utbildad vid Improv Olympic och The Annoyance i Chicago samt The Free Association i London."
     },
     {
       id: 2,
@@ -24,78 +23,115 @@ const About = () => {
     },
     {
       id: 3,
-      name: "Hjalmar Hardestam",
-      image: "/lovable-uploads/192352b9-7e67-447a-aa36-9b17372a4155.png",
-      bio: "Hjalmar har undervisat på flera improvisationsscener runtom i Sverige. Han är baserad i Stockholm men har tidigare undervisat på Improverket och Gbgimpro i Göteborg och på Dramaverket i Karlstad. Han driver även Göteborg Improv Comedy Club samt podcasten Impropodden. Hjalmar har spelat på flera europeiska festivaler – bland annat i Amsterdam, Edinburgh och Nottingham – och är utbildad vid Improv Olympic och The Annoyance i Chicago samt The Free Association i London."
+      name: "David Rosenqvist",
+      image: "/lovable-uploads/5cb42dd8-59bc-49e4-ae83-9bb0da74f658.png",
+      bio: "David började med improvisationsteater 2013 och har sedan dess varit en aktiv del av improscenerna i Karlstad, Örebro och Stockholm. Han var med och startade Dramaverket 2014 och senare Spinoff 2021. I dag spelar han både med Dramaverket och Floden STHLM, och gästar under våren 2025 även Stockholm Improvisationsteater. Till vardags jobbar David som producent inom event och teater – med ett öga för struktur, sammanhang och att få saker att hända."
     }
   ];
 
-  const handleContact = () => {
-    window.location.href = 'mailto:info@lillaimproteatern.se';
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi animate-fade-in">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       
-      <div className="flex-grow">
-        {/* Hero */}
-        <section className="px-0.5 md:px-4 mt-20 py-6">
-          <div className="text-center">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
-              Om oss
-            </h1>
-          </div>
-        </section>
+      {/* Hero */}
+      <section className="px-0.5 md:px-4 mt-20 py-6">
+        <div className="text-center">
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
+            Om oss
+          </h1>
+        </div>
+      </section>
 
-        {/* Content Section */}
-        <section className="px-0.5 md:px-4 pb-8">
-          <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
-            <div className="text-left max-w-4xl">
-              <p className="text-gray-700 leading-relaxed mb-8 text-base" style={{ lineHeight: '1.5' }}>
-                Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy – och en stark vilja att skapa en plats där både skratten, hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron – och i viljan att bygga något nytt tillsammans.
+      {/* Content */}
+      <section className="py-8 px-0.5 md:px-4">
+        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
+          
+          {/* Mission */}
+          <div className="text-left">
+            <h2 className="text-xl font-bold text-gray-800 mb-2">Vår mission</h2>
+            <h3 className="text-theatre-secondary font-medium mb-4">
+              Att skapa ett hem för Improv Comedy i Stockholm där alla kan växa, lära och skratta tillsammans.
+            </h3>
+            <div className="space-y-6 text-gray-700 leading-relaxed">
+              <p className="text-base" style={{ lineHeight: '1.4' }}>
+                Lilla Improteatern grundades med en enkel idé: att Improv Comedy ska vara tillgängligt för alla som vill lära sig, 
+                oavsett bakgrund eller tidigare erfarenhet. Vi tror på att humor är något som går att träna och att de bästa 
+                komiska scenerna skapas när vi arbetar tillsammans.
               </p>
-              
-              <h2 className="text-xl font-bold text-gray-800 mb-8">Produktionsteam</h2>
-              
-              <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4 mb-8">
-                <div className="space-y-8">
-                  {productionTeam.map((member) => (
-                    <div key={member.id} className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
-                      <img 
-                        src={member.image} 
-                        alt={member.name}
-                        className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0"
-                      />
-                      <div className="flex-1">
-                        <h5 className="font-bold text-gray-800 mb-2">
-                          {member.name}
-                        </h5>
-                        <p className="text-gray-700 leading-relaxed text-sm md:text-sm text-left">
-                          {member.bio}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <p className="text-gray-700 leading-relaxed mb-8 text-base" style={{ lineHeight: '1.5' }}>
-                Tillsammans vill vi skapa en plats där människor inte bara lär sig impro, utan blir en del av ett sammanhang. Lilla Improteatern ska vara ett hem för alla som vill utvecklas, spela, skratta – och växa tillsammans.
+              <p className="text-base" style={{ lineHeight: '1.4' }}>
+                Genom våra kurser, föreställningar och workshops bygger vi en community där kreativitet, generositet och 
+                glädje står i centrum. Vi tar improvisationsteater på allvar – både som konstform och som verktyg för 
+                personlig utveckling.
               </p>
-              
-              <Button 
-                onClick={handleContact}
-                className="px-8 py-3 text-base font-medium"
-              >
-                Kom i kontakt med oss
-              </Button>
             </div>
           </div>
-        </section>
-      </div>
-      
+
+          {/* Team */}
+          <div className="text-left">
+            <h2 className="text-xl font-bold text-gray-800 mb-6">Vårt team</h2>
+            <div className="space-y-8">
+              {teamMembers.map((member) => (
+                <div key={member.id} className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-6">
+                  <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6">
+                    <img 
+                      src={member.image} 
+                      alt={member.name}
+                      className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0 mx-auto md:mx-0"
+                    />
+                    <div className="flex-1 min-w-0 text-center md:text-left">
+                      <h3 className="font-bold text-gray-800 mb-3 text-lg">
+                        {member.name}
+                      </h3>
+                      <p className="text-gray-700 leading-relaxed text-sm break-words">
+                        {member.bio}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Values */}
+          <div className="text-left">
+            <h2 className="text-xl font-bold text-gray-800 mb-2">Våra värderingar</h2>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-theatre-secondary font-medium mb-2">Inkludering</h3>
+                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
+                  Alla ska känna sig välkomna, oavsett bakgrund, erfarenhet eller personlighet. Vi bygger miljöer där olika perspektiv berikar varandra.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-theatre-secondary font-medium mb-2">Kvalitet</h3>
+                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
+                  Vi tar vårt hantverk på allvar och strävar alltid efter att leverera undervisning och föreställningar av högsta kvalitet.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-theatre-secondary font-medium mb-2">Gemenskap</h3>
+                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
+                  Vi bygger relationer som sträcker sig bortom scenen. Här hittar du inte bara kurskamrater utan vänner för livet.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact CTA */}
+          <div className="text-center pt-8 border-t border-gray-200">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Kom i kontakt med oss</h2>
+            <p className="text-gray-700 mb-6 text-base" style={{ lineHeight: '1.4' }}>
+              Har du frågor om våra kurser eller vill bara säga hej? Vi hör gärna från dig!
+            </p>
+            <div className="space-y-2 text-gray-700">
+              <p className="text-base">📧 info@lillaimproteatern.se</p>
+              <p className="text-base">📞 +46 70 245 04 74</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

@@ -13,13 +13,13 @@ const ServiceBoxes = () => {
     {
       title: "Föreställningar i hög variation med fokus på komik",
       cta: "Se kommande föreställningar", 
-      link: "#forestallningar",
+      link: "/shows",
       image: "/lovable-uploads/a018eb4f-8f59-4895-b9b0-565c2b8ad636.png"
     },
     {
       title: "Workshops och events för företag, myndigheter och organisationer",
       cta: "Läs mer",
-      link: "#kontakt",
+      link: "/foretag",
       image: "/lovable-uploads/7e10e177-5707-44b1-bbf3-e5f9507d3054.png"
     }
   ];

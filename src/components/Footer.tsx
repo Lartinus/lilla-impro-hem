@@ -1,5 +1,6 @@
 
 import { MapPin, Phone, Mail, Facebook, Instagram } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -50,18 +51,18 @@ const Footer = () => {
               Snabblänkar
             </h4>
             <div className="space-y-2">
-              <a href="/kurser" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
+              <Link to="/kurser" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
                 Kurser
-              </a>
-              <a href="/foretag" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
+              </Link>
+              <Link to="/foretag" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
                 Företag
-              </a>
-              <a href="/om-oss" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
+              </Link>
+              <Link to="/om-oss" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
                 Om oss
-              </a>
-              <a href="#forestallningar" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
+              </Link>
+              <Link to="/shows" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
                 Föreställningar
-              </a>
+              </Link>
             </div>
           </div>
         </div>

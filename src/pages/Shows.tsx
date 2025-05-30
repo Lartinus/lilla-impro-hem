@@ -74,7 +74,7 @@ const Shows = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi animate-fade-in">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       
@@ -89,7 +89,7 @@ const Shows = () => {
 
       {/* Shows Grid */}
       <section className="py-2 px-0.5 md:px-4 pb-8">
-        <div className="grid md:grid-cols-1 gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
+        <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
           {shows.map((show, index) => (
             <ShowCard 
               key={index} 

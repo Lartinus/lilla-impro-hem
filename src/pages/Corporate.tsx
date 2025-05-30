@@ -10,76 +10,85 @@ const Corporate = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi animate-fade-in">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       
-      <div className="flex-grow">
-        {/* Hero */}
-        <section className="px-0.5 md:px-4 mt-20 py-6">
-          <div className="text-center">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
-              Workshops, teambuilding & underhållning
-            </h1>
-          </div>
-        </section>
+      {/* Hero */}
+      <section className="px-0.5 md:px-4 mt-20 py-6">
+        <div className="text-center">
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
+            Företag
+          </h1>
+        </div>
+      </section>
 
-        {/* Content Section */}
-        <section className="px-0.5 md:px-4 pb-8">
-          <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
-            <div className="text-left">
-              <h3 className="text-theatre-secondary font-medium mb-6">
-                Vill ni ha skratt, samarbete och kunskap i samma paket? Då är ni välkomna till oss.
-              </h3>
-              
-              <p className="text-gray-700 leading-relaxed mb-8 text-base">
-                Lilla Improteatern erbjuder skräddarsydda workshops och föreställningar för företag, organisationer och myndigheter. Vi använder verktyg från Improv Comedy för att utveckla kommunikation, lyssnande, kreativitet och samarbete – på ett sätt som både är roligt och ger långvariga effekter.
+      {/* Content */}
+      <section className="py-8 px-0.5 md:px-4">
+        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
+          
+          {/* Main content */}
+          <div className="text-left">
+            <h2 className="text-xl font-bold text-gray-800 mb-2">Workshops och events för organisationer</h2>
+            <h3 className="text-theatre-secondary font-medium mb-4">
+              Utveckla kreativitet, samarbete och kommunikation genom improvisationsteater.
+            </h3>
+            <div className="space-y-6 text-gray-700 leading-relaxed">
+              <p className="text-base" style={{ lineHeight: '1.4' }}>
+                Vi erbjuder skräddarsydda workshops och events för företag, myndigheter och organisationer som vill stärka 
+                sina team genom kreativitet och lek. Våra workshops bygger på samma principer som vi använder i våra kurser 
+                – men anpassade för din organisations specifika behov och mål.
               </p>
-              
-              <h4 className="text-black font-bold mb-6">
-                Vi erbjuder bland annat:
-              </h4>
-              
-              <div className="space-y-3 mb-8">
-                <div className="flex items-start space-x-3">
-                  <span className="text-blue-500 text-sm font-bold mt-1 flex-shrink-0">→</span>
-                  <p className="text-gray-700 text-base">
-                    <span className="font-semibold">Teambuilding-workshops</span> – stärk samspel och gruppdynamik
-                  </p>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <span className="text-blue-500 text-sm font-bold mt-1 flex-shrink-0">→</span>
-                  <p className="text-gray-700 text-base">
-                    <span className="font-semibold">Kreativitetsboosters</span> – lås upp nya sätt att tänka tillsammans
-                  </p>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <span className="text-blue-500 text-sm font-bold mt-1 flex-shrink-0">→</span>
-                  <p className="text-gray-700 text-base">
-                    <span className="font-semibold">Kommunikation</span> – öva på att lyssna, leda och följa
-                  </p>
-                </div>
-                
-                <div className="flex items-start space-x-3">
-                  <span className="text-blue-500 text-sm font-bold mt-1 flex-shrink-0">→</span>
-                  <p className="text-gray-700 text-base">
-                    <span className="font-semibold">Improföreställningar på er konferens eller kickoff</span> – smart humor och stor igenkänning
-                  </p>
-                </div>
-              </div>
-              
-              <p className="text-gray-700 leading-relaxed mb-8 text-base">
-                Vi har erfarenhet av att jobba med såväl stora företag som små arbetsgrupper, och vi anpassar alltid upplägget efter era behov, mål och förutsättningar.
+              <p className="text-base" style={{ lineHeight: '1.4' }}>
+                Improvisationsteater är ett kraftfullt verktyg för att utveckla kommunikation, problemlösning och samarbete. 
+                Genom övningar som bygger på spontanitet och lyhördhet hjälper vi era medarbetare att bli bekvämare med 
+                osäkerhet, starkare i sitt uttryck och bättre på att lyssna på varandra.
               </p>
-              
-              <CorporateInquiryForm />
             </div>
           </div>
-        </section>
-      </div>
-      
+
+          {/* What we offer */}
+          <div className="text-left">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Vad vi erbjuder</h2>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-theatre-secondary font-medium mb-2">Teambuilding-workshops</h3>
+                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
+                  Stärk sammanhållningen i gruppen genom roliga och utmanande improvisationsövningar som bygger förtroende och samarbete.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-theatre-secondary font-medium mb-2">Kommunikationsträning</h3>
+                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
+                  Utveckla förmågan att lyssna aktivt, uttrycka sig tydligt och hantera svåra samtal med hjälp av improvisationstekniker.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-theatre-secondary font-medium mb-2">Kreativitetsworkshops</h3>
+                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
+                  Lås upp kreativiteten och lär er att tänka utanför boxen genom övningar som tränar spontanitet och nytänkande.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-theatre-secondary font-medium mb-2">Underhållning för events</h3>
+                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
+                  Skräddarsy en improvisationsföreställning för er kick-off, personalfest eller konferens – interaktivt och skrattfyllt.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact form */}
+          <div className="text-left">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Gör en förfrågan</h2>
+            <p className="text-gray-700 mb-6 text-base" style={{ lineHeight: '1.4' }}>
+              Berätta om era behov så skräddarsyr vi ett förslag som passar er organisation och era mål.
+            </p>
+            <CorporateInquiryForm />
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

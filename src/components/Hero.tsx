@@ -26,8 +26,8 @@ const Hero = () => {
           {/* Combined content box */}
           <div className="text-left space-y-4 p-6 md:p-16 lg:p-20 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
             {/* Description */}
-            <div className="max-w-4xl space-y-2 pb-2">
-              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.5' }}>
+            <div className="max-w-4xl space-y-2 pb-1">
+              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.4' }}>
                 Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, 
                 och samtidigt ta del av roliga, smarta och lekfulla föreställningar.
@@ -41,12 +41,12 @@ const Hero = () => {
 
             {/* Mission statement */}
             <div className="max-w-4xl space-y-3 pt-4">
-              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.5' }}>
+              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.4' }}>
                 Vi bygger långsamt, med kvalitet, nyfikenhet och ett stort fokus på att göra 
                 improvisatörerna bättre och publiken gladare – och på att skapa ett community 
                 där du som elev, improvisatör och publik blir en del av något större.
               </p>
-              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.5' }}>
+              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.4' }}>
                 Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
             </div>
@@ -54,11 +54,11 @@ const Hero = () => {
             {/* Video section content moved here */}
             <div className="mt-8">
               <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white">
-                <div className="text-left md:text-center space-y-4">
+                <div className="text-left space-y-4">
                   <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4">
                     Vad är improv comedy egentligen?
                   </h1>
-                  <h3 className="text-theatre-secondary font-medium mb-4 max-w-2xl md:mx-auto text-left md:text-center">
+                  <h3 className="text-theatre-secondary font-medium mb-4 max-w-2xl text-left">
                     Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
                   </h3>
                 </div>

@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CourseCard from '@/components/CourseCard';
@@ -117,7 +116,7 @@ const Courses = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi animate-fade-in">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       
@@ -145,30 +144,30 @@ const Courses = () => {
 
       {/* Combined Content Section */}
       <section className="py-8 px-0.5 md:px-4">
-        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
+        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-3xl md:mx-auto">
           <div className="text-left">
             <h2 className="text-xl font-bold text-gray-800 mb-2">Vår vision</h2>
             <h3 className="text-theatre-secondary font-medium mb-4">
               Ett hem för dig som vill lära dig Improv Comedy – med målet att själv stå på scen.
             </h3>
             <div className="space-y-6 text-gray-700 leading-relaxed">
-              <p className="text-base" style={{ lineHeight: '1.5' }}>
+              <p className="text-base" style={{ lineHeight: '1.4' }}>
                 Lilla Improteatern är platsen för dig som vill bli skickligare på att skapa roliga scener tillsammans med andra. 
                 Här lär du dig inte bara hur man improviserar – du förstår varför det funkar, vad som gör en scen rolig och hur du skapar det tillsammans med andra.
               </p>
-              <p className="text-base" style={{ lineHeight: '1.5' }}>
+              <p className="text-base" style={{ lineHeight: '1.4' }}>
                 Vi ser på improv comedy som ett hantverk. Genom ett tydligt pedagogiskt upplägg – förankrat i många års erfarenhet som både improvisatörer och pedagoger – erbjuder vi ett kurssystem som sträcker sig från grundläggande scenträning till långformsformat och ensemblearbete. Hos oss lär du dig att spela komiska scener med glädje, tydliga verktyg och ett fokus på samspelet.
               </p>
-              <p className="text-base" style={{ lineHeight: '1.5' }}>
+              <p className="text-base" style={{ lineHeight: '1.4' }}>
                 Vi älskar att skratta. Men ännu mer älskar vi att förstå varför något är roligt – och hur man gör det tillsammans. 
                 Därför bygger vår undervisning på att steg för steg utveckla dina färdigheter som improvisatör. Inte genom att tvinga fram skämt, utan genom att spela scener som känns levande, enkla och roliga i stunden.
               </p>
-              <p className="text-base" style={{ lineHeight: '1.5' }}>
+              <p className="text-base" style={{ lineHeight: '1.4' }}>
                 Vi tränar dig i att upptäcka det roliga och följa det – i en trygg, tydlig och lekfull struktur där du får växa som improvisatör. Du kommer att:
               </p>
               <div className="bg-red-700 text-white p-4 md:p-6 border-4 border-white rounded-none -mx-3 md:-mx-6 lg:-mx-12 md:mx-6 lg:mx-12">
                 <h3 className="text-white font-bold mb-4">Lär dig spela det som redan är kul</h3>
-                <p className="leading-relaxed text-base" style={{ lineHeight: '1.5' }}>
+                <p className="leading-relaxed text-base" style={{ lineHeight: '1.4' }}>
                   Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the Scene", att följa det roliga och att få det att växa.
                 </p>
               </div>
@@ -184,18 +183,18 @@ const Courses = () => {
               {whoCanCome.map((item, index) => (
                 <div key={index} className="flex items-start space-x-3">
                   <span className="text-blue-500 text-sm font-bold flex-shrink-0" style={{ marginTop: '2px' }}>→</span>
-                  <p className="text-base" style={{ lineHeight: '1.5' }}>{item}</p>
+                  <p className="text-base text-gray-700" style={{ lineHeight: '1.4' }}>{item}</p>
                 </div>
               ))}
             </div>
-            <p className="text-gray-700 leading-relaxed mb-6 text-base" style={{ lineHeight: '1.5' }}>
+            <p className="text-gray-700 leading-relaxed mb-6 text-base" style={{ lineHeight: '1.4' }}>
               Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa på.
             </p>
             <div className="space-y-3">
               {benefits.map((benefit, index) => (
                 <div key={index} className="flex items-start space-x-3">
                   <span className="text-blue-500 text-sm font-bold flex-shrink-0" style={{ marginTop: '2px' }}>→</span>
-                  <p className="text-base" style={{ lineHeight: '1.5' }}>{benefit}</p>
+                  <p className="text-base text-gray-700" style={{ lineHeight: '1.4' }}>{benefit}</p>
                 </div>
               ))}
             </div>
@@ -203,13 +202,13 @@ const Courses = () => {
 
           <div className="text-left">
             <h2 className="text-xl font-bold text-gray-800 mb-2">Vanliga frågor</h2>
-            <div className="space-y-2">
+            <div className="space-y-1">
               {faq.map((item, index) => (
                 <div key={index} className="bg-theatre-light/10 border-4 border-white px-0 py-2 rounded-none">
                   <h3 className="text-theatre-secondary font-medium mb-1">
                     {item.question}
                   </h3>
-                  <p className="text-gray-700 leading-relaxed text-base" style={{ lineHeight: '1.5' }}>
+                  <p className="text-gray-700 leading-relaxed text-base" style={{ lineHeight: '1.4' }}>
                     {item.answer}
                   </p>
                 </div>

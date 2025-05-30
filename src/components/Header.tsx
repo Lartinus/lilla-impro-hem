@@ -34,9 +34,9 @@ const Header = () => {
             <Link to="/om-oss" className="text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light" style={{ fontSize: '16px' }}>
               Om oss
             </Link>
-            <a href="#forestallningar" className="text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light" style={{ fontSize: '16px' }}>
+            <Link to="/shows" className="text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light" style={{ fontSize: '16px' }}>
               Föreställningar
-            </a>
+            </Link>
           </nav>
 
           <Button
@@ -64,9 +64,9 @@ const Header = () => {
               <Link to="/om-oss" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
                 Om oss
               </Link>
-              <a href="#forestallningar" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
+              <Link to="/shows" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
                 Föreställningar
-              </a>
+              </Link>
             </nav>
           </div>
         )}
