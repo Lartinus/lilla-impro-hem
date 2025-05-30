@@ -1,5 +1,3 @@
-
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CourseCard from '@/components/CourseCard';
@@ -123,7 +121,7 @@ const Courses = () => {
                 </div>
               </div>
 
-              <div className="bg-red-700 p-6 -mx-6 md:-mx-6 lg:-mx-6 relative">
+              <div className="bg-red-700 p-6 rounded-none relative">
                 <h2 className="text-xl font-bold text-white mb-4">
                   Lär dig spela det som redan är kul
                 </h2>
@@ -143,19 +141,19 @@ const Courses = () => {
                 <div className="space-y-6 text-gray-700 leading-relaxed">
                   <div className="space-y-2">
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Aldrig har testat Improv Comedy förut</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Vill utvecklas som komisk scenperson</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Är rutinerad och vill vässa ditt hantverk</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Söker en trygg, tydlig och inspirerande plats att växa på</p>
                     </div>
                   </div>
@@ -166,19 +164,19 @@ const Courses = () => {
                   
                   <div className="space-y-2">
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Få konkreta verktyg för att skapa humoristiska scener</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Utveckla ditt scenspråk, lyssnande och komiska timing</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Bli modigare, säkrare och mer initiativtagande</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Och få scentid. Massor.</p>
                     </div>
                   </div>
@@ -249,4 +247,3 @@ const Courses = () => {
 };
 
 export default Courses;
-
