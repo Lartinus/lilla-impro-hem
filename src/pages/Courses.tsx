@@ -94,14 +94,11 @@ const Courses = () => {
           ))}
         </div>
         
-        {/* Combined Vision, Learning, Who Can Come, and FAQ Box */}
-        <div className="mx-[12px] md:mx-0 md:max-w-3xl md:mx-auto mt-4">
+        {/* Combined Information Box */}
+        <div className="mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto mt-4">
           <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
             <div className="text-left space-y-6">
               <div>
-                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4">
-                  Vår vision
-                </h1>
                 <h3 className="text-theatre-secondary font-medium mb-4 max-w-2xl text-left">
                   Ett hem för dig som vill lära dig Improv Comedy – med målet att själv stå på scen.
                 </h3>
@@ -145,19 +142,19 @@ const Courses = () => {
                 <div className="space-y-6 text-gray-700 leading-relaxed">
                   <div className="space-y-2">
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0.5">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Aldrig har testat Improv Comedy förut</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0.5">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Vill utvecklas som komisk scenperson</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0.5">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Är rutinerad och vill vässa ditt hantverk</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0.5">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Söker en trygg, tydlig och inspirerande plats att växa på</p>
                     </div>
                   </div>
@@ -168,19 +165,19 @@ const Courses = () => {
                   
                   <div className="space-y-2">
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0.5">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Få konkreta verktyg för att skapa humoristiska scener</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0.5">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Utveckla ditt scenspråk, lyssnande och komiska timing</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0.5">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Bli modigare, säkrare och mer initiativtagande</p>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="text-blue-500 text-lg flex-shrink-0 mt-1">→</div>
+                      <div className="text-blue-500 text-lg flex-shrink-0 mt-0.5">→</div>
                       <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>Och få scentid. Massor.</p>
                     </div>
                   </div>
