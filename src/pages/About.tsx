@@ -30,12 +30,12 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       
       {/* Hero */}
-      <section className="px-0.5 md:px-4 mt-20 py-6">
+      <section className="px-0.5 md:px-4 mt-20 py-6 animate-fade-in">
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
             Om oss
@@ -44,7 +44,7 @@ const About = () => {
       </section>
 
       {/* Content */}
-      <section className="py-8 px-0.5 md:px-4">
+      <section className="py-8 px-0.5 md:px-4 animate-fade-in">
         <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
           
           {/* Mission */}
@@ -54,12 +54,12 @@ const About = () => {
               Att skapa ett hem för Improv Comedy i Stockholm där alla kan växa, lära och skratta tillsammans.
             </h3>
             <div className="space-y-6 text-gray-700 leading-relaxed">
-              <p className="text-base" style={{ lineHeight: '1.4' }}>
+              <p className="text-base" style={{ lineHeight: '1.3' }}>
                 Lilla Improteatern grundades med en enkel idé: att Improv Comedy ska vara tillgängligt för alla som vill lära sig, 
                 oavsett bakgrund eller tidigare erfarenhet. Vi tror på att humor är något som går att träna och att de bästa 
                 komiska scenerna skapas när vi arbetar tillsammans.
               </p>
-              <p className="text-base" style={{ lineHeight: '1.4' }}>
+              <p className="text-base" style={{ lineHeight: '1.3' }}>
                 Genom våra kurser, föreställningar och workshops bygger vi en community där kreativitet, generositet och 
                 glädje står i centrum. Vi tar improvisationsteater på allvar – både som konstform och som verktyg för 
                 personlig utveckling.
@@ -83,7 +83,7 @@ const About = () => {
                       <h3 className="font-bold text-gray-800 mb-3 text-lg">
                         {member.name}
                       </h3>
-                      <p className="text-gray-700 leading-relaxed text-sm break-words">
+                      <p className="text-gray-700 leading-relaxed text-sm break-words" style={{ lineHeight: '1.3' }}>
                         {member.bio}
                       </p>
                     </div>
@@ -93,35 +93,10 @@ const About = () => {
             </div>
           </div>
 
-          {/* Values */}
-          <div className="text-left">
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Våra värderingar</h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-theatre-secondary font-medium mb-2">Inkludering</h3>
-                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
-                  Alla ska känna sig välkomna, oavsett bakgrund, erfarenhet eller personlighet. Vi bygger miljöer där olika perspektiv berikar varandra.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-theatre-secondary font-medium mb-2">Kvalitet</h3>
-                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
-                  Vi tar vårt hantverk på allvar och strävar alltid efter att leverera undervisning och föreställningar av högsta kvalitet.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-theatre-secondary font-medium mb-2">Gemenskap</h3>
-                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
-                  Vi bygger relationer som sträcker sig bortom scenen. Här hittar du inte bara kurskamrater utan vänner för livet.
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* Contact CTA */}
           <div className="text-center pt-8 border-t border-gray-200">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Kom i kontakt med oss</h2>
-            <p className="text-gray-700 mb-6 text-base" style={{ lineHeight: '1.4' }}>
+            <p className="text-gray-700 mb-6 text-base" style={{ lineHeight: '1.3' }}>
               Har du frågor om våra kurser eller vill bara säga hej? Vi hör gärna från dig!
             </p>
             <div className="space-y-2 text-gray-700">

@@ -5,14 +5,6 @@ const Hero = () => {
   return (
     <>
       <section className="min-h-screen flex flex-col justify-center py-12 px-0.5 md:px-4 relative overflow-hidden">
-        {/* Noise texture overlay */}
-        <div 
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          }}
-        ></div>
-        
         <div className="relative z-10">
           {/* Hero heading outside the box */}
           <section className="px-0.5 md:px-4 mt-20 py-6">
@@ -24,10 +16,10 @@ const Hero = () => {
           </section>
 
           {/* Combined content box */}
-          <div className="text-left space-y-4 p-6 md:p-16 lg:p-20 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
+          <div className="text-left space-y-4 p-6 md:p-16 lg:p-20 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
             {/* Description */}
             <div className="max-w-4xl space-y-2 pb-1">
-              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.4' }}>
+              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.3' }}>
                 Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, 
                 och samtidigt ta del av roliga, smarta och lekfulla föreställningar.
@@ -41,12 +33,12 @@ const Hero = () => {
 
             {/* Mission statement */}
             <div className="max-w-4xl space-y-3 pt-4">
-              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.4' }}>
+              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.3' }}>
                 Vi bygger långsamt, med kvalitet, nyfikenhet och ett stort fokus på att göra 
                 improvisatörerna bättre och publiken gladare – och på att skapa ett community 
                 där du som elev, improvisatör och publik blir en del av något större.
               </p>
-              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.4' }}>
+              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.3' }}>
                 Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
             </div>
@@ -54,11 +46,11 @@ const Hero = () => {
             {/* Video section content moved here */}
             <div className="mt-8">
               <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white">
-                <div className="text-left space-y-4">
-                  <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4">
+                <div className="space-y-4">
+                  <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left md:text-center">
                     Vad är improv comedy egentligen?
                   </h1>
-                  <h3 className="text-theatre-secondary font-medium mb-4 max-w-2xl text-left">
+                  <h3 className="text-theatre-secondary font-medium mb-4 max-w-2xl text-left md:text-center md:mx-auto">
                     Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
                   </h3>
                 </div>

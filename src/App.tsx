@@ -9,6 +9,7 @@ import Courses from "./pages/Courses";
 import Corporate from "./pages/Corporate";
 import About from "./pages/About";
 import Shows from "./pages/Shows";
+import ShowDetails from "./pages/ShowDetails";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/foretag" element={<Corporate />} />
           <Route path="/om-oss" element={<About />} />
           <Route path="/shows" element={<Shows />} />
+          <Route path="/shows/:slug" element={<ShowDetails />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

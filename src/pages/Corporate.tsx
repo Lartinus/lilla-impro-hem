@@ -10,39 +10,38 @@ const Corporate = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       
       {/* Hero */}
-      <section className="px-0.5 md:px-4 mt-20 py-6">
+      <section className="px-0.5 md:px-4 mt-20 py-6 animate-fade-in">
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
-            Företag
+            Företag & Organisationer
           </h1>
         </div>
       </section>
 
       {/* Content */}
-      <section className="py-8 px-0.5 md:px-4">
+      <section className="py-8 px-0.5 md:px-4 animate-fade-in">
         <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
           
           {/* Main content */}
           <div className="text-left">
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Workshops och events för organisationer</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-2">Workshops & Events för er organisation</h2>
             <h3 className="text-theatre-secondary font-medium mb-4">
               Utveckla kreativitet, samarbete och kommunikation genom improvisationsteater.
             </h3>
             <div className="space-y-6 text-gray-700 leading-relaxed">
-              <p className="text-base" style={{ lineHeight: '1.4' }}>
-                Vi erbjuder skräddarsydda workshops och events för företag, myndigheter och organisationer som vill stärka 
-                sina team genom kreativitet och lek. Våra workshops bygger på samma principer som vi använder i våra kurser 
-                – men anpassade för din organisations specifika behov och mål.
+              <p className="text-base" style={{ lineHeight: '1.3' }}>
+                Improvisationsteater är ett kraftfullt verktyg för teambuilding, kreativ problemlösning och 
+                kommunikationsutveckling. Våra skräddarsydda workshops hjälper era medarbetare att utveckla 
+                förmågor som är värdefulla både på arbetsplatsen och i vardagslivet.
               </p>
-              <p className="text-base" style={{ lineHeight: '1.4' }}>
-                Improvisationsteater är ett kraftfullt verktyg för att utveckla kommunikation, problemlösning och samarbete. 
-                Genom övningar som bygger på spontanitet och lyhördhet hjälper vi era medarbetare att bli bekvämare med 
-                osäkerhet, starkare i sitt uttryck och bättre på att lyssna på varandra.
+              <p className="text-base" style={{ lineHeight: '1.3' }}>
+                Vi arbetar med organisationer av alla storlekar – från startups till stora företag, 
+                myndigheter och ideella organisationer. Varje workshop anpassas efter era specifika mål och behov.
               </p>
             </div>
           </div>
@@ -53,36 +52,95 @@ const Corporate = () => {
             <div className="space-y-4">
               <div>
                 <h3 className="text-theatre-secondary font-medium mb-2">Teambuilding-workshops</h3>
-                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
-                  Stärk sammanhållningen i gruppen genom roliga och utmanande improvisationsövningar som bygger förtroende och samarbete.
+                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.3' }}>
+                  Stärk sammanhållningen och förtroendet i teamet genom övningar som fokuserar på samarbete, 
+                  lyssnarförmåga och att bygga vidare på varandras idéer.
                 </p>
               </div>
               <div>
                 <h3 className="text-theatre-secondary font-medium mb-2">Kommunikationsträning</h3>
-                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
-                  Utveckla förmågan att lyssna aktivt, uttrycka sig tydligt och hantera svåra samtal med hjälp av improvisationstekniker.
+                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.3' }}>
+                  Utveckla färdigheter inom presentation, aktiv lyssning och att hantera oväntade situationer 
+                  med trygghet och kreativitet.
                 </p>
               </div>
               <div>
-                <h3 className="text-theatre-secondary font-medium mb-2">Kreativitetsworkshops</h3>
-                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
-                  Lås upp kreativiteten och lär er att tänka utanför boxen genom övningar som tränar spontanitet och nytänkande.
+                <h3 className="text-theatre-secondary font-medium mb-2">Kreativitet & Innovation</h3>
+                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.3' }}>
+                  Lär er tekniker för att tänka utanför boxen, säga "ja, och..." till nya idéer och 
+                  skapa en kultur där innovation kan blomstra.
                 </p>
               </div>
               <div>
-                <h3 className="text-theatre-secondary font-medium mb-2">Underhållning för events</h3>
-                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.4' }}>
-                  Skräddarsy en improvisationsföreställning för er kick-off, personalfest eller konferens – interaktivt och skrattfyllt.
+                <h3 className="text-theatre-secondary font-medium mb-2">Ledarskapsträning</h3>
+                <p className="text-gray-700 text-base leading-relaxed" style={{ lineHeight: '1.3' }}>
+                  Utveckla förmågan att ta initiativ, stötta teammedlemmar och hantera osäkerhet 
+                  med självförtroende och anpassningsförmåga.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Contact form */}
+          {/* Process */}
+          <div className="text-left">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Så här går det till</h2>
+            <div className="space-y-4">
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
+                  1
+                </div>
+                <div>
+                  <h3 className="text-theatre-secondary font-medium mb-1">Första samtalet</h3>
+                  <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>
+                    Vi träffas (digitalt eller fysiskt) för att förstå era mål, utmaningar och 
+                    vilken typ av workshop som skulle passa bäst.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
+                  2
+                </div>
+                <div>
+                  <h3 className="text-theatre-secondary font-medium mb-1">Skräddarsytt förslag</h3>
+                  <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>
+                    Vi utformar en workshop som är anpassad efter er grupp, era mål och 
+                    tillgänglig tid (allt från 2 timmar till flera dagar).
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
+                  3
+                </div>
+                <div>
+                  <h3 className="text-theatre-secondary font-medium mb-1">Genomförande</h3>
+                  <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>
+                    Vi kommer till er (eller träffas på annan plats) och genomför workshopen 
+                    med fokus på trygghet, lärande och – inte minst – kul!
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
+                  4
+                </div>
+                <div>
+                  <h3 className="text-theatre-secondary font-medium mb-1">Uppföljning</h3>
+                  <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>
+                    Vi följer upp för att höra hur ni upplevde workshopen och diskuterar 
+                    eventuella fortsättningsaktiviteter.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form */}
           <div className="text-left">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Gör en förfrågan</h2>
-            <p className="text-gray-700 mb-6 text-base" style={{ lineHeight: '1.4' }}>
-              Berätta om era behov så skräddarsyr vi ett förslag som passar er organisation och era mål.
+            <p className="text-gray-700 mb-6 text-base" style={{ lineHeight: '1.3' }}>
+              Berätta om er organisation och vad ni är ute efter, så hör vi av oss för att diskutera möjligheterna.
             </p>
             <CorporateInquiryForm />
           </div>
