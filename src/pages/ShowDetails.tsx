@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ShowDetailsHeader from '@/components/ShowDetailsHeader';
@@ -55,7 +56,10 @@ const ShowDetails = () => {
     description: "Denna föreställning kunde inte hittas.",
     performers: [],
     practicalInfo: [],
-    mapLink: ""
+    mapLink: "",
+    ticketPrice: 175,
+    discountPrice: 145,
+    availableTickets: 100
   };
 
   const allShows = allShowsData?.data?.map(formatStrapiShow).filter(Boolean) || [];
