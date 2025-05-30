@@ -16,17 +16,24 @@ export const formatStrapiShow = (strapiShow: any) => {
   
   const attrs = strapiShow.attributes;
   
+  // Handle location relation
+  const location = attrs.location?.data?.attributes;
+  const locationName = location?.name || '';
+  const mapLink = location?.google_maps_link || location?.map_link || '';
+  
   return {
     id: strapiShow.id,
-    title: attrs.title,
-    date: attrs.date,
-    time: attrs.time,
-    location: attrs.location,
+    title: attrs.titel || attrs.title, // Support both Swedish and English field names
+    date: attrs.datum || attrs.date,
+    time: attrs.time, // Keep separate time field if needed
+    location: locationName,
     slug: attrs.slug,
-    description: attrs.description,
-    practicalInfo: attrs.practical_info || [],
-    mapLink: attrs.map_link,
-    image: getStrapiImageUrl(attrs.image),
+    description: attrs.beskrivning || attrs.description,
+    practicalInfo: attrs.praktisk_info ? 
+      attrs.praktisk_info.split('\n').filter((item: string) => item.trim()) : 
+      attrs.practical_info || [],
+    mapLink: mapLink,
+    image: getStrapiImageUrl(attrs.bild || attrs.image),
     performers: attrs.performers?.data?.map((performer: any) => ({
       id: performer.id,
       name: performer.attributes.name,

@@ -19,9 +19,10 @@ serve(async (req) => {
     const url = new URL(req.url);
     const slug = url.searchParams.get('slug');
     
-    let endpoint = '/api/shows?populate=*';
+    // Populate both performers and location relations
+    let endpoint = '/api/shows?populate[performers][populate]=image&populate[location]=*&populate[bild]=*&populate[image]=*';
     if (slug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${slug}&populate=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${slug}&populate[performers][populate]=image&populate[location]=*&populate[bild]=*&populate[image]=*`;
     }
 
     console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
