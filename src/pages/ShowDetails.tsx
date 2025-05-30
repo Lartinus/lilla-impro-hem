@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useParams, Link } from 'react-router-dom';
@@ -50,7 +51,7 @@ const ShowDetails = () => {
       date: "27 oktober 19.00",
       location: "Metropole",
       slug: "ensemble-27-oktober",
-      image: "/lovable-uploads/192352b9-7e67-447a-aa36-9b17372a4155.png"
+      image: "/lovable-uploads/82e4b7c8-bf74-423f-a1d4-d94f33f7ae8b.png"
     },
     {
       id: 2,
@@ -58,7 +59,7 @@ const ShowDetails = () => {
       date: "15 november 20.00", 
       location: "Teater Galeasen",
       slug: "improkomedi-15-november",
-      image: "/lovable-uploads/df0cb53d-072e-4970-b9fa-e175209d1cf7.png"
+      image: "/lovable-uploads/1287edaf-8412-4d2b-b6e4-b6fb8426185d.png"
     },
     {
       id: 3,
@@ -66,7 +67,7 @@ const ShowDetails = () => {
       date: "8 december 18.30",
       location: "Södra Teatern",
       slug: "julspecial-8-december",
-      image: "/lovable-uploads/5cb42dd8-59bc-49e4-ae83-9bb0da74f658.png"
+      image: "/lovable-uploads/4ab70355-63ab-4d68-bfd3-3a2659550888.png"
     }
   ];
 
@@ -159,18 +160,18 @@ const ShowDetails = () => {
             <ArrowLeft size={16} className="mr-2" />
             Tillbaka till föreställningar
           </Link>
-          
-          <h2 className="text-blue-500 font-bold text-xl mb-2">
-            <span className="block md:hidden">{show.title}</span>
-            <span className="hidden md:block">{show.title} {show.date}</span>
-          </h2>
-          <div className="block md:hidden text-blue-500 font-bold text-lg mb-4">{show.date}</div>
         </div>
       </section>
 
       <section className="py-2 px-0.5 md:px-4 pb-8 animate-fade-in">
         <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
           <div className="border-4 border-white shadow-lg bg-white rounded-none p-6 md:p-8">
+            <h2 className="text-blue-500 font-bold text-xl mb-4">
+              <span className="block md:hidden">{show.title}</span>
+              <span className="hidden md:block">{show.title} {show.date}</span>
+            </h2>
+            <div className="block md:hidden text-blue-500 font-bold text-lg mb-4">{show.date}</div>
+            
             <div className="mb-4">
               <div className="flex items-center mb-1">
                 <MapPin size={16} className="text-theatre-secondary mr-2" />
