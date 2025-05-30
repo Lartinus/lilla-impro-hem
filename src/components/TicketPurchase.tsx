@@ -29,31 +29,31 @@ const TicketPurchase = ({ onPurchase }: TicketPurchaseProps) => {
       <div className="mb-4">
         <div className="font-medium text-gray-800 mb-3">Pris 175kr</div>
         <div className="flex items-center space-x-4">
-          <div className="w-20 border border-gray-300 rounded-none bg-white">
-            <div className="flex flex-col">
+          <div className="relative w-24 border border-red-800 bg-white">
+            <div className="h-8 flex items-center justify-center text-center text-gray-600 pr-8">
+              {ticketCount}
+            </div>
+            <div className="absolute right-0 top-0 h-full w-6 flex flex-col">
               <button
                 onClick={() => setTicketCount(ticketCount + 1)}
-                className="h-4 flex items-center justify-center hover:bg-gray-100 border-b border-gray-300"
+                className="h-4 flex items-center justify-center hover:bg-gray-100 border-b border-red-800"
               >
-                <ChevronUp size={12} />
+                <ChevronUp size={10} className="text-gray-600" />
               </button>
-              <div className="h-8 flex items-center justify-center text-center">
-                {ticketCount}
-              </div>
               <button
                 onClick={() => setTicketCount(Math.max(0, ticketCount - 1))}
-                className="h-4 flex items-center justify-center hover:bg-gray-100 border-t border-gray-300"
+                className="h-4 flex items-center justify-center hover:bg-gray-100"
               >
-                <ChevronDown size={12} />
+                <ChevronDown size={10} className="text-gray-600" />
               </button>
             </div>
           </div>
-          <div className="flex-1">
+          <div className="w-32">
             <Input
               placeholder="Ev. rabattkod"
               value={discountCode}
               onChange={(e) => setDiscountCode(e.target.value)}
-              className="rounded-none border-gray-300"
+              className="rounded-none border-red-800 text-gray-600 text-sm h-8"
             />
           </div>
         </div>
@@ -61,22 +61,22 @@ const TicketPurchase = ({ onPurchase }: TicketPurchaseProps) => {
 
       <div className="mb-4">
         <div className="font-medium text-gray-800 mb-3">Student/pensionär/kursare 145kr</div>
-        <div className="w-20 border border-gray-300 rounded-none bg-white">
-          <div className="flex flex-col">
+        <div className="relative w-24 border border-red-800 bg-white">
+          <div className="h-8 flex items-center justify-center text-center text-gray-600 pr-8">
+            {discountTickets}
+          </div>
+          <div className="absolute right-0 top-0 h-full w-6 flex flex-col">
             <button
               onClick={() => setDiscountTickets(discountTickets + 1)}
-              className="h-4 flex items-center justify-center hover:bg-gray-100 border-b border-gray-300"
+              className="h-4 flex items-center justify-center hover:bg-gray-100 border-b border-red-800"
             >
-              <ChevronUp size={12} />
+              <ChevronUp size={10} className="text-gray-600" />
             </button>
-            <div className="h-8 flex items-center justify-center text-center">
-              {discountTickets}
-            </div>
             <button
               onClick={() => setDiscountTickets(Math.max(0, discountTickets - 1))}
-              className="h-4 flex items-center justify-center hover:bg-gray-100 border-t border-gray-300"
+              className="h-4 flex items-center justify-center hover:bg-gray-100"
             >
-              <ChevronDown size={12} />
+              <ChevronDown size={10} className="text-gray-600" />
             </button>
           </div>
         </div>
