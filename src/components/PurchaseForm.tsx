@@ -31,6 +31,9 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
     finalTotal = finalTotal - discountAmount;
   }
 
+  // Calculate VAT (moms)
+  const vatAmount = Math.round(finalTotal / 1.06);
+
   const handleCompletePurchase = () => {
     console.log('Purchase data:', {
       ...purchaseData,
@@ -67,6 +70,9 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
         )}
         <div className="font-bold text-gray-800 text-lg mt-2">
           Totalt: {finalTotal}kr
+        </div>
+        <div className="text-gray-600 text-sm mt-1">
+          Varav {vatAmount}kr moms
         </div>
       </div>
       
