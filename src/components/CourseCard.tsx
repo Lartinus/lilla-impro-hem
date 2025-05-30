@@ -17,6 +17,7 @@ interface Course {
   courseLeader: CourseLeader | null;
   available: boolean;
   showButton: boolean;
+  buttonText?: string;
 }
 
 interface CourseCardProps {
@@ -65,6 +66,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           courseTitle={course.title}
           isAvailable={course.available}
           showButton={course.showButton}
+          buttonText={course.buttonText}
         />
       </CardContent>
     </Card>
