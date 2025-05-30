@@ -1,8 +1,13 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { useEffect } from 'react';
 
 const About = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const productionTeam = [
     {
       id: 1,
@@ -45,9 +50,9 @@ const About = () => {
 
         {/* Content Section */}
         <section className="px-6 pb-12">
-          <div className="space-y-12 border-4 border-white p-8 md:p-16 bg-white rounded-none mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
+          <div className="space-y-12 border-4 border-white p-6 md:p-16 bg-white rounded-none mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
             <div className="text-left">
-              <p className="text-gray-700 leading-relaxed mb-8 text-sm md:text-base">
+              <p className="text-gray-700 leading-relaxed mb-8 text-base">
                 Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy – och en stark vilja att skapa en plats där både skratten, hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron – och i viljan att bygga något nytt tillsammans.
               </p>
               
@@ -75,7 +80,7 @@ const About = () => {
                 </div>
               </div>
               
-              <p className="text-gray-700 leading-relaxed mb-8 text-sm md:text-base">
+              <p className="text-gray-700 leading-relaxed mb-8 text-base">
                 Tillsammans vill vi skapa en plats där människor inte bara lär sig impro, utan blir en del av ett sammanhang. Lilla Improteatern ska vara ett hem för alla som vill utvecklas, spela, skratta – och växa tillsammans.
               </p>
               

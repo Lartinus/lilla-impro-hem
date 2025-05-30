@@ -1,8 +1,13 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CourseCard from '@/components/CourseCard';
+import { useEffect } from 'react';
 
 const Courses = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const courseLeaders = [
     {
       id: 1,
@@ -139,30 +144,30 @@ const Courses = () => {
 
       {/* Combined Content Section */}
       <section className="py-8 px-0.5 md:px-4">
-        <div className="space-y-8 border-4 border-white p-8 md:p-6 lg:p-12 bg-white rounded-none mx-6 md:mx-0 md:max-w-5xl md:mx-auto">
+        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
           <div className="text-left">
             <h2 className="text-xl font-bold text-gray-800 mb-2">Vår vision</h2>
             <h3 className="text-theatre-secondary font-medium mb-4">
               Ett hem för dig som vill lära dig Improv Comedy – med målet att själv stå på scen.
             </h3>
             <div className="space-y-6 text-gray-700 leading-relaxed">
-              <p className="text-sm md:text-base">
+              <p className="text-base">
                 Lilla Improteatern är platsen för dig som vill bli skickligare på att skapa roliga scener tillsammans med andra. 
                 Här lär du dig inte bara hur man improviserar – du förstår varför det funkar, vad som gör en scen rolig och hur du skapar det tillsammans med andra.
               </p>
-              <p className="text-sm md:text-base">
+              <p className="text-base">
                 Vi ser på improv comedy som ett hantverk. Genom ett tydligt pedagogiskt upplägg – förankrat i många års erfarenhet som både improvisatörer och pedagoger – erbjuder vi ett kurssystem som sträcker sig från grundläggande scenträning till långformsformat och ensemblearbete. Hos oss lär du dig att spela komiska scener med glädje, tydliga verktyg och ett fokus på samspelet.
               </p>
-              <p className="text-sm md:text-base">
+              <p className="text-base">
                 Vi älskar att skratta. Men ännu mer älskar vi att förstå varför något är roligt – och hur man gör det tillsammans. 
                 Därför bygger vår undervisning på att steg för steg utveckla dina färdigheter som improvisatör. Inte genom att tvinga fram skämt, utan genom att spela scener som känns levande, enkla och roliga i stunden.
               </p>
-              <p className="text-sm md:text-base">
+              <p className="text-base">
                 Vi tränar dig i att upptäcka det roliga och följa det – i en trygg, tydlig och lekfull struktur där du får växa som improvisatör. Du kommer att:
               </p>
               <div className="bg-red-700 text-white p-4 md:p-6 border-4 border-white rounded-none">
                 <h3 className="text-white font-bold mb-4">Lär dig spela det som redan är kul</h3>
-                <p className="leading-relaxed text-sm md:text-base">
+                <p className="leading-relaxed text-base">
                   Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the Scene", att följa det roliga och att få det att växa.
                 </p>
               </div>
@@ -178,18 +183,18 @@ const Courses = () => {
               {whoCanCome.map((item, index) => (
                 <div key={index} className="flex items-center space-x-3">
                   <span className="text-blue-500 text-sm font-bold">→</span>
-                  <p className="text-gray-700 text-sm md:text-base">{item}</p>
+                  <p className="text-gray-700 text-base">{item}</p>
                 </div>
               ))}
             </div>
-            <p className="text-gray-700 leading-relaxed mb-6 text-sm md:text-base">
+            <p className="text-gray-700 leading-relaxed mb-6 text-base">
               Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi värdesätter inkludering, generositet och att alla ska få plats att växa på.
             </p>
             <div className="space-y-3">
               {benefits.map((benefit, index) => (
                 <div key={index} className="flex items-center space-x-3">
                   <span className="text-blue-500 text-sm font-bold">→</span>
-                  <p className="text-gray-700 text-sm md:text-base">{benefit}</p>
+                  <p className="text-gray-700 text-base">{benefit}</p>
                 </div>
               ))}
             </div>
@@ -203,7 +208,7 @@ const Courses = () => {
                   <h3 className="text-theatre-secondary font-medium mb-3">
                     {item.question}
                   </h3>
-                  <p className="text-gray-700 leading-relaxed text-sm md:text-base">
+                  <p className="text-gray-700 leading-relaxed text-base">
                     {item.answer}
                   </p>
                 </div>

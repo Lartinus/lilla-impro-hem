@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import CourseBookingForm from '@/components/CourseBookingForm';
 import CourseLeaderInfo from '@/components/CourseLeaderInfo';
@@ -26,7 +27,7 @@ interface CourseCardProps {
 const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
-      <CardContent className="p-8 md:p-6 lg:p-8 flex flex-col flex-1">
+      <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
         <div className="mb-4">
           <h2 className="text-xl font-bold text-theatre-primary mb-2">
             {course.title}
@@ -36,7 +37,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           </h3>
         </div>
         
-        <p className="text-gray-700 leading-relaxed mb-4">
+        <p className="text-gray-700 leading-relaxed mb-4 text-base">
           {course.description}
         </p>
         
@@ -53,7 +54,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
               {practicalInfo.map((item, index) => (
                 <div key={index} className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                  <p className="text-gray-700">{item}</p>
+                  <p className="text-gray-700 text-base">{item}</p>
                 </div>
               ))}
             </div>
