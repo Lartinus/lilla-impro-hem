@@ -164,6 +164,7 @@ const ShowDetails = () => {
               <PurchaseForm 
                 ticketCount={purchaseTickets.regular}
                 discountTickets={purchaseTickets.discount}
+                discountCode={purchaseTickets.code}
                 showTitle={show.title}
                 onBack={() => setShowPurchaseForm(false)}
                 onComplete={handleCompletePurchase}

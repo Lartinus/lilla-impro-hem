@@ -53,7 +53,7 @@ const TicketPurchase = ({ onPurchase }: TicketPurchaseProps) => {
               placeholder="Ev. rabattkod"
               value={discountCode}
               onChange={(e) => setDiscountCode(e.target.value)}
-              className="rounded-none border-red-800 text-gray-600 text-sm h-8"
+              className="rounded-none border-red-800 text-gray-600 text-sm h-8 focus:border-red-800 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
             />
           </div>
         </div>

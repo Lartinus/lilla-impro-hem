@@ -6,23 +6,37 @@ import { Input } from '@/components/ui/input';
 interface PurchaseFormProps {
   ticketCount: number;
   discountTickets: number;
+  discountCode: string;
   showTitle: string;
   onBack: () => void;
   onComplete: (data: { name: string; email: string; phone: string }) => void;
 }
 
-const PurchaseForm = ({ ticketCount, discountTickets, showTitle, onBack, onComplete }: PurchaseFormProps) => {
+const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, onBack, onComplete }: PurchaseFormProps) => {
   const [purchaseData, setPurchaseData] = useState({
     name: '',
     email: '',
     phone: ''
   });
 
+  // Calculate total with potential discount
+  const regularTotal = ticketCount * 175;
+  const discountTotal = discountTickets * 145;
+  let finalTotal = regularTotal + discountTotal;
+  
+  // Apply discount code logic if needed (example: 10% off with "RABATT10")
+  let discountAmount = 0;
+  if (discountCode.toLowerCase() === 'rabatt10') {
+    discountAmount = Math.round(finalTotal * 0.1);
+    finalTotal = finalTotal - discountAmount;
+  }
+
   const handleCompletePurchase = () => {
     console.log('Purchase data:', {
       ...purchaseData,
       regularTickets: ticketCount,
       discountTickets: discountTickets,
+      discountCode: discountCode,
       show: showTitle
     });
     alert('Köp genomfört! (Stripe-integration kommer här)');
@@ -33,7 +47,30 @@ const PurchaseForm = ({ ticketCount, discountTickets, showTitle, onBack, onCompl
     <div className="mb-6">
       <h4 className="text-gray-800 font-bold mb-4">Slutför köp</h4>
       
-      <div className="space-y-4 mb-6">
+      {/* Order Summary */}
+      <div className="mb-6">
+        <h5 className="font-medium text-gray-800 mb-2">Sammanfattning</h5>
+        {ticketCount > 0 && (
+          <div className="text-gray-700">
+            Ordinarie biljetter: {ticketCount} × 175kr = {regularTotal}kr
+          </div>
+        )}
+        {discountTickets > 0 && (
+          <div className="text-gray-700">
+            Rabatterade biljetter: {discountTickets} × 145kr = {discountTotal}kr
+          </div>
+        )}
+        {discountAmount > 0 && (
+          <div className="text-green-600">
+            Rabatt ({discountCode}): -{discountAmount}kr
+          </div>
+        )}
+        <div className="font-bold text-gray-800 text-lg mt-2">
+          Totalt: {finalTotal}kr
+        </div>
+      </div>
+      
+      <div className="space-y-4 mb-6 max-w-md">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Namn</label>
           <Input
@@ -65,18 +102,11 @@ const PurchaseForm = ({ ticketCount, discountTickets, showTitle, onBack, onCompl
         </div>
       </div>
 
-      <div className="bg-gray-50 p-4 rounded-none mb-4 border border-gray-300">
-        <h5 className="font-medium mb-2">Sammanfattning</h5>
-        {ticketCount > 0 && <p>Ordinarie biljetter: {ticketCount} × 175kr = {ticketCount * 175}kr</p>}
-        {discountTickets > 0 && <p>Rabatterade biljetter: {discountTickets} × 145kr = {discountTickets * 145}kr</p>}
-        <p className="font-bold">Totalt: {(ticketCount * 175) + (discountTickets * 145)}kr</p>
-      </div>
-
       <div className="flex space-x-4">
         <Button 
           onClick={onBack}
           variant="outline"
-          className="rounded-none"
+          className="rounded-none border-gray-400 text-gray-700 hover:bg-gray-50"
         >
           Tillbaka
         </Button>
