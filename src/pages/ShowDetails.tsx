@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ShowDetailsHeader from '@/components/ShowDetailsHeader';
@@ -10,6 +9,8 @@ import PerformersSection from '@/components/PerformersSection';
 import OtherShowsSection from '@/components/OtherShowsSection';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useShow, useShows } from '@/hooks/useStrapi';
+import { formatStrapiShow } from '@/utils/strapiHelpers';
 
 const ShowDetails = () => {
   const { slug } = useParams();
@@ -19,6 +20,9 @@ const ShowDetails = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const { data: showData, isLoading: showLoading } = useShow(slug || '');
+  const { data: allShowsData } = useShows();
 
   const performers = [
     {
@@ -41,83 +45,35 @@ const ShowDetails = () => {
     }
   ];
 
-  const allShows = [
-    {
-      id: 1,
-      title: "Lilla improteaterns ensemble",
-      date: "27 oktober 19.00",
-      location: "Metropole",
-      slug: "ensemble-27-oktober",
-      image: "/lovable-uploads/a6436c99-8329-498f-b9f3-992e52f9cc8c.png"
-    },
-    {
-      id: 2,
-      title: "Improviserad komedi",
-      date: "15 november 20.00", 
-      location: "Teater Galeasen",
-      slug: "improkomedi-15-november",
-      image: "/lovable-uploads/bb88dac3-ab0d-45c0-80a4-1442060598be.png"
-    },
-    {
-      id: 3,
-      title: "Julspecial - Improkomedi",
-      date: "8 december 18.30",
-      location: "Södra Teatern",
-      slug: "julspecial-8-december",
-      image: "/lovable-uploads/c4cb950f-fa49-4fc8-ad5e-96402ad423f2.png"
-    }
-  ];
-
-  const showData: { [key: string]: any } = {
-    'ensemble-27-oktober': {
-      title: "Lilla improteaterns ensemble",
-      date: "27 oktober 19.00",
-      location: "Metropole",
-      mapLink: "https://maps.google.com/?q=Metropole+Mäster+Samuelsgatan+1+Stockholm",
-      description: "Lilla Improteaterns ensemble ger er några av Sveriges bästa improvisatörer.\n\nFöreställningen är helt improviserad, vilket innebär att inget är förberett och allt skapas i stunden, inspirerat av publikens idéer. Du får uppleva karaktärer, relationer och situationer som växer fram mitt framför ögonen på dig – från vardagskaos till drömlika världar.\n\nImprov comedy är en teaterform där skådespelarna arbetar utan manus, men med tydliga verktyg och starkt samspel. Resultatet? En kväll fylld med skratt, igenkänning och överraskningar.\n\nTa med kollegorna, vännerna eller dejten. Beställ något gott från baren, luta dig tillbaka och låt dig svepas med.",
-      performers: performers,
-      practicalInfo: [
-        "Dörrar: 18.00",
-        "Förställningens början: 19.00",
-        "Längd: 2 timmar inkl. 20 min paus",
-        "Plats: Metropole, Mäster Samuelsgatan 1, Stockholm"
-      ]
-    },
-    'improkomedi-15-november': {
-      title: "Improviserad komedi",
-      date: "15 november 20.00",
-      location: "Teater Galeasen",
-      mapLink: "https://maps.google.com/?q=Teater+Galeasen+Stockholm",
-      description: "En kväll fylld med spontan humor och kreativitet när våra improvisatörer skapar magi på scenen.\n\nVarje föreställning är unik eftersom allt skapas här och nu, baserat på publikens förslag och idéer. Vi blandar klassiska improformat med experimentella tekniker för att ge er en upplevelse ni sent kommer att glömma.\n\nKom och var med och skapa historier tillsammans med oss. Denna kväll blir aldrig densamma igen!",
-      performers: [performers[0], performers[1]],
-      practicalInfo: [
-        "Dörrar: 19.00",
-        "Förställningens början: 20.00",
-        "Längd: 1,5 timmar inkl. 15 min paus",
-        "Plats: Teater Galeasen, Stockholm"
-      ]
-    },
-    'julspecial-8-december': {
-      title: "Julspecial - Improkomedi",
-      date: "8 december 18.30",
-      location: "Södra Teatern",
-      mapLink: "https://maps.google.com/?q=Södra+Teatern+Stockholm",
-      description: "En festlig kväll med improviserad komedi inför julen!\n\nVi blandar traditionell improvisation med julstämning och skapar tillsammans med publiken berättelser som värmer hjärtat. Förvänta dig allt från absurda julsagor till vardagskomik med pepparkaksdoft.\n\nPerfekt för personalfest, date night eller bara för att skratta bort november-mörkret. Glögg serveras i foajén!",
-      performers: performers,
-      practicalInfo: [
-        "Dörrar: 17.30",
-        "Förställningens början: 18.30",
-        "Längd: 2 timmar inkl. 20 min paus",
-        "Plats: Södra Teatern, Stockholm",
-        "OBS: Glögg serveras i foajén från kl 17.30"
-      ]
-    }
+  const showDataFromStrapi = showData?.data?.[0] ? formatStrapiShow(showData.data[0]) : null;
+  
+  // Use Strapi data if available, otherwise fall back to hardcoded data
+  const show = showDataFromStrapi || {
+    title: "Föreställning hittades inte",
+    date: "",
+    location: "",
+    description: "Denna föreställning kunde inte hittas.",
+    performers: [],
+    practicalInfo: [],
+    mapLink: ""
   };
 
-  const show = showData[slug || ''];
+  const allShows = allShowsData?.data?.map(formatStrapiShow).filter(Boolean) || [];
   const otherShows = allShows.filter(s => s.slug !== slug);
 
-  if (!show) {
+  if (showLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+        <Header />
+        <div className="pt-32 text-center">
+          <h1 className="text-2xl">Laddar...</h1>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!show.title || show.title === "Föreställning hittades inte") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
         <Header />
@@ -159,7 +115,12 @@ const ShowDetails = () => {
             <PracticalInfo practicalInfo={show.practicalInfo} />
             
             {!showPurchaseForm ? (
-              <TicketPurchase onPurchase={handlePurchase} />
+              <TicketPurchase 
+                onPurchase={handlePurchase}
+                ticketPrice={show.ticketPrice}
+                discountPrice={show.discountPrice}
+                availableTickets={show.availableTickets}
+              />
             ) : (
               <PurchaseForm 
                 ticketCount={purchaseTickets.regular}
@@ -171,7 +132,7 @@ const ShowDetails = () => {
               />
             )}
             
-            <PerformersSection performers={show.performers} />
+            <PerformersSection performers={show.performers.length > 0 ? show.performers : performers} />
           </div>
           
           <OtherShowsSection shows={otherShows} />

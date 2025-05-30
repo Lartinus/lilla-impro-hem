@@ -4,13 +4,18 @@ import Footer from '@/components/Footer';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
+import { useShows } from '@/hooks/useStrapi';
+import { formatStrapiShow } from '@/utils/strapiHelpers';
 
 const Shows = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const shows = [
+  const { data: strapiData, isLoading, error } = useShows();
+
+  // Fallback data in case Strapi is not available
+  const fallbackShows = [
     {
       id: 1,
       title: "Lilla improteaterns ensemble",
@@ -37,6 +42,17 @@ const Shows = () => {
     }
   ];
 
+  let shows = fallbackShows;
+  
+  if (strapiData?.data) {
+    console.log('Strapi shows data:', strapiData);
+    shows = strapiData.data.map(formatStrapiShow).filter(Boolean);
+  }
+
+  if (error) {
+    console.error('Error loading shows from Strapi:', error);
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
@@ -48,6 +64,9 @@ const Shows = () => {
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
             Föreställningar
           </h1>
+          {isLoading && (
+            <p className="text-theatre-light/80">Laddar föreställningar...</p>
+          )}
         </div>
       </section>
 
