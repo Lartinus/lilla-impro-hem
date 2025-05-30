@@ -31,8 +31,8 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
     finalTotal = finalTotal - discountAmount;
   }
 
-  // Calculate VAT (moms)
-  const vatAmount = Math.round(finalTotal / 1.06);
+  // Calculate VAT (moms) using correct formula: [totalpris] - ([totalpris]/1,06)
+  const vatAmount = Math.round(finalTotal - (finalTotal / 1.06));
 
   const handleCompletePurchase = () => {
     console.log('Purchase data:', {
