@@ -21,36 +21,27 @@ const OtherShowsSection = ({ shows }: OtherShowsSectionProps) => {
   return (
     <div className="mt-8">
       <h3 className="text-xl font-bold text-theatre-light mb-6">Fler föreställningar</h3>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 auto-rows-fr">
         {shows.map((show) => (
           <Link key={show.id} to={`/shows/${show.slug}`} className="block">
-            <div className="border-4 border-white bg-white rounded-none p-4 hover:shadow-lg transition-all duration-300 group">
-              <div className="flex flex-col">
-                <div className="flex-1 mb-3">
-                  <h4 className="text-blue-500 font-bold text-base mb-1">
-                    <span className="block md:hidden">{show.title}</span>
-                    <span className="hidden md:block">{show.title}</span>
-                  </h4>
-                  <div className="block md:hidden text-blue-500 font-bold text-base mb-2">
-                    {show.date}
-                  </div>
-                  <div className="hidden md:block text-blue-500 font-bold text-base mb-2">
-                    {show.date}
-                  </div>
-                  <div className="flex items-center mb-2">
-                    <MapPin size={14} className="text-red-800 mr-1" />
-                    <p className="text-red-800 text-sm">{show.location}</p>
-                  </div>
-                  <div className="text-blue-500 group-hover:text-blue-700 transition-colors">
-                    <span className="text-sm">Läs mer →</span>
-                  </div>
+            <div className="border-4 border-white bg-white rounded-none p-0 hover:shadow-lg transition-all duration-300 group flex flex-col h-full">
+              <div className="w-full h-48 flex-shrink-0">
+                <img 
+                  src={show.image} 
+                  alt={show.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex-1 p-6 flex flex-col">
+                <h4 className="text-blue-500 font-bold text-lg mb-1">
+                  {show.title} {show.date}
+                </h4>
+                <div className="flex items-center mb-3">
+                  <MapPin size={16} className="text-red-800 mr-2" />
+                  <p className="text-red-800">{show.location}</p>
                 </div>
-                <div className="flex-shrink-0">
-                  <img 
-                    src={show.image} 
-                    alt={show.title}
-                    className="w-full h-32 rounded-none object-cover object-top"
-                  />
+                <div className="text-blue-500 group-hover:text-blue-700 transition-colors mt-auto">
+                  <span className="text-sm">Läs mer →</span>
                 </div>
               </div>
             </div>

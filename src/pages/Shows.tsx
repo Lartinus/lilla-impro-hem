@@ -38,7 +38,7 @@ const Shows = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       
@@ -52,8 +52,8 @@ const Shows = () => {
       </section>
 
       {/* Shows Grid */}
-      <section className="py-2 px-0.5 md:px-4 pb-8 animate-fade-in">
-        <div className="grid gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto md:grid-cols-2 lg:grid-cols-3">
+      <section className="py-2 px-0.5 md:px-4 pb-8 animate-fade-in flex-1">
+        <div className="grid gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
           {shows.map((show) => (
             <Link key={show.id} to={`/shows/${show.slug}`} className="block">
               <div className="border-4 border-white bg-white rounded-none p-0 hover:shadow-lg transition-all duration-300 group flex flex-col h-full">
