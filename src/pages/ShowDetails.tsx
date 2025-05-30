@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useParams, Link } from 'react-router-dom';
@@ -44,7 +43,7 @@ const ShowDetails = () => {
     }
   ];
 
-  // Use the same shows data as in Shows.tsx
+  // Use the same shows data as in Shows.tsx with new images
   const allShows = [
     {
       id: 1,
@@ -52,7 +51,7 @@ const ShowDetails = () => {
       date: "27 oktober 19.00",
       location: "Metropole",
       slug: "ensemble-27-oktober",
-      image: "/lovable-uploads/ac906279-978d-4e9c-b9a1-eb3a90b48aef.png"
+      image: "/lovable-uploads/a6436c99-8329-498f-b9f3-992e52f9cc8c.png"
     },
     {
       id: 2,
@@ -60,7 +59,7 @@ const ShowDetails = () => {
       date: "15 november 20.00", 
       location: "Teater Galeasen",
       slug: "improkomedi-15-november",
-      image: "/lovable-uploads/a018eb4f-8f59-4895-b9b0-565c2b8ad636.png"
+      image: "/lovable-uploads/bb88dac3-ab0d-45c0-80a4-1442060598be.png"
     },
     {
       id: 3,
@@ -68,7 +67,7 @@ const ShowDetails = () => {
       date: "8 december 18.30",
       location: "Södra Teatern",
       slug: "julspecial-8-december",
-      image: "/lovable-uploads/8c70d3b3-4ad3-4d2d-a831-b759a5ec35eb.png"
+      image: "/lovable-uploads/c4cb950f-fa49-4fc8-ad5e-96402ad423f2.png"
     }
   ];
 
@@ -175,7 +174,7 @@ const ShowDetails = () => {
             
             <div className="mb-4">
               <div className="flex items-center mb-1">
-                <MapPin size={16} className="text-theatre-secondary mr-2" />
+                <MapPin size={16} className="text-red-800 mr-2" />
                 <h3 className="text-theatre-secondary font-medium">
                   <a 
                     href={show.mapLink} 
@@ -383,7 +382,7 @@ const ShowDetails = () => {
                             {otherShow.date}
                           </div>
                           <div className="flex items-center mb-2">
-                            <MapPin size={14} className="text-gray-600 mr-1" />
+                            <MapPin size={14} className="text-red-800 mr-1" />
                             <p className="text-gray-600 text-sm">{otherShow.location}</p>
                           </div>
                           <div className="text-blue-500 group-hover:text-blue-700 transition-colors">
