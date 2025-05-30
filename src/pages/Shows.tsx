@@ -17,7 +17,7 @@ const Shows = () => {
       date: "27 oktober 19.00",
       location: "Metropole",
       slug: "ensemble-27-oktober",
-      image: "/lovable-uploads/ac906279-978d-4e9c-b9a1-eb3a90b48aef.png"
+      image: "/lovable-uploads/82e4b7c8-bf74-423f-a1d4-d94f33f7ae8b.png"
     },
     {
       id: 2,
@@ -25,7 +25,7 @@ const Shows = () => {
       date: "15 november 20.00", 
       location: "Teater Galeasen",
       slug: "improkomedi-15-november",
-      image: "/lovable-uploads/a018eb4f-8f59-4895-b9b0-565c2b8ad636.png"
+      image: "/lovable-uploads/1287edaf-8412-4d2b-b6e4-b6fb8426185d.png"
     },
     {
       id: 3,
@@ -33,7 +33,7 @@ const Shows = () => {
       date: "8 december 18.30",
       location: "Södra Teatern",
       slug: "julspecial-8-december",
-      image: "/lovable-uploads/8c70d3b3-4ad3-4d2d-a831-b759a5ec35eb.png"
+      image: "/lovable-uploads/4ab70355-63ab-4d68-bfd3-3a2659550888.png"
     }
   ];
 
@@ -56,31 +56,25 @@ const Shows = () => {
         <div className="grid gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
           {shows.map((show) => (
             <Link key={show.id} to={`/shows/${show.slug}`} className="block">
-              <div className="border-4 border-white bg-white rounded-none p-6 hover:shadow-lg transition-all duration-300 group">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                  <div className="flex-1 mb-4 md:mb-0">
-                    <h2 className="text-blue-500 font-bold text-lg mb-1">
-                      <span className="block md:hidden">{show.title}</span>
-                      <span className="hidden md:block">{show.title} {show.date}</span>
-                    </h2>
-                    <div className="block md:hidden text-blue-500 font-bold text-lg mb-2">
-                      {show.date}
-                    </div>
-                    <div className="flex items-center mb-3">
-                      <MapPin size={16} className="text-gray-600 mr-2" />
-                      <p className="text-gray-600">{show.location}</p>
-                    </div>
-                    <div className="text-blue-500 group-hover:text-blue-700 transition-colors">
-                      <span className="text-sm">Läs mer →</span>
-                    </div>
+              <div className="border-4 border-white bg-white rounded-none p-0 hover:shadow-lg transition-all duration-300 group flex">
+                <div className="flex-1 p-6">
+                  <h2 className="text-blue-500 font-bold text-lg mb-1">
+                    {show.title} {show.date}
+                  </h2>
+                  <div className="flex items-center mb-3">
+                    <MapPin size={16} className="text-gray-600 mr-2" />
+                    <p className="text-gray-600">{show.location}</p>
                   </div>
-                  <div className="md:ml-6 flex-shrink-0">
-                    <img 
-                      src={show.image} 
-                      alt={show.title}
-                      className="w-full md:w-32 h-32 rounded-none object-cover object-top"
-                    />
+                  <div className="text-blue-500 group-hover:text-blue-700 transition-colors">
+                    <span className="text-sm">Läs mer →</span>
                   </div>
+                </div>
+                <div className="w-64 flex-shrink-0">
+                  <img 
+                    src={show.image} 
+                    alt={show.title}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </Link>
