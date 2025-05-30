@@ -1,11 +1,10 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MapPin, ArrowLeft } from 'lucide-react';
+import { MapPin, ArrowLeft, ChevronUp, ChevronDown } from 'lucide-react';
 
 const ShowDetails = () => {
   const { slug } = useParams();
@@ -216,20 +215,26 @@ const ShowDetails = () => {
                 <div className="bg-gray-50 p-4 rounded-none border border-gray-300 mb-4">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-gray-800 font-medium">Pris 175kr</span>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => setTicketCount(Math.max(0, ticketCount - 1))}
-                        className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
-                      >
-                        -
-                      </button>
-                      <span className="w-8 text-center">{ticketCount}</span>
-                      <button
-                        onClick={() => setTicketCount(ticketCount + 1)}
-                        className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
-                      >
-                        +
-                      </button>
+                    <div className="flex items-center">
+                      <div className="w-20 border border-gray-300 rounded-none bg-white">
+                        <div className="flex flex-col">
+                          <button
+                            onClick={() => setTicketCount(ticketCount + 1)}
+                            className="h-4 flex items-center justify-center hover:bg-gray-100 border-b border-gray-300"
+                          >
+                            <ChevronUp size={12} />
+                          </button>
+                          <div className="h-8 flex items-center justify-center text-center">
+                            {ticketCount}
+                          </div>
+                          <button
+                            onClick={() => setTicketCount(Math.max(0, ticketCount - 1))}
+                            className="h-4 flex items-center justify-center hover:bg-gray-100 border-t border-gray-300"
+                          >
+                            <ChevronDown size={12} />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
@@ -246,20 +251,26 @@ const ShowDetails = () => {
                 <div className="bg-gray-50 p-4 rounded-none border border-gray-300 mb-4">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-800 font-medium">Student/pensionär 145kr</span>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => setDiscountTickets(Math.max(0, discountTickets - 1))}
-                        className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
-                      >
-                        -
-                      </button>
-                      <span className="w-8 text-center">{discountTickets}</span>
-                      <button
-                        onClick={() => setDiscountTickets(discountTickets + 1)}
-                        className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
-                      >
-                        +
-                      </button>
+                    <div className="flex items-center">
+                      <div className="w-20 border border-gray-300 rounded-none bg-white">
+                        <div className="flex flex-col">
+                          <button
+                            onClick={() => setDiscountTickets(discountTickets + 1)}
+                            className="h-4 flex items-center justify-center hover:bg-gray-100 border-b border-gray-300"
+                          >
+                            <ChevronUp size={12} />
+                          </button>
+                          <div className="h-8 flex items-center justify-center text-center">
+                            {discountTickets}
+                          </div>
+                          <button
+                            onClick={() => setDiscountTickets(Math.max(0, discountTickets - 1))}
+                            className="h-4 flex items-center justify-center hover:bg-gray-100 border-t border-gray-300"
+                          >
+                            <ChevronDown size={12} />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
