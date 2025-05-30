@@ -42,7 +42,7 @@ const CorporateInquiryForm = () => {
   }
 
   return (
-    <div className="border-4 border-gray-300 p-6 bg-gray-50 rounded-none">
+    <div className="border-4 border-blue-500 p-6 bg-gray-50 rounded-none">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
