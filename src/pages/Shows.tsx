@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { MapPin } from 'lucide-react';
 
 const Shows = () => {
   useEffect(() => {
@@ -15,21 +16,24 @@ const Shows = () => {
       title: "Lilla improteaterns ensemble",
       date: "27 oktober 19.00",
       location: "Metropole",
-      slug: "ensemble-27-oktober"
+      slug: "ensemble-27-oktober",
+      image: "/lovable-uploads/192352b9-7e67-447a-aa36-9b17372a4155.png"
     },
     {
       id: 2,
       title: "Improviserad komedi",
       date: "15 november 20.00", 
       location: "Teater Galeasen",
-      slug: "improkomedi-15-november"
+      slug: "improkomedi-15-november",
+      image: "/lovable-uploads/df0cb53d-072e-4970-b9fa-e175209d1cf7.png"
     },
     {
       id: 3,
       title: "Julspecial - Improkomedi",
       date: "8 december 18.30",
       location: "Södra Teatern",
-      slug: "julspecial-8-december"
+      slug: "julspecial-8-december",
+      image: "/lovable-uploads/5cb42dd8-59bc-49e4-ae83-9bb0da74f658.png"
     }
   ];
 
@@ -54,7 +58,7 @@ const Shows = () => {
             <Link key={show.id} to={`/shows/${show.slug}`} className="block">
               <div className="border-4 border-white bg-white rounded-none p-6 hover:shadow-lg transition-all duration-300 group">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                  <div className="mb-4 md:mb-0">
+                  <div className="flex-1 mb-4 md:mb-0">
                     <h2 className="text-blue-500 font-bold text-lg mb-1">
                       <span className="block md:hidden">{show.title}</span>
                       <span className="hidden md:block">{show.title} {show.date}</span>
@@ -62,10 +66,20 @@ const Shows = () => {
                     <div className="block md:hidden text-blue-500 font-bold text-lg mb-2">
                       {show.date}
                     </div>
-                    <p className="text-gray-600">{show.location}</p>
+                    <div className="flex items-center mb-3">
+                      <MapPin size={16} className="text-gray-600 mr-2" />
+                      <p className="text-gray-600">{show.location}</p>
+                    </div>
+                    <div className="text-blue-500 group-hover:text-blue-700 transition-colors">
+                      <span className="text-sm">Läs mer →</span>
+                    </div>
                   </div>
-                  <div className="text-blue-500 group-hover:text-blue-700 transition-colors">
-                    <span className="text-sm">Läs mer →</span>
+                  <div className="md:ml-6 flex-shrink-0">
+                    <img 
+                      src={show.image} 
+                      alt={show.title}
+                      className="w-full md:w-32 h-32 rounded-none object-cover object-top"
+                    />
                   </div>
                 </div>
               </div>

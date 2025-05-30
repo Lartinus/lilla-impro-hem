@@ -1,9 +1,10 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { MapPin, ArrowLeft } from 'lucide-react';
 
 const ShowDetails = () => {
   const { slug } = useParams();
@@ -39,6 +40,33 @@ const ShowDetails = () => {
       name: "David Rosenqvist",
       image: "/lovable-uploads/5cb42dd8-59bc-49e4-ae83-9bb0da74f658.png",
       bio: "David började med improvisationsteater 2013 och har sedan dess varit en aktiv del av improscenerna i Karlstad, Örebro och Stockholm. Han var med och startade Dramaverket 2014 och senare Spinoff 2021. I dag spelar han både med Dramaverket och Floden STHLM, och gästar under våren 2025 även Stockholm Improvisationsteater. Till vardags jobbar David som producent inom event och teater – med ett öga för struktur, sammanhang och att få saker att hända."
+    }
+  ];
+
+  const allShows = [
+    {
+      id: 1,
+      title: "Lilla improteaterns ensemble",
+      date: "27 oktober 19.00",
+      location: "Metropole",
+      slug: "ensemble-27-oktober",
+      image: "/lovable-uploads/192352b9-7e67-447a-aa36-9b17372a4155.png"
+    },
+    {
+      id: 2,
+      title: "Improviserad komedi",
+      date: "15 november 20.00", 
+      location: "Teater Galeasen",
+      slug: "improkomedi-15-november",
+      image: "/lovable-uploads/df0cb53d-072e-4970-b9fa-e175209d1cf7.png"
+    },
+    {
+      id: 3,
+      title: "Julspecial - Improkomedi",
+      date: "8 december 18.30",
+      location: "Södra Teatern",
+      slug: "julspecial-8-december",
+      image: "/lovable-uploads/5cb42dd8-59bc-49e4-ae83-9bb0da74f658.png"
     }
   ];
 
@@ -89,6 +117,7 @@ const ShowDetails = () => {
   };
 
   const show = showData[slug || ''];
+  const otherShows = allShows.filter(s => s.slug !== slug);
 
   if (!show) {
     return (
@@ -115,7 +144,6 @@ const ShowDetails = () => {
       discountCode: discountCode,
       show: show.title
     });
-    // Here you would integrate with Stripe
     alert('Köp genomfört! (Stripe-integration kommer här)');
     setShowPurchaseForm(false);
   };
@@ -126,12 +154,17 @@ const ShowDetails = () => {
       <Header />
       
       <section className="px-0.5 md:px-4 mt-20 py-6 animate-fade-in">
-        <div className="text-center">
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
+        <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
+          <Link to="/shows" className="inline-flex items-center text-theatre-light/80 hover:text-theatre-light mb-4 transition-colors">
+            <ArrowLeft size={16} className="mr-2" />
+            Tillbaka till föreställningar
+          </Link>
+          
+          <h2 className="text-blue-500 font-bold text-xl mb-2">
             <span className="block md:hidden">{show.title}</span>
             <span className="hidden md:block">{show.title} {show.date}</span>
-          </h1>
-          <div className="block md:hidden text-lg mb-4">{show.date}</div>
+          </h2>
+          <div className="block md:hidden text-blue-500 font-bold text-lg mb-4">{show.date}</div>
         </div>
       </section>
 
@@ -139,16 +172,19 @@ const ShowDetails = () => {
         <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
           <div className="border-4 border-white shadow-lg bg-white rounded-none p-6 md:p-8">
             <div className="mb-4">
-              <h3 className="text-theatre-secondary font-medium mb-1">
-                <a 
-                  href={show.mapLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                >
-                  {show.location}
-                </a>
-              </h3>
+              <div className="flex items-center mb-1">
+                <MapPin size={16} className="text-theatre-secondary mr-2" />
+                <h3 className="text-theatre-secondary font-medium">
+                  <a 
+                    href={show.mapLink} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
+                    {show.location}
+                  </a>
+                </h3>
+              </div>
             </div>
             
             <div className="text-gray-700 leading-relaxed mb-6 text-base" style={{ lineHeight: '1.3' }}>
@@ -158,33 +194,6 @@ const ShowDetails = () => {
                 </p>
               ))}
             </div>
-            
-            {show.performers && show.performers.length > 0 && (
-              <div className="mb-6">
-                <h4 className="text-gray-800 font-bold mb-3">Medverkande</h4>
-                <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
-                  <div className="space-y-6">
-                    {show.performers.map((performer: any) => (
-                      <div key={performer.id} className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
-                        <img 
-                          src={performer.image} 
-                          alt={performer.name}
-                          className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <h5 className="font-bold text-gray-800 mb-2">
-                            {performer.name}
-                          </h5>
-                          <p className="text-gray-700 leading-relaxed text-sm break-words" style={{ lineHeight: '1.3' }}>
-                            {performer.bio}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
             
             <div className="mb-6">
               <h4 className="text-gray-800 font-bold mb-3">Praktisk information</h4>
@@ -199,11 +208,11 @@ const ShowDetails = () => {
             </div>
             
             {!showPurchaseForm ? (
-              <div className="border-4 border-gray-200 p-6">
+              <div className="mb-6">
                 <h4 className="text-gray-800 font-bold mb-4">Köp biljetter</h4>
                 
-                <div className="bg-gray-50 border border-gray-200 rounded-none p-4 mb-4">
-                  <div className="flex items-center justify-between mb-2">
+                <div className="bg-gray-50 p-4 rounded-none border border-gray-300 mb-4">
+                  <div className="flex items-center justify-between mb-3">
                     <span className="text-gray-800 font-medium">Pris 175kr</span>
                     <div className="flex items-center space-x-2">
                       <button
@@ -222,7 +231,7 @@ const ShowDetails = () => {
                     </div>
                   </div>
                   
-                  <div className="mt-3">
+                  <div>
                     <Input
                       placeholder="Ev. rabattkod"
                       value={discountCode}
@@ -232,7 +241,7 @@ const ShowDetails = () => {
                   </div>
                 </div>
 
-                <div className="bg-gray-50 border border-gray-200 rounded-none p-4 mb-4">
+                <div className="bg-gray-50 p-4 rounded-none border border-gray-300 mb-4">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-800 font-medium">Student/pensionär 145kr</span>
                     <div className="flex items-center space-x-2">
@@ -262,7 +271,7 @@ const ShowDetails = () => {
                 </Button>
               </div>
             ) : (
-              <div className="border-4 border-gray-200 p-6">
+              <div className="mb-6">
                 <h4 className="text-gray-800 font-bold mb-4">Slutför köp</h4>
                 
                 <div className="space-y-4 mb-6">
@@ -297,7 +306,7 @@ const ShowDetails = () => {
                   </div>
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-none mb-4">
+                <div className="bg-gray-50 p-4 rounded-none mb-4 border border-gray-300">
                   <h5 className="font-medium mb-2">Sammanfattning</h5>
                   {ticketCount > 0 && <p>Ordinarie biljetter: {ticketCount} × 175kr = {ticketCount * 175}kr</p>}
                   {discountTickets > 0 && <p>Rabatterade biljetter: {discountTickets} × 145kr = {discountTickets * 145}kr</p>}
@@ -322,7 +331,74 @@ const ShowDetails = () => {
                 </div>
               </div>
             )}
+            
+            {show.performers && show.performers.length > 0 && (
+              <div className="mb-6">
+                <h4 className="text-gray-800 font-bold mb-3">Medverkande</h4>
+                <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
+                  <div className="space-y-6">
+                    {show.performers.map((performer: any) => (
+                      <div key={performer.id} className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
+                        <img 
+                          src={performer.image} 
+                          alt={performer.name}
+                          className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <h5 className="font-bold text-gray-800 mb-2">
+                            {performer.name}
+                          </h5>
+                          <p className="text-gray-700 leading-relaxed text-sm break-words" style={{ lineHeight: '1.3' }}>
+                            {performer.bio}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
+          
+          {/* Other shows section */}
+          {otherShows.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-xl font-bold text-theatre-light mb-6">Fler föreställningar</h3>
+              <div className="grid gap-4">
+                {otherShows.map((otherShow) => (
+                  <Link key={otherShow.id} to={`/shows/${otherShow.slug}`} className="block">
+                    <div className="border-4 border-white bg-white rounded-none p-4 hover:shadow-lg transition-all duration-300 group">
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div className="flex-1 mb-3 md:mb-0">
+                          <h4 className="text-blue-500 font-bold text-base mb-1">
+                            <span className="block md:hidden">{otherShow.title}</span>
+                            <span className="hidden md:block">{otherShow.title} {otherShow.date}</span>
+                          </h4>
+                          <div className="block md:hidden text-blue-500 font-bold text-base mb-2">
+                            {otherShow.date}
+                          </div>
+                          <div className="flex items-center mb-2">
+                            <MapPin size={14} className="text-gray-600 mr-1" />
+                            <p className="text-gray-600 text-sm">{otherShow.location}</p>
+                          </div>
+                          <div className="text-blue-500 group-hover:text-blue-700 transition-colors">
+                            <span className="text-sm">Läs mer →</span>
+                          </div>
+                        </div>
+                        <div className="md:ml-4 flex-shrink-0">
+                          <img 
+                            src={otherShow.image} 
+                            alt={otherShow.title}
+                            className="w-full md:w-20 h-20 rounded-none object-cover object-top"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

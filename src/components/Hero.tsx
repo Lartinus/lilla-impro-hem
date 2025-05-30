@@ -19,7 +19,7 @@ const Hero = () => {
           <div className="text-left space-y-4 p-6 md:p-16 lg:p-20 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
             {/* Description */}
             <div className="max-w-4xl space-y-2 pb-1">
-              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.3' }}>
+              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.2' }}>
                 Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, 
                 och samtidigt ta del av roliga, smarta och lekfulla föreställningar.
@@ -33,12 +33,12 @@ const Hero = () => {
 
             {/* Mission statement */}
             <div className="max-w-4xl space-y-3 pt-4">
-              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.3' }}>
+              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.2' }}>
                 Vi bygger långsamt, med kvalitet, nyfikenhet och ett stort fokus på att göra 
                 improvisatörerna bättre och publiken gladare – och på att skapa ett community 
                 där du som elev, improvisatör och publik blir en del av något större.
               </p>
-              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.3' }}>
+              <p className="text-base leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.2' }}>
                 Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
             </div>
@@ -50,7 +50,7 @@ const Hero = () => {
                   <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left md:text-center">
                     Vad är improv comedy egentligen?
                   </h1>
-                  <h3 className="text-theatre-secondary font-medium mb-4 max-w-2xl text-left md:text-center md:mx-auto">
+                  <h3 className="text-theatre-secondary font-medium mb-4 text-left md:text-center md:mx-auto">
                     Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
                   </h3>
                 </div>

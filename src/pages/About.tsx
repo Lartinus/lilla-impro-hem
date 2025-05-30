@@ -49,9 +49,8 @@ const About = () => {
           
           {/* Mission */}
           <div className="text-left">
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Vår mission</h2>
             <h3 className="text-theatre-secondary font-medium mb-4">
-              Att skapa ett hem för Improv Comedy i Stockholm där alla kan växa, lära och skratta tillsammans.
+              Vi vill skapa ett hem för Improv Comedy i Stockholm där alla kan växa, lära och skratta tillsammans.
             </h3>
             <div className="space-y-6 text-gray-700 leading-relaxed">
               <p className="text-base" style={{ lineHeight: '1.3' }}>
@@ -70,16 +69,16 @@ const About = () => {
           {/* Team */}
           <div className="text-left">
             <h2 className="text-xl font-bold text-gray-800 mb-6">Vårt team</h2>
-            <div className="space-y-8">
-              {teamMembers.map((member) => (
-                <div key={member.id} className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-6">
-                  <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6">
+            <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-6">
+              <div className="space-y-8">
+                {teamMembers.map((member) => (
+                  <div key={member.id} className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6">
                     <img 
                       src={member.image} 
                       alt={member.name}
-                      className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0 mx-auto md:mx-0"
+                      className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0"
                     />
-                    <div className="flex-1 min-w-0 text-center md:text-left">
+                    <div className="flex-1 min-w-0 text-left">
                       <h3 className="font-bold text-gray-800 mb-3 text-lg">
                         {member.name}
                       </h3>
@@ -88,8 +87,8 @@ const About = () => {
                       </p>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
@@ -100,8 +99,8 @@ const About = () => {
               Har du frågor om våra kurser eller vill bara säga hej? Vi hör gärna från dig!
             </p>
             <div className="space-y-2 text-gray-700">
-              <p className="text-base">📧 info@lillaimproteatern.se</p>
-              <p className="text-base">📞 +46 70 245 04 74</p>
+              <p className="text-base">info@lillaimproteatern.se</p>
+              <p className="text-base">+46 70 245 04 74</p>
             </div>
           </div>
         </div>
