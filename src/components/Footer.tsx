@@ -1,4 +1,3 @@
-
 import { MapPin, Phone, Mail, Facebook, Instagram } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -56,6 +55,9 @@ const Footer = () => {
               </Link>
               <Link to="/foretag" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
                 Företag
+              </Link>
+              <Link to="/mohippa" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
+                Möhippa
               </Link>
               <Link to="/om-oss" className="block text-theatre-light/80 hover:text-theatre-light transition-colors">
                 Om oss

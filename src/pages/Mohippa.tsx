@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
 import { useEffect } from 'react';
+import { ArrowRight } from 'lucide-react';
 
 const Mohippa = () => {
   useEffect(() => {
@@ -20,9 +21,6 @@ const Mohippa = () => {
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
             Möhippa
           </h1>
-          <p className="text-theatre-light text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-            Vill du ge någon en upplevelse de sent kommer att glömma?
-          </p>
         </div>
       </section>
 
@@ -31,11 +29,11 @@ const Mohippa = () => {
         <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
           <div className="border-4 border-white shadow-lg bg-white rounded-none p-6 md:p-8">
             
-            {/* Description */}
+            {/* Main heading */}
             <div className="mb-8">
-              <p className="text-black text-base leading-relaxed mb-4">
+              <h3 className="text-theatre-secondary font-medium mb-6">
                 Boka en improworkshop eller en skräddarsydd show till din fest, möhippa, svensexa, födelsedag eller annan tillställning.
-              </p>
+              </h3>
               <p className="text-black text-base leading-relaxed">
                 Improv Comedy är en perfekt aktivitet för att skapa skratt, gemenskap och minnen. Vi tar med oss det vi älskar med improv comedy – värme, överraskning och lekfullhet – och skapar något som passar just er.
               </p>
@@ -46,19 +44,19 @@ const Mohippa = () => {
               <h2 className="text-xl font-bold text-black mb-4">Vad kan ni boka?</h2>
               <ul className="space-y-3 text-black">
                 <li className="flex items-start">
-                  <span className="text-red-800 font-bold mr-2">•</span>
+                  <ArrowRight className="text-red-800 mr-2 mt-1 flex-shrink-0" size={16} />
                   <div>
                     <strong>Improshow</strong> – En specialutformad improföreställning där vi inkluderar detaljer om t.ex. födelsedagsbarnet eller brudparet
                   </div>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-red-800 font-bold mr-2">•</span>
+                  <ArrowRight className="text-red-800 mr-2 mt-1 flex-shrink-0" size={16} />
                   <div>
                     <strong>Workshop</strong> – En lekfull och inkluderande introduktion i Improv Comedy, inga förkunskaper krävs
                   </div>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-red-800 font-bold mr-2">•</span>
+                  <ArrowRight className="text-red-800 mr-2 mt-1 flex-shrink-0" size={16} />
                   <div>
                     <strong>Workshop + Show</strong> – Börja med att en workshop tillsammans, avsluta med att vi uppträder för er
                   </div>
@@ -78,19 +76,19 @@ const Mohippa = () => {
               <h2 className="text-xl font-bold text-black mb-4">Exempel på tillfällen vi passar för:</h2>
               <ul className="space-y-2 text-black">
                 <li className="flex items-center">
-                  <span className="text-red-800 font-bold mr-2">•</span>
+                  <ArrowRight className="text-red-800 mr-2 flex-shrink-0" size={16} />
                   Möhippor & svensexor
                 </li>
                 <li className="flex items-center">
-                  <span className="text-red-800 font-bold mr-2">•</span>
+                  <ArrowRight className="text-red-800 mr-2 flex-shrink-0" size={16} />
                   Födelsedagsfester
                 </li>
                 <li className="flex items-center">
-                  <span className="text-red-800 font-bold mr-2">•</span>
+                  <ArrowRight className="text-red-800 mr-2 flex-shrink-0" size={16} />
                   After work
                 </li>
                 <li className="flex items-center">
-                  <span className="text-red-800 font-bold mr-2">•</span>
+                  <ArrowRight className="text-red-800 mr-2 flex-shrink-0" size={16} />
                   Kompisgäng som vill göra något kul tillsammans
                 </li>
               </ul>

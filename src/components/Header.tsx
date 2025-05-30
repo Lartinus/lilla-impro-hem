@@ -31,6 +31,9 @@ const Header = () => {
             <Link to="/foretag" className="text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light" style={{ fontSize: '16px' }}>
               Företag
             </Link>
+            <Link to="/mohippa" className="text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light" style={{ fontSize: '16px' }}>
+              Möhippa
+            </Link>
             <Link to="/om-oss" className="text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light" style={{ fontSize: '16px' }}>
               Om oss
             </Link>
@@ -60,6 +63,9 @@ const Header = () => {
               </Link>
               <Link to="/foretag" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
                 Företag
+              </Link>
+              <Link to="/mohippa" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
+                Möhippa
               </Link>
               <Link to="/om-oss" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
                 Om oss
