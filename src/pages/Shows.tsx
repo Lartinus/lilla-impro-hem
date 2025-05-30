@@ -17,7 +17,7 @@ const Shows = () => {
       date: "27 oktober 19.00",
       location: "Metropole",
       slug: "ensemble-27-oktober",
-      image: "/lovable-uploads/82e4b7c8-bf74-423f-a1d4-d94f33f7ae8b.png"
+      image: "/lovable-uploads/ac906279-978d-4e9c-b9a1-eb3a90b48aef.png"
     },
     {
       id: 2,
@@ -25,7 +25,7 @@ const Shows = () => {
       date: "15 november 20.00", 
       location: "Teater Galeasen",
       slug: "improkomedi-15-november",
-      image: "/lovable-uploads/1287edaf-8412-4d2b-b6e4-b6fb8426185d.png"
+      image: "/lovable-uploads/a018eb4f-8f59-4895-b9b0-565c2b8ad636.png"
     },
     {
       id: 3,
@@ -33,7 +33,7 @@ const Shows = () => {
       date: "8 december 18.30",
       location: "Södra Teatern",
       slug: "julspecial-8-december",
-      image: "/lovable-uploads/4ab70355-63ab-4d68-bfd3-3a2659550888.png"
+      image: "/lovable-uploads/8c70d3b3-4ad3-4d2d-a831-b759a5ec35eb.png"
     }
   ];
 

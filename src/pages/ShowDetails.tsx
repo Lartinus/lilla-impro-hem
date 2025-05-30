@@ -364,17 +364,20 @@ const ShowDetails = () => {
           {otherShows.length > 0 && (
             <div className="mt-8">
               <h3 className="text-xl font-bold text-theatre-light mb-6">Fler föreställningar</h3>
-              <div className="grid gap-4">
+              <div className="grid gap-4 md:grid-cols-2">
                 {otherShows.map((otherShow) => (
                   <Link key={otherShow.id} to={`/shows/${otherShow.slug}`} className="block">
                     <div className="border-4 border-white bg-white rounded-none p-4 hover:shadow-lg transition-all duration-300 group">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                        <div className="flex-1 mb-3 md:mb-0">
+                      <div className="flex flex-col">
+                        <div className="flex-1 mb-3">
                           <h4 className="text-blue-500 font-bold text-base mb-1">
                             <span className="block md:hidden">{otherShow.title}</span>
-                            <span className="hidden md:block">{otherShow.title} {otherShow.date}</span>
+                            <span className="hidden md:block">{otherShow.title}</span>
                           </h4>
                           <div className="block md:hidden text-blue-500 font-bold text-base mb-2">
+                            {otherShow.date}
+                          </div>
+                          <div className="hidden md:block text-blue-500 font-bold text-base mb-2">
                             {otherShow.date}
                           </div>
                           <div className="flex items-center mb-2">
@@ -385,11 +388,11 @@ const ShowDetails = () => {
                             <span className="text-sm">Läs mer →</span>
                           </div>
                         </div>
-                        <div className="md:ml-4 flex-shrink-0">
+                        <div className="flex-shrink-0">
                           <img 
                             src={otherShow.image} 
                             alt={otherShow.title}
-                            className="w-full md:w-20 h-20 rounded-none object-cover object-top"
+                            className="w-full h-32 rounded-none object-cover object-top"
                           />
                         </div>
                       </div>
