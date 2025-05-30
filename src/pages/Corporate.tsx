@@ -1,12 +1,13 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Button } from '@/components/ui/button';
+import CorporateInquiryForm from '@/components/CorporateInquiryForm';
+import { useEffect } from 'react';
 
 const Corporate = () => {
-  const handleContact = () => {
-    // Navigate to contact section or form
-    console.log('Contact button clicked');
-  };
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex flex-col">
@@ -25,13 +26,13 @@ const Corporate = () => {
 
         {/* Content Section */}
         <section className="px-0.5 md:px-4 pb-8">
-          <div className="space-y-8 border-4 border-white p-8 md:p-6 lg:p-12 bg-white rounded-none mx-6 md:mx-0 md:max-w-5xl md:mx-auto">
+          <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
             <div className="text-left">
               <h3 className="text-theatre-secondary font-medium mb-6">
                 Vill ni ha skratt, samarbete och kunskap i samma paket? Då är ni välkomna till oss.
               </h3>
               
-              <p className="text-gray-700 leading-relaxed mb-8 text-sm md:text-base">
+              <p className="text-gray-700 leading-relaxed mb-8 text-base">
                 Lilla Improteatern erbjuder skräddarsydda workshops och föreställningar för företag, organisationer och myndigheter. Vi använder verktyg från Improv Comedy för att utveckla kommunikation, lyssnande, kreativitet och samarbete – på ett sätt som både är roligt och ger långvariga effekter.
               </p>
               
@@ -40,45 +41,40 @@ const Corporate = () => {
               </h4>
               
               <div className="space-y-3 mb-8">
-                <div className="flex items-center space-x-3">
-                  <span className="text-blue-500 text-sm font-bold">→</span>
-                  <p className="text-gray-700 text-sm md:text-base">
+                <div className="flex items-start space-x-3">
+                  <span className="text-blue-500 text-sm font-bold mt-1 flex-shrink-0">→</span>
+                  <p className="text-gray-700 text-base">
                     <span className="font-semibold">Teambuilding-workshops</span> – stärk samspel och gruppdynamik
                   </p>
                 </div>
                 
-                <div className="flex items-center space-x-3">
-                  <span className="text-blue-500 text-sm font-bold">→</span>
-                  <p className="text-gray-700 text-sm md:text-base">
+                <div className="flex items-start space-x-3">
+                  <span className="text-blue-500 text-sm font-bold mt-1 flex-shrink-0">→</span>
+                  <p className="text-gray-700 text-base">
                     <span className="font-semibold">Kreativitetsboosters</span> – lås upp nya sätt att tänka tillsammans
                   </p>
                 </div>
                 
-                <div className="flex items-center space-x-3">
-                  <span className="text-blue-500 text-sm font-bold">→</span>
-                  <p className="text-gray-700 text-sm md:text-base">
+                <div className="flex items-start space-x-3">
+                  <span className="text-blue-500 text-sm font-bold mt-1 flex-shrink-0">→</span>
+                  <p className="text-gray-700 text-base">
                     <span className="font-semibold">Kommunikation</span> – öva på att lyssna, leda och följa
                   </p>
                 </div>
                 
-                <div className="flex items-center space-x-3">
-                  <span className="text-blue-500 text-sm font-bold">→</span>
-                  <p className="text-gray-700 text-sm md:text-base">
+                <div className="flex items-start space-x-3">
+                  <span className="text-blue-500 text-sm font-bold mt-1 flex-shrink-0">→</span>
+                  <p className="text-gray-700 text-base">
                     <span className="font-semibold">Improföreställningar på er konferens eller kickoff</span> – smart humor och stor igenkänning
                   </p>
                 </div>
               </div>
               
-              <p className="text-gray-700 leading-relaxed mb-8 text-sm md:text-base">
+              <p className="text-gray-700 leading-relaxed mb-8 text-base">
                 Vi har erfarenhet av att jobba med såväl stora företag som små arbetsgrupper, och vi anpassar alltid upplägget efter era behov, mål och förutsättningar.
               </p>
               
-              <Button 
-                onClick={handleContact}
-                className="px-8 py-3 text-sm font-medium"
-              >
-                Gör en förfrågan
-              </Button>
+              <CorporateInquiryForm />
             </div>
           </div>
         </section>

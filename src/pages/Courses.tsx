@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CourseCard from '@/components/CourseCard';
@@ -165,7 +166,7 @@ const Courses = () => {
               <p className="text-base">
                 Vi tränar dig i att upptäcka det roliga och följa det – i en trygg, tydlig och lekfull struktur där du får växa som improvisatör. Du kommer att:
               </p>
-              <div className="bg-red-700 text-white p-4 md:p-6 border-4 border-white rounded-none">
+              <div className="bg-red-700 text-white p-4 md:p-6 border-4 border-white rounded-none -mx-3 md:-mx-6 lg:-mx-12">
                 <h3 className="text-white font-bold mb-4">Lär dig spela det som redan är kul</h3>
                 <p className="leading-relaxed text-base">
                   Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the Scene", att följa det roliga och att få det att växa.
@@ -181,8 +182,8 @@ const Courses = () => {
             </h3>
             <div className="space-y-3 mb-6">
               {whoCanCome.map((item, index) => (
-                <div key={index} className="flex items-center space-x-3">
-                  <span className="text-blue-500 text-sm font-bold">→</span>
+                <div key={index} className="flex items-start space-x-3">
+                  <span className="text-blue-500 text-sm font-bold mt-1 flex-shrink-0">→</span>
                   <p className="text-gray-700 text-base">{item}</p>
                 </div>
               ))}
@@ -192,8 +193,8 @@ const Courses = () => {
             </p>
             <div className="space-y-3">
               {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center space-x-3">
-                  <span className="text-blue-500 text-sm font-bold">→</span>
+                <div key={index} className="flex items-start space-x-3">
+                  <span className="text-blue-500 text-sm font-bold mt-1 flex-shrink-0">→</span>
                   <p className="text-gray-700 text-base">{benefit}</p>
                 </div>
               ))}

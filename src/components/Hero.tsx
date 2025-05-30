@@ -17,7 +17,7 @@ const Hero = () => {
           {/* Hero heading outside the box */}
           <section className="px-0.5 md:px-4 mt-20 py-6">
             <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4 max-w-4xl mx-auto">
                 → Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy. ←
               </h1>
             </div>
@@ -54,11 +54,11 @@ const Hero = () => {
             {/* Video section content moved here */}
             <div className="mt-8">
               <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white">
-                <div className="text-center space-y-4">
+                <div className="text-center md:text-center space-y-4">
                   <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4">
                     Vad är improv comedy egentligen?
                   </h1>
-                  <h3 className="text-theatre-secondary font-medium mb-4 max-w-2xl mx-auto">
+                  <h3 className="text-theatre-secondary font-medium mb-4 max-w-2xl mx-auto md:mx-auto text-left md:text-center">
                     Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
                   </h3>
                 </div>

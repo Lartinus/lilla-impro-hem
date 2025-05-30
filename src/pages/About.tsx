@@ -1,3 +1,4 @@
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,7 @@ const About = () => {
       
       <div className="flex-grow">
         {/* Hero */}
-        <section className="px-6 mt-20 py-12">
+        <section className="px-0.5 md:px-4 mt-20 py-6">
           <div className="text-center">
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
               Om oss
@@ -49,9 +50,9 @@ const About = () => {
         </section>
 
         {/* Content Section */}
-        <section className="px-6 pb-12">
-          <div className="space-y-12 border-4 border-white p-6 md:p-16 bg-white rounded-none mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
-            <div className="text-left">
+        <section className="px-0.5 md:px-4 pb-8">
+          <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
+            <div className="text-left max-w-4xl">
               <p className="text-gray-700 leading-relaxed mb-8 text-base">
                 Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy – och en stark vilja att skapa en plats där både skratten, hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron – och i viljan att bygga något nytt tillsammans.
               </p>
