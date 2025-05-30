@@ -19,6 +19,11 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
     phone: ''
   });
 
+  const [errors, setErrors] = useState({
+    phone: '',
+    email: ''
+  });
+
   // Calculate total with potential discount
   const regularTotal = ticketCount * 175;
   const discountTotal = discountTickets * 145;
@@ -34,7 +39,59 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
   // Calculate VAT (moms) using correct formula: [totalpris] - ([totalpris]/1,06)
   const vatAmount = finalTotal - (finalTotal / 1.06);
 
+  const validatePhone = (phone: string) => {
+    const digitsOnly = phone.replace(/\D/g, '');
+    if (digitsOnly.length === 0) return '';
+    if (digitsOnly.length !== 10) {
+      return `Telefonnummer måste vara exakt 10 siffror (du har skrivit ${digitsOnly.length})`;
+    }
+    return '';
+  };
+
+  const validateEmail = (email: string) => {
+    if (email.length === 0) return '';
+    if (!email.includes('@')) {
+      return 'E-post måste innehålla @';
+    }
+    return '';
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPurchaseData({...purchaseData, phone: value});
+    setErrors({...errors, phone: validatePhone(value)});
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPurchaseData({...purchaseData, email: value});
+    setErrors({...errors, email: validateEmail(value)});
+  };
+
+  const isFormValid = () => {
+    const phoneError = validatePhone(purchaseData.phone);
+    const emailError = validateEmail(purchaseData.email);
+    
+    return purchaseData.name && 
+           purchaseData.email && 
+           purchaseData.phone && 
+           !phoneError && 
+           !emailError;
+  };
+
   const handleCompletePurchase = () => {
+    // Final validation before submission
+    const phoneError = validatePhone(purchaseData.phone);
+    const emailError = validateEmail(purchaseData.email);
+    
+    if (phoneError || emailError) {
+      setErrors({
+        phone: phoneError,
+        email: emailError
+      });
+      return;
+    }
+
     console.log('Purchase data:', {
       ...purchaseData,
       regularTickets: ticketCount,
@@ -91,20 +148,26 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
           <Input
             type="email"
             value={purchaseData.email}
-            onChange={(e) => setPurchaseData({...purchaseData, email: e.target.value})}
+            onChange={handleEmailChange}
             className="rounded-none text-gray-900"
             placeholder="din@email.se"
           />
+          {errors.email && (
+            <p className="text-red-600 text-sm mt-1">{errors.email}</p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Telefonnummer</label>
           <Input
             type="tel"
             value={purchaseData.phone}
-            onChange={(e) => setPurchaseData({...purchaseData, phone: e.target.value})}
+            onChange={handlePhoneChange}
             className="rounded-none text-gray-900"
             placeholder="070-123 45 67"
           />
+          {errors.phone && (
+            <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
+          )}
         </div>
       </div>
 
@@ -119,7 +182,7 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
         <Button 
           onClick={handleCompletePurchase}
           className="bg-blue-600 hover:bg-blue-700 text-white rounded-none"
-          disabled={!purchaseData.name || !purchaseData.email || !purchaseData.phone}
+          disabled={!isFormValid()}
         >
           Betala med Stripe →
         </Button>
