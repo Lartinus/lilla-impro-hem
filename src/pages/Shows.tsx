@@ -38,7 +38,7 @@ const Shows = () => {
   ];
 
   return (
-    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       
@@ -53,11 +53,18 @@ const Shows = () => {
 
       {/* Shows Grid */}
       <section className="py-2 px-0.5 md:px-4 pb-8 animate-fade-in">
-        <div className="grid gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
+        <div className="grid gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto md:grid-cols-2 lg:grid-cols-3">
           {shows.map((show) => (
             <Link key={show.id} to={`/shows/${show.slug}`} className="block">
-              <div className="border-4 border-white bg-white rounded-none p-0 hover:shadow-lg transition-all duration-300 group flex">
-                <div className="flex-1 p-6">
+              <div className="border-4 border-white bg-white rounded-none p-0 hover:shadow-lg transition-all duration-300 group flex flex-col h-full">
+                <div className="w-full h-48 flex-shrink-0">
+                  <img 
+                    src={show.image} 
+                    alt={show.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1 p-6 flex flex-col">
                   <h2 className="text-blue-500 font-bold text-lg mb-1">
                     {show.title} {show.date}
                   </h2>
@@ -65,16 +72,9 @@ const Shows = () => {
                     <MapPin size={16} className="text-red-800 mr-2" />
                     <p className="text-red-800">{show.location}</p>
                   </div>
-                  <div className="text-blue-500 group-hover:text-blue-700 transition-colors">
+                  <div className="text-blue-500 group-hover:text-blue-700 transition-colors mt-auto">
                     <span className="text-sm">Läs mer →</span>
                   </div>
-                </div>
-                <div className="w-64 flex-shrink-0">
-                  <img 
-                    src={show.image} 
-                    alt={show.title}
-                    className="w-full h-full object-cover"
-                  />
                 </div>
               </div>
             </Link>
