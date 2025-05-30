@@ -98,7 +98,7 @@ const PrivateInquiryForm = () => {
             value={formData.occasion}
             onChange={handleInputChange}
             placeholder="T.ex. Möhippa, födelsedagsfest, svensexa"
-            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white placeholder:text-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white placeholder:text-gray-500 text-sm sm:text-base"
           />
         </div>
         
@@ -114,7 +114,7 @@ const PrivateInquiryForm = () => {
             value={formData.requirements}
             onChange={handleInputChange}
             placeholder="Beskriv era behov och mål för aktiviteten"
-            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-black bg-white placeholder:text-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[100px] max-h-[300px] text-black bg-white placeholder:text-gray-500 text-sm sm:text-base"
           />
         </div>
         
