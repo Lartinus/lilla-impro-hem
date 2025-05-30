@@ -53,7 +53,7 @@ const About = () => {
         <section className="px-0.5 md:px-4 pb-8">
           <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
             <div className="text-left max-w-4xl">
-              <p className="text-gray-700 leading-relaxed mb-8 text-base">
+              <p className="text-gray-700 leading-relaxed mb-8 text-base" style={{ lineHeight: '1.5' }}>
                 Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy – och en stark vilja att skapa en plats där både skratten, hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron – och i viljan att bygga något nytt tillsammans.
               </p>
               
@@ -62,7 +62,7 @@ const About = () => {
               <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4 mb-8">
                 <div className="space-y-8">
                   {productionTeam.map((member) => (
-                    <div key={member.id} className="flex items-start space-x-4">
+                    <div key={member.id} className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
                       <img 
                         src={member.image} 
                         alt={member.name}
@@ -81,7 +81,7 @@ const About = () => {
                 </div>
               </div>
               
-              <p className="text-gray-700 leading-relaxed mb-8 text-base">
+              <p className="text-gray-700 leading-relaxed mb-8 text-base" style={{ lineHeight: '1.5' }}>
                 Tillsammans vill vi skapa en plats där människor inte bara lär sig impro, utan blir en del av ett sammanhang. Lilla Improteatern ska vara ett hem för alla som vill utvecklas, spela, skratta – och växa tillsammans.
               </p>
               
@@ -89,7 +89,7 @@ const About = () => {
                 onClick={handleContact}
                 className="px-8 py-3 text-base font-medium"
               >
-                Kontakt
+                Kom i kontakt med oss
               </Button>
             </div>
           </div>
