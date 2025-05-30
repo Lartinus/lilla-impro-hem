@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,7 +31,7 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
   }
 
   // Calculate VAT (moms) using correct formula: [totalpris] - ([totalpris]/1,06)
-  const vatAmount = Math.round(finalTotal - (finalTotal / 1.06));
+  const vatAmount = finalTotal - (finalTotal / 1.06);
 
   const handleCompletePurchase = () => {
     console.log('Purchase data:', {
@@ -72,7 +71,7 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
           Totalt: {finalTotal}kr
         </div>
         <div className="text-gray-600 text-sm mt-1">
-          Varav {vatAmount}kr moms
+          Varav {vatAmount.toFixed(2)}kr moms
         </div>
       </div>
       
