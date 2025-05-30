@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CourseCard from '@/components/CourseCard';
@@ -95,7 +94,7 @@ const Courses = () => {
         </div>
         
         {/* Combined Information Box */}
-        <div className="mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto mt-4">
+        <div className="mx-[12px] md:mx-0 md:max-w-3xl md:mx-auto mt-4">
           <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
             <div className="text-left space-y-6">
               <div>
