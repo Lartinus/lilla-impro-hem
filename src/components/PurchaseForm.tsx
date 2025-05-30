@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -81,7 +82,7 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
           <Input
             value={purchaseData.name}
             onChange={(e) => setPurchaseData({...purchaseData, name: e.target.value})}
-            className="rounded-none"
+            className="rounded-none text-gray-900"
             placeholder="Ditt namn"
           />
         </div>
@@ -91,7 +92,7 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
             type="email"
             value={purchaseData.email}
             onChange={(e) => setPurchaseData({...purchaseData, email: e.target.value})}
-            className="rounded-none"
+            className="rounded-none text-gray-900"
             placeholder="din@email.se"
           />
         </div>
@@ -101,7 +102,7 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
             type="tel"
             value={purchaseData.phone}
             onChange={(e) => setPurchaseData({...purchaseData, phone: e.target.value})}
-            className="rounded-none"
+            className="rounded-none text-gray-900"
             placeholder="070-123 45 67"
           />
         </div>
