@@ -1,7 +1,6 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import CorporateInquiryForm from '@/components/CorporateInquiryForm';
+import PrivateInquiryForm from '@/components/PrivateInquiryForm';
 import { useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 
@@ -97,7 +96,7 @@ const Mohippa = () => {
             {/* Contact Form */}
             <div>
               <h2 className="text-xl font-bold text-black mb-4">Hör av dig</h2>
-              <CorporateInquiryForm />
+              <PrivateInquiryForm />
             </div>
 
           </div>
