@@ -77,7 +77,7 @@ function createNormalRenderer(): any {
     return `<li class="text-gray-800 my-1">${text}</li>`;
   };
 
-  renderer.link = function({ href, title, tokens }: { href: string, title: string | null, tokens: any[] }) {
+  renderer.link = function({ href, title, tokens }: { href: string, title?: string | null, tokens: any[] }) {
     const text = getTextFromTokens(tokens);
     const titleAttr = title ? ` title="${title}"` : '';
     return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
@@ -97,7 +97,7 @@ function createNormalRenderer(): any {
     return `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${text}</code>`;
   };
 
-  renderer.code = function({ text, lang }: { text: string, lang: string | undefined }) {
+  renderer.code = function({ text, lang }: { text: string, lang?: string | undefined }) {
     return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${text}</code></pre>`;
   };
 
@@ -150,7 +150,7 @@ function createRedBoxRenderer(): any {
     return `<li class="text-white my-1">${text}</li>`;
   };
 
-  renderer.link = function({ href, title, tokens }: { href: string, title: string | null, tokens: any[] }) {
+  renderer.link = function({ href, title, tokens }: { href: string, title?: string | null, tokens: any[] }) {
     const text = getTextFromTokens(tokens);
     const titleAttr = title ? ` title="${title}"` : '';
     return `<a href="${href}"${titleAttr} class="text-ljusbla hover:text-ljusbla underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
@@ -170,7 +170,7 @@ function createRedBoxRenderer(): any {
     return `<code class="bg-gray-700 px-1 py-0.5 rounded text-sm">${text}</code>`;
   };
 
-  renderer.code = function({ text, lang }: { text: string, lang: string | undefined }) {
+  renderer.code = function({ text, lang }: { text: string, lang?: string | undefined }) {
     return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${text}</code></pre>`;
   };
 
