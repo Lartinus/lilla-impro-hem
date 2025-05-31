@@ -25,9 +25,6 @@ function preprocess(md: string): string {
   // Sätt in blanksteg efter rubriker som saknar det
   s = s.replace(/(^|\n)(#{1,6})(?=\S)/g, '$1$2 ');
 
-  // Hantera pil-listor - konvertera → till specialmarkering
-  s = s.replace(/^(\s*)→\s*(.+)$/gm, '$1[ARROW]$2');
-
   return s;
 }
 
@@ -42,7 +39,7 @@ function createNormalRenderer(): any {
     const classes: Record<number, string> = {
       1: 'text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4',
       2: 'text-xl font-bold text-gray-800 mb-4',
-      3: 'text-lg font-medium text-theatre-secondary mb-3',
+      3: 'text-lg font-medium text-theatre-secondary mb-1',
       4: 'text-base font-bold text-gray-800 mb-2',
       5: 'text-base font-semibold text-gray-800 mb-2',
       6: 'text-base font-medium text-gray-800 mb-2',
@@ -54,9 +51,9 @@ function createNormalRenderer(): any {
   renderer.paragraph = function({ tokens }: { tokens: any[] }) {
     const text = getTextFromTokens(tokens);
     
-    // Hantera pil-listor med specialmarkering
-    if (text.includes('[ARROW]')) {
-      const content = text.replace(/\[ARROW\]/, '').trim();
+    // Hantera pil-listor direkt i renderer
+    if (text.trim().startsWith('→')) {
+      const content = text.replace(/^→\s*/, '').trim();
       return `<div class="arrow-list-item ml-4 my-2 relative text-gray-800">
                 <span class="absolute -left-4 font-bold text-blue-500">→</span>
                 <span>${content}</span>
@@ -118,7 +115,7 @@ function createRedBoxRenderer(): any {
     const classes: Record<number, string> = {
       1: 'text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-white tracking-normal mb-4',
       2: 'text-xl font-bold text-white mb-4',
-      3: 'text-lg font-medium text-white mb-3',
+      3: 'text-lg font-medium text-white mb-1',
       4: 'text-base font-bold text-white mb-2',
       5: 'text-base font-semibold text-white mb-2',
       6: 'text-base font-medium text-white mb-2',
@@ -130,9 +127,9 @@ function createRedBoxRenderer(): any {
   renderer.paragraph = function({ tokens }: { tokens: any[] }) {
     const text = getTextFromTokens(tokens);
     
-    // Hantera pil-listor med specialmarkering för röd bakgrund
-    if (text.includes('[ARROW]')) {
-      const content = text.replace(/\[ARROW\]/, '').trim();
+    // Hantera pil-listor direkt i renderer för röd bakgrund
+    if (text.trim().startsWith('→')) {
+      const content = text.replace(/^→\s*/, '').trim();
       return `<div class="arrow-list-item ml-4 my-2 relative text-white">
                 <span class="absolute -left-4 font-bold text-blue-300">→</span>
                 <span>${content}</span>
