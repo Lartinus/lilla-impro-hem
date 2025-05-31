@@ -1,4 +1,3 @@
-
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   if (!image) return null;
@@ -17,6 +16,8 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
   
   return null;
 };
+
+import { convertMarkdownToHtml } from './markdownHelpers';
 
 export const formatStrapiShow = (strapiShow: any) => {
   if (!strapiShow?.attributes) return null;
@@ -138,9 +139,9 @@ export const formatCourseMainInfo = (strapiData: any) => {
   }
   
   const formatted = {
-    info: attrs.info || '',
-    redbox: attrs.redbox || '',
-    infoAfterRedbox: attrs.info_efter_redbox || attrs.info_after_redbox || ''
+    info: convertMarkdownToHtml(attrs.info || ''),
+    redbox: convertMarkdownToHtml(attrs.redbox || ''),
+    infoAfterRedbox: convertMarkdownToHtml(attrs.info_efter_redbox || attrs.info_after_redbox || '')
   };
   
   console.log('Formatted main info result:', formatted);
