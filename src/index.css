@@ -58,7 +58,7 @@
     
     /* ===== TEACHER/PERFORMER SPACING SETTINGS ===== */
     /* Avstånd mellan namn och bio för alla teachers och performers */
-    --name-to-bio-spacing: 0.1rem;
+    --name-to-bio-spacing: -0.5rem;
     
     /* ===== ARROW SIZE SETTINGS ===== */
     /* Storlek på pilar */
