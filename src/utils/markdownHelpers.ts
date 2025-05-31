@@ -40,8 +40,8 @@ function createNormalRenderer(): any {
   renderer.heading = function({ tokens, depth }: { tokens: any[], depth: number }) {
     const text = getTextFromTokens(tokens);
     const classes: Record<number, string> = {
-      1: 'text-2xl font-bold text-gray-800 my-4',
-      2: 'text-xl font-bold text-gray-800 mb-3',
+      1: 'text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4',
+      2: 'text-xl font-bold text-gray-800 mb-4',
       3: 'text-lg font-medium text-theatre-secondary mb-3',
       4: 'text-base font-bold text-gray-800 mb-2',
       5: 'text-base font-semibold text-gray-800 mb-2',
@@ -113,8 +113,8 @@ function createRedBoxRenderer(): any {
   renderer.heading = function({ tokens, depth }: { tokens: any[], depth: number }) {
     const text = getTextFromTokens(tokens);
     const classes: Record<number, string> = {
-      1: 'text-2xl font-bold text-white my-4',
-      2: 'text-xl font-bold text-white mb-3',
+      1: 'text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-white tracking-normal mb-4',
+      2: 'text-xl font-bold text-white mb-4',
       3: 'text-lg font-medium text-white mb-3',
       4: 'text-base font-bold text-white mb-2',
       5: 'text-base font-semibold text-white mb-2',
@@ -188,10 +188,13 @@ export const convertMarkdownToHtml = (markdown: string): string => {
     const preprocessed = preprocess(markdown);
     console.log('Preprocessed:', preprocessed);
     
+    // Configure marked with proper options
     const html = marked(preprocessed, {
       gfm: true,
       breaks: true,
-      renderer: createNormalRenderer()
+      renderer: createNormalRenderer(),
+      headerIds: false,
+      mangle: false
     });
     
     console.log('Result HTML:', html);
@@ -209,10 +212,13 @@ export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
     console.log('Converting markdown for red box:', markdown);
     const preprocessed = preprocess(markdown);
     
+    // Configure marked with proper options
     const html = marked(preprocessed, {
       gfm: true,
       breaks: true,
-      renderer: createRedBoxRenderer()
+      renderer: createRedBoxRenderer(),
+      headerIds: false,
+      mangle: false
     });
     
     return html as string;
