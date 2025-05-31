@@ -1,4 +1,4 @@
-// src/utils/markdownHelpers.ts
+/ src/utils/markdownHelpers.ts
 
 import { marked } from 'marked';
 
@@ -43,15 +43,16 @@ function preprocess(md: string): string {
   // c) Infoga blanksteg efter alla “1–6 '#'” som direkt följs av ett icke-blank tecken
   //    (antingen i början av strängen eller efter en newline)
   //
-  //    Förklaring:
-  //      (?:^|\n)     → matcha antingen början av hela strängen eller direkt efter en '\n'
-  //      (#{1,6})     → fånga 1–6 stycken “#” i grupp 1
-  //      (?!\s)       → säkerställ att nästa tecken inte är blanksteg (alltså “#” följt av text direkt)
-  //    Ersättning: "$1$2 "  → skriv ut exakt det vi fångade (antingen '' eller '\n') + “###” + ett extra blanksteg
+  //    Regex:
+  //    (^|\n)     → matcha början av strängen eller efter en '\n'
+  //    (#{1,6})   → fånga in 1–6 stycken "#"
+  //    (?=\S)     → se till att nästa tecken är icke-blank (d.v.s. text, inte mellanslag)
   //
-  s = s.replace(/(^|\n)(#{1,6})(?!\s)/g, '$1$2 ');
+  //    Ersättning: "$1$2 " → originalt gruppering ('' eller '\n') + '###' + ett extra blanksteg
+  //
+  s = s.replace(/(^|\n)(#{1,6})(?=\S)/g, '$1$2 ');
 
-  // d) Pil‐listor (→ ) – behåll samma logik som tidigare (bara säkerställa att vi har ett blanksteg efter “→”)
+  // d) Pil‐listor: se till att vi får “→ text” (inkl. blanksteg efter pilen)
   s = s.replace(/^→\s*(.+)$/gm, '→ $1');
 
   return s;
