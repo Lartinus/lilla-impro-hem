@@ -50,20 +50,29 @@ export const formatStrapiCourse = (strapiCourse: any) => {
   if (!strapiCourse?.attributes) return null;
   
   const attrs = strapiCourse.attributes;
-  console.log('Formatting course:', strapiCourse);
+  console.log('Formatting course:', JSON.stringify(strapiCourse, null, 2));
   
   // Handle teacher relation - the teacher object is directly in attributes, not nested in data
   const teacher = attrs.teacher;
-  console.log('Teacher data:', teacher);
+  console.log('Teacher data:', JSON.stringify(teacher, null, 2));
+  
+  // Parse practical info from markdown-like text
+  let practicalInfo = [];
+  if (attrs.praktisk_info) {
+    // Split by lines and filter out empty lines and headers
+    practicalInfo = attrs.praktisk_info
+      .split('\n')
+      .filter((line: string) => line.trim() && !line.startsWith('#'))
+      .map((line: string) => line.replace(/^-\s*/, '').trim())
+      .filter((line: string) => line);
+  }
   
   return {
     id: strapiCourse.id,
     title: attrs.titel || attrs.title,
     subtitle: attrs.undertitel || attrs.subtitle,
     description: attrs.description,
-    practicalInfo: attrs.praktisk_info ? 
-      attrs.praktisk_info.split('\n').filter((item: string) => item.trim()) : 
-      [],
+    practicalInfo: practicalInfo,
     teacher: teacher ? {
       id: teacher.id,
       name: teacher.name,
