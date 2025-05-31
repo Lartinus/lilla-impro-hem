@@ -47,33 +47,43 @@ export const formatStrapiShow = (strapiShow: any) => {
 };
 
 export const formatStrapiCourse = (strapiCourse: any) => {
-  if (!strapiCourse?.attributes) return null;
+  console.log('Formatting course - input:', JSON.stringify(strapiCourse, null, 2));
   
-  const attrs = strapiCourse.attributes;
-  console.log('Formatting course:', JSON.stringify(strapiCourse, null, 2));
+  if (!strapiCourse) {
+    console.log('No course data provided');
+    return null;
+  }
   
-  // Handle teacher relation - check if it's nested in data or directly accessible
+  // Handle both new Strapi format (direct attributes) and old format (attributes nested)
+  const attrs = strapiCourse.attributes || strapiCourse;
+  
+  if (!attrs) {
+    console.log('No attributes found in course data');
+    return null;
+  }
+  
+  // Handle teacher relation
   let teacher = null;
   if (attrs.teacher) {
     console.log('Teacher data found:', JSON.stringify(attrs.teacher, null, 2));
     
-    // If teacher has data property (standard Strapi relation format)
-    if (attrs.teacher.data?.attributes) {
+    // Direct teacher data (new format)
+    if (attrs.teacher.name) {
+      teacher = {
+        id: attrs.teacher.id,
+        name: attrs.teacher.name,
+        bio: attrs.teacher.bio,
+        image: getStrapiImageUrl(attrs.teacher.image),
+      };
+    }
+    // Teacher with data property (old format)
+    else if (attrs.teacher.data?.attributes) {
       const teacherAttrs = attrs.teacher.data.attributes;
       teacher = {
         id: attrs.teacher.data.id,
         name: teacherAttrs.name,
         bio: teacherAttrs.bio,
         image: getStrapiImageUrl(teacherAttrs.image),
-      };
-    }
-    // If teacher is directly accessible (already populated)
-    else if (attrs.teacher.name) {
-      teacher = {
-        id: attrs.teacher.id,
-        name: attrs.teacher.name,
-        bio: attrs.teacher.bio,
-        image: getStrapiImageUrl(attrs.teacher.image),
       };
     }
   }
@@ -105,13 +115,27 @@ export const formatStrapiCourse = (strapiCourse: any) => {
 };
 
 export const formatCourseMainInfo = (strapiData: any) => {
-  if (!strapiData?.data?.attributes) return null;
+  console.log('Formatting course main info - input:', JSON.stringify(strapiData, null, 2));
   
-  const attrs = strapiData.data.attributes;
+  if (!strapiData?.data) {
+    console.log('No main info data found');
+    return null;
+  }
   
-  return {
+  // Handle both old and new Strapi formats
+  const attrs = strapiData.data.attributes || strapiData.data;
+  
+  if (!attrs) {
+    console.log('No attributes found in main info data');
+    return null;
+  }
+  
+  const formatted = {
     info: attrs.info || '',
     redbox: attrs.redbox || '',
     infoAfterRedbox: attrs.info_efter_redbox || attrs.info_after_redbox || ''
   };
+  
+  console.log('Formatted main info result:', formatted);
+  return formatted;
 };
