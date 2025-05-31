@@ -15,7 +15,7 @@ const PracticalInfo = ({ practicalInfo }: PracticalInfoProps) => {
             <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
             <div 
               className="text-gray-700 text-base" 
-              style={{ lineHeight: '1.3' }}
+              style={{ lineHeight: '1.2' }}
               dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(item) }}
             />
           </div>
