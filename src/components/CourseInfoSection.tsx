@@ -11,38 +11,44 @@ interface CourseInfoSectionProps {
 }
 
 const CourseInfoSection = ({ mainInfo }: CourseInfoSectionProps) => {
+  // Här antar vi att mainInfo.info, .redbox och .infoAfterRedbox redan är rena strängar
+  // (om de kommer som objekt – se tidigare instruktion att plocka ut .data.attributes.content etc.)
+  const rawInfoContent = mainInfo.info || '';
+  const rawRedboxContent = mainInfo.redbox || '';
+  const rawInfoAfterContent = mainInfo.infoAfterRedbox || '';
+
   return (
     <div className="mx-[12px] md:mx-0 md:max-w-3xl md:mx-auto mt-4">
       <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
         <div className="text-left space-y-6">
-          {mainInfo?.info && (
+          {rawInfoContent && (
             <div
               className="space-y-6 text-gray-700 leading-relaxed text-base"
               style={{ lineHeight: '1.3' }}
               dangerouslySetInnerHTML={{
-                __html: convertMarkdownToHtml(String(mainInfo.info)),
+                __html: convertMarkdownToHtml(rawInfoContent),
               }}
             />
           )}
 
-          {mainInfo?.redbox && (
+          {rawRedboxContent && (
             <div className="bg-red-700 p-6 rounded-none relative">
               <div
                 className="text-base leading-relaxed font-light"
                 style={{ lineHeight: '1.3' }}
                 dangerouslySetInnerHTML={{
-                  __html: convertMarkdownToHtmlForRedBox(String(mainInfo.redbox)),
+                  __html: convertMarkdownToHtmlForRedBox(rawRedboxContent),
                 }}
               />
             </div>
           )}
 
-          {mainInfo?.infoAfterRedbox && (
+          {rawInfoAfterContent && (
             <div
               className="space-y-6 text-gray-700 leading-relaxed text-base"
               style={{ lineHeight: '1.3' }}
               dangerouslySetInnerHTML={{
-                __html: convertMarkdownToHtml(String(mainInfo.infoAfterRedbox)),
+                __html: convertMarkdownToHtml(rawInfoAfterContent),
               }}
             />
           )}
