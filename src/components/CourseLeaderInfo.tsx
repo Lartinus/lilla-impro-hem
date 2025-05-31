@@ -16,11 +16,13 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
   console.log('CourseLeaderInfo - courseLeader:', courseLeader);
   console.log('CourseLeaderInfo - image URL:', courseLeader.image);
   console.log('CourseLeaderInfo - image type:', typeof courseLeader.image);
+  console.log('CourseLeaderInfo - full image object:', JSON.stringify(courseLeader.image, null, 2));
 
   // Check if we have a valid image URL
   const hasValidImage = courseLeader.image && 
                        courseLeader.image !== 'null' && 
-                       courseLeader.image.trim() !== '';
+                       courseLeader.image.trim() !== '' &&
+                       courseLeader.image !== 'undefined';
 
   console.log('CourseLeaderInfo - hasValidImage:', hasValidImage);
 
@@ -37,6 +39,7 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
               onError={(e) => {
                 console.error('Failed to load teacher image:', courseLeader.image);
                 console.error('Image error event:', e);
+                console.error('Image error details:', e.currentTarget.src);
                 const target = e.currentTarget;
                 target.style.display = 'none';
                 // Show fallback div
@@ -49,7 +52,9 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
                 console.log('Successfully loaded teacher image:', courseLeader.image);
               }}
             />
-          ) : null}
+          ) : (
+            console.log('No valid image, showing fallback')
+          )}
           
           {/* Fallback div - always present but hidden by default */}
           <div 
@@ -60,11 +65,11 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
           </div>
           
           <div className="flex-1 min-w-0">
-            <h5 className="font-bold text-gray-800 mb-2 md:text-left">
+            <h5 className="font-bold text-gray-800 mb-1 md:text-left">
               {courseLeader.name}
             </h5>
             <div 
-              className="text-gray-700 leading-relaxed text-sm break-words"
+              className="text-gray-700 leading-relaxed text-sm break-words [&>p]:mb-1 [&>h1]:mb-0.5 [&>h2]:mb-0.5 [&>h3]:mb-0.5 [&>h4]:mb-0.5 [&>h5]:mb-0.5 [&>h6]:mb-0.5"
               dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(courseLeader.bio) }}
             />
           </div>

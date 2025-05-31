@@ -1,3 +1,4 @@
+
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -27,6 +28,14 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
   if (typeof image === 'string') {
     const fullUrl = image.startsWith('http') ? image : `${baseUrl}${image}`;
     console.log('getStrapiImageUrl - Using string url:', fullUrl);
+    return fullUrl;
+  }
+  
+  // Handle nested data structure
+  if (image.attributes?.url) {
+    const url = image.attributes.url;
+    const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+    console.log('getStrapiImageUrl - Using attributes.url:', fullUrl);
     return fullUrl;
   }
   

@@ -52,14 +52,14 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             {course.title}
           </h2>
           {course.subtitle && (
-            <h3 className="text-theatre-secondary font-medium">
+            <h3 className="text-theatre-secondary font-medium mb-2">
               {course.subtitle}
             </h3>
           )}
         </div>
         
         <div 
-          className="text-gray-700 leading-relaxed mb-4 text-base space-y-6"
+          className="text-gray-700 leading-relaxed mb-4 text-base space-y-4 [&>p]:mb-2 [&>h1]:mb-1 [&>h2]:mb-1 [&>h3]:mb-1 [&>h4]:mb-1 [&>h5]:mb-1 [&>h6]:mb-1"
           dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
         />
         
