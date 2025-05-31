@@ -1,3 +1,4 @@
+
 import { marked } from 'marked';
 
 //
@@ -45,24 +46,32 @@ function getTextContent(input: any): string {
       return input.value;
     }
     
-    // Försök konvertera objektet till JSON och extrahera text därifrån
-    try {
-      const str = JSON.stringify(input);
-      if (str !== '{}' && str !== 'null') {
-        // Försök hitta text i JSON-strängen
-        const textMatch = str.match(/"text":"([^"]+)"/);
-        if (textMatch) {
-          return textMatch[1];
-        }
-        
-        const rawMatch = str.match(/"raw":"([^"]+)"/);
-        if (rawMatch) {
-          return rawMatch[1];
-        }
+    // För marked.js tokens - leta efter text i alla möjliga fält
+    if (input.type) {
+      // Text token
+      if (input.type === 'text') {
+        return input.text || input.raw || '';
       }
-    } catch (e) {
-      // Ignore JSON errors
+      // Strong/em tokens
+      if (input.type === 'strong' || input.type === 'em') {
+        return input.text || input.raw || getTextContent(input.tokens) || '';
+      }
+      // Code tokens
+      if (input.type === 'codespan' || input.type === 'code') {
+        return input.text || input.raw || '';
+      }
+      // Link tokens
+      if (input.type === 'link') {
+        return getTextContent(input.tokens) || input.text || input.href || '';
+      }
+      // Image tokens
+      if (input.type === 'image') {
+        return input.text || input.title || '';
+      }
     }
+    
+    // Fallback: returnera tom sträng för objekt vi inte kan hantera
+    return '';
   }
   
   // Fallback: konvertera till sträng men undvik [object Object]
@@ -110,8 +119,9 @@ function preprocess(md: string): string {
 function createNormalRenderer(): any {
   const rnd: any = new marked.Renderer();
 
-  rnd.heading = function(text: string, level: number) {
-    const cleanText = getTextContent(text);
+  rnd.heading = function(text: any, level: number) {
+    // För rubriker behöver vi bara den rena texten, inte processsa tokens
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
     const classes: Record<number, string> = {
       1: 'text-2xl font-bold text-gray-800 my-4',
       2: 'text-xl font-bold text-gray-800 mb-3',
@@ -124,9 +134,9 @@ function createNormalRenderer(): any {
     return `<h${level} class="${cls}">${cleanText}</h${level}>`;
   };
 
-  rnd.paragraph = function(text: string) {
-    const cleanText = getTextContent(text).trim();
-    if (cleanText.startsWith('→')) {
+  rnd.paragraph = function(text: any) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
+    if (cleanText.trim().startsWith('→')) {
       return `<p class="arrow-list-item ml-4 my-2 relative">
                 <span class="absolute left-0 font-bold text-blue-500">→</span>
                 ${cleanText.substring(1).trim()}
@@ -141,34 +151,34 @@ function createNormalRenderer(): any {
     return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
   
-  rnd.listitem = function(text: string) {
-    const cleanText = getTextContent(text);
+  rnd.listitem = function(text: any) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
     return `<li class="text-gray-800 my-1">${cleanText}</li>`;
   };
 
-  rnd.link = function(href: string, title: string | null, text: string) {
-    const cleanText = getTextContent(text);
+  rnd.link = function(href: string, title: string | null, text: any) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
     const titleAttr = title ? ` title="${title}"` : '';
     return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${cleanText}</a>`;
   };
 
-  rnd.strong = function(text: string) {
-    const cleanText = getTextContent(text);
+  rnd.strong = function(text: any) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
     return `<strong class="font-bold">${cleanText}</strong>`;
   };
 
-  rnd.em = function(text: string) {
-    const cleanText = getTextContent(text);
+  rnd.em = function(text: any) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
     return `<em class="italic">${cleanText}</em>`;
   };
 
-  rnd.codespan = function(text: string) {
-    const cleanText = getTextContent(text);
+  rnd.codespan = function(text: any) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
     return `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${cleanText}</code>`;
   };
 
-  rnd.code = function(code: string, language: string | undefined) {
-    const cleanCode = getTextContent(code);
+  rnd.code = function(code: any, language: string | undefined) {
+    const cleanCode = typeof code === 'string' ? code : getTextContent(code);
     return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${cleanCode}</code></pre>`;
   };
 
@@ -181,8 +191,8 @@ function createNormalRenderer(): any {
 function createRedBoxRenderer(): any {
   const rnd: any = new marked.Renderer();
 
-  rnd.heading = function(text: string, level: number) {
-    const cleanText = getTextContent(text);
+  rnd.heading = function(text: any, level: number) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
     const classes: Record<number, string> = {
       1: 'text-2xl font-bold text-white my-4',
       2: 'text-xl font-bold text-white mb-3',
@@ -195,9 +205,9 @@ function createRedBoxRenderer(): any {
     return `<h${level} class="${cls}">${cleanText}</h${level}>`;
   };
 
-  rnd.paragraph = function(text: string) {
-    const cleanText = getTextContent(text).trim();
-    if (cleanText.startsWith('→')) {
+  rnd.paragraph = function(text: any) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
+    if (cleanText.trim().startsWith('→')) {
       return `<p class="arrow-list-item text-white ml-4 my-2 relative">
                 <span class="absolute left-0 font-bold text-blue-300">→</span>
                 ${cleanText.substring(1).trim()}
@@ -212,34 +222,34 @@ function createRedBoxRenderer(): any {
     return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
   
-  rnd.listitem = function(text: string) {
-    const cleanText = getTextContent(text);
+  rnd.listitem = function(text: any) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
     return `<li class="text-white my-1">${cleanText}</li>`;
   };
 
-  rnd.link = function(href: string, title: string | null, text: string) {
-    const cleanText = getTextContent(text);
+  rnd.link = function(href: string, title: string | null, text: any) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
     const titleAttr = title ? ` title="${title}"` : '';
     return `<a href="${href}"${titleAttr} class="text-ljusbla hover:text-ljusbla underline" target="_blank" rel="noopener noreferrer">${cleanText}</a>`;
   };
 
-  rnd.strong = function(text: string) {
-    const cleanText = getTextContent(text);
+  rnd.strong = function(text: any) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
     return `<strong class="text-white font-bold">${cleanText}</strong>`;
   };
 
-  rnd.em = function(text: string) {
-    const cleanText = getTextContent(text);
+  rnd.em = function(text: any) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
     return `<em class="text-white italic">${cleanText}</em>`;
   };
 
-  rnd.codespan = function(text: string) {
-    const cleanText = getTextContent(text);
+  rnd.codespan = function(text: any) {
+    const cleanText = typeof text === 'string' ? text : getTextContent(text);
     return `<code class="bg-gray-700 px-1 py-0.5 rounded text-sm">${cleanText}</code>`;
   };
 
-  rnd.code = function(code: string, language: string | undefined) {
-    const cleanCode = getTextContent(code);
+  rnd.code = function(code: any, language: string | undefined) {
+    const cleanCode = typeof code === 'string' ? code : getTextContent(code);
     return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${cleanCode}</code></pre>`;
   };
 
