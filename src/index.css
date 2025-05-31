@@ -46,9 +46,9 @@
 
     /* ===== CENTRALIZED LINE HEIGHT SETTINGS ===== */
     /* Allmän radavstånd för de flesta texter */
-    --body-line-height: 1.5;
+    --body-line-height: 1.4;
     /* Kompakt radavstånd för kurskort specifikt */
-    --course-card-line-height: 1.3;
+    --course-card-line-height: 1.2;
     /* ============================================== */
   }
 
