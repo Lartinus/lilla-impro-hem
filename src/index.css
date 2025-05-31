@@ -45,8 +45,10 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* ===== CENTRALIZED LINE HEIGHT SETTINGS ===== */
-    /* Ändra detta värde för att justera radavstånd på hela hemsidan */
-    --body-line-height: 1.3;
+    /* Allmän radavstånd för de flesta texter */
+    --body-line-height: 1.5;
+    /* Kompakt radavstånd för kurskort specifikt */
+    --course-card-line-height: 1.3;
     /* ============================================== */
   }
 
@@ -98,9 +100,14 @@
     @apply bg-background text-foreground;
   }
   
-  /* Global line-height för all brödtext - använder CSS variabel för enkel justering */
+  /* Global line-height för allmän brödtext - mer luftigt */
   p, .text-base, .leading-relaxed, .body-text {
     line-height: var(--body-line-height) !important;
+  }
+  
+  /* Specifik kompaktare line-height för kurskort */
+  .course-card .body-text {
+    line-height: var(--course-card-line-height) !important;
   }
   
   /* Rubriker närmare varandra enligt mockup */
@@ -108,23 +115,23 @@
     margin-top: 0.25rem;
   }
   
-  /* Text mycket närmare under H3 enligt mockup - mer aggressiv */
-  h3 + p, h3 + div {
+  /* Text mycket närmare under H3 enligt mockup - endast för kurskort */
+  .course-card h3 + p, .course-card h3 + div {
     margin-top: 0rem !important;
   }
   
-  /* Subtitle närmare under H2 */
-  h2 + .subtitle {
+  /* Subtitle närmare under H2 - endast för kurskort */
+  .course-card h2 + .subtitle {
     margin-top: 0.125rem;
   }
   
-  /* Ytterligare justering för kurskort specifikt - mer aggressiv */
-  .subtitle + div {
+  /* Ytterligare justering för kurskort specifikt */
+  .course-card .subtitle + div {
     margin-top: 0rem !important;
   }
   
   /* Specifik fix för kurskort brödtext */
-  .course-description {
+  .course-card .course-description {
     margin-top: 0rem !important;
   }
 }

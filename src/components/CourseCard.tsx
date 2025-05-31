@@ -45,7 +45,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   const buttonVariant = isHouseTeams ? "default" : "default";
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
+    <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col course-card">
       <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
         <div className="mb-3">
           <h2 className="text-xl font-bold text-blue-500 mb-1">
