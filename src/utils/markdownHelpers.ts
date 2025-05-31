@@ -1,38 +1,71 @@
-
 import { marked } from 'marked';
 
 //
 // 1) Hjälpfunktion: Extrahera alltid ren text från token eller sträng
 //
 function getTextContent(input: any): string {
+  // Om input redan är en sträng, returnera den direkt
   if (typeof input === 'string') {
     return input;
   }
+  
+  // Om input är null/undefined
   if (input == null) {
     return '';
   }
   
-  // Om input är ett token‐objekt med en .text‐egenskap:
-  if (typeof input === 'object' && 'text' in input && typeof input.text === 'string') {
-    return input.text;
+  // Om input är ett tal eller boolean, konvertera till sträng
+  if (typeof input === 'number' || typeof input === 'boolean') {
+    return String(input);
   }
   
-  // Om det är ett token‐objekt med en tokens‐array (nested tokens)
-  if (typeof input === 'object' && Array.isArray(input.tokens)) {
-    return input.tokens.map((token: any) => getTextContent(token)).join('');
-  }
-  
-  // Om det är en array av tokens direkt
+  // Om input är en array, slå samman alla element
   if (Array.isArray(input)) {
-    return input.map((token: any) => getTextContent(token)).join('');
+    return input.map(item => getTextContent(item)).join('');
   }
   
-  // För inline tokens som kan ha raw text
-  if (typeof input === 'object' && 'raw' in input && typeof input.raw === 'string') {
-    return input.raw;
+  // Om input är ett objekt, försök hitta text-egenskaper
+  if (typeof input === 'object') {
+    // Kolla efter vanliga text-egenskaper
+    if (input.text && typeof input.text === 'string') {
+      return input.text;
+    }
+    
+    if (input.raw && typeof input.raw === 'string') {
+      return input.raw;
+    }
+    
+    // Om objektet har tokens (nested tokens)
+    if (input.tokens && Array.isArray(input.tokens)) {
+      return input.tokens.map((token: any) => getTextContent(token)).join('');
+    }
+    
+    // Om objektet har en value-egenskap
+    if (input.value && typeof input.value === 'string') {
+      return input.value;
+    }
+    
+    // Försök konvertera objektet till JSON och extrahera text därifrån
+    try {
+      const str = JSON.stringify(input);
+      if (str !== '{}' && str !== 'null') {
+        // Försök hitta text i JSON-strängen
+        const textMatch = str.match(/"text":"([^"]+)"/);
+        if (textMatch) {
+          return textMatch[1];
+        }
+        
+        const rawMatch = str.match(/"raw":"([^"]+)"/);
+        if (rawMatch) {
+          return rawMatch[1];
+        }
+      }
+    } catch (e) {
+      // Ignore JSON errors
+    }
   }
   
-  // Fallback till String() men undvik [object Object]
+  // Fallback: konvertera till sträng men undvik [object Object]
   const stringified = String(input);
   return stringified === '[object Object]' ? '' : stringified;
 }
