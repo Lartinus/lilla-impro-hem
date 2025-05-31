@@ -193,7 +193,6 @@ export const convertMarkdownToHtml = (markdown: string): string => {
       gfm: true,
       breaks: true,
       renderer: createNormalRenderer(),
-      headerIds: false,
       mangle: false
     });
     
@@ -217,7 +216,6 @@ export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
       gfm: true,
       breaks: true,
       renderer: createRedBoxRenderer(),
-      headerIds: false,
       mangle: false
     });
     
