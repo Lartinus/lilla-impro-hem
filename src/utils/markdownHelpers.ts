@@ -1,6 +1,18 @@
 
 import { marked } from 'marked';
 
+// Helper function to extract text from tokens
+function getTextFromTokens(tokens: any[]): string {
+  if (!tokens || !Array.isArray(tokens)) return '';
+  
+  return tokens.map(token => {
+    if (typeof token === 'string') return token;
+    if (token.text) return token.text;
+    if (token.tokens) return getTextFromTokens(token.tokens);
+    return '';
+  }).join('');
+}
+
 //
 // PREPROCESS: Normalisera markdown-input
 //
@@ -25,7 +37,8 @@ function preprocess(md: string): string {
 function createNormalRenderer(): any {
   const renderer = new marked.Renderer();
 
-  renderer.heading = function(text: string, level: number) {
+  renderer.heading = function({ tokens, depth }: { tokens: any[], depth: number }) {
+    const text = getTextFromTokens(tokens);
     const classes: Record<number, string> = {
       1: 'text-2xl font-bold text-gray-800 my-4',
       2: 'text-xl font-bold text-gray-800 mb-3',
@@ -34,11 +47,12 @@ function createNormalRenderer(): any {
       5: 'text-base font-semibold text-gray-800 mb-2',
       6: 'text-base font-medium text-gray-800 mb-2',
     };
-    const cls = classes[level] || classes[4];
-    return `<h${level} class="${cls}">${text}</h${level}>`;
+    const cls = classes[depth] || classes[4];
+    return `<h${depth} class="${cls}">${text}</h${depth}>`;
   };
 
-  renderer.paragraph = function(text: string) {
+  renderer.paragraph = function({ tokens }: { tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     if (text.trim().startsWith('→')) {
       return `<p class="arrow-list-item ml-4 my-2 relative">
                 <span class="absolute left-0 font-bold text-blue-500">→</span>
@@ -48,35 +62,43 @@ function createNormalRenderer(): any {
     return `<p class="text-gray-800 my-4">${text}</p>`;
   };
 
-  renderer.list = function(body: string, ordered: boolean) {
-    const tag = ordered ? 'ol' : 'ul';
-    const cls = ordered ? 'list-decimal' : 'list-disc';
+  renderer.list = function(token: { items: any[], ordered: boolean }) {
+    const tag = token.ordered ? 'ol' : 'ul';
+    const cls = token.ordered ? 'list-decimal' : 'list-disc';
+    const body = token.items.map(item => {
+      const text = getTextFromTokens(item.tokens);
+      return `<li class="text-gray-800 my-1">${text}</li>`;
+    }).join('');
     return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
   
-  renderer.listitem = function(text: string) {
+  renderer.listitem = function(item: { tokens: any[] }) {
+    const text = getTextFromTokens(item.tokens);
     return `<li class="text-gray-800 my-1">${text}</li>`;
   };
 
-  renderer.link = function(href: string, title: string | null, text: string) {
+  renderer.link = function({ href, title, tokens }: { href: string, title: string | null, tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     const titleAttr = title ? ` title="${title}"` : '';
     return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
-  renderer.strong = function(text: string) {
+  renderer.strong = function({ tokens }: { tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     return `<strong class="font-bold">${text}</strong>`;
   };
 
-  renderer.em = function(text: string) {
+  renderer.em = function({ tokens }: { tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     return `<em class="italic">${text}</em>`;
   };
 
-  renderer.codespan = function(text: string) {
+  renderer.codespan = function({ text }: { text: string }) {
     return `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${text}</code>`;
   };
 
-  renderer.code = function(code: string, language: string | undefined) {
-    return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${code}</code></pre>`;
+  renderer.code = function({ text, lang }: { text: string, lang: string | undefined }) {
+    return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${text}</code></pre>`;
   };
 
   return renderer;
@@ -88,7 +110,8 @@ function createNormalRenderer(): any {
 function createRedBoxRenderer(): any {
   const renderer = new marked.Renderer();
 
-  renderer.heading = function(text: string, level: number) {
+  renderer.heading = function({ tokens, depth }: { tokens: any[], depth: number }) {
+    const text = getTextFromTokens(tokens);
     const classes: Record<number, string> = {
       1: 'text-2xl font-bold text-white my-4',
       2: 'text-xl font-bold text-white mb-3',
@@ -97,11 +120,12 @@ function createRedBoxRenderer(): any {
       5: 'text-base font-semibold text-white mb-2',
       6: 'text-base font-medium text-white mb-2',
     };
-    const cls = classes[level] || classes[4];
-    return `<h${level} class="${cls}">${text}</h${level}>`;
+    const cls = classes[depth] || classes[4];
+    return `<h${depth} class="${cls}">${text}</h${depth}>`;
   };
 
-  renderer.paragraph = function(text: string) {
+  renderer.paragraph = function({ tokens }: { tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     if (text.trim().startsWith('→')) {
       return `<p class="arrow-list-item text-white ml-4 my-2 relative">
                 <span class="absolute left-0 font-bold text-blue-300">→</span>
@@ -111,35 +135,43 @@ function createRedBoxRenderer(): any {
     return `<p class="text-white my-4">${text}</p>`;
   };
 
-  renderer.list = function(body: string, ordered: boolean) {
-    const tag = ordered ? 'ol' : 'ul';
-    const cls = ordered ? 'list-decimal text-white' : 'list-disc text-white';
+  renderer.list = function(token: { items: any[], ordered: boolean }) {
+    const tag = token.ordered ? 'ol' : 'ul';
+    const cls = token.ordered ? 'list-decimal text-white' : 'list-disc text-white';
+    const body = token.items.map(item => {
+      const text = getTextFromTokens(item.tokens);
+      return `<li class="text-white my-1">${text}</li>`;
+    }).join('');
     return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
   
-  renderer.listitem = function(text: string) {
+  renderer.listitem = function(item: { tokens: any[] }) {
+    const text = getTextFromTokens(item.tokens);
     return `<li class="text-white my-1">${text}</li>`;
   };
 
-  renderer.link = function(href: string, title: string | null, text: string) {
+  renderer.link = function({ href, title, tokens }: { href: string, title: string | null, tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     const titleAttr = title ? ` title="${title}"` : '';
     return `<a href="${href}"${titleAttr} class="text-ljusbla hover:text-ljusbla underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
-  renderer.strong = function(text: string) {
+  renderer.strong = function({ tokens }: { tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     return `<strong class="text-white font-bold">${text}</strong>`;
   };
 
-  renderer.em = function(text: string) {
+  renderer.em = function({ tokens }: { tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     return `<em class="text-white italic">${text}</em>`;
   };
 
-  renderer.codespan = function(text: string) {
+  renderer.codespan = function({ text }: { text: string }) {
     return `<code class="bg-gray-700 px-1 py-0.5 rounded text-sm">${text}</code>`;
   };
 
-  renderer.code = function(code: string, language: string | undefined) {
-    return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${code}</code></pre>`;
+  renderer.code = function({ text, lang }: { text: string, lang: string | undefined }) {
+    return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${text}</code></pre>`;
   };
 
   return renderer;
