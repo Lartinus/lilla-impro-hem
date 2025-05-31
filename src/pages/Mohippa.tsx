@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PrivateInquiryForm from '@/components/PrivateInquiryForm';
@@ -7,6 +6,7 @@ import { useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { usePrivateParty } from '@/hooks/useStrapi';
 import { formatCourseMainInfo } from '@/utils/strapiHelpers';
+import { convertMarkdownToHtml, convertMarkdownToHtmlForRedBox } from '@/utils/markdownHelpers';
 
 const Mohippa = () => {
   useEffect(() => {
