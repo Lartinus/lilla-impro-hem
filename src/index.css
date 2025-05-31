@@ -52,7 +52,7 @@
     
     /* ===== HEADING TO TEXT SPACING SETTINGS ===== */
     /* Avstånd från rubrik till brödtext generellt */
-    --heading-to-text-spacing: 0.5rem;
+    --heading-to-text-spacing: 0.3rem;
     /* Avstånd från rubrik till brödtext för kurskort */
     --course-card-heading-to-text-spacing: 0rem;
     /* ============================================== */
