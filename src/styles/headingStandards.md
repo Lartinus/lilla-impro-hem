@@ -16,7 +16,7 @@ Based on the formatting established on the home page and courses page, these are
 - Usage: Major sections like "Vår vision", "Vem kan komma till Lilla Improteatern?", "Vanliga frågor"
 
 ## H3 - Subsection Headings  
-- Classes: `text-theatre-secondary font-medium mb-4` or `text-theatre-secondary font-medium mb-6`
+- Classes: `text-theatre-secondary font-medium mb-1` or `text-theatre-secondary font-medium mb-1`
 - Usage: Subtitles and subsection descriptions
 
 ## H4 - Small Section Labels
