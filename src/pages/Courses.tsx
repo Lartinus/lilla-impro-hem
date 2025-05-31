@@ -28,10 +28,19 @@ const Courses = () => {
   console.log('Sorted courses:', courses);
   console.log('Formatted main info:', mainInfo);
 
+  // Fallback practical info if course doesn't have its own
+  const practicalInfo = [
+    "8 tillfällen á 2,5h",
+    "Startdatum: 28 oktober", 
+    "12 deltagare",
+    "2 800 kr (ordinarie)",
+    "2 200 kr (pensionär, student eller omtag)"
+  ];
+
   if (coursesLoading || mainInfoLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex items-center justify-center">
-        <div className="text-white text-xl">Laddar kurser.</div>
+        <div className="text-white text-xl">Laddar kurser...</div>
       </div>
     );
   }
