@@ -25,11 +25,8 @@ function preprocess(md: string): string {
   // Sätt in blanksteg efter rubriker som saknar det
   s = s.replace(/(^|\n)(#{1,6})(?=\S)/g, '$1$2 ');
 
-  // Formatera pil-listor - förbättra regex för att hantera pilar bättre
-  s = s.replace(/^→\s*(.+)$/gm, '→ $1');
-  
-  // Hantera pilar i början av rader mer robust
-  s = s.replace(/^(\s*)→\s*(.+)$/gm, '$1→ $2');
+  // Hantera pil-listor - konvertera → till specialmarkering
+  s = s.replace(/^(\s*)→\s*(.+)$/gm, '$1[ARROW]$2');
 
   return s;
 }
@@ -56,9 +53,10 @@ function createNormalRenderer(): any {
 
   renderer.paragraph = function({ tokens }: { tokens: any[] }) {
     const text = getTextFromTokens(tokens);
-    // Förbättrad hantering av pil-listor
-    if (text.trim().startsWith('→')) {
-      const content = text.replace(/^→\s*/, '').trim();
+    
+    // Hantera pil-listor med specialmarkering
+    if (text.includes('[ARROW]')) {
+      const content = text.replace(/\[ARROW\]/, '').trim();
       return `<div class="arrow-list-item ml-4 my-2 relative text-gray-800">
                 <span class="absolute -left-4 font-bold text-blue-500">→</span>
                 <span>${content}</span>
@@ -131,9 +129,10 @@ function createRedBoxRenderer(): any {
 
   renderer.paragraph = function({ tokens }: { tokens: any[] }) {
     const text = getTextFromTokens(tokens);
-    // Förbättrad hantering av pil-listor för röd bakgrund
-    if (text.trim().startsWith('→')) {
-      const content = text.replace(/^→\s*/, '').trim();
+    
+    // Hantera pil-listor med specialmarkering för röd bakgrund
+    if (text.includes('[ARROW]')) {
+      const content = text.replace(/\[ARROW\]/, '').trim();
       return `<div class="arrow-list-item ml-4 my-2 relative text-white">
                 <span class="absolute -left-4 font-bold text-blue-300">→</span>
                 <span>${content}</span>
