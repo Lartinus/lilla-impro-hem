@@ -1,5 +1,3 @@
-/ src/utils/markdownHelpers.ts
-
 import { marked } from 'marked';
 
 //
@@ -215,7 +213,6 @@ marked.setOptions({
 export const convertMarkdownToHtml = (markdown: string): string => {
   if (!markdown) return '';
   try {
-    // Kör preprocess på hela strängen (###Ett → ### Ett, etc.)
     const pre = preprocess(markdown);
     return marked(pre) as string;
   } catch (err) {
@@ -228,7 +225,6 @@ export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
   if (!markdown) return '';
   try {
     const pre = preprocess(markdown);
-    // Rendera med röd‐box renderer (vit text, röd bakgrund)
     const html = marked(pre, { renderer: createRedBoxRenderer() }) as string;
     // Återställ normal renderer för framtida anrop
     marked.setOptions({ renderer: createNormalRenderer() });
