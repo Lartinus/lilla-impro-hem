@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useEffect } from 'react';
@@ -30,19 +31,6 @@ const About = () => {
 
   const content = aboutData?.data?.attributes || {};
 
-  // Helper function to check if content is already HTML or needs markdown conversion
-  const processContent = (text: string) => {
-    if (!text) return '';
-    
-    // If it contains HTML tags, assume it's already processed
-    if (text.includes('<') && text.includes('>')) {
-      return text;
-    }
-    
-    // Otherwise, convert from markdown
-    return convertMarkdownToHtml(text);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
@@ -62,44 +50,44 @@ const About = () => {
         <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
           <div className="border-4 border-white shadow-lg bg-white rounded-none p-6 md:p-8">
             
-            {/* Main content with proper markdown conversion */}
+            {/* Main content with markdown conversion */}
             {content.content && (
               <div 
                 className="space-y-6 text-gray-700 leading-relaxed text-base"
                 style={{ lineHeight: '1.3' }}
-                dangerouslySetInnerHTML={{ __html: processContent(content.content) }}
+                dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(content.content) }}
               />
             )}
 
-            {/* Who can join section - NOW WITH PROPER MARKDOWN CONVERSION */}
+            {/* Who can join section - FORCE MARKDOWN CONVERSION */}
             {content.who_can_join && (
               <div className="mt-8">
                 <div 
                   className="space-y-6 text-gray-700 leading-relaxed text-base"
                   style={{ lineHeight: '1.3' }}
-                  dangerouslySetInnerHTML={{ __html: processContent(content.who_can_join) }}
+                  dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(content.who_can_join) }}
                 />
               </div>
             )}
 
-            {/* Vision section - NOW WITH PROPER MARKDOWN CONVERSION */}
+            {/* Vision section - FORCE MARKDOWN CONVERSION */}
             {content.vision && (
               <div className="mt-8">
                 <div 
                   className="space-y-6 text-gray-700 leading-relaxed text-base"
                   style={{ lineHeight: '1.3' }}
-                  dangerouslySetInnerHTML={{ __html: processContent(content.vision) }}
+                  dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(content.vision) }}
                 />
               </div>
             )}
 
-            {/* FAQ section - NOW WITH PROPER MARKDOWN CONVERSION */}
+            {/* FAQ section - FORCE MARKDOWN CONVERSION */}
             {content.faq && (
               <div className="mt-8">
                 <div 
                   className="space-y-6 text-gray-700 leading-relaxed text-base"
                   style={{ lineHeight: '1.3' }}
-                  dangerouslySetInnerHTML={{ __html: processContent(content.faq) }}
+                  dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(content.faq) }}
                 />
               </div>
             )}
