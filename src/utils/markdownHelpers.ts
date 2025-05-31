@@ -39,7 +39,8 @@ function createCustomRenderer(isRedBox = false): any {
   const linkColor = isRedBox ? 'text-ljusbla hover:text-ljusbla' : 'text-blue-500 hover:text-blue-700';
   const arrowColor = isRedBox ? 'text-blue-300' : 'text-blue-500';
 
-  renderer.heading = function(text: string, level: number) {
+  renderer.heading = function({ tokens, depth }: { tokens: any[], depth: number }) {
+    const text = getTextFromTokens(tokens);
     const headingColor = isRedBox ? 'text-white' : 'text-gray-800';
     const classes: Record<number, string> = {
       1: `text-xl md:text-2xl lg:text-3xl font-bold leading-tight ${headingColor} tracking-normal mb-2`,
@@ -49,56 +50,69 @@ function createCustomRenderer(isRedBox = false): any {
       5: `text-base font-semibold ${headingColor} mb-1`,
       6: `text-base font-medium ${headingColor} mb-1`,
     };
-    const cls = classes[level] || classes[4];
-    return `<h${level} class="${cls}">${text}</h${level}>`;
+    const cls = classes[depth] || classes[4];
+    return `<h${depth} class="${cls}">${text}</h${depth}>`;
   };
 
-  renderer.paragraph = function(text: string) {
+  renderer.paragraph = function({ tokens }: { tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     return `<p class="${textColor} my-5" style="line-height: 2.0;">${text}</p>`;
   };
 
-  renderer.list = function(body: string, ordered: boolean) {
+  renderer.list = function(token: { items: any[], ordered: boolean }) {
+    const body = token.items.map(item => {
+      const text = getTextFromTokens(item.tokens);
+      return `<div class="arrow-list-item ml-10 my-1 relative ${textColor}">
+                <span class="absolute -left-10 font-bold ${arrowColor}">→</span>
+                <span>${text}</span>
+              </div>`;
+    }).join('');
     return `<div class="my-5">${body}</div>`;
   };
   
-  renderer.listitem = function(text: string) {
+  renderer.listitem = function(item: { tokens: any[] }) {
+    const text = getTextFromTokens(item.tokens);
     return `<div class="arrow-list-item ml-10 my-1 relative ${textColor}">
               <span class="absolute -left-10 font-bold ${arrowColor}">→</span>
               <span>${text}</span>
             </div>`;
   };
 
-  renderer.link = function(href: string, title: string | null, text: string) {
+  renderer.link = function({ href, title, tokens }: { href: string, title?: string | null, tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     const titleAttr = title ? ` title="${title}"` : '';
     return `<a href="${href}"${titleAttr} class="${linkColor} underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
-  renderer.strong = function(text: string) {
+  renderer.strong = function({ tokens }: { tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     return `<strong class="font-bold">${text}</strong>`;
   };
 
-  renderer.em = function(text: string) {
+  renderer.em = function({ tokens }: { tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     return `<em class="italic">${text}</em>`;
   };
 
-  renderer.del = function(text: string) {
+  renderer.del = function({ tokens }: { tokens: any[] }) {
+    const text = getTextFromTokens(tokens);
     return `<del class="line-through">${text}</del>`;
   };
 
-  renderer.codespan = function(text: string) {
+  renderer.codespan = function({ text }: { text: string }) {
     const bgColor = isRedBox ? 'bg-gray-700' : 'bg-gray-100';
     return `<code class="${bgColor} px-1 py-0.5 rounded text-sm">${text}</code>`;
   };
 
-  renderer.code = function(code: string, language: string) {
+  renderer.code = function({ text, lang }: { text: string, lang?: string | undefined }) {
     const bgColor = isRedBox ? 'bg-gray-700' : 'bg-gray-100';
-    return `<pre class="${bgColor} p-4 rounded overflow-x-auto my-5"><code class="text-sm">${code}</code></pre>`;
+    return `<pre class="${bgColor} p-4 rounded overflow-x-auto my-5"><code class="text-sm">${text}</code></pre>`;
   };
 
   // Hantera HTML-element direkt (för understrukning)
-  renderer.html = function(html: string) {
+  renderer.html = function({ text }: { text: string }) {
     // Hantera <u> tags för understrukning
-    const processedText = html.replace(/<u>(.*?)<\/u>/g, '<u class="underline">$1</u>');
+    const processedText = text.replace(/<u>(.*?)<\/u>/g, '<u class="underline">$1</u>');
     return processedText;
   };
 
@@ -116,14 +130,12 @@ export const convertMarkdownToHtml = (markdown: string): string => {
     const preprocessed = preprocess(markdown);
     console.log('Preprocessed:', preprocessed);
     
-    // Konfigurera marked för att korrekt hantera markdown med äldre API
-    marked.setOptions({
+    // Configure marked to properly parse markdown tokens including bold, italic, strikethrough
+    const html = marked.parse(preprocessed, {
       gfm: true,
       breaks: true,
       renderer: createCustomRenderer(false)
     });
-    
-    const html = marked(preprocessed);
     
     console.log('Result HTML:', html);
     return html as string;
@@ -140,14 +152,12 @@ export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
     console.log('Converting markdown for red box:', markdown);
     const preprocessed = preprocess(markdown);
     
-    // Konfigurera marked för att korrekt hantera markdown med äldre API
-    marked.setOptions({
+    // Configure marked to properly parse markdown tokens including bold, italic, strikethrough
+    const html = marked.parse(preprocessed, {
       gfm: true,
       breaks: true,
       renderer: createCustomRenderer(true)
     });
-    
-    const html = marked(preprocessed);
     
     return html as string;
   } catch (err) {
