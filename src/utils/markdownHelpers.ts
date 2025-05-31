@@ -20,24 +20,12 @@ function getTextContent(input: any): string {
   if (typeof input === 'object' && Array.isArray((input as any).tokens)) {
     return (input as any).tokens.map(getTextContent).join('');
   }
-  // Annars konvertera till sträng som sista utväg
+  // Annars: konvertera till sträng
   return String(input);
 }
 
 //
-// 2) Preprocess: Sätt blankrad före rubriker, hantera pil-listor
-//
-function preprocess(markdown: string): string {
-  if (!markdown) return '';
-  return markdown
-    // Gör om pilar som börjar med "→ " så att vi kan känna igen dem
-    .replace(/^→\s+(.+)$/gm, '→ $1')
-    // Lägg in blankrad före varje rubrik för att Marked ska tolka korrekt
-    .replace(/^(#{1,6})\s+(.+)$/gm, '\n$1 $2\n');
-}
-
-//
-// 3) Skapa "normal renderer" (ljus bakgrund, mörk text)
+// 2) Skapa "normal" renderer (ljus bakgrund, mörk text)
 //
 function createNormalRenderer(): any {
   const renderer: any = new marked.Renderer();
@@ -108,7 +96,7 @@ function createNormalRenderer(): any {
 }
 
 //
-// 4) Skapa "red box renderer" (röd bakgrund, vit text)
+// 3) Skapa "red box" renderer (röd bakgrund, vit text)
 //
 function createRedBoxRenderer(): any {
   const renderer: any = new marked.Renderer();
@@ -179,14 +167,21 @@ function createRedBoxRenderer(): any {
 }
 
 //
-// 5) Exportera Markdown‐konverteringsfunktionerna
+// 4) Konfigurera marked globalt för normal renderer
+//
+marked.setOptions({
+  gfm: true,
+  breaks: true,
+  renderer: createNormalRenderer(),
+});
+
+//
+// 5) Exportera konverteringsfunktionerna
 //
 export const convertMarkdownToHtml = (markdown: string): string => {
   if (!markdown) return '';
   try {
-    const pre = preprocess(markdown);
-    // Casta till string för att TypeScript inte ska klaga på Promise<string>
-    return marked(pre, { renderer: createNormalRenderer() }) as string;
+    return marked(markdown) as string;
   } catch (err) {
     console.error('Markdown conversion failed:', err);
     return markdown;
@@ -196,9 +191,10 @@ export const convertMarkdownToHtml = (markdown: string): string => {
 export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
   if (!markdown) return '';
   try {
-    const pre = preprocess(markdown);
-    // Casta till string för att TypeScript inte ska klaga på Promise<string>
-    return marked(pre, { renderer: createRedBoxRenderer() }) as string;
+    const html = marked(markdown, { renderer: createRedBoxRenderer() }) as string;
+    // Återställ normal renderer efteråt
+    marked.setOptions({ renderer: createNormalRenderer() });
+    return html;
   } catch (err) {
     console.error('Markdown (red box) conversion failed:', err);
     return markdown;
