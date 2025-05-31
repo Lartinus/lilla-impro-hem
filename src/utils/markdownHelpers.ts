@@ -3,7 +3,7 @@
 import { marked } from 'marked';
 
 //
-// HJÄLPFUNKTION: Extrahera ren text från antingen en sträng eller ett token‐objekt
+// 1) Hjälpfunktion: Extrahera alltid ren text från token eller sträng
 //
 function getTextContent(input: any): string {
   if (typeof input === 'string') {
@@ -12,25 +12,36 @@ function getTextContent(input: any): string {
   if (input == null) {
     return '';
   }
-  // Om input har en .text‐egenskap
+  // Om input har .text‐egenskap
   if (typeof input === 'object' && 'text' in input && typeof input.text === 'string') {
     return input.text;
   }
-  // Om input har en tokens‐array
+  // Om input har tokens‐array, slå ihop text från varje token
   if (typeof input === 'object' && Array.isArray((input as any).tokens)) {
     return (input as any).tokens.map(getTextContent).join('');
   }
-  // Annars: konvertera till sträng
+  // Annars konvertera till sträng som sista utväg
   return String(input);
 }
 
 //
-// SKAPA "NORMAL RENDERER" (för ljus bakgrund / mörk text)
+// 2) Preprocess: Sätt blankrad före rubriker, hantera pil-listor
+//
+function preprocess(markdown: string): string {
+  if (!markdown) return '';
+  return markdown
+    // Gör om pilar som börjar med "→ " så att vi kan känna igen dem
+    .replace(/^→\s+(.+)$/gm, '→ $1')
+    // Lägg in blankrad före varje rubrik för att Marked ska tolka korrekt
+    .replace(/^(#{1,6})\s+(.+)$/gm, '\n$1 $2\n');
+}
+
+//
+// 3) Skapa "normal renderer" (ljus bakgrund, mörk text)
 //
 function createNormalRenderer(): any {
   const renderer: any = new marked.Renderer();
 
-  // Rubriker (<h1>–<h6>) med Tailwind‐klasser
   renderer.heading = (textToken: any, level: number, raw: string, slugger: any) => {
     const text = getTextContent(textToken);
     const sizes: Record<number, string> = {
@@ -46,67 +57,58 @@ function createNormalRenderer(): any {
     return `<h${level} id="${idAttr}" class="${cls}">${text}</h${level}>`;
   };
 
-  // Paragrafer, inklusive pil‐listor (→)
   renderer.paragraph = (textToken: any) => {
     const text = getTextContent(textToken).trim();
     if (text.startsWith('→')) {
-      return `<p class="arrow-list-item ml-4 my-2 relative">
-                <span class="absolute left-0 font-bold text-blue-500">→</span> 
-                ${text.substring(1).trim()}
-              </p>`;
+      return `<p class="arrow-list-item ml-4 my-2 relative"><span class="absolute left-0 font-bold text-blue-500">→</span> ${
+        text.substring(1).trim()
+      }</p>`;
     }
     return `<p class="text-gray-800 my-4">${text}</p>`;
   };
 
-  // Listor (<ul> och <ol>)
   renderer.list = (body: string, ordered: boolean, start: number) => {
     const tag = ordered ? 'ol' : 'ul';
     const cls = ordered ? 'list-decimal' : 'list-disc';
     return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
+
   renderer.listitem = (textToken: any) => {
     const text = getTextContent(textToken);
     return `<li class="text-gray-800 my-1">${text}</li>`;
   };
 
-  // Länkar
   renderer.link = (href: string, title: string | null, textToken: any) => {
     const text = getTextContent(textToken);
     const titleAttr = title ? ` title="${title}"` : '';
-    return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">
-              ${text}
-            </a>`;
+    return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
-  // Fetstil och kursiv
   renderer.strong = (textToken: any) => {
     const text = getTextContent(textToken);
     return `<strong class="font-bold">${text}</strong>`;
   };
+
   renderer.em = (textToken: any) => {
     const text = getTextContent(textToken);
     return `<em class="italic">${text}</em>`;
   };
 
-  // Inline‐kod
   renderer.codespan = (codeToken: any) => {
     const codeText = getTextContent(codeToken);
     return `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${codeText}</code>`;
   };
 
-  // Kodblock
   renderer.code = (codeToken: any, infostring: string, escaped: boolean) => {
     const codeText = typeof codeToken === 'string' ? codeToken : getTextContent(codeToken);
-    return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4">
-              <code class="text-sm">${codeText}</code>
-            </pre>`;
+    return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${codeText}</code></pre>`;
   };
 
   return renderer;
 }
 
 //
-// SKAPA "RED BOX RENDERER" (för röd bakgrund / vit text)
+// 4) Skapa "red box renderer" (röd bakgrund, vit text)
 //
 function createRedBoxRenderer(): any {
   const renderer: any = new marked.Renderer();
@@ -129,10 +131,9 @@ function createRedBoxRenderer(): any {
   renderer.paragraph = (textToken: any) => {
     const text = getTextContent(textToken).trim();
     if (text.startsWith('→')) {
-      return `<p class="arrow-list-item text-white ml-4 my-2 relative">
-                <span class="absolute left-0 font-bold text-blue-300">→</span> 
-                ${text.substring(1).trim()}
-              </p>`;
+      return `<p class="arrow-list-item text-white ml-4 my-2 relative"><span class="absolute left-0 font-bold text-blue-300">→</span> ${
+        text.substring(1).trim()
+      }</p>`;
     }
     return `<p class="text-white my-4">${text}</p>`;
   };
@@ -142,6 +143,7 @@ function createRedBoxRenderer(): any {
     const cls = ordered ? 'list-decimal text-white' : 'list-disc text-white';
     return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
+
   renderer.listitem = (textToken: any) => {
     const text = getTextContent(textToken);
     return `<li class="text-white my-1">${text}</li>`;
@@ -150,9 +152,7 @@ function createRedBoxRenderer(): any {
   renderer.link = (href: string, title: string | null, textToken: any) => {
     const text = getTextContent(textToken);
     const titleAttr = title ? ` title="${title}"` : '';
-    return `<a href="${href}"${titleAttr} class="text-ljusbla hover:text-ljusbla underline" target="_blank" rel="noopener noreferrer">
-              ${text}
-            </a>`;
+    return `<a href="${href}"${titleAttr} class="text-ljusbla hover:text-ljusbla underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
   renderer.strong = (textToken: any) => {
@@ -172,31 +172,21 @@ function createRedBoxRenderer(): any {
 
   renderer.code = (codeToken: any, infostring: string, escaped: boolean) => {
     const codeText = typeof codeToken === 'string' ? codeToken : getTextContent(codeToken);
-    return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-4">
-              <code class="text-sm">${codeText}</code>
-            </pre>`;
+    return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${codeText}</code></pre>`;
   };
 
   return renderer;
 }
 
 //
-// 5) Konfigurera marked globalt med våra inställningar
-//
-marked.setOptions({
-  gfm: true,
-  breaks: true,
-  renderer: createNormalRenderer(),
-});
-
-//
-// 6) Exportera Markdown‐konverteringsfunktionerna
+// 5) Exportera Markdown‐konverteringsfunktionerna
 //
 export const convertMarkdownToHtml = (markdown: string): string => {
   if (!markdown) return '';
   try {
-    // Ingen preprocess—marked hanterar `## rubrik` direkt
-    return marked(markdown) as string;
+    const pre = preprocess(markdown);
+    // Casta till string för att TypeScript inte ska klaga på Promise<string>
+    return marked(pre, { renderer: createNormalRenderer() }) as string;
   } catch (err) {
     console.error('Markdown conversion failed:', err);
     return markdown;
@@ -206,76 +196,11 @@ export const convertMarkdownToHtml = (markdown: string): string => {
 export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
   if (!markdown) return '';
   try {
-    // Tillfälligt byta renderer till röd bakgrund
-    const html = marked(markdown, { renderer: createRedBoxRenderer() }) as string;
-    // Återställ normal renderer
-    marked.setOptions({ renderer: createNormalRenderer() });
-    return html;
+    const pre = preprocess(markdown);
+    // Casta till string för att TypeScript inte ska klaga på Promise<string>
+    return marked(pre, { renderer: createRedBoxRenderer() }) as string;
   } catch (err) {
     console.error('Markdown (red box) conversion failed:', err);
     return markdown;
   }
 };
-Hur du använder det i din komponent
-I din CourseInfoSection.tsx (eller var du nu renderar) behöver du bara skicka in den råa Markdown‐strängen (ingen “preprocess” längre). Exempel:
-
-tsx
-Copy
-Edit
-import { convertMarkdownToHtml, convertMarkdownToHtmlForRedBox } from '@/utils/markdownHelpers';
-
-interface CourseInfoSectionProps {
-  mainInfo: {
-    info?: string;
-    redbox?: string;
-    infoAfterRedbox?: string;
-  };
-}
-
-const CourseInfoSection = ({ mainInfo }: CourseInfoSectionProps) => {
-  const rawInfoContent = mainInfo.info || '';
-  const rawRedboxContent = mainInfo.redbox || '';
-  const rawInfoAfterContent = mainInfo.infoAfterRedbox || '';
-
-  return (
-    <div className="mx-[12px] md:mx-0 md:max-w-3xl md:mx-auto mt-4">
-      <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
-        <div className="text-left space-y-6">
-          {rawInfoContent && (
-            <div
-              className="space-y-6 text-gray-700 leading-relaxed text-base"
-              style={{ lineHeight: '1.3' }}
-              dangerouslySetInnerHTML={{
-                __html: convertMarkdownToHtml(rawInfoContent),
-              }}
-            />
-          )}
-
-          {rawRedboxContent && (
-            <div className="bg-red-700 p-6 rounded-none relative">
-              <div
-                className="text-base leading-relaxed font-light"
-                style={{ lineHeight: '1.3' }}
-                dangerouslySetInnerHTML={{
-                  __html: convertMarkdownToHtmlForRedBox(rawRedboxContent),
-                }}
-              />
-            </div>
-          )}
-
-          {rawInfoAfterContent && (
-            <div
-              className="space-y-6 text-gray-700 leading-relaxed text-base"
-              style={{ lineHeight: '1.3' }}
-              dangerouslySetInnerHTML={{
-                __html: convertMarkdownToHtml(rawInfoAfterContent),
-              }}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default CourseInfoSection;
