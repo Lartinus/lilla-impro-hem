@@ -28,10 +28,6 @@ function preprocess(md: string): string {
   // Konvertera pil-listor till markdown-listor för korrekt hantering
   s = s.replace(/^→\s*/gm, '- ');
 
-  // Hantera understrukning med <u> tags (behåll dem som de är)
-  // Hantera överstrykning ~~text~~
-  // Dessa hanteras direkt av marked.js
-
   return s;
 }
 
@@ -134,31 +130,7 @@ export const convertMarkdownToHtml = (markdown: string): string => {
     const preprocessed = preprocess(markdown);
     console.log('Preprocessed:', preprocessed);
     
-    // Configure marked with extensions for additional formatting
-    marked.use({
-      extensions: [
-        {
-          name: 'underline',
-          level: 'inline',
-          start(src: string) { return src.match(/<u>/)?.index; },
-          tokenizer(src: string) {
-            const rule = /^<u>(.*?)<\/u>/;
-            const match = rule.exec(src);
-            if (match) {
-              return {
-                type: 'underline',
-                raw: match[0],
-                text: match[1]
-              };
-            }
-          },
-          renderer(token: any) {
-            return `<u class="underline">${token.text}</u>`;
-          }
-        }
-      ]
-    });
-    
+    // Configure marked with proper options for formatting
     const html = marked(preprocessed, {
       gfm: true,
       breaks: true,
@@ -180,31 +152,7 @@ export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
     console.log('Converting markdown for red box:', markdown);
     const preprocessed = preprocess(markdown);
     
-    // Configure marked with extensions for additional formatting
-    marked.use({
-      extensions: [
-        {
-          name: 'underline',
-          level: 'inline',
-          start(src: string) { return src.match(/<u>/)?.index; },
-          tokenizer(src: string) {
-            const rule = /^<u>(.*?)<\/u>/;
-            const match = rule.exec(src);
-            if (match) {
-              return {
-                type: 'underline',
-                raw: match[0],
-                text: match[1]
-              };
-            }
-          },
-          renderer(token: any) {
-            return `<u class="underline">${token.text}</u>`;
-          }
-        }
-      ]
-    });
-    
+    // Configure marked with proper options for formatting
     const html = marked(preprocessed, {
       gfm: true,
       breaks: true,
