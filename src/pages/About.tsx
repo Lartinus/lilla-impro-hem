@@ -59,7 +59,7 @@ const About = () => {
               />
             )}
 
-            {/* Who can join section */}
+            {/* Who can join section - NOW WITH MARKDOWN CONVERSION */}
             {content.who_can_join && (
               <div className="mt-8">
                 <div 
@@ -70,7 +70,7 @@ const About = () => {
               </div>
             )}
 
-            {/* Vision section */}
+            {/* Vision section - NOW WITH MARKDOWN CONVERSION */}
             {content.vision && (
               <div className="mt-8">
                 <div 
@@ -81,7 +81,7 @@ const About = () => {
               </div>
             )}
 
-            {/* FAQ section */}
+            {/* FAQ section - NOW WITH MARKDOWN CONVERSION */}
             {content.faq && (
               <div className="mt-8">
                 <div 
