@@ -63,8 +63,8 @@ function createCustomRenderer(isRedBox = false): any {
   renderer.list = function(token: any) {
     const body = token.items.map((item: any) => {
       const text = getTextFromTokens(item.tokens);
-      return `<div class="arrow-list-item flex items-start pl-8 my-1 relative ${textColor}">
-                <span class="absolute left-0 top-2 font-bold ${arrowColor}" style="width: var(--arrow-size); height: var(--arrow-size);">→</span>
+      return `<div class="flex items-start my-1 ${textColor}">
+                <span class="font-bold ${arrowColor} mr-3 flex-shrink-0" style="width: var(--arrow-size); height: var(--arrow-size); line-height: var(--arrow-size);">→</span>
                 <span class="flex-1">${text}</span>
               </div>`;
     }).join('');
@@ -73,8 +73,8 @@ function createCustomRenderer(isRedBox = false): any {
   
   renderer.listitem = function(item: any) {
     const text = getTextFromTokens(item.tokens);
-    return `<div class="arrow-list-item flex items-start pl-8 my-1 relative ${textColor}">
-              <span class="absolute left-0 top-2 font-bold ${arrowColor}" style="width: var(--arrow-size); height: var(--arrow-size);">→</span>
+    return `<div class="flex items-start my-1 ${textColor}">
+              <span class="font-bold ${arrowColor} mr-3 flex-shrink-0" style="width: var(--arrow-size); height: var(--arrow-size); line-height: var(--arrow-size);">→</span>
               <span class="flex-1">${text}</span>
             </div>`;
   };
