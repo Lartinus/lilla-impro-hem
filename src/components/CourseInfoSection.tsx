@@ -1,5 +1,5 @@
 
-import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
+import { convertMarkdownToHtml, convertMarkdownToHtmlForRedBox } from '@/utils/markdownHelpers';
 
 interface CourseInfoSectionProps {
   mainInfo: any;
@@ -19,11 +19,11 @@ const CourseInfoSection = ({ mainInfo }: CourseInfoSectionProps) => {
           )}
 
           {mainInfo?.redbox && (
-            <div className="bg-red-700 p-6 rounded-none relative">
+            <div className="bg-red-700 p-6 rounded-none relative text-white">
               <div 
-                className="text-base leading-relaxed text-white font-light"
-                style={{ lineHeight: '1.3' }}
-                dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(mainInfo.redbox) }}
+                className="text-base leading-relaxed font-light"
+                style={{ lineHeight: '1.3', color: 'white' }}
+                dangerouslySetInnerHTML={{ __html: convertMarkdownToHtmlForRedBox(mainInfo.redbox) }}
               />
             </div>
           )}

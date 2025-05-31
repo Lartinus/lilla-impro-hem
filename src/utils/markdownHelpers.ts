@@ -34,26 +34,27 @@ renderer.listitem = function(token: any) {
 };
 
 // Style headings according to the website's design standards
+// For red backgrounds, ensure headings are white
 renderer.heading = function(token: any) {
   const text = this.parser.parseInline(token.tokens);
   const headingClasses = {
-    1: 'text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-normal text-black',
-    2: 'text-xl font-bold text-black mb-4',
-    3: 'text-theatre-secondary font-medium mb-4',
-    4: 'text-black font-bold mb-3',
-    5: 'text-black font-semibold mb-2',
-    6: 'text-black font-medium mb-2'
+    1: 'text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-normal text-white',
+    2: 'text-xl font-bold text-white mb-4',
+    3: 'text-white font-medium mb-4',
+    4: 'text-white font-bold mb-3',
+    5: 'text-white font-semibold mb-2',
+    6: 'text-white font-medium mb-2'
   };
   
   const className = headingClasses[token.depth as keyof typeof headingClasses] || headingClasses[4];
-  return `<h${token.depth} class="${className}" style="margin: 1.5rem 0 0.5rem 0;">${text}</h${token.depth}>`;
+  return `<h${token.depth} class="${className}" style="margin: 1.5rem 0 0.5rem 0; color: white !important;">${text}</h${token.depth}>`;
 };
 
 // Style links
 renderer.link = function(token: any) {
   const text = this.parser.parseInline(token.tokens);
   const titleAttr = token.title ? ` title="${token.title}"` : '';
-  return `<a href="${token.href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+  return `<a href="${token.href}"${titleAttr} class="text-blue-300 hover:text-blue-100 underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
 };
 
 // Style code blocks
@@ -105,4 +106,18 @@ export const convertMarkdownToHtml = (markdown: string): string => {
     console.error('Error converting markdown to HTML:', error);
     return markdown; // Fallback to original text
   }
+};
+
+// Special version for red backgrounds that ensures all text is white
+export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
+  if (!markdown) return '';
+  
+  const html = convertMarkdownToHtml(markdown);
+  
+  // Ensure all text elements are white for red backgrounds
+  return html
+    .replace(/class="text-gray-700"/g, 'class="text-white"')
+    .replace(/class="text-black"/g, 'class="text-white"')
+    .replace(/class="text-theatre-secondary"/g, 'class="text-white"')
+    .replace(/style="color:\s*[^"]*"/g, 'style="color: white !important"');
 };
