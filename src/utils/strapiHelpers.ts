@@ -110,11 +110,15 @@ export const formatStrapiCourse = (strapiCourse: any) => {
       console.log('Teacher bild data:', JSON.stringify(teacherAttrs.bild, null, 2));
       console.log('Teacher image data:', JSON.stringify(teacherAttrs.image, null, 2));
       
+      // Check all possible image field locations
+      const imageField = teacherAttrs.bild || teacherAttrs.image;
+      console.log('Selected image field:', JSON.stringify(imageField, null, 2));
+      
       teacher = {
         id: attrs.teacher.data.id,
         name: teacherAttrs.name,
         bio: teacherAttrs.bio,
-        image: getStrapiImageUrl(teacherAttrs.bild || teacherAttrs.image), // Check 'bild' first
+        image: getStrapiImageUrl(imageField),
       };
       console.log('Created teacher object (v4/v5 format):', teacher);
     }
@@ -125,11 +129,14 @@ export const formatStrapiCourse = (strapiCourse: any) => {
       console.log('Teacher image field exists?', 'image' in attrs.teacher);
       console.log('Teacher image value:', attrs.teacher.image);
       
+      const imageField = attrs.teacher.bild || attrs.teacher.image;
+      console.log('Selected direct image field:', JSON.stringify(imageField, null, 2));
+      
       teacher = {
         id: attrs.teacher.id,
         name: attrs.teacher.name,
         bio: attrs.teacher.bio,
-        image: getStrapiImageUrl(attrs.teacher.bild || attrs.teacher.image), // Check 'bild' first
+        image: getStrapiImageUrl(imageField),
       };
       console.log('Created teacher object (direct format):', teacher);
     }

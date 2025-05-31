@@ -17,8 +17,8 @@ serve(async (req) => {
   }
 
   try {
-    // Use the simplest populate syntax that works with most Strapi versions
-    const endpoint = '/api/courses?populate=*';
+    // Try different populate strategies to ensure we get teacher images
+    const endpoint = '/api/courses?populate[teacher][populate]=*&populate[teacher][populate][bild]=*&populate[teacher][populate][image]=*';
     
     console.log(`Fetching courses from Strapi: ${strapiUrl}${endpoint}`);
 
@@ -33,11 +33,30 @@ serve(async (req) => {
       console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
       const errorText = await response.text();
       console.error('Error response:', errorText);
-      throw new Error(`Strapi API error: ${response.status}`);
+      
+      // Fallback to simple populate=*
+      console.log('Trying fallback with populate=*');
+      const fallbackResponse = await fetch(`${strapiUrl}/api/courses?populate=*`, {
+        headers: {
+          'Authorization': `Bearer ${strapiToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!fallbackResponse.ok) {
+        throw new Error(`Strapi API error: ${fallbackResponse.status}`);
+      }
+      
+      const fallbackData = await fallbackResponse.json();
+      console.log('Fallback data received:', JSON.stringify(fallbackData, null, 2));
+      
+      return new Response(JSON.stringify(fallbackData), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const data = await response.json();
-    console.log('Successfully fetched courses with populate=*:', JSON.stringify(data, null, 2));
+    console.log('Successfully fetched courses with detailed populate:', JSON.stringify(data, null, 2));
     
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -47,7 +66,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       error: error.message,
       strapiUrl: strapiUrl,
-      endpoint: '/api/courses?populate=*'
+      endpoint: '/api/courses?populate[teacher][populate]=*'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
