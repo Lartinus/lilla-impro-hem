@@ -1,3 +1,4 @@
+
 import { marked } from 'marked';
 
 //
@@ -26,7 +27,7 @@ function getTextContent(input: any): string {
 // 2) PREPROCESS: 
 //    a) Ta bort eventuell BOM (Byte Order Mark)
 //    b) Normalisera radslut till Unix-format (\n)
-//    c) Sätt in ett blanksteg direkt efter alla “#”-sekvenser som saknar mellanslag
+//    c) Sätt in ett blanksteg direkt efter alla "#"-sekvenser som saknar mellanslag
 //    d) Formatera pil‐listor (→) oförändrat
 //
 function preprocess(md: string): string {
@@ -38,7 +39,7 @@ function preprocess(md: string): string {
   // b) Normalisera Windows‐CRLF (\r\n) och gamla Mac‐CR (\r) till Unix-LF (\n)
   s = s.replace(/\r\n?/g, '\n');
 
-  // c) Infoga blanksteg efter alla “1–6 '#'” som direkt följs av ett icke-blank tecken
+  // c) Infoga blanksteg efter alla "1–6 '#'" som direkt följs av ett icke-blank tecken
   //    (antingen i början av strängen eller efter en newline)
   //
   //    Regex:
@@ -50,20 +51,21 @@ function preprocess(md: string): string {
   //
   s = s.replace(/(^|\n)(#{1,6})(?=\S)/g, '$1$2 ');
 
-  // d) Pil‐listor: se till att vi får “→ text” (inkl. blanksteg efter pilen)
+  // d) Pil‐listor: se till att vi får "→ text" (inkl. blanksteg efter pilen)
   s = s.replace(/^→\s*(.+)$/gm, '→ $1');
 
   return s;
 }
 
 //
-// 3) SKAPA “normal renderer” för ljus bakgrund + mörk text
+// 3) SKAPA "normal renderer" för ljus bakgrund + mörk text
 //
 function createNormalRenderer(): any {
   const rnd: any = new marked.Renderer();
 
-  rnd.heading = (textToken: any, level: number, raw: string, slugger: any) => {
-    const text = getTextContent(textToken);
+  rnd.heading = function(token: any) {
+    const text = getTextContent(token.tokens || token.text);
+    const level = token.depth;
     const classes: Record<number, string> = {
       1: 'text-2xl font-bold text-gray-800 my-4',
       2: 'text-xl font-bold text-gray-800 mb-3',
@@ -73,12 +75,11 @@ function createNormalRenderer(): any {
       6: 'text-base font-medium text-gray-800 mb-2',
     };
     const cls = classes[level] || classes[4];
-    const idAttr = slugger.slug(text);
-    return `<h${level} id="${idAttr}" class="${cls}">${text}</h${level}>`;
+    return `<h${level} class="${cls}">${text}</h${level}>`;
   };
 
-  rnd.paragraph = (textToken: any) => {
-    const text = getTextContent(textToken).trim();
+  rnd.paragraph = function(token: any) {
+    const text = getTextContent(token.tokens || token.text).trim();
     if (text.startsWith('→')) {
       return `<p class="arrow-list-item ml-4 my-2 relative">
                 <span class="absolute left-0 font-bold text-blue-500">→</span>
@@ -88,39 +89,44 @@ function createNormalRenderer(): any {
     return `<p class="text-gray-800 my-4">${text}</p>`;
   };
 
-  rnd.list = (body: string, ordered: boolean, start: number) => {
+  rnd.list = function(token: any) {
+    const ordered = token.ordered;
+    const items = token.items.map((item: any) => this.listitem(item)).join('');
     const tag = ordered ? 'ol' : 'ul';
     const cls = ordered ? 'list-decimal' : 'list-disc';
-    return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
+    return `<${tag} class="${cls} ml-6 my-4">${items}</${tag}>`;
   };
-  rnd.listitem = (textToken: any) => {
-    const text = getTextContent(textToken);
+  
+  rnd.listitem = function(token: any) {
+    const text = getTextContent(token.tokens || token.text);
     return `<li class="text-gray-800 my-1">${text}</li>`;
   };
 
-  rnd.link = (href: string, title: string | null, textToken: any) => {
-    const text = getTextContent(textToken);
+  rnd.link = function(token: any) {
+    const href = token.href;
+    const title = token.title;
+    const text = getTextContent(token.tokens || token.text);
     const titleAttr = title ? ` title="${title}"` : '';
     return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
-  rnd.strong = (textToken: any) => {
-    const text = getTextContent(textToken);
+  rnd.strong = function(token: any) {
+    const text = getTextContent(token.tokens || token.text);
     return `<strong class="font-bold">${text}</strong>`;
   };
 
-  rnd.em = (textToken: any) => {
-    const text = getTextContent(textToken);
+  rnd.em = function(token: any) {
+    const text = getTextContent(token.tokens || token.text);
     return `<em class="italic">${text}</em>`;
   };
 
-  rnd.codespan = (codeToken: any) => {
-    const codeText = getTextContent(codeToken);
+  rnd.codespan = function(token: any) {
+    const codeText = getTextContent(token.text);
     return `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${codeText}</code>`;
   };
 
-  rnd.code = (codeToken: any, infostring: string, escaped: boolean) => {
-    const codeText = typeof codeToken === 'string' ? codeToken : getTextContent(codeToken);
+  rnd.code = function(token: any) {
+    const codeText = getTextContent(token.text);
     return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${codeText}</code></pre>`;
   };
 
@@ -128,13 +134,14 @@ function createNormalRenderer(): any {
 }
 
 //
-// 4) SKAPA “red‐box renderer” för röd bakgrund + vit text
+// 4) SKAPA "red‐box renderer" för röd bakgrund + vit text
 //
 function createRedBoxRenderer(): any {
   const rnd: any = new marked.Renderer();
 
-  rnd.heading = (textToken: any, level: number, raw: string, slugger: any) => {
-    const text = getTextContent(textToken);
+  rnd.heading = function(token: any) {
+    const text = getTextContent(token.tokens || token.text);
+    const level = token.depth;
     const classes: Record<number, string> = {
       1: 'text-2xl font-bold text-white my-4',
       2: 'text-xl font-bold text-white mb-3',
@@ -144,12 +151,11 @@ function createRedBoxRenderer(): any {
       6: 'text-base font-medium text-white mb-2',
     };
     const cls = classes[level] || classes[4];
-    const idAttr = slugger.slug(text);
-    return `<h${level} id="${idAttr}" class="${cls}">${text}</h${level}>`;
+    return `<h${level} class="${cls}">${text}</h${level}>`;
   };
 
-  rnd.paragraph = (textToken: any) => {
-    const text = getTextContent(textToken).trim();
+  rnd.paragraph = function(token: any) {
+    const text = getTextContent(token.tokens || token.text).trim();
     if (text.startsWith('→')) {
       return `<p class="arrow-list-item text-white ml-4 my-2 relative">
                 <span class="absolute left-0 font-bold text-blue-300">→</span>
@@ -159,39 +165,44 @@ function createRedBoxRenderer(): any {
     return `<p class="text-white my-4">${text}</p>`;
   };
 
-  rnd.list = (body: string, ordered: boolean, start: number) => {
+  rnd.list = function(token: any) {
+    const ordered = token.ordered;
+    const items = token.items.map((item: any) => this.listitem(item)).join('');
     const tag = ordered ? 'ol' : 'ul';
     const cls = ordered ? 'list-decimal text-white' : 'list-disc text-white';
-    return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
+    return `<${tag} class="${cls} ml-6 my-4">${items}</${tag}>`;
   };
-  rnd.listitem = (textToken: any) => {
-    const text = getTextContent(textToken);
+  
+  rnd.listitem = function(token: any) {
+    const text = getTextContent(token.tokens || token.text);
     return `<li class="text-white my-1">${text}</li>`;
   };
 
-  rnd.link = (href: string, title: string | null, textToken: any) => {
-    const text = getTextContent(textToken);
+  rnd.link = function(token: any) {
+    const href = token.href;
+    const title = token.title;
+    const text = getTextContent(token.tokens || token.text);
     const titleAttr = title ? ` title="${title}"` : '';
     return `<a href="${href}"${titleAttr} class="text-ljusbla hover:text-ljusbla underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
-  rnd.strong = (textToken: any) => {
-    const text = getTextContent(textToken);
+  rnd.strong = function(token: any) {
+    const text = getTextContent(token.tokens || token.text);
     return `<strong class="text-white font-bold">${text}</strong>`;
   };
 
-  rnd.em = (textToken: any) => {
-    const text = getTextContent(textToken);
+  rnd.em = function(token: any) {
+    const text = getTextContent(token.tokens || token.text);
     return `<em class="text-white italic">${text}</em>`;
   };
 
-  rnd.codespan = (codeToken: any) => {
-    const codeText = getTextContent(codeToken);
+  rnd.codespan = function(token: any) {
+    const codeText = getTextContent(token.text);
     return `<code class="bg-gray-700 px-1 py-0.5 rounded text-sm">${codeText}</code>`;
   };
 
-  rnd.code = (codeToken: any, infostring: string, escaped: boolean) => {
-    const codeText = typeof codeToken === 'string' ? codeToken : getTextContent(codeToken);
+  rnd.code = function(token: any) {
+    const codeText = getTextContent(token.text);
     return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${codeText}</code></pre>`;
   };
 
@@ -199,7 +210,7 @@ function createRedBoxRenderer(): any {
 }
 
 //
-// 5) KONFIGURERA marked att använda “normal renderer” globalt
+// 5) KONFIGURERA marked att använda "normal renderer" globalt
 //
 marked.setOptions({
   gfm: true,
