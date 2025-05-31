@@ -15,6 +15,7 @@ interface CourseLeaderInfoProps {
 const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
   console.log('CourseLeaderInfo - courseLeader:', courseLeader);
   console.log('CourseLeaderInfo - image URL:', courseLeader.image);
+  console.log('CourseLeaderInfo - image type:', typeof courseLeader.image);
 
   return (
     <div className="mb-6">

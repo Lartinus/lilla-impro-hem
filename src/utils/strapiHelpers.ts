@@ -1,20 +1,37 @@
 
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
-  if (!image) return null;
+  console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
+  
+  if (!image) {
+    console.log('getStrapiImageUrl - No image provided');
+    return null;
+  }
   
   // Handle different image formats from Strapi
   if (image.data?.attributes?.url) {
     const url = image.data.attributes.url;
-    return url.startsWith('http') ? url : `${baseUrl}${url}`;
+    const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+    console.log('getStrapiImageUrl - Using data.attributes.url:', fullUrl);
+    return fullUrl;
   }
   
   // Handle direct image object
   if (image.url) {
     const url = image.url;
-    return url.startsWith('http') ? url : `${baseUrl}${url}`;
+    const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+    console.log('getStrapiImageUrl - Using direct url:', fullUrl);
+    return fullUrl;
   }
   
+  // Handle if image is just a string URL
+  if (typeof image === 'string') {
+    const fullUrl = image.startsWith('http') ? image : `${baseUrl}${image}`;
+    console.log('getStrapiImageUrl - Using string url:', fullUrl);
+    return fullUrl;
+  }
+  
+  console.log('getStrapiImageUrl - No valid image URL found');
   return null;
 };
 
