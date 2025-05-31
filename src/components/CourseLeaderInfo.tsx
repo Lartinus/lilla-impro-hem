@@ -52,9 +52,7 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
                 console.log('Successfully loaded teacher image:', courseLeader.image);
               }}
             />
-          ) : (
-            console.log('No valid image, showing fallback')
-          )}
+          ) : null}
           
           {/* Fallback div - always present but hidden by default */}
           <div 
