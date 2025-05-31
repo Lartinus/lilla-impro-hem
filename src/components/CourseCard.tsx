@@ -57,7 +57,6 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             </h3>
           )}
         </div>
-        
         <div 
           className="text-gray-700 leading-relaxed mb-4 text-base [&>p]:mb-0.5 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0"
           dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
