@@ -48,11 +48,11 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
       <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-blue-500 mb-2">
+          <h2 className="text-xl font-bold text-blue-500 mb-1">
             {course.title}
           </h2>
           {course.subtitle && (
-            <h3 className="text-theatre-secondary font-medium subtitle">
+            <h3 className="text-theatre-secondary font-medium subtitle mb-0">
               {course.subtitle}
             </h3>
           )}
