@@ -12,35 +12,41 @@ function getTextContent(input: any): string {
   if (input == null) {
     return '';
   }
-  // Om det är ett token‐objekt med .text‐egenskap
+  // Om det är ett token-objekt med .text-egenskap
   if (typeof input === 'object' && 'text' in input && typeof input.text === 'string') {
     return input.text;
   }
-  // Om det är ett token‐objekt med tokens‐array
+  // Om det är ett token-objekt med tokens-array
   if (typeof input === 'object' && Array.isArray((input as any).tokens)) {
     return (input as any).tokens.map(getTextContent).join('');
   }
-  // Fallback: Gör om till sträng
+  // Fallback: gör om till sträng
   return String(input);
 }
 
 //
 // 2) Preprocess: 
 //    a) Ta bort BOM och trimma inledande mellanslag
-//    b) Sätt in mellanslag efter varje sekvens av 1–6 '#' om det saknas
-//    c) Hantera pil‐listor (→) som förut
+//    b) Sätt alltid in ett blanksteg mellan "##...##" och texten, om det saknas
+//    c) Hantera pil-listor (→) på samma sätt som tidigare
 //
 function preprocess(md: string): string {
   if (!md) return '';
 
-  // a) Ta bort eventuell BOM (Byte Order Mark) och trimma inledande mellanslag/ny rad
+  // a) Ta bort eventuell BOM (Byte Order Mark) och trimma inledande mellanslag
   let s = md.replace(/^\uFEFF/, '').replace(/^\s+/, '');
 
-  // b) Om rad börjar med 1–6 '#' utan blanksteg efter, lägg till ett blanksteg
-  //    Exempel: "###Ett rubrikexempel" -> "### Ett rubrikexempel"
-  s = s.replace(/^#{1,6}(?=\S)/gm, (m) => m + ' ');
+  // b) Om rad börjar med X antal # utan blanksteg efter (även med inledande mellanslag),
+  //    sätt in blanksteg efter hashes‐sekvensen.
+  //
+  //    Förklaring av mönstret:
+  //    ^(\s*)(#{1,6})(?!\s)   → fånga inledande mellanslag (grupp 1) + 1–6 # (grupp 2), 
+  //                          men bara om nästa tecken inte är blanksteg. 
+  //    Ersättning: '$1$2 '    → sätt tillbaka de inledande mellanslagen + #'en, följt av ett blanksteg.
+  //
+  s = s.replace(/^(\s*)(#{1,6})(?!\s)/gm, '$1$2 ');
 
-  // c) Hantera pil‐listor (→ ) på samma sätt som tidigare
+  // c) Hantera pil-listor (→) precis som tidigare
   s = s.replace(/^→\s+(.+)$/gm, '→ $1');
 
   return s;
@@ -205,7 +211,7 @@ marked.setOptions({
 export const convertMarkdownToHtml = (markdown: string): string => {
   if (!markdown) return '';
   try {
-    // Kör preprocess så att "#" utan blanksteg tolkas korrekt
+    // Kör preprocess så att '#' utan blanksteg tolkas korrekt
     const pre = preprocess(markdown);
     return marked(pre) as string;
   } catch (err) {
@@ -217,10 +223,11 @@ export const convertMarkdownToHtml = (markdown: string): string => {
 export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
   if (!markdown) return '';
   try {
-    // Kör preprocess även för röd box‐innehåll
+    // Kör preprocess även för röd box
     const pre = preprocess(markdown);
+    // Rendera med röd bakgrund‐renderer
     const html = marked(pre, { renderer: createRedBoxRenderer() }) as string;
-    // Återställ normal renderer efteråt
+    // Återställ normal renderer
     marked.setOptions({ renderer: createNormalRenderer() });
     return html;
   } catch (err) {
