@@ -99,10 +99,12 @@ export const formatStrapiCourse = (strapiCourse: any) => {
     return null;
   }
   
-  // Handle teacher relation - improved image handling
+  // Handle teacher relation - improved debugging for missing image
   let teacher = null;
   if (attrs.teacher) {
     console.log('Teacher data found:', JSON.stringify(attrs.teacher, null, 2));
+    console.log('Teacher image field exists?', 'image' in attrs.teacher);
+    console.log('Teacher image value:', attrs.teacher.image);
     
     // Direct teacher data (new format)
     if (attrs.teacher.name) {
@@ -110,19 +112,25 @@ export const formatStrapiCourse = (strapiCourse: any) => {
         id: attrs.teacher.id,
         name: attrs.teacher.name,
         bio: attrs.teacher.bio,
-        image: getStrapiImageUrl(attrs.teacher.image),
+        image: attrs.teacher.image ? getStrapiImageUrl(attrs.teacher.image) : null,
       };
+      console.log('Created teacher object (direct):', teacher);
     }
     // Teacher with data property (old format)
     else if (attrs.teacher.data?.attributes) {
       const teacherAttrs = attrs.teacher.data.attributes;
+      console.log('Teacher attributes:', JSON.stringify(teacherAttrs, null, 2));
+      console.log('Teacher attributes image field exists?', 'image' in teacherAttrs);
       teacher = {
         id: attrs.teacher.data.id,
         name: teacherAttrs.name,
         bio: teacherAttrs.bio,
-        image: getStrapiImageUrl(teacherAttrs.image),
+        image: teacherAttrs.image ? getStrapiImageUrl(teacherAttrs.image) : null,
       };
+      console.log('Created teacher object (nested):', teacher);
     }
+  } else {
+    console.log('No teacher data found in course');
   }
   
   // Parse practical info from markdown-like text, removing markdown headers
