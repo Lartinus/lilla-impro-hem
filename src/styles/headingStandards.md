@@ -12,7 +12,7 @@ Based on the formatting established on the home page and courses page, these are
 - Usage: Main heading on each page, describes the core purpose or main content
 
 ## H2 - Section Headings
-- Classes: `text-xl font-bold text-black mb-4`
+- Classes: `text-xl font-bold text-black mb-2`
 - Usage: Major sections like "Vår vision", "Vem kan komma till Lilla Improteatern?", "Vanliga frågor"
 
 ## H3 - Subsection Headings  
