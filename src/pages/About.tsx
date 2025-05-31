@@ -2,6 +2,7 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useEffect } from 'react';
+import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 
 const About = () => {
   useEffect(() => {
@@ -82,9 +83,11 @@ const About = () => {
                       <h3 className="font-bold text-gray-800 mb-3 text-lg">
                         {member.name}
                       </h3>
-                      <p className="text-gray-700 leading-relaxed text-sm break-words" style={{ lineHeight: '1.3' }}>
-                        {member.bio}
-                      </p>
+                      <div 
+                        className="text-gray-700 leading-relaxed text-sm break-words" 
+                        style={{ lineHeight: '1.3' }}
+                        dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(member.bio) }}
+                      />
                     </div>
                   </div>
                 ))}

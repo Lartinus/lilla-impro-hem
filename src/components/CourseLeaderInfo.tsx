@@ -1,4 +1,6 @@
 
+import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
+
 interface CourseLeader {
   id: number;
   name: string;
@@ -35,9 +37,10 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
             <h5 className="font-bold text-gray-800 mb-2 md:text-left">
               {courseLeader.name}
             </h5>
-            <p className="text-gray-700 leading-relaxed text-sm break-words">
-              {courseLeader.bio}
-            </p>
+            <div 
+              className="text-gray-700 leading-relaxed text-sm break-words"
+              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(courseLeader.bio) }}
+            />
           </div>
         </div>
       </div>

@@ -1,4 +1,6 @@
 
+import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
+
 interface CourseInfoSectionProps {
   mainInfo: any;
 }
@@ -12,7 +14,7 @@ const CourseInfoSection = ({ mainInfo }: CourseInfoSectionProps) => {
             <div 
               className="space-y-6 text-gray-700 leading-relaxed text-base"
               style={{ lineHeight: '1.3' }}
-              dangerouslySetInnerHTML={{ __html: mainInfo.info }}
+              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(mainInfo.info) }}
             />
           )}
 
@@ -21,7 +23,7 @@ const CourseInfoSection = ({ mainInfo }: CourseInfoSectionProps) => {
               <div 
                 className="text-base leading-relaxed text-white font-light"
                 style={{ lineHeight: '1.3' }}
-                dangerouslySetInnerHTML={{ __html: mainInfo.redbox }}
+                dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(mainInfo.redbox) }}
               />
             </div>
           )}
@@ -30,7 +32,7 @@ const CourseInfoSection = ({ mainInfo }: CourseInfoSectionProps) => {
             <div 
               className="space-y-6 text-gray-700 leading-relaxed text-base"
               style={{ lineHeight: '1.3' }}
-              dangerouslySetInnerHTML={{ __html: mainInfo.infoAfterRedbox }}
+              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(mainInfo.infoAfterRedbox) }}
             />
           )}
         </div>

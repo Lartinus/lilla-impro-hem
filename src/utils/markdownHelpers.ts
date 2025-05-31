@@ -11,8 +11,8 @@ marked.setOptions({
 const renderer = new marked.Renderer();
 
 // Override paragraph rendering to handle arrow lists
-renderer.paragraph = function({ tokens }: any) {
-  const text = this.parser.parseInline(tokens);
+renderer.paragraph = function(token: any) {
+  const text = this.parser.parseInline(token.tokens);
   // Check if this is an arrow list item
   if (text.startsWith('→')) {
     return `<p class="arrow-list-item" style="margin: 0.5rem 0; padding-left: 1rem; position: relative;"><span style="position: absolute; left: 0; font-weight: bold; color: #3b82f6;">→</span>${text.substring(1).trim()}</p>`;
@@ -28,14 +28,14 @@ renderer.list = function(token: any) {
   return `<${type} class="${style}" style="margin: 1rem 0; padding-left: 1.5rem;">${body}</${type}>`;
 };
 
-renderer.listitem = function(item: any) {
-  const text = this.parser.parseInline(item.tokens);
+renderer.listitem = function(token: any) {
+  const text = this.parser.parseInline(token.tokens);
   return `<li style="margin: 0.25rem 0;">${text}</li>`;
 };
 
 // Style headings according to the website's design standards
-renderer.heading = function({ tokens, depth }: any) {
-  const text = this.parser.parseInline(tokens);
+renderer.heading = function(token: any) {
+  const text = this.parser.parseInline(token.tokens);
   const headingClasses = {
     1: 'text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-normal text-black',
     2: 'text-xl font-bold text-black mb-4',
@@ -45,35 +45,35 @@ renderer.heading = function({ tokens, depth }: any) {
     6: 'text-black font-medium mb-2'
   };
   
-  const className = headingClasses[depth as keyof typeof headingClasses] || headingClasses[4];
-  return `<h${depth} class="${className}" style="margin: 1.5rem 0 0.5rem 0;">${text}</h${depth}>`;
+  const className = headingClasses[token.depth as keyof typeof headingClasses] || headingClasses[4];
+  return `<h${token.depth} class="${className}" style="margin: 1.5rem 0 0.5rem 0;">${text}</h${token.depth}>`;
 };
 
 // Style links
-renderer.link = function({ href, title, tokens }: any) {
-  const text = this.parser.parseInline(tokens);
-  const titleAttr = title ? ` title="${title}"` : '';
-  return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+renderer.link = function(token: any) {
+  const text = this.parser.parseInline(token.tokens);
+  const titleAttr = token.title ? ` title="${token.title}"` : '';
+  return `<a href="${token.href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
 };
 
 // Style code blocks
-renderer.code = function({ text, lang }: any) {
-  return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${text}</code></pre>`;
+renderer.code = function(token: any) {
+  return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${token.text}</code></pre>`;
 };
 
 // Style inline code
-renderer.codespan = function({ text }: any) {
-  return `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${text}</code>`;
+renderer.codespan = function(token: any) {
+  return `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${token.text}</code>`;
 };
 
 // Style strong and emphasis
-renderer.strong = function({ tokens }: any) {
-  const text = this.parser.parseInline(tokens);
+renderer.strong = function(token: any) {
+  const text = this.parser.parseInline(token.tokens);
   return `<strong class="font-bold">${text}</strong>`;
 };
 
-renderer.em = function({ tokens }: any) {
-  const text = this.parser.parseInline(tokens);
+renderer.em = function(token: any) {
+  const text = this.parser.parseInline(token.tokens);
   return `<em class="italic">${text}</em>`;
 };
 
