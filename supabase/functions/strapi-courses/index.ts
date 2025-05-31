@@ -1,3 +1,4 @@
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -16,8 +17,8 @@ serve(async (req) => {
   }
 
   try {
-    // Populate teacher relation with image
-    const endpoint = '/api/courses?populate[teacher][populate]=image';
+    // Use simpler populate syntax that works with most Strapi versions
+    const endpoint = '/api/courses?populate=*';
     
     console.log(`Fetching courses from Strapi: ${strapiUrl}${endpoint}`);
 
@@ -46,7 +47,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       error: error.message,
       strapiUrl: strapiUrl,
-      endpoint: '/api/courses?populate[teacher][populate]=image'
+      endpoint: '/api/courses?populate=*'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
