@@ -5,6 +5,8 @@ import { marked } from 'marked';
 // 1) Hjälpfunktion: Extrahera alltid ren text från token eller sträng
 //
 function getTextContent(input: any): string {
+  console.log('getTextContent called with:', typeof input, input);
+  
   // Om input redan är en sträng, returnera den direkt
   if (typeof input === 'string') {
     return input;
@@ -25,52 +27,57 @@ function getTextContent(input: any): string {
     return input.map(item => getTextContent(item)).join('');
   }
   
-  // Om input är ett objekt, försök hitta text-egenskaper
+  // Om input är ett objekt (token från marked.js)
   if (typeof input === 'object') {
-    // Kolla efter vanliga text-egenskaper
-    if (input.text && typeof input.text === 'string') {
+    // För marked.js tokens - försök olika strategier
+    
+    // 1. Om det är en text-token
+    if (input.type === 'text' && input.text) {
       return input.text;
     }
     
+    // 2. Om det har raw-text
     if (input.raw && typeof input.raw === 'string') {
       return input.raw;
     }
     
-    // Om objektet har tokens (nested tokens)
+    // 3. Om det har vanlig text-egenskap
+    if (input.text && typeof input.text === 'string') {
+      return input.text;
+    }
+    
+    // 4. Om objektet har tokens (nested tokens) - rekursivt hantera
     if (input.tokens && Array.isArray(input.tokens)) {
       return input.tokens.map((token: any) => getTextContent(token)).join('');
     }
     
-    // Om objektet har en value-egenskap
+    // 5. För strong/em tokens
+    if ((input.type === 'strong' || input.type === 'em') && input.tokens) {
+      return getTextContent(input.tokens);
+    }
+    
+    // 6. För link tokens
+    if (input.type === 'link') {
+      return input.tokens ? getTextContent(input.tokens) : (input.text || input.href || '');
+    }
+    
+    // 7. För code tokens
+    if (input.type === 'codespan' || input.type === 'code') {
+      return input.text || input.raw || '';
+    }
+    
+    // 8. För image tokens
+    if (input.type === 'image') {
+      return input.text || input.title || input.alt || '';
+    }
+    
+    // 9. Fallback: leta efter andra text-egenskaper
     if (input.value && typeof input.value === 'string') {
       return input.value;
     }
     
-    // För marked.js tokens - leta efter text i alla möjliga fält
-    if (input.type) {
-      // Text token
-      if (input.type === 'text') {
-        return input.text || input.raw || '';
-      }
-      // Strong/em tokens
-      if (input.type === 'strong' || input.type === 'em') {
-        return input.text || input.raw || getTextContent(input.tokens) || '';
-      }
-      // Code tokens
-      if (input.type === 'codespan' || input.type === 'code') {
-        return input.text || input.raw || '';
-      }
-      // Link tokens
-      if (input.type === 'link') {
-        return getTextContent(input.tokens) || input.text || input.href || '';
-      }
-      // Image tokens
-      if (input.type === 'image') {
-        return input.text || input.title || '';
-      }
-    }
-    
-    // Fallback: returnera tom sträng för objekt vi inte kan hantera
+    // 10. Sista utväg: returnera tom sträng istället för [object Object]
+    console.warn('Could not extract text from object:', input);
     return '';
   }
   
@@ -96,15 +103,6 @@ function preprocess(md: string): string {
   s = s.replace(/\r\n?/g, '\n');
 
   // c) Infoga blanksteg efter alla "1–6 '#'" som direkt följs av ett icke-blank tecken
-  //    (antingen i början av strängen eller efter en newline)
-  //
-  //    Regex:
-  //    (^|\n)     → matcha början av strängen eller efter en '\n'
-  //    (#{1,6})   → fånga in 1–6 stycken "#"
-  //    (?=\S)     → se till att nästa tecken är icke-blank (d.v.s. text, inte mellanslag)
-  //
-  //    Ersättning: "$1$2 " → originalt gruppering ('' eller '\n') + '###' + ett extra blanksteg
-  //
   s = s.replace(/(^|\n)(#{1,6})(?=\S)/g, '$1$2 ');
 
   // d) Pil‐listor: se till att vi får "→ text" (inkl. blanksteg efter pilen)
@@ -119,9 +117,9 @@ function preprocess(md: string): string {
 function createNormalRenderer(): any {
   const rnd: any = new marked.Renderer();
 
-  rnd.heading = function(text: any, level: number) {
-    // För rubriker behöver vi bara den rena texten, inte processsa tokens
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
+  // Viktigt: heading får redan processad text från marked.js, inte raw tokens
+  rnd.heading = function(text: string, level: number) {
+    console.log('Heading renderer called with:', typeof text, text, 'level:', level);
     const classes: Record<number, string> = {
       1: 'text-2xl font-bold text-gray-800 my-4',
       2: 'text-xl font-bold text-gray-800 mb-3',
@@ -131,18 +129,18 @@ function createNormalRenderer(): any {
       6: 'text-base font-medium text-gray-800 mb-2',
     };
     const cls = classes[level] || classes[4];
-    return `<h${level} class="${cls}">${cleanText}</h${level}>`;
+    return `<h${level} class="${cls}">${text}</h${level}>`;
   };
 
-  rnd.paragraph = function(text: any) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
-    if (cleanText.trim().startsWith('→')) {
+  rnd.paragraph = function(text: string) {
+    console.log('Paragraph renderer called with:', typeof text, text);
+    if (text.trim().startsWith('→')) {
       return `<p class="arrow-list-item ml-4 my-2 relative">
                 <span class="absolute left-0 font-bold text-blue-500">→</span>
-                ${cleanText.substring(1).trim()}
+                ${text.substring(1).trim()}
               </p>`;
     }
-    return `<p class="text-gray-800 my-4">${cleanText}</p>`;
+    return `<p class="text-gray-800 my-4">${text}</p>`;
   };
 
   rnd.list = function(body: string, ordered: boolean) {
@@ -151,35 +149,29 @@ function createNormalRenderer(): any {
     return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
   
-  rnd.listitem = function(text: any) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
-    return `<li class="text-gray-800 my-1">${cleanText}</li>`;
+  rnd.listitem = function(text: string) {
+    return `<li class="text-gray-800 my-1">${text}</li>`;
   };
 
-  rnd.link = function(href: string, title: string | null, text: any) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
+  rnd.link = function(href: string, title: string | null, text: string) {
     const titleAttr = title ? ` title="${title}"` : '';
-    return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${cleanText}</a>`;
+    return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
-  rnd.strong = function(text: any) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
-    return `<strong class="font-bold">${cleanText}</strong>`;
+  rnd.strong = function(text: string) {
+    return `<strong class="font-bold">${text}</strong>`;
   };
 
-  rnd.em = function(text: any) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
-    return `<em class="italic">${cleanText}</em>`;
+  rnd.em = function(text: string) {
+    return `<em class="italic">${text}</em>`;
   };
 
-  rnd.codespan = function(text: any) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
-    return `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${cleanText}</code>`;
+  rnd.codespan = function(text: string) {
+    return `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${text}</code>`;
   };
 
-  rnd.code = function(code: any, language: string | undefined) {
-    const cleanCode = typeof code === 'string' ? code : getTextContent(code);
-    return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${cleanCode}</code></pre>`;
+  rnd.code = function(code: string, language: string | undefined) {
+    return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${code}</code></pre>`;
   };
 
   return rnd;
@@ -191,8 +183,8 @@ function createNormalRenderer(): any {
 function createRedBoxRenderer(): any {
   const rnd: any = new marked.Renderer();
 
-  rnd.heading = function(text: any, level: number) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
+  rnd.heading = function(text: string, level: number) {
+    console.log('Red box heading renderer called with:', typeof text, text, 'level:', level);
     const classes: Record<number, string> = {
       1: 'text-2xl font-bold text-white my-4',
       2: 'text-xl font-bold text-white mb-3',
@@ -202,18 +194,17 @@ function createRedBoxRenderer(): any {
       6: 'text-base font-medium text-white mb-2',
     };
     const cls = classes[level] || classes[4];
-    return `<h${level} class="${cls}">${cleanText}</h${level}>`;
+    return `<h${level} class="${cls}">${text}</h${level}>`;
   };
 
-  rnd.paragraph = function(text: any) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
-    if (cleanText.trim().startsWith('→')) {
+  rnd.paragraph = function(text: string) {
+    if (text.trim().startsWith('→')) {
       return `<p class="arrow-list-item text-white ml-4 my-2 relative">
                 <span class="absolute left-0 font-bold text-blue-300">→</span>
-                ${cleanText.substring(1).trim()}
+                ${text.substring(1).trim()}
               </p>`;
     }
-    return `<p class="text-white my-4">${cleanText}</p>`;
+    return `<p class="text-white my-4">${text}</p>`;
   };
 
   rnd.list = function(body: string, ordered: boolean) {
@@ -222,35 +213,29 @@ function createRedBoxRenderer(): any {
     return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
   
-  rnd.listitem = function(text: any) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
-    return `<li class="text-white my-1">${cleanText}</li>`;
+  rnd.listitem = function(text: string) {
+    return `<li class="text-white my-1">${text}</li>`;
   };
 
-  rnd.link = function(href: string, title: string | null, text: any) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
+  rnd.link = function(href: string, title: string | null, text: string) {
     const titleAttr = title ? ` title="${title}"` : '';
-    return `<a href="${href}"${titleAttr} class="text-ljusbla hover:text-ljusbla underline" target="_blank" rel="noopener noreferrer">${cleanText}</a>`;
+    return `<a href="${href}"${titleAttr} class="text-ljusbla hover:text-ljusbla underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
-  rnd.strong = function(text: any) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
-    return `<strong class="text-white font-bold">${cleanText}</strong>`;
+  rnd.strong = function(text: string) {
+    return `<strong class="text-white font-bold">${text}</strong>`;
   };
 
-  rnd.em = function(text: any) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
-    return `<em class="text-white italic">${cleanText}</em>`;
+  rnd.em = function(text: string) {
+    return `<em class="text-white italic">${text}</em>`;
   };
 
-  rnd.codespan = function(text: any) {
-    const cleanText = typeof text === 'string' ? text : getTextContent(text);
-    return `<code class="bg-gray-700 px-1 py-0.5 rounded text-sm">${cleanText}</code>`;
+  rnd.codespan = function(text: string) {
+    return `<code class="bg-gray-700 px-1 py-0.5 rounded text-sm">${text}</code>`;
   };
 
-  rnd.code = function(code: any, language: string | undefined) {
-    const cleanCode = typeof code === 'string' ? code : getTextContent(code);
-    return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${cleanCode}</code></pre>`;
+  rnd.code = function(code: string, language: string | undefined) {
+    return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${code}</code></pre>`;
   };
 
   return rnd;
@@ -271,8 +256,12 @@ marked.setOptions({
 export const convertMarkdownToHtml = (markdown: string): string => {
   if (!markdown) return '';
   try {
+    console.log('Converting markdown:', markdown);
     const pre = preprocess(markdown);
-    return marked(pre) as string;
+    console.log('Preprocessed markdown:', pre);
+    const result = marked(pre) as string;
+    console.log('Converted HTML:', result);
+    return result;
   } catch (err) {
     console.error('Markdown conversion failed:', err);
     return markdown;
@@ -282,6 +271,7 @@ export const convertMarkdownToHtml = (markdown: string): string => {
 export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
   if (!markdown) return '';
   try {
+    console.log('Converting markdown for red box:', markdown);
     const pre = preprocess(markdown);
     const html = marked(pre, { renderer: createRedBoxRenderer() }) as string;
     // Återställ normal renderer för framtida anrop
