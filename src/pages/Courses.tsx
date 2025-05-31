@@ -16,8 +16,6 @@ const Courses = () => {
 
   console.log('Courses page - Raw courses data:', coursesData);
   console.log('Courses page - Raw main info data:', mainInfoData);
-  console.log('Courses loading states:', { coursesLoading, mainInfoLoading });
-  console.log('Courses errors:', { coursesError, mainInfoError });
 
   const courses = coursesData?.data ? coursesData.data.map(formatStrapiCourse).filter(Boolean) : [];
   const mainInfo = formatCourseMainInfo(mainInfoData);
@@ -25,6 +23,7 @@ const Courses = () => {
   console.log('Formatted courses:', courses);
   console.log('Formatted main info:', mainInfo);
 
+  // Fallback practical info if course doesn't have its own
   const practicalInfo = [
     "8 tillfällen á 2,5h",
     "Startdatum: 28 oktober", 
@@ -34,7 +33,6 @@ const Courses = () => {
   ];
 
   if (coursesLoading || mainInfoLoading) {
-    console.log('Still loading...');
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex items-center justify-center">
         <div className="text-white text-xl">Laddar kurser...</div>
@@ -51,8 +49,6 @@ const Courses = () => {
     );
   }
 
-  console.log('About to render courses. Number of courses:', courses.length);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
@@ -66,14 +62,6 @@ const Courses = () => {
           </h1>
         </div>
       </section>
-
-      {/* Debug section - remove after fixing */}
-      <div className="bg-red-500 text-white p-4 mx-4 mb-4">
-        <h3>Debug info:</h3>
-        <p>Courses length: {courses.length}</p>
-        <p>Has main info: {mainInfo ? 'Yes' : 'No'}</p>
-        <p>Loading states: courses={coursesLoading.toString()}, mainInfo={mainInfoLoading.toString()}</p>
-      </div>
 
       {/* Courses Grid */}
       <section className="py-2 px-0.5 md:px-4 pb-8 animate-fade-in">

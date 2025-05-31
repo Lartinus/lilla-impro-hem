@@ -52,14 +52,36 @@ export const formatStrapiCourse = (strapiCourse: any) => {
   const attrs = strapiCourse.attributes;
   console.log('Formatting course:', JSON.stringify(strapiCourse, null, 2));
   
-  // Handle teacher relation - the teacher object is directly in attributes, not nested in data
-  const teacher = attrs.teacher;
-  console.log('Teacher data:', JSON.stringify(teacher, null, 2));
+  // Handle teacher relation - check if it's nested in data or directly accessible
+  let teacher = null;
+  if (attrs.teacher) {
+    console.log('Teacher data found:', JSON.stringify(attrs.teacher, null, 2));
+    
+    // If teacher has data property (standard Strapi relation format)
+    if (attrs.teacher.data?.attributes) {
+      const teacherAttrs = attrs.teacher.data.attributes;
+      teacher = {
+        id: attrs.teacher.data.id,
+        name: teacherAttrs.name,
+        bio: teacherAttrs.bio,
+        image: getStrapiImageUrl(teacherAttrs.image),
+      };
+    }
+    // If teacher is directly accessible (already populated)
+    else if (attrs.teacher.name) {
+      teacher = {
+        id: attrs.teacher.id,
+        name: attrs.teacher.name,
+        bio: attrs.teacher.bio,
+        image: getStrapiImageUrl(attrs.teacher.image),
+      };
+    }
+  }
   
-  // Parse practical info from markdown-like text
+  // Parse practical info from markdown-like text, removing markdown headers
   let practicalInfo = [];
   if (attrs.praktisk_info) {
-    // Split by lines and filter out empty lines and headers
+    console.log('Processing praktisk_info:', attrs.praktisk_info);
     practicalInfo = attrs.praktisk_info
       .split('\n')
       .filter((line: string) => line.trim() && !line.startsWith('#'))
@@ -67,21 +89,19 @@ export const formatStrapiCourse = (strapiCourse: any) => {
       .filter((line: string) => line);
   }
   
-  return {
+  const formatted = {
     id: strapiCourse.id,
     title: attrs.titel || attrs.title,
     subtitle: attrs.undertitel || attrs.subtitle,
     description: attrs.description,
     practicalInfo: practicalInfo,
-    teacher: teacher ? {
-      id: teacher.id,
-      name: teacher.name,
-      bio: teacher.bio,
-      image: getStrapiImageUrl(teacher.image),
-    } : null,
+    teacher: teacher,
     available: true,
     showButton: true
   };
+  
+  console.log('Formatted course result:', formatted);
+  return formatted;
 };
 
 export const formatCourseMainInfo = (strapiData: any) => {
