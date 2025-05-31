@@ -26,7 +26,7 @@ const PerformersSection = ({ performers }: PerformersSectionProps) => {
                 className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0"
               />
               <div className="flex-1 min-w-0">
-                <h5 className="font-bold text-gray-800 mb-2">
+                <h5 className="font-bold text-gray-800 performer-name">
                   {performer.name}
                 </h5>
                 <p className="text-gray-700 leading-relaxed text-sm break-words" style={{ lineHeight: '1.3' }}>

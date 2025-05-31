@@ -63,7 +63,7 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
           </div>
           
           <div className="flex-1 min-w-0">
-            <h5 className="font-bold text-gray-800 mb-1 md:text-left">
+            <h5 className="font-bold text-gray-800 teacher-name md:text-left">
               {courseLeader.name}
             </h5>
             <div 

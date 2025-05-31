@@ -55,6 +55,14 @@
     --heading-to-text-spacing: 0.3rem;
     /* Avstånd från rubrik till brödtext för kurskort */
     --course-card-heading-to-text-spacing: 0rem;
+    
+    /* ===== TEACHER/PERFORMER SPACING SETTINGS ===== */
+    /* Avstånd mellan namn och bio för alla teachers och performers */
+    --name-to-bio-spacing: 0.5rem;
+    
+    /* ===== ARROW SIZE SETTINGS ===== */
+    /* Storlek på pilar */
+    --arrow-size: 1rem;
     /* ============================================== */
   }
 
@@ -154,5 +162,18 @@
   /* Specifik fix för kurskort brödtext */
   .course-card .course-description {
     margin-top: var(--course-card-heading-to-text-spacing) !important;
+  }
+  
+  /* ===== TEACHER/PERFORMER NAME TO BIO SPACING ===== */
+  /* Avstånd mellan namn och bio för teachers och performers */
+  .teacher-name + *, .performer-name + * {
+    margin-top: var(--name-to-bio-spacing) !important;
+  }
+  
+  /* ===== ARROW SIZE SETTINGS ===== */
+  /* Applicera arrow size på alla pilar */
+  .arrow, [class*="arrow"], .w-2.h-2 {
+    width: var(--arrow-size) !important;
+    height: var(--arrow-size) !important;
   }
 }

@@ -41,8 +41,9 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   // Hide button for workshops course
   const shouldShowButton = course.showButton && !isWorkshops;
   
-  // Make button blue for house teams
-  const buttonVariant = isHouseTeams ? "default" : "default";
+  // For house teams, set available to false to show interest form
+  const courseAvailability = isHouseTeams ? false : course.available;
+  const buttonText = isHouseTeams ? "Anmäl intresse" : course.buttonText;
 
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col course-card">
@@ -79,7 +80,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             <div className="space-y-2">
               {course.practicalInfo!.map((item, index) => (
                 <div key={index} className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
+                  <div className="arrow bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
                   <p className="text-gray-700 text-base body-text">{item}</p>
                 </div>
               ))}
@@ -90,9 +91,9 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         {shouldShowButton && (
           <CourseBookingForm 
             courseTitle={course.title}
-            isAvailable={course.available}
+            isAvailable={courseAvailability}
             showButton={shouldShowButton}
-            buttonText={course.buttonText}
+            buttonText={buttonText}
             buttonVariant={isHouseTeams ? "outline" : "default"}
           />
         )}
