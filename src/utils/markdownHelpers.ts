@@ -25,8 +25,11 @@ function preprocess(md: string): string {
   // Sätt in blanksteg efter rubriker som saknar det
   s = s.replace(/(^|\n)(#{1,6})(?=\S)/g, '$1$2 ');
 
-  // Formatera pil-listor
+  // Formatera pil-listor - förbättra regex för att hantera pilar bättre
   s = s.replace(/^→\s*(.+)$/gm, '→ $1');
+  
+  // Hantera pilar i början av rader mer robust
+  s = s.replace(/^(\s*)→\s*(.+)$/gm, '$1→ $2');
 
   return s;
 }
@@ -53,11 +56,13 @@ function createNormalRenderer(): any {
 
   renderer.paragraph = function({ tokens }: { tokens: any[] }) {
     const text = getTextFromTokens(tokens);
+    // Förbättrad hantering av pil-listor
     if (text.trim().startsWith('→')) {
-      return `<p class="arrow-list-item ml-4 my-2 relative">
-                <span class="absolute left-0 font-bold text-blue-500">→</span>
-                ${text.substring(1).trim()}
-              </p>`;
+      const content = text.replace(/^→\s*/, '').trim();
+      return `<div class="arrow-list-item ml-4 my-2 relative text-gray-800">
+                <span class="absolute -left-4 font-bold text-blue-500">→</span>
+                <span>${content}</span>
+              </div>`;
     }
     return `<p class="text-gray-800 my-4">${text}</p>`;
   };
@@ -126,11 +131,13 @@ function createRedBoxRenderer(): any {
 
   renderer.paragraph = function({ tokens }: { tokens: any[] }) {
     const text = getTextFromTokens(tokens);
+    // Förbättrad hantering av pil-listor för röd bakgrund
     if (text.trim().startsWith('→')) {
-      return `<p class="arrow-list-item text-white ml-4 my-2 relative">
-                <span class="absolute left-0 font-bold text-blue-300">→</span>
-                ${text.substring(1).trim()}
-              </p>`;
+      const content = text.replace(/^→\s*/, '').trim();
+      return `<div class="arrow-list-item ml-4 my-2 relative text-white">
+                <span class="absolute -left-4 font-bold text-blue-300">→</span>
+                <span>${content}</span>
+              </div>`;
     }
     return `<p class="text-white my-4">${text}</p>`;
   };
@@ -188,12 +195,11 @@ export const convertMarkdownToHtml = (markdown: string): string => {
     const preprocessed = preprocess(markdown);
     console.log('Preprocessed:', preprocessed);
     
-    // Configure marked with proper options
+    // Configure marked with valid options only
     const html = marked(preprocessed, {
       gfm: true,
       breaks: true,
-      renderer: createNormalRenderer(),
-      mangle: false
+      renderer: createNormalRenderer()
     });
     
     console.log('Result HTML:', html);
@@ -211,12 +217,11 @@ export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
     console.log('Converting markdown for red box:', markdown);
     const preprocessed = preprocess(markdown);
     
-    // Configure marked with proper options
+    // Configure marked with valid options only
     const html = marked(preprocessed, {
       gfm: true,
       breaks: true,
-      renderer: createRedBoxRenderer(),
-      mangle: false
+      renderer: createRedBoxRenderer()
     });
     
     return html as string;
