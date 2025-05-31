@@ -1,3 +1,4 @@
+
 // src/utils/markdownHelpers.ts
 import { marked } from 'marked';
 
@@ -11,18 +12,35 @@ function preprocess(markdown: string): string {
     .replace(/^(#{1,6})\s+(.+)$/gm, '\n$1 $2\n');
 }
 
+// Helper function to safely extract text content
+function getTextContent(text: any): string {
+  if (typeof text === 'string') {
+    return text;
+  }
+  if (text && typeof text === 'object') {
+    // Handle token objects from marked
+    if (text.raw) return text.raw;
+    if (text.text) return text.text;
+    if (text.tokens && Array.isArray(text.tokens)) {
+      return text.tokens.map((token: any) => getTextContent(token)).join('');
+    }
+  }
+  return String(text || '');
+}
+
 // --- Skapar en Marked-renderer för "normal" (ljus bakgrund) ---
 function createNormalRenderer() {
   const renderer = new marked.Renderer();
 
-  renderer.paragraph = (text: string) => {
-    if (typeof text === 'string' && text.trim().startsWith('→')) {
+  renderer.paragraph = (text: any) => {
+    const textContent = getTextContent(text);
+    if (textContent.trim().startsWith('→')) {
       // Pil-lista
-      return `<p class="arrow-list-item ml-4 my-2 relative"><span class="absolute left-0 font-bold text-blue-500">→</span> ${text
+      return `<p class="arrow-list-item ml-4 my-2 relative"><span class="absolute left-0 font-bold text-blue-500">→</span> ${textContent
         .substring(1)
         .trim()}</p>`;
     }
-    return `<p class="text-gray-800 my-4">${text}</p>`;
+    return `<p class="text-gray-800 my-4">${textContent}</p>`;
   };
 
   renderer.list = (body: string, ordered: boolean) => {
@@ -31,11 +49,13 @@ function createNormalRenderer() {
     return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
 
-  renderer.listitem = (text: string) => {
-    return `<li class="text-gray-800 my-1">${text}</li>`;
+  renderer.listitem = (text: any) => {
+    const textContent = getTextContent(text);
+    return `<li class="text-gray-800 my-1">${textContent}</li>`;
   };
 
-  renderer.heading = (text: string, level: number) => {
+  renderer.heading = (text: any, level: number) => {
+    const textContent = getTextContent(text);
     // Definiera Tailwind-klasser för varje rubriknivå på ljus bakgrund:
     const sizes: Record<number, string> = {
       1: 'text-2xl font-bold text-gray-800 my-4',
@@ -46,16 +66,25 @@ function createNormalRenderer() {
       6: 'text-base font-medium text-gray-800 mb-2',
     };
     const cls = sizes[level] || sizes[4];
-    return `<h${level} class="${cls}">${text}</h${level}>`;
+    return `<h${level} class="${cls}">${textContent}</h${level}>`;
   };
 
-  renderer.link = (href: string, title: string | null, text: string) => {
+  renderer.link = (href: string, title: string | null, text: any) => {
+    const textContent = getTextContent(text);
     const titleAttr = title ? ` title="${title}"` : '';
-    return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${textContent}</a>`;
   };
 
-  renderer.strong = (text: string) => `<strong class="font-bold">${text}</strong>`;
-  renderer.em = (text: string) => `<em class="italic">${text}</em>`;
+  renderer.strong = (text: any) => {
+    const textContent = getTextContent(text);
+    return `<strong class="font-bold">${textContent}</strong>`;
+  };
+  
+  renderer.em = (text: any) => {
+    const textContent = getTextContent(text);
+    return `<em class="italic">${textContent}</em>`;
+  };
+  
   renderer.codespan = (code: string) =>
     `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${code}</code>`;
   renderer.code = (code: string) =>
@@ -68,13 +97,14 @@ function createNormalRenderer() {
 function createRedBoxRenderer() {
   const renderer = new marked.Renderer();
 
-  renderer.paragraph = (text: string) => {
-    if (typeof text === 'string' && text.trim().startsWith('→')) {
-      return `<p class="arrow-list-item text-white ml-4 my-2 relative"><span class="absolute left-0 font-bold text-blue-300">→</span> ${text
+  renderer.paragraph = (text: any) => {
+    const textContent = getTextContent(text);
+    if (textContent.trim().startsWith('→')) {
+      return `<p class="arrow-list-item text-white ml-4 my-2 relative"><span class="absolute left-0 font-bold text-blue-300">→</span> ${textContent
         .substring(1)
         .trim()}</p>`;
     }
-    return `<p class="text-white my-4">${text}</p>`;
+    return `<p class="text-white my-4">${textContent}</p>`;
   };
 
   renderer.list = (body: string, ordered: boolean) => {
@@ -83,9 +113,13 @@ function createRedBoxRenderer() {
     return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
 
-  renderer.listitem = (text: string) => `<li class="text-white my-1">${text}</li>`;
+  renderer.listitem = (text: any) => {
+    const textContent = getTextContent(text);
+    return `<li class="text-white my-1">${textContent}</li>`;
+  };
 
-  renderer.heading = (text: string, level: number) => {
+  renderer.heading = (text: any, level: number) => {
+    const textContent = getTextContent(text);
     const sizes: Record<number, string> = {
       1: 'text-2xl font-bold text-white my-4',
       2: 'text-xl font-bold text-white mb-3',
@@ -95,17 +129,26 @@ function createRedBoxRenderer() {
       6: 'text-base font-medium text-white mb-2',
     };
     const cls = sizes[level] || sizes[4];
-    return `<h${level} class="${cls}">${text}</h${level}>`;
+    return `<h${level} class="${cls}">${textContent}</h${level}>`;
   };
 
-  renderer.link = (href: string, title: string | null, text: string) => {
+  renderer.link = (href: string, title: string | null, text: any) => {
+    const textContent = getTextContent(text);
     const titleAttr = title ? ` title="${title}"` : '';
     // Använd ljusblå text för länkar i röd box
-    return `<a href="${href}"${titleAttr} class="text-ljusbla hover:text-ljusbla underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    return `<a href="${href}"${titleAttr} class="text-ljusbla hover:text-ljusbla underline" target="_blank" rel="noopener noreferrer">${textContent}</a>`;
   };
 
-  renderer.strong = (text: string) => `<strong class="text-white font-bold">${text}</strong>`;
-  renderer.em = (text: string) => `<em class="text-white italic">${text}</em>`;
+  renderer.strong = (text: any) => {
+    const textContent = getTextContent(text);
+    return `<strong class="text-white font-bold">${textContent}</strong>`;
+  };
+  
+  renderer.em = (text: any) => {
+    const textContent = getTextContent(text);
+    return `<em class="text-white italic">${textContent}</em>`;
+  };
+  
   renderer.codespan = (code: string) =>
     `<code class="bg-gray-700 px-1 py-0.5 rounded text-sm">${code}</code>`;
   renderer.code = (code: string) =>
