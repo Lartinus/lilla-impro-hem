@@ -130,8 +130,8 @@ export const convertMarkdownToHtml = (markdown: string): string => {
     const preprocessed = preprocess(markdown);
     console.log('Preprocessed:', preprocessed);
     
-    // Configure marked with proper options for formatting
-    const html = marked(preprocessed, {
+    // Configure marked to properly parse markdown tokens including bold, italic, strikethrough
+    const html = marked.parse(preprocessed, {
       gfm: true,
       breaks: true,
       renderer: createCustomRenderer(false)
@@ -152,8 +152,8 @@ export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
     console.log('Converting markdown for red box:', markdown);
     const preprocessed = preprocess(markdown);
     
-    // Configure marked with proper options for formatting
-    const html = marked(preprocessed, {
+    // Configure marked to properly parse markdown tokens including bold, italic, strikethrough
+    const html = marked.parse(preprocessed, {
       gfm: true,
       breaks: true,
       renderer: createCustomRenderer(true)
