@@ -52,14 +52,13 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             {course.title}
           </h2>
           {course.subtitle && (
-            <h3 className="text-theatre-secondary font-medium mb-1">
+            <h3 className="text-theatre-secondary font-medium subtitle">
               {course.subtitle}
             </h3>
           )}
         </div>
         <div 
-          className="text-gray-700 mb-4 text-base [&>p]:mb-0.5 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0"
-          style={{ lineHeight: '1.2' }}
+          className="text-gray-700 mb-4 text-base body-text [&>p]:mb-0.5 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0"
           dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
         />
         
@@ -81,7 +80,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
               {course.practicalInfo!.map((item, index) => (
                 <div key={index} className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
-                  <p className="text-gray-700 text-base" style={{ lineHeight: '1.2' }}>{item}</p>
+                  <p className="text-gray-700 text-base body-text">{item}</p>
                 </div>
               ))}
             </div>

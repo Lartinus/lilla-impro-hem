@@ -14,8 +14,7 @@ const PracticalInfo = ({ practicalInfo }: PracticalInfoProps) => {
           <div key={index} className="flex items-start space-x-3">
             <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
             <div 
-              className="text-gray-700 text-base" 
-              style={{ lineHeight: '1.2' }}
+              className="text-gray-700 text-base body-text" 
               dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(item) }}
             />
           </div>

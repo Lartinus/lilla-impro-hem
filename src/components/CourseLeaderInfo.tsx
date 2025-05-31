@@ -67,8 +67,7 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
               {courseLeader.name}
             </h5>
             <div 
-              className="text-gray-700 text-sm break-words [&>p]:mb-1 [&>h1]:mb-0.5 [&>h2]:mb-0.5 [&>h3]:mb-0.5 [&>h4]:mb-0.5 [&>h5]:mb-0.5 [&>h6]:mb-0.5"
-              style={{ lineHeight: '1.2' }}
+              className="text-gray-700 text-sm break-words body-text [&>p]:mb-1 [&>h1]:mb-0.5 [&>h2]:mb-0.5 [&>h3]:mb-0.5 [&>h4]:mb-0.5 [&>h5]:mb-0.5 [&>h6]:mb-0.5"
               dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(courseLeader.bio) }}
             />
           </div>

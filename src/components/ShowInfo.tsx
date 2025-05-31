@@ -36,8 +36,7 @@ const ShowInfo = ({ title, date, location, mapLink, description }: ShowInfoProps
       </div>
       
       <div 
-        className="text-gray-700 mb-6 text-base" 
-        style={{ lineHeight: '1.2' }}
+        className="text-gray-700 mb-6 text-base body-text" 
         dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(description) }}
       />
     </>

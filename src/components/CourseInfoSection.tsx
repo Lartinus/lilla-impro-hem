@@ -28,8 +28,7 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
           */}
           {mainInfo.info && (
             <div
-              className="space-y-6 text-gray-700 text-base"
-              style={{ lineHeight: '1.2' }}
+              className="space-y-6 text-gray-700 text-base body-text"
               dangerouslySetInnerHTML={{
                 __html: convertMarkdownToHtml(mainInfo.info),
               }}
@@ -43,8 +42,7 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
           {mainInfo.redbox && (
             <div className="bg-red-700 p-6 rounded-none relative">
               <div
-                className="text-base font-light"
-                style={{ lineHeight: '1.2' }}
+                className="text-base font-light body-text"
                 dangerouslySetInnerHTML={{
                   __html: convertMarkdownToHtmlForRedBox(mainInfo.redbox),
                 }}
@@ -58,8 +56,7 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
           */}
           {mainInfo.infoAfterRedbox && (
             <div
-              className="space-y-6 text-gray-700 text-base"
-              style={{ lineHeight: '1.2' }}
+              className="space-y-6 text-gray-700 text-base body-text"
               dangerouslySetInnerHTML={{
                 __html: convertMarkdownToHtml(mainInfo.infoAfterRedbox),
               }}
