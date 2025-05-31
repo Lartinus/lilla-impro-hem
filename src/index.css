@@ -63,6 +63,10 @@
     /* ===== ARROW SIZE SETTINGS ===== */
     /* Storlek på pilar */
     --arrow-size: 1rem;
+    
+    /* ===== BULLET POINT SIZE SETTINGS ===== */
+    /* Storlek på vanliga punkter (inte pilar) */
+    --bullet-size: 0.5rem;
     /* ============================================== */
   }
 
@@ -172,8 +176,26 @@
   
   /* ===== ARROW SIZE SETTINGS ===== */
   /* Applicera arrow size på alla pilar */
-  .arrow, [class*="arrow"], .w-2.h-2 {
+  .arrow, [class*="arrow"] {
     width: var(--arrow-size) !important;
     height: var(--arrow-size) !important;
+  }
+  
+  /* ===== BULLET POINT SIZE SETTINGS ===== */
+  /* Storlek på vanliga punkter (runda) */
+  .w-2.h-2 {
+    width: var(--bullet-size) !important;
+    height: var(--bullet-size) !important;
+  }
+  
+  /* Generella bullet points */
+  ul li::marker {
+    font-size: var(--bullet-size);
+  }
+  
+  /* Custom bullet points */
+  .bullet-point {
+    width: var(--bullet-size) !important;
+    height: var(--bullet-size) !important;
   }
 }
