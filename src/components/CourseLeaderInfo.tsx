@@ -17,12 +17,19 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
   console.log('CourseLeaderInfo - image URL:', courseLeader.image);
   console.log('CourseLeaderInfo - image type:', typeof courseLeader.image);
 
+  // Check if we have a valid image URL
+  const hasValidImage = courseLeader.image && 
+                       courseLeader.image !== 'null' && 
+                       courseLeader.image.trim() !== '';
+
+  console.log('CourseLeaderInfo - hasValidImage:', hasValidImage);
+
   return (
     <div className="mb-6">
       <h4 className="text-gray-800 font-bold mb-3">Kursledare</h4>
       <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
         <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
-          {courseLeader.image ? (
+          {hasValidImage ? (
             <img 
               src={courseLeader.image} 
               alt={courseLeader.name}
@@ -30,17 +37,28 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
               onError={(e) => {
                 console.error('Failed to load teacher image:', courseLeader.image);
                 console.error('Image error event:', e);
-                e.currentTarget.style.display = 'none';
+                const target = e.currentTarget;
+                target.style.display = 'none';
+                // Show fallback div
+                const fallback = target.nextElementSibling as HTMLElement;
+                if (fallback) {
+                  fallback.style.display = 'flex';
+                }
               }}
               onLoad={() => {
                 console.log('Successfully loaded teacher image:', courseLeader.image);
               }}
             />
-          ) : (
-            <div className="w-32 h-32 bg-gray-300 rounded-none flex items-center justify-center flex-shrink-0">
-              <span className="text-gray-600 text-sm">Ingen bild</span>
-            </div>
-          )}
+          ) : null}
+          
+          {/* Fallback div - always present but hidden by default */}
+          <div 
+            className="w-32 h-32 bg-gray-300 rounded-none flex items-center justify-center flex-shrink-0"
+            style={{ display: hasValidImage ? 'none' : 'flex' }}
+          >
+            <span className="text-gray-600 text-sm">Ingen bild</span>
+          </div>
+          
           <div className="flex-1 min-w-0">
             <h5 className="font-bold text-gray-800 mb-2 md:text-left">
               {courseLeader.name}

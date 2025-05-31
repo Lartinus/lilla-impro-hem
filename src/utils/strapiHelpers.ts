@@ -1,4 +1,3 @@
-
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -88,7 +87,7 @@ export const formatStrapiCourse = (strapiCourse: any) => {
     return null;
   }
   
-  // Handle teacher relation
+  // Handle teacher relation - improved image handling
   let teacher = null;
   if (attrs.teacher) {
     console.log('Teacher data found:', JSON.stringify(attrs.teacher, null, 2));
@@ -125,6 +124,16 @@ export const formatStrapiCourse = (strapiCourse: any) => {
       .filter((line: string) => line);
   }
   
+  // Convert priority to numeric value for sorting
+  const getPriorityValue = (priority: string) => {
+    switch (priority?.toLowerCase()) {
+      case 'high': return 1;
+      case 'mid': return 2;
+      case 'low': return 3;
+      default: return 4; // Unknown priorities go last
+    }
+  };
+  
   const formatted = {
     id: strapiCourse.id,
     title: attrs.titel || attrs.title,
@@ -133,7 +142,10 @@ export const formatStrapiCourse = (strapiCourse: any) => {
     practicalInfo: practicalInfo,
     teacher: teacher,
     available: true,
-    showButton: true
+    showButton: true,
+    priority: attrs.prioritet || attrs.priority || 'low',
+    priorityValue: getPriorityValue(attrs.prioritet || attrs.priority),
+    isLevel1: (attrs.titel || attrs.title || '').toLowerCase().includes('nivå 1')
   };
   
   console.log('Formatted course result:', formatted);
@@ -164,4 +176,21 @@ export const formatCourseMainInfo = (strapiData: any) => {
   
   console.log('Formatted main info result:', formatted);
   return formatted;
+};
+
+// Helper function to sort courses by priority and level
+export const sortCourses = (courses: any[]) => {
+  return courses.sort((a, b) => {
+    // First sort by priority value (1=high, 2=mid, 3=low)
+    if (a.priorityValue !== b.priorityValue) {
+      return a.priorityValue - b.priorityValue;
+    }
+    
+    // If same priority, put "nivå 1" courses first
+    if (a.isLevel1 && !b.isLevel1) return -1;
+    if (!a.isLevel1 && b.isLevel1) return 1;
+    
+    // If both are level 1 or both are not, keep original order
+    return 0;
+  });
 };

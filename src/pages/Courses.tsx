@@ -6,7 +6,7 @@ import CourseGrid from '@/components/CourseGrid';
 import CourseInfoSection from '@/components/CourseInfoSection';
 import { useEffect } from 'react';
 import { useCourses, useCourseMainInfo } from '@/hooks/useStrapi';
-import { formatStrapiCourse, formatCourseMainInfo } from '@/utils/strapiHelpers';
+import { formatStrapiCourse, formatCourseMainInfo, sortCourses } from '@/utils/strapiHelpers';
 
 const Courses = () => {
   useEffect(() => {
@@ -19,10 +19,13 @@ const Courses = () => {
   console.log('Courses page - Raw courses data:', coursesData);
   console.log('Courses page - Raw main info data:', mainInfoData);
 
-  const courses = coursesData?.data ? coursesData.data.map(formatStrapiCourse).filter(Boolean) : [];
+  // Format and sort courses
+  const formattedCourses = coursesData?.data ? coursesData.data.map(formatStrapiCourse).filter(Boolean) : [];
+  const courses = sortCourses(formattedCourses);
   const mainInfo = formatCourseMainInfo(mainInfoData);
 
-  console.log('Formatted courses:', courses);
+  console.log('Formatted courses:', formattedCourses);
+  console.log('Sorted courses:', courses);
   console.log('Formatted main info:', mainInfo);
 
   // Fallback practical info if course doesn't have its own
