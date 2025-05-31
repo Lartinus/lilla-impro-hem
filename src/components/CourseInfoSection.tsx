@@ -1,3 +1,4 @@
+
 // src/components/CourseInfoSection.tsx
 
 import React from 'react';
@@ -19,15 +20,15 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
 
   return (
     <div className="mx-[12px] md:mx-0 md:max-w-3xl md:mx-auto mt-4">
-      <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
-        <div className="text-left space-y-6">
+      <div className="space-y-4 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
+        <div className="text-left space-y-3">
           {/*
             1) RENDERA FÖRSTA TEXTBLOKKEN (info)
                Vi skickar in exakt den *råa* markdown‐strängen till convertMarkdownToHtml
           */}
           {mainInfo.info && (
             <div
-              className="space-y-6 text-gray-700 leading-relaxed text-base"
+              className="space-y-3 text-gray-700 leading-relaxed text-base"
               style={{ lineHeight: '1.3' }}
               dangerouslySetInnerHTML={{
                 __html: convertMarkdownToHtml(mainInfo.info),
@@ -57,7 +58,7 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
           */}
           {mainInfo.infoAfterRedbox && (
             <div
-              className="space-y-6 text-gray-700 leading-relaxed text-base"
+              className="space-y-3 text-gray-700 leading-relaxed text-base"
               style={{ lineHeight: '1.3' }}
               dangerouslySetInnerHTML={{
                 __html: convertMarkdownToHtml(mainInfo.infoAfterRedbox),
