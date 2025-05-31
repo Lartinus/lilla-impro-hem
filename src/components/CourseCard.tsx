@@ -29,10 +29,19 @@ interface CourseCardProps {
 }
 
 const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
-  // Determine which practical info to show
+  // Only show practical info if the course has specific info
   const hasCourseSpecificInfo = course.practicalInfo && course.practicalInfo.length > 0;
-  const infoToShow = hasCourseSpecificInfo ? course.practicalInfo : practicalInfo;
-  const shouldShowPracticalInfo = infoToShow && infoToShow.length > 0;
+  const shouldShowPracticalInfo = hasCourseSpecificInfo;
+
+  // Determine button behavior based on course title
+  const isHouseTeams = course.title.includes("House teams") || course.title.includes("fortsättning");
+  const isWorkshops = course.title.includes("Helgworkshop") || course.title.includes("specialkurs");
+  
+  // Hide button for workshops course
+  const shouldShowButton = course.showButton && !isWorkshops;
+  
+  // Make button blue for house teams
+  const buttonVariant = isHouseTeams ? "default" : "default";
 
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
@@ -49,7 +58,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         </div>
         
         <div 
-          className="text-gray-700 leading-relaxed mb-4 text-base"
+          className="text-gray-700 leading-relaxed mb-4 text-base space-y-5"
           dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
         />
         
@@ -68,7 +77,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           <div className="mb-4">
             <h4 className="text-gray-800 font-bold mb-1">Praktisk information</h4>
             <div className="space-y-2">
-              {infoToShow.map((item, index) => (
+              {course.practicalInfo!.map((item, index) => (
                 <div key={index} className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
                   <p className="text-gray-700 text-base">{item}</p>
@@ -78,12 +87,15 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           </div>
         )}
         
-        <CourseBookingForm 
-          courseTitle={course.title}
-          isAvailable={course.available}
-          showButton={course.showButton}
-          buttonText={course.buttonText}
-        />
+        {shouldShowButton && (
+          <CourseBookingForm 
+            courseTitle={course.title}
+            isAvailable={course.available}
+            showButton={shouldShowButton}
+            buttonText={course.buttonText}
+            buttonVariant={isHouseTeams ? "outline" : "default"}
+          />
+        )}
       </CardContent>
     </Card>
   );

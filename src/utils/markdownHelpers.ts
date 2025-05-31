@@ -53,25 +53,25 @@ function createNormalRenderer(): any {
 
   renderer.paragraph = function({ tokens }: { tokens: any[] }) {
     const text = getTextFromTokens(tokens);
-    return `<p class="text-gray-800 my-2">${text}</p>`;
+    return `<p class="text-gray-800 my-5">${text}</p>`;
   };
 
   renderer.list = function(token: { items: any[], ordered: boolean }) {
     const tag = token.ordered ? 'ol' : 'ul';
     const body = token.items.map(item => {
       const text = getTextFromTokens(item.tokens);
-      return `<div class="arrow-list-item ml-4 my-1 relative text-gray-800">
-                <span class="absolute -left-4 font-bold text-blue-500">→</span>
+      return `<div class="arrow-list-item ml-6 my-1 relative text-gray-800">
+                <span class="absolute -left-6 font-bold text-blue-500">→</span>
                 <span>${text}</span>
               </div>`;
     }).join('');
-    return `<div class="my-2">${body}</div>`;
+    return `<div class="my-5">${body}</div>`;
   };
   
   renderer.listitem = function(item: { tokens: any[] }) {
     const text = getTextFromTokens(item.tokens);
-    return `<div class="arrow-list-item ml-4 my-1 relative text-gray-800">
-              <span class="absolute -left-4 font-bold text-blue-500">→</span>
+    return `<div class="arrow-list-item ml-6 my-1 relative text-gray-800">
+              <span class="absolute -left-6 font-bold text-blue-500">→</span>
               <span>${text}</span>
             </div>`;
   };
@@ -97,7 +97,7 @@ function createNormalRenderer(): any {
   };
 
   renderer.code = function({ text, lang }: { text: string, lang?: string | undefined }) {
-    return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-2"><code class="text-sm">${text}</code></pre>`;
+    return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-5"><code class="text-sm">${text}</code></pre>`;
   };
 
   return renderer;
@@ -125,25 +125,25 @@ function createRedBoxRenderer(): any {
 
   renderer.paragraph = function({ tokens }: { tokens: any[] }) {
     const text = getTextFromTokens(tokens);
-    return `<p class="text-white my-2">${text}</p>`;
+    return `<p class="text-white my-5">${text}</p>`;
   };
 
   renderer.list = function(token: { items: any[], ordered: boolean }) {
     const tag = token.ordered ? 'ol' : 'ul';
     const body = token.items.map(item => {
       const text = getTextFromTokens(item.tokens);
-      return `<div class="arrow-list-item ml-4 my-1 relative text-white">
-                <span class="absolute -left-4 font-bold text-blue-300">→</span>
+      return `<div class="arrow-list-item ml-6 my-1 relative text-white">
+                <span class="absolute -left-6 font-bold text-blue-300">→</span>
                 <span>${text}</span>
               </div>`;
     }).join('');
-    return `<div class="my-2">${body}</div>`;
+    return `<div class="my-5">${body}</div>`;
   };
   
   renderer.listitem = function(item: { tokens: any[] }) {
     const text = getTextFromTokens(item.tokens);
-    return `<div class="arrow-list-item ml-4 my-1 relative text-white">
-              <span class="absolute -left-4 font-bold text-blue-300">→</span>
+    return `<div class="arrow-list-item ml-6 my-1 relative text-white">
+              <span class="absolute -left-6 font-bold text-blue-300">→</span>
               <span>${text}</span>
             </div>`;
   };
@@ -169,7 +169,7 @@ function createRedBoxRenderer(): any {
   };
 
   renderer.code = function({ text, lang }: { text: string, lang?: string | undefined }) {
-    return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-2"><code class="text-sm">${text}</code></pre>`;
+    return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-5"><code class="text-sm">${text}</code></pre>`;
   };
 
   return renderer;
