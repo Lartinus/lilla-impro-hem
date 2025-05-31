@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -119,173 +120,170 @@ const CourseBookingForm = ({
 
   return (
     <div className="mt-auto">
-      {showButton && (
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button 
-              className="w-full" 
-              disabled={!isAvailable}
-              variant={buttonVariant === "outline" ? "outline" : "default"}
-              style={buttonVariant === "outline" ? { 
-                backgroundColor: '#3B82F6', 
-                color: 'white',
-                borderColor: '#3B82F6'
-              } : undefined}
-            >
-              {buttonText}
-            </Button>
-          </DialogTrigger>
-          
-          <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="text-theatre-primary">{dialogTitle}</DialogTitle>
-            </DialogHeader>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  rules={{ required: "Namn är obligatoriskt" }}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Namn *</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ditt fullständiga namn" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  rules={{ required: "Telefonnummer är obligatoriskt" }}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Telefonnummer *</FormLabel>
-                      <FormControl>
-                        <Input placeholder="070-123 45 67" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="email"
-                  rules={{ 
-                    required: "E-postadress är obligatorisk",
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Ange en giltig e-postadress"
-                    }
-                  }}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>E-postadress *</FormLabel>
-                      <FormControl>
-                        <Input placeholder="din@email.se" type="email" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                {isAvailable ? (
-                  // Original booking form fields for available courses
-                  <>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          <Button 
+            className="w-full" 
+            variant={buttonVariant === "outline" ? "outline" : "default"}
+            style={buttonVariant === "outline" ? { 
+              backgroundColor: '#3B82F6', 
+              color: 'white',
+              borderColor: '#3B82F6'
+            } : undefined}
+          >
+            {displayButtonText}
+          </Button>
+        </DialogTrigger>
+        
+        <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-theatre-primary">{dialogTitle}</DialogTitle>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                rules={{ required: "Namn är obligatoriskt" }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Namn *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ditt fullständiga namn" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="phone"
+                rules={{ required: "Telefonnummer är obligatoriskt" }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Telefonnummer *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="070-123 45 67" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="email"
+                rules={{ 
+                  required: "E-postadress är obligatorisk",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Ange en giltig e-postadress"
+                  }
+                }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>E-postadress *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="din@email.se" type="email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              {isAvailable ? (
+                // Original booking form fields for available courses
+                <>
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    rules={{ required: "Adress är obligatorisk" }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Adress *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Gatuadress och nummer" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="grid grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
-                      name="address"
-                      rules={{ required: "Adress är obligatorisk" }}
+                      name="postal_code"
+                      rules={{ required: "Postnummer är obligatoriskt" }}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Adress *</FormLabel>
+                          <FormLabel>Postnummer *</FormLabel>
                           <FormControl>
-                            <Input placeholder="Gatuadress och nummer" {...field} />
+                            <Input placeholder="123 45" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                     
-                    <div className="grid grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="postal_code"
-                        rules={{ required: "Postnummer är obligatoriskt" }}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Postnummer *</FormLabel>
-                            <FormControl>
-                              <Input placeholder="123 45" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="city"
-                        rules={{ required: "Ort är obligatorisk" }}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Ort *</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Stockholm" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  // Interest form with free text field
-                  <FormField
-                    control={form.control}
-                    name="message"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Om dig som improvisatör</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Här kan du skriva en kort text om dig som improvisatör och hur du vill utvecklas"
-                            className="min-h-[120px]"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-                
-                <div className="flex gap-2 pt-4">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    onClick={() => setIsOpen(false)}
-                    className="flex-1"
-                  >
-                    Avbryt
-                  </Button>
-                  <Button 
-                    type="submit" 
-                    disabled={isSubmitting}
-                    className="flex-1"
-                  >
-                    {isSubmitting ? "Skickar..." : (isAvailable ? "Skicka bokning" : "Skicka intresse")}
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
-      )}
+                    <FormField
+                      control={form.control}
+                      name="city"
+                      rules={{ required: "Ort är obligatorisk" }}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Ort *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Stockholm" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </>
+              ) : (
+                // Interest form with free text field
+                <FormField
+                  control={form.control}
+                  name="message"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Om dig som improvisatör</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Här kan du skriva en kort text om dig som improvisatör och hur du vill utvecklas"
+                          className="min-h-[120px]"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+              
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsOpen(false)}
+                  className="flex-1"
+                >
+                  Avbryt
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="flex-1"
+                >
+                  {isSubmitting ? "Skickar..." : (isAvailable ? "Skicka bokning" : "Skicka intresse")}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

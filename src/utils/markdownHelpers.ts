@@ -63,9 +63,9 @@ function createCustomRenderer(isRedBox = false): any {
   renderer.list = function(token: any) {
     const body = token.items.map((item: any) => {
       const text = getTextFromTokens(item.tokens);
-      return `<div class="arrow-list-item ml-10 my-1 relative ${textColor}">
-                <span class="absolute -left-10 font-bold ${arrowColor}">→</span>
-                <span>${text}</span>
+      return `<div class="arrow-list-item pl-8 my-1 relative ${textColor}">
+                <span class="absolute left-0 top-2 font-bold ${arrowColor}">→</span>
+                <span class="block">${text}</span>
               </div>`;
     }).join('');
     return `<div class="my-5">${body}</div>`;
@@ -73,9 +73,9 @@ function createCustomRenderer(isRedBox = false): any {
   
   renderer.listitem = function(item: any) {
     const text = getTextFromTokens(item.tokens);
-    return `<div class="arrow-list-item ml-10 my-1 relative ${textColor}">
-              <span class="absolute -left-10 font-bold ${arrowColor}">→</span>
-              <span>${text}</span>
+    return `<div class="arrow-list-item pl-8 my-1 relative ${textColor}">
+              <span class="absolute left-0 top-2 font-bold ${arrowColor}">→</span>
+              <span class="block">${text}</span>
             </div>`;
   };
 
