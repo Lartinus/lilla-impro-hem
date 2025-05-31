@@ -48,7 +48,13 @@
     /* Allmän radavstånd för de flesta texter */
     --body-line-height: 1.5;
     /* Kompakt radavstånd för kurskort specifikt */
-    --course-card-line-height: 1.5;
+    --course-card-line-height: 1.3;
+    
+    /* ===== HEADING TO TEXT SPACING SETTINGS ===== */
+    /* Avstånd från rubrik till brödtext generellt */
+    --heading-to-text-spacing: 0.5rem;
+    /* Avstånd från rubrik till brödtext för kurskort */
+    --course-card-heading-to-text-spacing: 0rem;
     /* ============================================== */
   }
 
@@ -100,7 +106,7 @@
     @apply bg-background text-foreground;
   }
   
-  /* Global line-height för allmän brödtext - mer luftigt */
+  /* Global line-height för allmän brödtext */
   p, .text-base, .leading-relaxed, .body-text {
     line-height: var(--body-line-height) !important;
   }
@@ -110,14 +116,29 @@
     line-height: var(--course-card-line-height) !important;
   }
   
+  /* Generellt avstånd från rubriker till brödtext */
+  h1 + p, h1 + div,
+  h2 + p, h2 + div,
+  h3 + p, h3 + div,
+  h4 + p, h4 + div,
+  h5 + p, h5 + div,
+  h6 + p, h6 + div {
+    margin-top: var(--heading-to-text-spacing) !important;
+  }
+  
+  /* Specifikt avstånd för kurskort */
+  .course-card h1 + p, .course-card h1 + div,
+  .course-card h2 + p, .course-card h2 + div,
+  .course-card h3 + p, .course-card h3 + div,
+  .course-card h4 + p, .course-card h4 + div,
+  .course-card h5 + p, .course-card h5 + div,
+  .course-card h6 + p, .course-card h6 + div {
+    margin-top: var(--course-card-heading-to-text-spacing) !important;
+  }
+  
   /* Rubriker närmare varandra enligt mockup */
   h2 + h3 {
     margin-top: 0.25rem;
-  }
-  
-  /* Text mycket närmare under H3 enligt mockup - endast för kurskort */
-  .course-card h3 + p, .course-card h3 + div {
-    margin-top: 0rem !important;
   }
   
   /* Subtitle närmare under H2 - endast för kurskort */
@@ -127,11 +148,11 @@
   
   /* Ytterligare justering för kurskort specifikt */
   .course-card .subtitle + div {
-    margin-top: 0rem !important;
+    margin-top: var(--course-card-heading-to-text-spacing) !important;
   }
   
   /* Specifik fix för kurskort brödtext */
   .course-card .course-description {
-    margin-top: 0rem !important;
+    margin-top: var(--course-card-heading-to-text-spacing) !important;
   }
 }
