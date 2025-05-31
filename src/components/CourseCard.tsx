@@ -47,19 +47,19 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
       <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
-        <div className="mb-3">
-          <h2 className="text-xl font-bold text-blue-500 mb-1">
+        <div className="mb-2">
+          <h2 className="text-xl font-bold text-blue-500 mb-0.5">
             {course.title}
           </h2>
           {course.subtitle && (
-            <h3 className="text-theatre-secondary font-medium mb-1">
+            <h3 className="text-theatre-secondary font-medium mb-0.5">
               {course.subtitle}
             </h3>
           )}
         </div>
         
         <div 
-          className="text-gray-700 leading-relaxed mb-4 text-base [&>p]:mb-1 [&>h1]:mb-0.5 [&>h2]:mb-0.5 [&>h3]:mb-0.5 [&>h4]:mb-0.5 [&>h5]:mb-0.5 [&>h6]:mb-0.5"
+          className="text-gray-700 leading-relaxed mb-4 text-base [&>p]:mb-0.5 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0"
           dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
         />
         

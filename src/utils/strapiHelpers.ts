@@ -2,26 +2,13 @@
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
+  console.log('getStrapiImageUrl - Image type:', typeof image);
+  console.log('getStrapiImageUrl - Is null?', image === null);
+  console.log('getStrapiImageUrl - Is undefined?', image === undefined);
   
   if (!image) {
-    console.log('getStrapiImageUrl - No image provided');
+    console.log('getStrapiImageUrl - No image provided (null/undefined)');
     return null;
-  }
-  
-  // Handle different image formats from Strapi
-  if (image.data?.attributes?.url) {
-    const url = image.data.attributes.url;
-    const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
-    console.log('getStrapiImageUrl - Using data.attributes.url:', fullUrl);
-    return fullUrl;
-  }
-  
-  // Handle direct image object
-  if (image.url) {
-    const url = image.url;
-    const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
-    console.log('getStrapiImageUrl - Using direct url:', fullUrl);
-    return fullUrl;
   }
   
   // Handle if image is just a string URL
@@ -31,15 +18,31 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
     return fullUrl;
   }
   
+  // Handle different image formats from Strapi
+  if (image?.data?.attributes?.url) {
+    const url = image.data.attributes.url;
+    const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+    console.log('getStrapiImageUrl - Using data.attributes.url:', fullUrl);
+    return fullUrl;
+  }
+  
+  // Handle direct image object
+  if (image?.url) {
+    const url = image.url;
+    const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+    console.log('getStrapiImageUrl - Using direct url:', fullUrl);
+    return fullUrl;
+  }
+  
   // Handle nested data structure
-  if (image.attributes?.url) {
+  if (image?.attributes?.url) {
     const url = image.attributes.url;
     const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
     console.log('getStrapiImageUrl - Using attributes.url:', fullUrl);
     return fullUrl;
   }
   
-  console.log('getStrapiImageUrl - No valid image URL found');
+  console.log('getStrapiImageUrl - No valid image URL found, returning null');
   return null;
 };
 
