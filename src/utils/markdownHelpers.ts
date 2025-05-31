@@ -11,16 +11,30 @@ function getTextContent(input: any): string {
   if (input == null) {
     return '';
   }
+  
   // Om input är ett token‐objekt med en .text‐egenskap:
   if (typeof input === 'object' && 'text' in input && typeof input.text === 'string') {
     return input.text;
   }
-  // Om det är ett token‐objekt med en tokens‐array
-  if (typeof input === 'object' && Array.isArray((input as any).tokens)) {
-    return (input as any).tokens.map(getTextContent).join('');
+  
+  // Om det är ett token‐objekt med en tokens‐array (nested tokens)
+  if (typeof input === 'object' && Array.isArray(input.tokens)) {
+    return input.tokens.map((token: any) => getTextContent(token)).join('');
   }
-  // Annars fallback till String()
-  return String(input);
+  
+  // Om det är en array av tokens direkt
+  if (Array.isArray(input)) {
+    return input.map((token: any) => getTextContent(token)).join('');
+  }
+  
+  // För inline tokens som kan ha raw text
+  if (typeof input === 'object' && 'raw' in input && typeof input.raw === 'string') {
+    return input.raw;
+  }
+  
+  // Fallback till String() men undvik [object Object]
+  const stringified = String(input);
+  return stringified === '[object Object]' ? '' : stringified;
 }
 
 //
@@ -63,9 +77,8 @@ function preprocess(md: string): string {
 function createNormalRenderer(): any {
   const rnd: any = new marked.Renderer();
 
-  rnd.heading = function(token: any) {
-    const text = getTextContent(token.tokens || token.text);
-    const level = token.depth;
+  rnd.heading = function(text: string, level: number) {
+    const cleanText = getTextContent(text);
     const classes: Record<number, string> = {
       1: 'text-2xl font-bold text-gray-800 my-4',
       2: 'text-xl font-bold text-gray-800 mb-3',
@@ -75,59 +88,55 @@ function createNormalRenderer(): any {
       6: 'text-base font-medium text-gray-800 mb-2',
     };
     const cls = classes[level] || classes[4];
-    return `<h${level} class="${cls}">${text}</h${level}>`;
+    return `<h${level} class="${cls}">${cleanText}</h${level}>`;
   };
 
-  rnd.paragraph = function(token: any) {
-    const text = getTextContent(token.tokens || token.text).trim();
-    if (text.startsWith('→')) {
+  rnd.paragraph = function(text: string) {
+    const cleanText = getTextContent(text).trim();
+    if (cleanText.startsWith('→')) {
       return `<p class="arrow-list-item ml-4 my-2 relative">
                 <span class="absolute left-0 font-bold text-blue-500">→</span>
-                ${text.substring(1).trim()}
+                ${cleanText.substring(1).trim()}
               </p>`;
     }
-    return `<p class="text-gray-800 my-4">${text}</p>`;
+    return `<p class="text-gray-800 my-4">${cleanText}</p>`;
   };
 
-  rnd.list = function(token: any) {
-    const ordered = token.ordered;
-    const items = token.items.map((item: any) => this.listitem(item)).join('');
+  rnd.list = function(body: string, ordered: boolean) {
     const tag = ordered ? 'ol' : 'ul';
     const cls = ordered ? 'list-decimal' : 'list-disc';
-    return `<${tag} class="${cls} ml-6 my-4">${items}</${tag}>`;
+    return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
   
-  rnd.listitem = function(token: any) {
-    const text = getTextContent(token.tokens || token.text);
-    return `<li class="text-gray-800 my-1">${text}</li>`;
+  rnd.listitem = function(text: string) {
+    const cleanText = getTextContent(text);
+    return `<li class="text-gray-800 my-1">${cleanText}</li>`;
   };
 
-  rnd.link = function(token: any) {
-    const href = token.href;
-    const title = token.title;
-    const text = getTextContent(token.tokens || token.text);
+  rnd.link = function(href: string, title: string | null, text: string) {
+    const cleanText = getTextContent(text);
     const titleAttr = title ? ` title="${title}"` : '';
-    return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${cleanText}</a>`;
   };
 
-  rnd.strong = function(token: any) {
-    const text = getTextContent(token.tokens || token.text);
-    return `<strong class="font-bold">${text}</strong>`;
+  rnd.strong = function(text: string) {
+    const cleanText = getTextContent(text);
+    return `<strong class="font-bold">${cleanText}</strong>`;
   };
 
-  rnd.em = function(token: any) {
-    const text = getTextContent(token.tokens || token.text);
-    return `<em class="italic">${text}</em>`;
+  rnd.em = function(text: string) {
+    const cleanText = getTextContent(text);
+    return `<em class="italic">${cleanText}</em>`;
   };
 
-  rnd.codespan = function(token: any) {
-    const codeText = getTextContent(token.text);
-    return `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${codeText}</code>`;
+  rnd.codespan = function(text: string) {
+    const cleanText = getTextContent(text);
+    return `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${cleanText}</code>`;
   };
 
-  rnd.code = function(token: any) {
-    const codeText = getTextContent(token.text);
-    return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${codeText}</code></pre>`;
+  rnd.code = function(code: string, language: string | undefined) {
+    const cleanCode = getTextContent(code);
+    return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${cleanCode}</code></pre>`;
   };
 
   return rnd;
@@ -139,9 +148,8 @@ function createNormalRenderer(): any {
 function createRedBoxRenderer(): any {
   const rnd: any = new marked.Renderer();
 
-  rnd.heading = function(token: any) {
-    const text = getTextContent(token.tokens || token.text);
-    const level = token.depth;
+  rnd.heading = function(text: string, level: number) {
+    const cleanText = getTextContent(text);
     const classes: Record<number, string> = {
       1: 'text-2xl font-bold text-white my-4',
       2: 'text-xl font-bold text-white mb-3',
@@ -151,59 +159,55 @@ function createRedBoxRenderer(): any {
       6: 'text-base font-medium text-white mb-2',
     };
     const cls = classes[level] || classes[4];
-    return `<h${level} class="${cls}">${text}</h${level}>`;
+    return `<h${level} class="${cls}">${cleanText}</h${level}>`;
   };
 
-  rnd.paragraph = function(token: any) {
-    const text = getTextContent(token.tokens || token.text).trim();
-    if (text.startsWith('→')) {
+  rnd.paragraph = function(text: string) {
+    const cleanText = getTextContent(text).trim();
+    if (cleanText.startsWith('→')) {
       return `<p class="arrow-list-item text-white ml-4 my-2 relative">
                 <span class="absolute left-0 font-bold text-blue-300">→</span>
-                ${text.substring(1).trim()}
+                ${cleanText.substring(1).trim()}
               </p>`;
     }
-    return `<p class="text-white my-4">${text}</p>`;
+    return `<p class="text-white my-4">${cleanText}</p>`;
   };
 
-  rnd.list = function(token: any) {
-    const ordered = token.ordered;
-    const items = token.items.map((item: any) => this.listitem(item)).join('');
+  rnd.list = function(body: string, ordered: boolean) {
     const tag = ordered ? 'ol' : 'ul';
     const cls = ordered ? 'list-decimal text-white' : 'list-disc text-white';
-    return `<${tag} class="${cls} ml-6 my-4">${items}</${tag}>`;
+    return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
   
-  rnd.listitem = function(token: any) {
-    const text = getTextContent(token.tokens || token.text);
-    return `<li class="text-white my-1">${text}</li>`;
+  rnd.listitem = function(text: string) {
+    const cleanText = getTextContent(text);
+    return `<li class="text-white my-1">${cleanText}</li>`;
   };
 
-  rnd.link = function(token: any) {
-    const href = token.href;
-    const title = token.title;
-    const text = getTextContent(token.tokens || token.text);
+  rnd.link = function(href: string, title: string | null, text: string) {
+    const cleanText = getTextContent(text);
     const titleAttr = title ? ` title="${title}"` : '';
-    return `<a href="${href}"${titleAttr} class="text-ljusbla hover:text-ljusbla underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    return `<a href="${href}"${titleAttr} class="text-ljusbla hover:text-ljusbla underline" target="_blank" rel="noopener noreferrer">${cleanText}</a>`;
   };
 
-  rnd.strong = function(token: any) {
-    const text = getTextContent(token.tokens || token.text);
-    return `<strong class="text-white font-bold">${text}</strong>`;
+  rnd.strong = function(text: string) {
+    const cleanText = getTextContent(text);
+    return `<strong class="text-white font-bold">${cleanText}</strong>`;
   };
 
-  rnd.em = function(token: any) {
-    const text = getTextContent(token.tokens || token.text);
-    return `<em class="text-white italic">${text}</em>`;
+  rnd.em = function(text: string) {
+    const cleanText = getTextContent(text);
+    return `<em class="text-white italic">${cleanText}</em>`;
   };
 
-  rnd.codespan = function(token: any) {
-    const codeText = getTextContent(token.text);
-    return `<code class="bg-gray-700 px-1 py-0.5 rounded text-sm">${codeText}</code>`;
+  rnd.codespan = function(text: string) {
+    const cleanText = getTextContent(text);
+    return `<code class="bg-gray-700 px-1 py-0.5 rounded text-sm">${cleanText}</code>`;
   };
 
-  rnd.code = function(token: any) {
-    const codeText = getTextContent(token.text);
-    return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${codeText}</code></pre>`;
+  rnd.code = function(code: string, language: string | undefined) {
+    const cleanCode = getTextContent(code);
+    return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${cleanCode}</code></pre>`;
   };
 
   return rnd;
