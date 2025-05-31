@@ -1,6 +1,6 @@
 
 // Helper functions for transforming Strapi data
-export const getStrapiImageUrl = (image: any, baseUrl = 'http://localhost:1337') => {
+export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   if (!image) return null;
   
   if (image.data?.attributes?.url) {
@@ -50,9 +50,11 @@ export const formatStrapiCourse = (strapiCourse: any) => {
   if (!strapiCourse?.attributes) return null;
   
   const attrs = strapiCourse.attributes;
+  console.log('Formatting course:', strapiCourse);
   
-  // Handle teacher (kursledare) relation
-  const teacher = attrs.teacher?.data?.attributes;
+  // Handle teacher relation - the teacher object is directly in attributes, not nested in data
+  const teacher = attrs.teacher;
+  console.log('Teacher data:', teacher);
   
   return {
     id: strapiCourse.id,
@@ -63,7 +65,7 @@ export const formatStrapiCourse = (strapiCourse: any) => {
       attrs.praktisk_info.split('\n').filter((item: string) => item.trim()) : 
       [],
     teacher: teacher ? {
-      id: attrs.teacher.data.id,
+      id: teacher.id,
       name: teacher.name,
       bio: teacher.bio,
       image: getStrapiImageUrl(teacher.image),
