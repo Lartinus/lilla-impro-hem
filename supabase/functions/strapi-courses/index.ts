@@ -17,8 +17,8 @@ serve(async (req) => {
   }
 
   try {
-    // Use simpler populate syntax that works with most Strapi versions
-    const endpoint = '/api/courses?populate=*';
+    // Specifically populate teacher with image field
+    const endpoint = '/api/courses?populate[teacher][populate]=image';
     
     console.log(`Fetching courses from Strapi: ${strapiUrl}${endpoint}`);
 
@@ -37,7 +37,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('Successfully fetched courses:', data);
+    console.log('Successfully fetched courses with teacher images:', JSON.stringify(data, null, 2));
     
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -47,7 +47,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       error: error.message,
       strapiUrl: strapiUrl,
-      endpoint: '/api/courses?populate=*'
+      endpoint: '/api/courses?populate[teacher][populate]=image'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

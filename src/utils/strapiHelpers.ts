@@ -99,35 +99,37 @@ export const formatStrapiCourse = (strapiCourse: any) => {
     return null;
   }
   
-  // Handle teacher relation - improved debugging for missing image
+  // Handle teacher relation with proper image handling
   let teacher = null;
   if (attrs.teacher) {
     console.log('Teacher data found:', JSON.stringify(attrs.teacher, null, 2));
-    console.log('Teacher image field exists?', 'image' in attrs.teacher);
-    console.log('Teacher image value:', attrs.teacher.image);
     
-    // Direct teacher data (new format)
-    if (attrs.teacher.name) {
-      teacher = {
-        id: attrs.teacher.id,
-        name: attrs.teacher.name,
-        bio: attrs.teacher.bio,
-        image: attrs.teacher.image ? getStrapiImageUrl(attrs.teacher.image) : null,
-      };
-      console.log('Created teacher object (direct):', teacher);
-    }
-    // Teacher with data property (old format)
-    else if (attrs.teacher.data?.attributes) {
+    // New Strapi v4/v5 format with data wrapper
+    if (attrs.teacher.data?.attributes) {
       const teacherAttrs = attrs.teacher.data.attributes;
       console.log('Teacher attributes:', JSON.stringify(teacherAttrs, null, 2));
-      console.log('Teacher attributes image field exists?', 'image' in teacherAttrs);
+      console.log('Teacher image data:', JSON.stringify(teacherAttrs.image, null, 2));
+      
       teacher = {
         id: attrs.teacher.data.id,
         name: teacherAttrs.name,
         bio: teacherAttrs.bio,
-        image: teacherAttrs.image ? getStrapiImageUrl(teacherAttrs.image) : null,
+        image: getStrapiImageUrl(teacherAttrs.image),
       };
-      console.log('Created teacher object (nested):', teacher);
+      console.log('Created teacher object (v4/v5 format):', teacher);
+    }
+    // Direct teacher data (older format or simplified)
+    else if (attrs.teacher.name) {
+      console.log('Teacher image field exists?', 'image' in attrs.teacher);
+      console.log('Teacher image value:', attrs.teacher.image);
+      
+      teacher = {
+        id: attrs.teacher.id,
+        name: attrs.teacher.name,
+        bio: attrs.teacher.bio,
+        image: getStrapiImageUrl(attrs.teacher.image),
+      };
+      console.log('Created teacher object (direct format):', teacher);
     }
   } else {
     console.log('No teacher data found in course');
