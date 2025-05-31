@@ -108,9 +108,9 @@
     margin-top: 0.25rem;
   }
   
-  /* Text mycket närmare under H3 enligt mockup */
+  /* Text mycket närmare under H3 enligt mockup - mer aggressiv */
   h3 + p, h3 + div {
-    margin-top: 0.125rem;
+    margin-top: 0rem !important;
   }
   
   /* Subtitle närmare under H2 */
@@ -118,8 +118,13 @@
     margin-top: 0.125rem;
   }
   
-  /* Ytterligare justering för kurskort specifikt */
+  /* Ytterligare justering för kurskort specifikt - mer aggressiv */
   .subtitle + div {
-    margin-top: 0.125rem;
+    margin-top: 0rem !important;
+  }
+  
+  /* Specifik fix för kurskort brödtext */
+  .course-description {
+    margin-top: 0rem !important;
   }
 }
