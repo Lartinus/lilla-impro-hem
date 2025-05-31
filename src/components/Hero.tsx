@@ -20,7 +20,7 @@ const Hero = () => {
             {/* Description */}
             <div className="max-w-4xl space-y-2 pb-1">
               <p className="text-lg leading-relaxed text-gray-700 font-light" style={{ lineHeight: '1.6' }}>
-                Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
+                Vi tror på att humor går att träna - och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, 
                 och samtidigt ta del av roliga, smarta och lekfulla föreställningar.
               </p>

@@ -55,7 +55,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
           </h3>
         </div>
         
-        <div className="text-gray-700 leading-relaxed mb-6 text-base" style={{ lineHeight: '1.4' }}>
+        <div className="text-gray-700 leading-relaxed mb-6 text-base" style={{ lineHeight: '1.2' }}>
           {show.description.split('\n').map((paragraph, index) => (
             <p key={index} className="mb-4 last:mb-0">
               {paragraph}
