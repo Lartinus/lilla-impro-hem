@@ -51,6 +51,19 @@ export const useCourseMainInfo = () => {
   });
 };
 
+export const usePrivateParty = () => {
+  return useQuery({
+    queryKey: ['private-party'],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('strapi-site-content', {
+        body: { type: 'private-party' }
+      });
+      if (error) throw error;
+      return data;
+    },
+  });
+};
+
 export const useAboutPageContent = () => {
   return useQuery({
     queryKey: ['about-page-content'],
