@@ -1,8 +1,13 @@
+// src/components/CourseInfoSection.tsx
 
 import { convertMarkdownToHtml, convertMarkdownToHtmlForRedBox } from '@/utils/markdownHelpers';
 
 interface CourseInfoSectionProps {
-  mainInfo: any;
+  mainInfo: {
+    info?: string;
+    redbox?: string;
+    infoAfterRedbox?: string;
+  };
 }
 
 const CourseInfoSection = ({ mainInfo }: CourseInfoSectionProps) => {
@@ -11,28 +16,34 @@ const CourseInfoSection = ({ mainInfo }: CourseInfoSectionProps) => {
       <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
         <div className="text-left space-y-6">
           {mainInfo?.info && (
-            <div 
+            <div
               className="space-y-6 text-gray-700 leading-relaxed text-base"
               style={{ lineHeight: '1.3' }}
-              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(mainInfo.info) }}
+              dangerouslySetInnerHTML={{
+                __html: convertMarkdownToHtml(String(mainInfo.info)),
+              }}
             />
           )}
 
           {mainInfo?.redbox && (
-            <div className="bg-red-700 p-6 rounded-none relative text-white">
-              <div 
+            <div className="bg-red-700 p-6 rounded-none relative">
+              <div
                 className="text-base leading-relaxed font-light"
-                style={{ lineHeight: '1.3', color: 'white' }}
-                dangerouslySetInnerHTML={{ __html: convertMarkdownToHtmlForRedBox(mainInfo.redbox) }}
+                style={{ lineHeight: '1.3' }}
+                dangerouslySetInnerHTML={{
+                  __html: convertMarkdownToHtmlForRedBox(String(mainInfo.redbox)),
+                }}
               />
             </div>
           )}
 
           {mainInfo?.infoAfterRedbox && (
-            <div 
+            <div
               className="space-y-6 text-gray-700 leading-relaxed text-base"
               style={{ lineHeight: '1.3' }}
-              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(mainInfo.infoAfterRedbox) }}
+              dangerouslySetInnerHTML={{
+                __html: convertMarkdownToHtml(String(mainInfo.infoAfterRedbox)),
+              }}
             />
           )}
         </div>
