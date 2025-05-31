@@ -1,4 +1,3 @@
-
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -70,12 +69,12 @@ export const formatStrapiShow = (strapiShow: any) => {
       attrs.praktisk_info.split('\n').filter((item: string) => item.trim()) : 
       attrs.practical_info || [],
     mapLink: mapLink,
-    image: getStrapiImageUrl(attrs.bild || attrs.image),
+    image: getStrapiImageUrl(attrs.bild || attrs.image), // Check 'bild' first, then 'image'
     performers: attrs.performers?.data?.map((performer: any) => ({
       id: performer.id,
       name: performer.attributes.name,
       bio: performer.attributes.bio,
-      image: getStrapiImageUrl(performer.attributes.image),
+      image: getStrapiImageUrl(performer.attributes.bild || performer.attributes.image), // Check 'bild' first
     })) || [],
     ticketPrice: attrs.ticket_price || 175,
     discountPrice: attrs.discount_price || 145,
@@ -108,18 +107,21 @@ export const formatStrapiCourse = (strapiCourse: any) => {
     if (attrs.teacher.data?.attributes) {
       const teacherAttrs = attrs.teacher.data.attributes;
       console.log('Teacher attributes:', JSON.stringify(teacherAttrs, null, 2));
+      console.log('Teacher bild data:', JSON.stringify(teacherAttrs.bild, null, 2));
       console.log('Teacher image data:', JSON.stringify(teacherAttrs.image, null, 2));
       
       teacher = {
         id: attrs.teacher.data.id,
         name: teacherAttrs.name,
         bio: teacherAttrs.bio,
-        image: getStrapiImageUrl(teacherAttrs.image),
+        image: getStrapiImageUrl(teacherAttrs.bild || teacherAttrs.image), // Check 'bild' first
       };
       console.log('Created teacher object (v4/v5 format):', teacher);
     }
     // Direct teacher data (older format or simplified)
     else if (attrs.teacher.name) {
+      console.log('Teacher bild field exists?', 'bild' in attrs.teacher);
+      console.log('Teacher bild value:', attrs.teacher.bild);
       console.log('Teacher image field exists?', 'image' in attrs.teacher);
       console.log('Teacher image value:', attrs.teacher.image);
       
@@ -127,7 +129,7 @@ export const formatStrapiCourse = (strapiCourse: any) => {
         id: attrs.teacher.id,
         name: attrs.teacher.name,
         bio: attrs.teacher.bio,
-        image: getStrapiImageUrl(attrs.teacher.image),
+        image: getStrapiImageUrl(attrs.teacher.bild || attrs.teacher.image), // Check 'bild' first
       };
       console.log('Created teacher object (direct format):', teacher);
     }
