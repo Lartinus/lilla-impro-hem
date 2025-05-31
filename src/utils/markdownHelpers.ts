@@ -3,7 +3,7 @@
 import { marked } from 'marked';
 
 //
-// 1) Hjälpfunktion: Extrahera alltid ren text från token eller sträng
+// 1) HJÄLPFUNKTION: Extrahera ren text från token eller sträng
 //
 function getTextContent(input: any): string {
   if (typeof input === 'string') {
@@ -12,52 +12,64 @@ function getTextContent(input: any): string {
   if (input == null) {
     return '';
   }
-  // Om det är ett token-objekt med .text-egenskap
+  // Om det är ett token‐objekt med en .text‐egenskap
   if (typeof input === 'object' && 'text' in input && typeof input.text === 'string') {
     return input.text;
   }
-  // Om det är ett token-objekt med tokens-array
+  // Om det är ett token‐objekt med en tokens‐array
   if (typeof input === 'object' && Array.isArray((input as any).tokens)) {
     return (input as any).tokens.map(getTextContent).join('');
   }
-  // Fallback: gör om till sträng
+  // Annars: konvertera till sträng
   return String(input);
 }
 
 //
-// 2) Preprocess: 
-//    a) Ta bort BOM och trimma inledande mellanslag
-//    b) Sätt alltid in ett blanksteg mellan "##...##" och texten, om det saknas
-//    c) Hantera pil-listor (→) på samma sätt som tidigare
+// 2) PREPROCESS: 
+//    a) Ta bort BOM, alla inledande osynliga unicode‐tecken (inkl. zero‐width spaces), samt mellanslag/tabbar/ny rad i början
+//    b) Normalisera radslut till enbart '\n'
+//    c) För varje rad som börjar med 1–6 '#' utan blanksteg efter, sätt in ett blanksteg mellan '##..##' och texten
+//    d) Behåll och formatera ev. pil‐listor (→) på samma sätt som tidigare
 //
 function preprocess(md: string): string {
   if (!md) return '';
 
-  // a) Ta bort eventuell BOM (Byte Order Mark) och trimma inledande mellanslag
-  let s = md.replace(/^\uFEFF/, '').replace(/^\s+/, '');
+  // --- a) Ta bort BOM och inledande osynliga/whitespace‐tecken på hela texten
+  //    \uFEFF = BOM, \u200B = zero‐width space, \u00A0 = non‐breaking space, \u200C = zero‐width non‐joiner, etc.
+  //    Därefter trimma eventuella mellanslag/tabbar/ny rad i början med ^\s+
+  let s = md
+    .replace(/^\uFEFF/, '')                       // ta bort BOM om det finns
+    .replace(/^[\u200B\u00A0\u200C\u200D]+/, '')   // ta bort zero‐width‐tecken
+    .replace(/^\s+/, '');                          // ta bort vanliga mellanslag/tabbar/ny rad i början
 
-  // b) Om rad börjar med X antal # utan blanksteg efter (även med inledande mellanslag),
-  //    sätt in blanksteg efter hashes‐sekvensen.
-  //
-  //    Förklaring av mönstret:
-  //    ^(\s*)(#{1,6})(?!\s)   → fånga inledande mellanslag (grupp 1) + 1–6 # (grupp 2), 
-  //                          men bara om nästa tecken inte är blanksteg. 
-  //    Ersättning: '$1$2 '    → sätt tillbaka de inledande mellanslagen + #'en, följt av ett blanksteg.
-  //
-  s = s.replace(/^(\s*)(#{1,6})(?!\s)/gm, '$1$2 ');
+  // --- b) Normalisera Windows‐radslut (\r\n) och Mac‐radslut (\r) till Unix‐radslut (\n)
+  s = s.replace(/\r\n?/g, '\n');
 
-  // c) Hantera pil-listor (→) precis som tidigare
+  // --- c) För varje rad (multiline‐mode), om rad börjar med 1–6 '#' direkt följt av ett icke‐blank tecken,
+  //     lägg till ett blanksteg efter ##‐sekvensen. 
+  //
+  //     Regex‐förklaring:
+  //       ^                  → början på raden
+  //       (\s*)             → fångar in eventuella (men nu borttagna) mellanslag/tabbar i grupp 1 (tom eller "")
+  //       (#{1,6})          → fångar in 1–6 stycken "#" i grupp 2
+  //       (?=\S)            → kontrollera att nästa tecken är icke­blank (d.v.s. texten börjar direkt efter "#")
+  //     Ersättning: "$1$2 "  → skriv ut exakt grupp1 (kan vara tom), sedan grupp2 (t.ex. "###"), plus ett blanksteg
+  //
+  s = s.replace(/^(\s*)(#{1,6})(?=\S)/gm, '$1$2 ');
+
+  // --- d) Hantera pil‐listor (→) som tidigare: om rad börjar med "→ " följt av text, behåll.
   s = s.replace(/^→\s+(.+)$/gm, '→ $1');
 
   return s;
 }
 
 //
-// 3) "Normal renderer" (ljus bakgrund, mörk text)
+// 3) SKAPA "NORMAL RENDERER" (ljus bakgrund, mörk text)
 //
 function createNormalRenderer(): any {
   const rnd: any = new marked.Renderer();
 
+  // Rubriker (<h1>–<h6>) med Tailwind‐klasser för mörk text
   rnd.heading = (textToken: any, level: number, raw: string, slugger: any) => {
     const text = getTextContent(textToken);
     const sizes: Record<number, string> = {
@@ -73,6 +85,7 @@ function createNormalRenderer(): any {
     return `<h${level} id="${idAttr}" class="${cls}">${text}</h${level}>`;
   };
 
+  // Paragrafer, inkl. pil‐listor
   rnd.paragraph = (textToken: any) => {
     const text = getTextContent(textToken).trim();
     if (text.startsWith('→')) {
@@ -84,38 +97,43 @@ function createNormalRenderer(): any {
     return `<p class="text-gray-800 my-4">${text}</p>`;
   };
 
+  // Punkt‐ och numrerade listor
   rnd.list = (body: string, ordered: boolean, start: number) => {
     const tag = ordered ? 'ol' : 'ul';
     const cls = ordered ? 'list-decimal' : 'list-disc';
     return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
-
   rnd.listitem = (textToken: any) => {
     const text = getTextContent(textToken);
     return `<li class="text-gray-800 my-1">${text}</li>`;
   };
 
+  // Länkar
   rnd.link = (href: string, title: string | null, textToken: any) => {
     const text = getTextContent(textToken);
     const titleAttr = title ? ` title="${title}"` : '';
     return `<a href="${href}"${titleAttr} class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
+  // Fetstil
   rnd.strong = (textToken: any) => {
     const text = getTextContent(textToken);
     return `<strong class="font-bold">${text}</strong>`;
   };
 
+  // Kursiv
   rnd.em = (textToken: any) => {
     const text = getTextContent(textToken);
     return `<em class="italic">${text}</em>`;
   };
 
+  // Inline‐kod
   rnd.codespan = (codeToken: any) => {
     const codeText = getTextContent(codeToken);
     return `<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">${codeText}</code>`;
   };
 
+  // Kodblock
   rnd.code = (codeToken: any, infostring: string, escaped: boolean) => {
     const codeText = typeof codeToken === 'string' ? codeToken : getTextContent(codeToken);
     return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-4"><code class="text-sm">${codeText}</code></pre>`;
@@ -125,7 +143,7 @@ function createNormalRenderer(): any {
 }
 
 //
-// 4) "Red box renderer" (röd bakgrund, vit text)
+// 4) SKAPA "RED BOX RENDERER" (röd bakgrund, vit text)
 //
 function createRedBoxRenderer(): any {
   const rnd: any = new marked.Renderer();
@@ -161,7 +179,6 @@ function createRedBoxRenderer(): any {
     const cls = ordered ? 'list-decimal text-white' : 'list-disc text-white';
     return `<${tag} class="${cls} ml-6 my-4">${body}</${tag}>`;
   };
-
   rnd.listitem = (textToken: any) => {
     const text = getTextContent(textToken);
     return `<li class="text-white my-1">${text}</li>`;
@@ -197,7 +214,7 @@ function createRedBoxRenderer(): any {
 }
 
 //
-// 5) Konfigurera marked globalt för normal renderer
+// 5) KONFIGURERA marked globalt för "normal renderer"
 //
 marked.setOptions({
   gfm: true,
@@ -206,12 +223,12 @@ marked.setOptions({
 });
 
 //
-// 6) Exportera Markdown‐konverteringsfunktionerna
+// 6) EXPORTERA två Markdown‐konverterande funktioner
 //
 export const convertMarkdownToHtml = (markdown: string): string => {
   if (!markdown) return '';
   try {
-    // Kör preprocess så att '#' utan blanksteg tolkas korrekt
+    // Kör preprocess så att "###Ett" → "### Ett"
     const pre = preprocess(markdown);
     return marked(pre) as string;
   } catch (err) {
@@ -223,11 +240,10 @@ export const convertMarkdownToHtml = (markdown: string): string => {
 export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
   if (!markdown) return '';
   try {
-    // Kör preprocess även för röd box
+    // Gör preprocess även för röd box
     const pre = preprocess(markdown);
-    // Rendera med röd bakgrund‐renderer
     const html = marked(pre, { renderer: createRedBoxRenderer() }) as string;
-    // Återställ normal renderer
+    // Återställ normal renderer efteråt
     marked.setOptions({ renderer: createNormalRenderer() });
     return html;
   } catch (err) {
