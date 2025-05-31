@@ -1,3 +1,4 @@
+
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'http://localhost:1337') => {
   if (!image) return null;
@@ -50,31 +51,36 @@ export const formatStrapiCourse = (strapiCourse: any) => {
   
   const attrs = strapiCourse.attributes;
   
-  // Handle kursledare (instructor) relation
-  const instructor = attrs.kursledare?.data?.attributes;
+  // Handle teacher (kursledare) relation
+  const teacher = attrs.teacher?.data?.attributes;
   
   return {
     id: strapiCourse.id,
-    title: attrs.title,
-    subtitle: attrs.undertitel,
+    title: attrs.titel || attrs.title,
+    subtitle: attrs.undertitel || attrs.subtitle,
     description: attrs.description,
     practicalInfo: attrs.praktisk_info ? 
       attrs.praktisk_info.split('\n').filter((item: string) => item.trim()) : 
       [],
-    instructor: instructor ? {
-      id: attrs.kursledare.data.id,
-      name: instructor.name,
-      bio: instructor.bio,
-      image: getStrapiImageUrl(instructor.image),
+    teacher: teacher ? {
+      id: attrs.teacher.data.id,
+      name: teacher.name,
+      bio: teacher.bio,
+      image: getStrapiImageUrl(teacher.image),
     } : null,
-    price: attrs.price,
-    duration: attrs.duration,
-    level: attrs.level,
-    maxParticipants: attrs.max_participants,
-    availableSpots: attrs.available_spots,
-    startDate: attrs.start_date,
-    endDate: attrs.end_date,
-    schedule: attrs.schedule,
-    image: getStrapiImageUrl(attrs.image),
+    available: true,
+    showButton: true
+  };
+};
+
+export const formatCourseMainInfo = (strapiData: any) => {
+  if (!strapiData?.data?.attributes) return null;
+  
+  const attrs = strapiData.data.attributes;
+  
+  return {
+    info: attrs.info || '',
+    redbox: attrs.redbox || '',
+    infoAfterRedbox: attrs.info_efter_redbox || attrs.info_after_redbox || ''
   };
 };

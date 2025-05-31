@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import CourseBookingForm from '@/components/CourseBookingForm';
 import CourseLeaderInfo from '@/components/CourseLeaderInfo';
 
-interface CourseLeader {
+interface Teacher {
   id: number;
   name: string;
   image: string;
@@ -11,13 +11,15 @@ interface CourseLeader {
 }
 
 interface Course {
+  id: number;
   title: string;
   subtitle: string;
   description: string;
-  courseLeader: CourseLeader | null;
+  teacher: Teacher | null;
   available: boolean;
   showButton: boolean;
   buttonText?: string;
+  practicalInfo?: string[];
 }
 
 interface CourseCardProps {
@@ -33,22 +35,44 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           <h2 className="text-xl font-bold text-blue-500 mb-2">
             {course.title}
           </h2>
-          <h3 className="text-theatre-secondary font-medium mb-1">
-            {course.subtitle}
-          </h3>
+          {course.subtitle && (
+            <h3 className="text-theatre-secondary font-medium mb-1">
+              {course.subtitle}
+            </h3>
+          )}
         </div>
         
-        <p className="text-gray-700 leading-relaxed mb-4 text-base">
-          {course.description}
-        </p>
+        <div 
+          className="text-gray-700 leading-relaxed mb-4 text-base"
+          dangerouslySetInnerHTML={{ __html: course.description || '' }}
+        />
         
-        {course.courseLeader && (
-          <CourseLeaderInfo courseLeader={course.courseLeader} />
+        {course.teacher && (
+          <CourseLeaderInfo courseLeader={{
+            id: course.teacher.id,
+            name: course.teacher.name,
+            image: course.teacher.image,
+            bio: course.teacher.bio
+          }} />
         )}
         
         <div className="flex-1"></div>
         
-        {course.available && (
+        {course.available && course.practicalInfo && (
+          <div className="mb-4">
+            <h4 className="text-gray-800 font-bold mb-1">Praktisk information</h4>
+            <div className="space-y-2">
+              {course.practicalInfo.map((item, index) => (
+                <div key={index} className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
+                  <p className="text-gray-700 text-base">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {course.available && !course.practicalInfo && (
           <div className="mb-4">
             <h4 className="text-gray-800 font-bold mb-1">Praktisk information</h4>
             <div className="space-y-2">
