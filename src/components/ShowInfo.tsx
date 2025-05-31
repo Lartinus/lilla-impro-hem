@@ -1,5 +1,6 @@
 
 import { MapPin } from 'lucide-react';
+import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 
 interface ShowInfoProps {
   title: string;
@@ -34,13 +35,11 @@ const ShowInfo = ({ title, date, location, mapLink, description }: ShowInfoProps
         </div>
       </div>
       
-      <div className="text-gray-700 leading-relaxed mb-6 text-base" style={{ lineHeight: '1.3' }}>
-        {description.split('\n').map((paragraph: string, index: number) => (
-          <p key={index} className="mb-4 last:mb-0">
-            {paragraph}
-          </p>
-        ))}
-      </div>
+      <div 
+        className="text-gray-700 leading-relaxed mb-6 text-base" 
+        style={{ lineHeight: '1.3' }}
+        dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(description) }}
+      />
     </>
   );
 };

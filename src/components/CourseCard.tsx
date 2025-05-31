@@ -2,6 +2,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import CourseBookingForm from '@/components/CourseBookingForm';
 import CourseLeaderInfo from '@/components/CourseLeaderInfo';
+import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 
 interface Teacher {
   id: number;
@@ -49,7 +50,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         
         <div 
           className="text-gray-700 leading-relaxed mb-4 text-base"
-          dangerouslySetInnerHTML={{ __html: course.description || '' }}
+          dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
         />
         
         {course.teacher && (

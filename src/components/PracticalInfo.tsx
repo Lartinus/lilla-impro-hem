@@ -1,4 +1,6 @@
 
+import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
+
 interface PracticalInfoProps {
   practicalInfo: string[];
 }
@@ -11,7 +13,11 @@ const PracticalInfo = ({ practicalInfo }: PracticalInfoProps) => {
         {practicalInfo.map((item: string, index: number) => (
           <div key={index} className="flex items-start space-x-3">
             <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
-            <p className="text-gray-700 text-base" style={{ lineHeight: '1.3' }}>{item}</p>
+            <div 
+              className="text-gray-700 text-base" 
+              style={{ lineHeight: '1.3' }}
+              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(item) }}
+            />
           </div>
         ))}
       </div>
