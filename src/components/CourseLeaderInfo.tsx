@@ -13,6 +13,9 @@ interface CourseLeaderInfoProps {
 }
 
 const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
+  console.log('CourseLeaderInfo - courseLeader:', courseLeader);
+  console.log('CourseLeaderInfo - image URL:', courseLeader.image);
+
   return (
     <div className="mb-6">
       <h4 className="text-gray-800 font-bold mb-3">Kursledare</h4>
@@ -25,7 +28,11 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
               className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0 md:mx-0"
               onError={(e) => {
                 console.error('Failed to load teacher image:', courseLeader.image);
+                console.error('Image error event:', e);
                 e.currentTarget.style.display = 'none';
+              }}
+              onLoad={() => {
+                console.log('Successfully loaded teacher image:', courseLeader.image);
               }}
             />
           ) : (

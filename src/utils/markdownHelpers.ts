@@ -42,7 +42,7 @@ function createNormalRenderer(): any {
     const classes: Record<number, string> = {
       1: 'text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-2',
       2: 'text-xl font-bold text-gray-800 mb-2',
-      3: 'text-lg font-medium text-theatre-secondary mb-1',
+      3: 'text-lg font-medium text-theatre-secondary mb-0.5 mt-2',
       4: 'text-base font-bold text-gray-800 mb-1',
       5: 'text-base font-semibold text-gray-800 mb-1',
       6: 'text-base font-medium text-gray-800 mb-1',
@@ -53,25 +53,25 @@ function createNormalRenderer(): any {
 
   renderer.paragraph = function({ tokens }: { tokens: any[] }) {
     const text = getTextFromTokens(tokens);
-    return `<p class="text-gray-800 my-5">${text}</p>`;
+    return `<p class="text-gray-800 my-6" style="line-height: 1.8;">${text}</p>`;
   };
 
   renderer.list = function(token: { items: any[], ordered: boolean }) {
     const tag = token.ordered ? 'ol' : 'ul';
     const body = token.items.map(item => {
       const text = getTextFromTokens(item.tokens);
-      return `<div class="arrow-list-item ml-6 my-1 relative text-gray-800">
-                <span class="absolute -left-6 font-bold text-blue-500">→</span>
+      return `<div class="arrow-list-item ml-8 my-1 relative text-gray-800">
+                <span class="absolute -left-8 font-bold text-blue-500">→</span>
                 <span>${text}</span>
               </div>`;
     }).join('');
-    return `<div class="my-5">${body}</div>`;
+    return `<div class="my-6">${body}</div>`;
   };
   
   renderer.listitem = function(item: { tokens: any[] }) {
     const text = getTextFromTokens(item.tokens);
-    return `<div class="arrow-list-item ml-6 my-1 relative text-gray-800">
-              <span class="absolute -left-6 font-bold text-blue-500">→</span>
+    return `<div class="arrow-list-item ml-8 my-1 relative text-gray-800">
+              <span class="absolute -left-8 font-bold text-blue-500">→</span>
               <span>${text}</span>
             </div>`;
   };
@@ -97,7 +97,7 @@ function createNormalRenderer(): any {
   };
 
   renderer.code = function({ text, lang }: { text: string, lang?: string | undefined }) {
-    return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-5"><code class="text-sm">${text}</code></pre>`;
+    return `<pre class="bg-gray-100 p-4 rounded overflow-x-auto my-6"><code class="text-sm">${text}</code></pre>`;
   };
 
   return renderer;
@@ -114,7 +114,7 @@ function createRedBoxRenderer(): any {
     const classes: Record<number, string> = {
       1: 'text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-white tracking-normal mb-2',
       2: 'text-xl font-bold text-white mb-2',
-      3: 'text-lg font-medium text-white mb-1',
+      3: 'text-lg font-medium text-white mb-0.5 mt-2',
       4: 'text-base font-bold text-white mb-1',
       5: 'text-base font-semibold text-white mb-1',
       6: 'text-base font-medium text-white mb-1',
@@ -125,25 +125,25 @@ function createRedBoxRenderer(): any {
 
   renderer.paragraph = function({ tokens }: { tokens: any[] }) {
     const text = getTextFromTokens(tokens);
-    return `<p class="text-white my-5">${text}</p>`;
+    return `<p class="text-white my-6" style="line-height: 1.8;">${text}</p>`;
   };
 
   renderer.list = function(token: { items: any[], ordered: boolean }) {
     const tag = token.ordered ? 'ol' : 'ul';
     const body = token.items.map(item => {
       const text = getTextFromTokens(item.tokens);
-      return `<div class="arrow-list-item ml-6 my-1 relative text-white">
-                <span class="absolute -left-6 font-bold text-blue-300">→</span>
+      return `<div class="arrow-list-item ml-8 my-1 relative text-white">
+                <span class="absolute -left-8 font-bold text-blue-300">→</span>
                 <span>${text}</span>
               </div>`;
     }).join('');
-    return `<div class="my-5">${body}</div>`;
+    return `<div class="my-6">${body}</div>`;
   };
   
   renderer.listitem = function(item: { tokens: any[] }) {
     const text = getTextFromTokens(item.tokens);
-    return `<div class="arrow-list-item ml-6 my-1 relative text-white">
-              <span class="absolute -left-6 font-bold text-blue-300">→</span>
+    return `<div class="arrow-list-item ml-8 my-1 relative text-white">
+              <span class="absolute -left-8 font-bold text-blue-300">→</span>
               <span>${text}</span>
             </div>`;
   };
@@ -169,7 +169,7 @@ function createRedBoxRenderer(): any {
   };
 
   renderer.code = function({ text, lang }: { text: string, lang?: string | undefined }) {
-    return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-5"><code class="text-sm">${text}</code></pre>`;
+    return `<pre class="bg-gray-700 p-4 rounded overflow-x-auto my-6"><code class="text-sm">${text}</code></pre>`;
   };
 
   return renderer;
