@@ -3,8 +3,15 @@
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   if (!image) return null;
   
+  // Handle different image formats from Strapi
   if (image.data?.attributes?.url) {
     const url = image.data.attributes.url;
+    return url.startsWith('http') ? url : `${baseUrl}${url}`;
+  }
+  
+  // Handle direct image object
+  if (image.url) {
+    const url = image.url;
     return url.startsWith('http') ? url : `${baseUrl}${url}`;
   }
   

@@ -6,7 +6,7 @@ import CourseLeaderInfo from '@/components/CourseLeaderInfo';
 interface Teacher {
   id: number;
   name: string;
-  image: string;
+  image: string | null;
   bio: string;
 }
 
@@ -28,6 +28,11 @@ interface CourseCardProps {
 }
 
 const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
+  // Determine which practical info to show
+  const hasCourseSpecificInfo = course.practicalInfo && course.practicalInfo.length > 0;
+  const infoToShow = hasCourseSpecificInfo ? course.practicalInfo : practicalInfo;
+  const shouldShowPracticalInfo = infoToShow && infoToShow.length > 0;
+
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
       <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
@@ -58,25 +63,11 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         
         <div className="flex-1"></div>
         
-        {course.available && course.practicalInfo && (
+        {shouldShowPracticalInfo && (
           <div className="mb-4">
             <h4 className="text-gray-800 font-bold mb-1">Praktisk information</h4>
             <div className="space-y-2">
-              {course.practicalInfo.map((item, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
-                  <p className="text-gray-700 text-base">{item}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        
-        {course.available && !course.practicalInfo && (
-          <div className="mb-4">
-            <h4 className="text-gray-800 font-bold mb-1">Praktisk information</h4>
-            <div className="space-y-2">
-              {practicalInfo.map((item, index) => (
+              {infoToShow.map((item, index) => (
                 <div key={index} className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
                   <p className="text-gray-700 text-base">{item}</p>
