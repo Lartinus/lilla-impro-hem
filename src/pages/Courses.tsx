@@ -11,11 +11,19 @@ const Courses = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data: coursesData, isLoading: coursesLoading } = useCourses();
-  const { data: mainInfoData, isLoading: mainInfoLoading } = useCourseMainInfo();
+  const { data: coursesData, isLoading: coursesLoading, error: coursesError } = useCourses();
+  const { data: mainInfoData, isLoading: mainInfoLoading, error: mainInfoError } = useCourseMainInfo();
+
+  console.log('Courses page - Raw courses data:', coursesData);
+  console.log('Courses page - Raw main info data:', mainInfoData);
+  console.log('Courses loading states:', { coursesLoading, mainInfoLoading });
+  console.log('Courses errors:', { coursesError, mainInfoError });
 
   const courses = coursesData?.data ? coursesData.data.map(formatStrapiCourse).filter(Boolean) : [];
   const mainInfo = formatCourseMainInfo(mainInfoData);
+
+  console.log('Formatted courses:', courses);
+  console.log('Formatted main info:', mainInfo);
 
   const practicalInfo = [
     "8 tillfällen á 2,5h",
@@ -26,12 +34,24 @@ const Courses = () => {
   ];
 
   if (coursesLoading || mainInfoLoading) {
+    console.log('Still loading...');
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex items-center justify-center">
         <div className="text-white text-xl">Laddar kurser...</div>
       </div>
     );
   }
+
+  if (coursesError || mainInfoError) {
+    console.error('Error loading data:', { coursesError, mainInfoError });
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex items-center justify-center">
+        <div className="text-white text-xl">Ett fel uppstod vid laddning av kurser</div>
+      </div>
+    );
+  }
+
+  console.log('About to render courses. Number of courses:', courses.length);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
@@ -47,16 +67,30 @@ const Courses = () => {
         </div>
       </section>
 
+      {/* Debug section - remove after fixing */}
+      <div className="bg-red-500 text-white p-4 mx-4 mb-4">
+        <h3>Debug info:</h3>
+        <p>Courses length: {courses.length}</p>
+        <p>Has main info: {mainInfo ? 'Yes' : 'No'}</p>
+        <p>Loading states: courses={coursesLoading.toString()}, mainInfo={mainInfoLoading.toString()}</p>
+      </div>
+
       {/* Courses Grid */}
       <section className="py-2 px-0.5 md:px-4 pb-8 animate-fade-in">
         <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
-          {courses.map((course, index) => (
-            <CourseCard 
-              key={course.id || index} 
-              course={course}
-              practicalInfo={practicalInfo}
-            />
-          ))}
+          {courses.length > 0 ? (
+            courses.map((course, index) => (
+              <CourseCard 
+                key={course.id || index} 
+                course={course}
+                practicalInfo={practicalInfo}
+              />
+            ))
+          ) : (
+            <div className="col-span-2 text-center text-white text-xl">
+              Inga kurser hittades
+            </div>
+          )}
         </div>
         
         {/* Combined Information Box */}
