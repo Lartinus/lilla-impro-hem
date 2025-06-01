@@ -35,8 +35,22 @@ const About = () => {
   }
 
   // Handle both data.data and direct data formats from Strapi
-  const content = aboutData?.data || aboutData;
-  const performers = content?.performers || [];
+  const content = aboutData?.data?.attributes || aboutData?.data || aboutData;
+  
+  // Handle performers - check multiple possible data structures
+  let performers = [];
+  if (content?.performers?.data) {
+    // New Strapi format with data wrapper
+    performers = content.performers.data.map((performer: any) => ({
+      id: performer.id,
+      name: performer.attributes.name,
+      bio: performer.attributes.bio,
+      image: performer.attributes.bild || performer.attributes.image,
+    }));
+  } else if (content?.performers) {
+    // Direct performers array
+    performers = content.performers;
+  }
 
   console.log('About page - content:', content);
   console.log('About page - performers:', performers);
