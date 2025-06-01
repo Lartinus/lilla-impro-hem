@@ -58,7 +58,7 @@
     
     /* ===== TEACHER/PERFORMER SPACING SETTINGS ===== */
     /* Avstånd mellan namn och bio för alla teachers och performers */
-    --name-to-bio-spacing: 1.5rem;
+    --name-to-bio-spacing: 0.5rem;
     
     /* ===== ARROW SIZE SETTINGS ===== */
     /* Storlek på pilar */
@@ -169,17 +169,46 @@
   }
   
   /* ===== TEACHER/PERFORMER NAME TO BIO SPACING ===== */
-  /* Mer specifika selectors för att säkerställa att variabeln används */
-  .teacher-name + div,
-  .teacher-name + .teacher-bio,
-  .performer-name + p,
-  .performer-name + .performer-bio {
+  /* Kraftfull override för teacher namn till bio spacing */
+  .teacher-name {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  .teacher-bio {
     margin-top: var(--name-to-bio-spacing) !important;
+    padding-top: 0 !important;
+  }
+  
+  /* Performer spacing */
+  .performer-name {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  .performer-bio {
+    margin-top: var(--name-to-bio-spacing) !important;
+    padding-top: 0 !important;
   }
 
-  /* Force spacing with style attribute targeting */
+  /* Extra kraftfull override för alla element som kommer efter teacher/performer names */
+  .teacher-name + *,
+  .performer-name + * {
+    margin-top: var(--name-to-bio-spacing) !important;
+    padding-top: 0 !important;
+  }
+
+  /* Förhindra att andra CSS-regler överrider spacing */
   [style*="margin-top: var(--name-to-bio-spacing)"] {
     margin-top: var(--name-to-bio-spacing) !important;
+    padding-top: 0 !important;
+  }
+  
+  /* Ta bort eventuella default margins från första elementet i bio */
+  .teacher-bio > *:first-child,
+  .performer-bio > *:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
   
   /* ===== ARROW SIZE SETTINGS ===== */
