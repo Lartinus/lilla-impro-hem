@@ -1,5 +1,4 @@
 
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ShowCardSimple from '@/components/ShowCardSimple';
@@ -74,9 +73,9 @@ const Shows = () => {
 
       {/* Shows Grid */}
       <section className="py-2 px-0.5 md:px-4 pb-8 animate-fade-in flex-1">
-        <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
+        <div className="mx-[12px] md:mx-0 md:max-w-6xl md:mx-auto">
           {shows.length > 0 ? (
-            <div className="grid gap-6 mb-6 md:grid-cols-1 lg:grid-cols-2 auto-rows-fr">
+            <div className="grid gap-6 mb-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
               {shows.map((show) => (
                 <ShowCardSimple key={show.id} show={show} />
               ))}
@@ -95,4 +94,3 @@ const Shows = () => {
 };
 
 export default Shows;
-

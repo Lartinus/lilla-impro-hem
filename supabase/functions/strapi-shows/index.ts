@@ -1,5 +1,4 @@
 
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -37,8 +36,8 @@ serve(async (req) => {
       // Full details for single show
       endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
     } else {
-      // Basic info for show listing - only populate location and image
-      endpoint = '/api/shows?populate[location]=*&populate[bild]=*';
+      // Basic info for show listing - simplified populate to avoid errors
+      endpoint = '/api/shows?populate=location&populate=bild';
     }
 
     console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
@@ -71,4 +70,3 @@ serve(async (req) => {
     });
   }
 });
-
