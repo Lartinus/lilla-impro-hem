@@ -5,8 +5,9 @@ import { getStrapiImageUrl } from '@/utils/strapiHelpers';
 interface Performer {
   id: number;
   name: string;
-  image: string;
+  image?: string;
   bio: string;
+  bild?: string; // Alternative Swedish field name
 }
 
 interface PerformersSectionProps {
@@ -24,7 +25,25 @@ const PerformersSection = ({ performers }: PerformersSectionProps) => {
       <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
         <div className="space-y-6">
           {performers.map((performer) => {
-            const imageUrl = getStrapiImageUrl(performer.image);
+            // Try both 'image' and 'bild' fields, and handle potential nested structures
+            const imageField = performer.image || performer.bild;
+            let imageUrl = null;
+            
+            if (imageField) {
+              // Handle different possible image data structures
+              if (typeof imageField === 'string') {
+                imageUrl = getStrapiImageUrl(imageField);
+              } else if (imageField && typeof imageField === 'object') {
+                // Handle nested image objects
+                const nestedImage = (imageField as any).data || (imageField as any).url || imageField;
+                if (typeof nestedImage === 'string') {
+                  imageUrl = getStrapiImageUrl(nestedImage);
+                } else if (nestedImage && nestedImage.url) {
+                  imageUrl = getStrapiImageUrl(nestedImage.url);
+                }
+              }
+            }
+            
             console.log('PerformersSection - performer:', performer.name, 'imageUrl:', imageUrl);
             
             return (
@@ -59,16 +78,11 @@ const PerformersSection = ({ performers }: PerformersSectionProps) => {
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <h5 className="font-bold text-gray-800 performer-name mb-0">
+                  <h5 className="font-bold text-gray-800 performer-name">
                     {performer.name}
                   </h5>
                   <div 
                     className="text-gray-700 text-sm break-words performer-bio [&>p]:mb-1 [&>p]:mt-0 [&>h1]:mb-0.5 [&>h2]:mb-0.5 [&>h3]:mb-0.5 [&>h4]:mb-0.5 [&>h5]:mb-0.5 [&>h6]:mb-0.5 [&>*:first-child]:mt-0"
-                    style={{ 
-                      marginTop: 'var(--name-to-bio-spacing)',
-                      paddingTop: '0',
-                      lineHeight: 'var(--body-line-height)'
-                    }}
                     dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(performer.bio) }}
                   />
                 </div>

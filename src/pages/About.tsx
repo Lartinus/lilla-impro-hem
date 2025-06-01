@@ -43,13 +43,18 @@ const About = () => {
     // New Strapi format with data wrapper
     performers = content.performers.data.map((performer: any) => ({
       id: performer.id,
-      name: performer.attributes.name,
-      bio: performer.attributes.bio,
-      image: performer.attributes.bild || performer.attributes.image,
+      name: performer.attributes?.name || performer.name,
+      bio: performer.attributes?.bio || performer.bio,
+      image: performer.attributes?.bild || performer.attributes?.image || performer.bild || performer.image,
     }));
-  } else if (content?.performers) {
-    // Direct performers array
-    performers = content.performers;
+  } else if (content?.performers && Array.isArray(content.performers)) {
+    // Direct performers array - ensure proper structure
+    performers = content.performers.map((performer: any) => ({
+      id: performer.id || performer.documentId,
+      name: performer.name,
+      bio: performer.bio,
+      image: performer.bild || performer.image,
+    }));
   }
 
   console.log('About page - content:', content);
