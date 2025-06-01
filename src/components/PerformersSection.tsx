@@ -1,13 +1,11 @@
 
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
-import { getStrapiImageUrl } from '@/utils/strapiHelpers';
 
 interface Performer {
   id: number;
   name: string;
-  image?: any; // More flexible type to handle different image structures
+  image: string | null; // Now expecting a processed URL string
   bio: string;
-  bild?: any; // Alternative Swedish field name
 }
 
 interface PerformersSectionProps {
@@ -25,25 +23,23 @@ const PerformersSection = ({ performers }: PerformersSectionProps) => {
       <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
         <div className="space-y-6">
           {performers.map((performer) => {
-            // Use image data directly as processed in About.tsx
-            const imageData = performer.image || performer.bild;
-            const imageUrl = getStrapiImageUrl(imageData);
-            const hasValidImage = imageUrl && 
-                                imageUrl !== 'null' && 
-                                imageUrl.trim() !== '' &&
-                                imageUrl !== 'undefined';
+            // Check if we have a valid image URL (same logic as CourseLeaderInfo)
+            const hasValidImage = performer.image && 
+                                performer.image !== 'null' && 
+                                performer.image.trim() !== '' &&
+                                performer.image !== 'undefined';
             
-            console.log('PerformersSection - performer:', performer.name, 'imageData:', imageData, 'imageUrl:', imageUrl, 'hasValidImage:', hasValidImage);
+            console.log('PerformersSection - performer:', performer.name, 'imageUrl:', performer.image, 'hasValidImage:', hasValidImage);
             
             return (
               <div key={performer.id} className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
                 {hasValidImage ? (
                   <img 
-                    src={imageUrl} 
+                    src={performer.image} 
                     alt={performer.name}
                     className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0"
                     onError={(e) => {
-                      console.error('Failed to load performer image:', imageUrl);
+                      console.error('Failed to load performer image:', performer.image);
                       const target = e.currentTarget;
                       target.style.display = 'none';
                       // Show fallback div
@@ -53,7 +49,7 @@ const PerformersSection = ({ performers }: PerformersSectionProps) => {
                       }
                     }}
                     onLoad={() => {
-                      console.log('Successfully loaded performer image:', imageUrl);
+                      console.log('Successfully loaded performer image:', performer.image);
                     }}
                   />
                 ) : null}

@@ -5,6 +5,7 @@ import PerformersSection from '@/components/PerformersSection';
 import { useEffect } from 'react';
 import { useAboutPageContent } from '@/hooks/useStrapi';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
+import { getStrapiImageUrl } from '@/utils/strapiHelpers';
 
 const About = () => {
   useEffect(() => {
@@ -46,32 +47,16 @@ const About = () => {
       
       const attributes = performer.attributes || performer;
       
-      // Extract image data - check multiple possible locations
-      let imageData = null;
+      // Use getStrapiImageUrl helper to get the proper image URL
+      const imageUrl = getStrapiImageUrl(attributes.image || attributes.bild);
       
-      // Check if image is in attributes.image.data.attributes.url format
-      if (attributes.image?.data?.attributes?.url) {
-        imageData = attributes.image.data.attributes;
-      }
-      // Check if image is in attributes.bild.data.attributes.url format  
-      else if (attributes.bild?.data?.attributes?.url) {
-        imageData = attributes.bild.data.attributes;
-      }
-      // Check direct image object
-      else if (attributes.image?.url) {
-        imageData = attributes.image;
-      }
-      else if (attributes.bild?.url) {
-        imageData = attributes.bild;
-      }
-      
-      console.log('Extracted image data for performer:', attributes.name, imageData);
+      console.log('Processed performer:', attributes.name, 'imageUrl:', imageUrl);
       
       return {
         id: performer.id,
         name: attributes.name,
         bio: attributes.bio,
-        image: imageData, // Pass the full image data object
+        image: imageUrl, // Pass the processed URL string directly
       };
     });
   } else if (content?.performers && Array.isArray(content.performers)) {
@@ -79,26 +64,16 @@ const About = () => {
     performers = content.performers.map((performer: any) => {
       console.log('Processing direct performer:', performer);
       
-      // Extract image data for direct format too
-      let imageData = null;
+      // Use getStrapiImageUrl helper to get the proper image URL
+      const imageUrl = getStrapiImageUrl(performer.image || performer.bild);
       
-      if (performer.image?.data?.attributes?.url) {
-        imageData = performer.image.data.attributes;
-      } else if (performer.bild?.data?.attributes?.url) {
-        imageData = performer.bild.data.attributes;
-      } else if (performer.image?.url) {
-        imageData = performer.image;
-      } else if (performer.bild?.url) {
-        imageData = performer.bild;
-      }
-      
-      console.log('Extracted direct image data for performer:', performer.name, imageData);
+      console.log('Processed direct performer:', performer.name, 'imageUrl:', imageUrl);
       
       return {
         id: performer.id || performer.documentId,
         name: performer.name,
         bio: performer.bio,
-        image: imageData,
+        image: imageUrl, // Pass the processed URL string directly
       };
     });
   }
