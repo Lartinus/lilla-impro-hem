@@ -169,16 +169,16 @@
   }
   
   /* ===== TEACHER/PERFORMER NAME TO BIO SPACING ===== */
-  /* Specifika selectors för kursledare och performers */
+  /* Mer specifika selectors för att säkerställa att variabeln används */
   .teacher-name + div,
-  .performer-name + p,
   .teacher-name + .teacher-bio,
+  .performer-name + p,
   .performer-name + .performer-bio {
     margin-top: var(--name-to-bio-spacing) !important;
   }
 
-  /* Fallback för inline styles */
-  [style*="--name-to-bio-spacing"] {
+  /* Force spacing with style attribute targeting */
+  [style*="margin-top: var(--name-to-bio-spacing)"] {
     margin-top: var(--name-to-bio-spacing) !important;
   }
   
@@ -191,6 +191,12 @@
   
   /* ===== BULLET POINT SIZE SETTINGS ===== */
   /* Storlek på vanliga punkter (runda) */
+  .bullet-point {
+    width: var(--bullet-size) !important;
+    height: var(--bullet-size) !important;
+  }
+  
+  /* Custom bullet points */
   .w-2.h-2 {
     width: var(--bullet-size) !important;
     height: var(--bullet-size) !important;
@@ -199,11 +205,5 @@
   /* Generella bullet points */
   ul li::marker {
     font-size: var(--bullet-size);
-  }
-  
-  /* Custom bullet points */
-  .bullet-point {
-    width: var(--bullet-size) !important;
-    height: var(--bullet-size) !important;
   }
 }

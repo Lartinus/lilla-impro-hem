@@ -29,7 +29,10 @@ const PerformersSection = ({ performers }: PerformersSectionProps) => {
                 <h5 className="font-bold text-gray-800 performer-name">
                   {performer.name}
                 </h5>
-                <p className="text-gray-700 leading-relaxed text-sm break-words performer-bio">
+                <p 
+                  className="text-gray-700 leading-relaxed text-sm break-words performer-bio"
+                  style={{ marginTop: 'var(--name-to-bio-spacing)' }}
+                >
                   {performer.bio}
                 </p>
               </div>

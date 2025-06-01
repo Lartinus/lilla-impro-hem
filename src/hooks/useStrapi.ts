@@ -69,7 +69,7 @@ export const useAboutPageContent = () => {
     queryKey: ['about-page-content'],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke('strapi-site-content', {
-        body: { type: 'about-page' }
+        body: { type: 'about' }
       });
       if (error) throw error;
       return data;
