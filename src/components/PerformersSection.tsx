@@ -25,15 +25,15 @@ const PerformersSection = ({ performers }: PerformersSectionProps) => {
       <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
         <div className="space-y-6">
           {performers.map((performer) => {
-            // Use the same image URL logic as CourseLeaderInfo
-            const imageField = performer.image || performer.bild;
-            const imageUrl = getStrapiImageUrl(imageField);
+            // Use image data directly as processed in About.tsx
+            const imageData = performer.image || performer.bild;
+            const imageUrl = getStrapiImageUrl(imageData);
             const hasValidImage = imageUrl && 
                                 imageUrl !== 'null' && 
                                 imageUrl.trim() !== '' &&
                                 imageUrl !== 'undefined';
             
-            console.log('PerformersSection - performer:', performer.name, 'imageUrl:', imageUrl, 'hasValidImage:', hasValidImage);
+            console.log('PerformersSection - performer:', performer.name, 'imageData:', imageData, 'imageUrl:', imageUrl, 'hasValidImage:', hasValidImage);
             
             return (
               <div key={performer.id} className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">

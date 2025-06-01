@@ -41,24 +41,70 @@ const About = () => {
   let performers = [];
   if (content?.performers?.data) {
     // New Strapi format with data wrapper
-    performers = content.performers.data.map((performer: any) => ({
-      id: performer.id,
-      name: performer.attributes?.name || performer.name,
-      bio: performer.attributes?.bio || performer.bio,
-      image: performer.attributes?.bild || performer.attributes?.image || performer.bild || performer.image,
-    }));
+    performers = content.performers.data.map((performer: any) => {
+      console.log('Processing performer from Strapi:', performer);
+      
+      const attributes = performer.attributes || performer;
+      
+      // Extract image data - check multiple possible locations
+      let imageData = null;
+      
+      // Check if image is in attributes.image.data.attributes.url format
+      if (attributes.image?.data?.attributes?.url) {
+        imageData = attributes.image.data.attributes;
+      }
+      // Check if image is in attributes.bild.data.attributes.url format  
+      else if (attributes.bild?.data?.attributes?.url) {
+        imageData = attributes.bild.data.attributes;
+      }
+      // Check direct image object
+      else if (attributes.image?.url) {
+        imageData = attributes.image;
+      }
+      else if (attributes.bild?.url) {
+        imageData = attributes.bild;
+      }
+      
+      console.log('Extracted image data for performer:', attributes.name, imageData);
+      
+      return {
+        id: performer.id,
+        name: attributes.name,
+        bio: attributes.bio,
+        image: imageData, // Pass the full image data object
+      };
+    });
   } else if (content?.performers && Array.isArray(content.performers)) {
     // Direct performers array - ensure proper structure
-    performers = content.performers.map((performer: any) => ({
-      id: performer.id || performer.documentId,
-      name: performer.name,
-      bio: performer.bio,
-      image: performer.bild || performer.image,
-    }));
+    performers = content.performers.map((performer: any) => {
+      console.log('Processing direct performer:', performer);
+      
+      // Extract image data for direct format too
+      let imageData = null;
+      
+      if (performer.image?.data?.attributes?.url) {
+        imageData = performer.image.data.attributes;
+      } else if (performer.bild?.data?.attributes?.url) {
+        imageData = performer.bild.data.attributes;
+      } else if (performer.image?.url) {
+        imageData = performer.image;
+      } else if (performer.bild?.url) {
+        imageData = performer.bild;
+      }
+      
+      console.log('Extracted direct image data for performer:', performer.name, imageData);
+      
+      return {
+        id: performer.id || performer.documentId,
+        name: performer.name,
+        bio: performer.bio,
+        image: imageData,
+      };
+    });
   }
 
   console.log('About page - content:', content);
-  console.log('About page - performers:', performers);
+  console.log('About page - processed performers:', performers);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
