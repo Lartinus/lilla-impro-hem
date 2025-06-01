@@ -3,13 +3,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import PerformersSection from './PerformersSection';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 
 interface Performer {
   id: number;
   name: string;
-  image: string;
+  image: string | null;
   bio: string;
 }
 
@@ -26,6 +27,7 @@ interface Show {
   ticketPrice: number;
   discountPrice: number;
   availableTickets: number;
+  image?: string | null;
 }
 
 interface ShowCardFromStrapiProps {
@@ -47,10 +49,23 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
       <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
+        {/* Show Image */}
+        {show.image && (
+          <div className="w-full h-48 mb-4 flex-shrink-0">
+            <img 
+              src={show.image} 
+              alt={show.title}
+              className="w-full h-full object-cover rounded-none"
+            />
+          </div>
+        )}
+
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-blue-500 mb-2">
-            {show.title} {show.date}
-          </h2>
+          <Link to={`/shows/${show.slug}`}>
+            <h2 className="text-xl font-bold text-blue-500 mb-2 hover:text-blue-700 transition-colors">
+              {show.title} {show.date}
+            </h2>
+          </Link>
           <h3 className="text-theatre-secondary font-medium mb-1">
             <a 
               href={show.mapLink} 

@@ -22,33 +22,12 @@ const ShowDetails = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data: showData, isLoading: showLoading } = useShow(slug || '');
+  const { data: showData, isLoading: showLoading, error } = useShow(slug || '');
   const { data: allShowsData } = useShows();
-
-  const performers = [
-    {
-      id: 1,
-      name: "Hjalmar Hardestam",
-      image: "/lovable-uploads/192352b9-7e67-447a-aa36-9b17372a4155.png",
-      bio: "Hjalmar har undervisat på flera improvisationsscener runtom i Sverige. Han är baserad i Stockholm men har tidigare undervisat på Improverket och Gbgimpro i Göteborg och på Dramaverket i Karlstad. Han driver även Göteborg Improv Comedy Club samt podcasten Impropodden. Hjalmar har spelat på flera europeiska festivaler – bland annat i Amsterdam, Edinburgh och Nottingham – och är utbildad vid Improv Olympic och The Annoyance i Chicago samt The Free Association i London."
-    },
-    {
-      id: 2,
-      name: "Ellen Bobeck",
-      image: "/lovable-uploads/df0cb53d-072e-4970-b9fa-e175209d1cf7.png",
-      bio: "Ellen har arbetat med improvisationsteater sedan 2018, både som skådespelare och pedagog. Hon undervisar på flera olika skolor och teatrar i Stockholm, och har stått på scen på festivaler i bland annat Berlin, Oslo, Dublin och Edinburgh. Förutom Spinoff spelar hon även med trion Britta, och är konstnärlig ledare för musikalensemblen Floden STHLM – där hon kombinerar musikalisk känsla med improviserat berättande."
-    },
-    {
-      id: 3,
-      name: "David Rosenqvist",
-      image: "/lovable-uploads/5cb42dd8-59bc-49e4-ae83-9bb0da74f658.png",
-      bio: "David började med improvisationsteater 2013 och har sedan dess varit en aktiv del av improscenerna i Karlstad, Örebro och Stockholm. Han var med och startade Dramaverket 2014 och senare Spinoff 2021. I dag spelar han både med Dramaverket och Floden STHLM, och gästar under våren 2025 även Stockholm Improvisationsteater. Till vardags jobbar David som producent inom event och teater – med ett öga för struktur, sammanhang och att få saker att hända."
-    }
-  ];
 
   const showDataFromStrapi = showData?.data?.[0] ? formatStrapiShow(showData.data[0]) : null;
   
-  // Use Strapi data if available, otherwise fall back to hardcoded data
+  // Use Strapi data if available, otherwise show error
   const show = showDataFromStrapi || {
     title: "Föreställning hittades inte",
     date: "",
@@ -57,9 +36,9 @@ const ShowDetails = () => {
     performers: [],
     practicalInfo: [],
     mapLink: "",
-    ticketPrice: 175,
-    discountPrice: 145,
-    availableTickets: 100
+    ticketPrice: 150,
+    discountPrice: 120,
+    availableTickets: 50
   };
 
   const allShows = allShowsData?.data?.map(formatStrapiShow).filter(Boolean) || [];
@@ -68,6 +47,7 @@ const ShowDetails = () => {
   if (showLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
         <div className="pt-32 text-center">
           <h1 className="text-2xl">Laddar...</h1>
@@ -77,12 +57,16 @@ const ShowDetails = () => {
     );
   }
 
-  if (!show.title || show.title === "Föreställning hittades inte") {
+  if (error || !showDataFromStrapi) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
         <div className="pt-32 text-center">
           <h1 className="text-2xl">Föreställning hittades inte</h1>
+          <p className="mt-4 text-theatre-light/80">
+            {error ? 'Ett fel uppstod vid laddning av föreställningen.' : 'Denna föreställning existerar inte.'}
+          </p>
         </div>
         <Footer />
       </div>
@@ -136,7 +120,9 @@ const ShowDetails = () => {
               />
             )}
             
-            <PerformersSection performers={show.performers.length > 0 ? show.performers : performers} />
+            {show.performers && show.performers.length > 0 && (
+              <PerformersSection performers={show.performers} />
+            )}
           </div>
           
           <OtherShowsSection shows={otherShows} />

@@ -1,3 +1,4 @@
+
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -57,28 +58,31 @@ export const formatStrapiShow = (strapiShow: any) => {
   const locationName = location?.name || '';
   const mapLink = location?.google_maps_link || location?.map_link || '';
   
+  // Handle performers relation
+  const performers = attrs.performers?.data?.map((performer: any) => ({
+    id: performer.id,
+    name: performer.attributes.name,
+    bio: performer.attributes.bio,
+    image: getStrapiImageUrl(performer.attributes.bild || performer.attributes.image),
+  })) || [];
+  
   return {
     id: strapiShow.id,
-    title: attrs.titel || attrs.title, // Support both Swedish and English field names
+    title: attrs.titel || attrs.title,
     date: attrs.datum || attrs.date,
-    time: attrs.time, // Keep separate time field if needed
+    time: attrs.time,
     location: locationName,
     slug: attrs.slug,
     description: attrs.beskrivning || attrs.description,
     practicalInfo: attrs.praktisk_info ? 
-      attrs.praktisk_info.split('\n').filter((item: string) => item.trim()) : 
-      attrs.practical_info || [],
+      attrs.praktisk_info.split('\n').filter((item: string) => item.trim() && !item.startsWith('#')).map((item: string) => item.replace(/^-\s*/, '').trim()) : 
+      [],
     mapLink: mapLink,
-    image: getStrapiImageUrl(attrs.bild || attrs.image), // Check 'bild' first, then 'image'
-    performers: attrs.performers?.data?.map((performer: any) => ({
-      id: performer.id,
-      name: performer.attributes.name,
-      bio: performer.attributes.bio,
-      image: getStrapiImageUrl(performer.attributes.bild || performer.attributes.image), // Check 'bild' first
-    })) || [],
-    ticketPrice: attrs.ticket_price || 175,
-    discountPrice: attrs.discount_price || 145,
-    availableTickets: attrs.available_tickets || 100,
+    image: getStrapiImageUrl(attrs.bild || attrs.image),
+    performers: performers,
+    ticketPrice: attrs.ticket_price || 150,
+    discountPrice: attrs.discount_price || 120,
+    availableTickets: attrs.available_tickets || 50,
   };
 };
 

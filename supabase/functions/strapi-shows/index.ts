@@ -19,10 +19,21 @@ serve(async (req) => {
     const url = new URL(req.url);
     const slug = url.searchParams.get('slug');
     
-    // Use simple populate syntax that works with most Strapi versions
-    let endpoint = '/api/shows?populate=*';
-    if (slug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${slug}&populate=*`;
+    // If we have a slug from URL params, use it; otherwise check request body
+    let targetSlug = slug;
+    if (!targetSlug && req.method === 'POST') {
+      try {
+        const body = await req.json();
+        targetSlug = body.slug;
+      } catch {
+        // No body or invalid JSON, continue without slug
+      }
+    }
+    
+    // Build API endpoint with population for location, performers, and images
+    let endpoint = '/api/shows?populate[location]=*&populate[performers][populate]=bild,image&populate=bild,image';
+    if (targetSlug) {
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[location]=*&populate[performers][populate]=bild,image&populate=bild,image`;
     }
 
     console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
@@ -35,10 +46,14 @@ serve(async (req) => {
     });
 
     if (!response.ok) {
+      console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('Error response:', errorText);
       throw new Error(`Strapi API error: ${response.status}`);
     }
 
     const data = await response.json();
+    console.log(`Successfully fetched shows data:`, JSON.stringify(data, null, 2));
     
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
