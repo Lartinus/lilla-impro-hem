@@ -20,11 +20,11 @@ serve(async (req) => {
     const { type } = await req.json();
     const contentType = type || 'site-settings';
     
-    // Special handling for 'about' content type to properly populate performers with images
+    // Special handling for 'about' content type to properly populate performers
     let populateQuery = 'populate=*';
     if (contentType === 'about') {
-      // Deep populate performers with their image/bild/media fields
-      populateQuery = 'populate[performers][populate][image]=*&populate[performers][populate][bild]=*&populate[performers][populate][media]=*';
+      // Try to populate performers with all their related fields
+      populateQuery = 'populate=performers,performers.media';
     }
     
     const apiUrl = `${strapiUrl}/api/${contentType}?${populateQuery}`;
@@ -41,6 +41,26 @@ serve(async (req) => {
       console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
       const errorText = await response.text();
       console.error('Error response:', errorText);
+      
+      // Fallback to simple populate if the complex one fails
+      if (contentType === 'about') {
+        console.log('Trying fallback populate for about');
+        const fallbackResponse = await fetch(`${strapiUrl}/api/${contentType}?populate=*`, {
+          headers: {
+            'Authorization': `Bearer ${strapiToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (fallbackResponse.ok) {
+          const fallbackData = await fallbackResponse.json();
+          console.log(`Successfully fetched ${contentType} with fallback:`, JSON.stringify(fallbackData, null, 2));
+          return new Response(JSON.stringify(fallbackData), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+      }
+      
       throw new Error(`Strapi API error: ${response.status}`);
     }
 
