@@ -1,3 +1,4 @@
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -19,9 +20,17 @@ serve(async (req) => {
     const { type } = await req.json();
     const contentType = type || 'site-settings';
     
-    console.log(`Fetching ${contentType} from Strapi: ${strapiUrl}/api/${contentType}?populate=*`);
+    // Special handling for 'about' content type to properly populate performers with images
+    let populateQuery = 'populate=*';
+    if (contentType === 'about') {
+      // Deep populate performers with their image/bild/media fields
+      populateQuery = 'populate[performers][populate][image]=*&populate[performers][populate][bild]=*&populate[performers][populate][media]=*';
+    }
+    
+    const apiUrl = `${strapiUrl}/api/${contentType}?${populateQuery}`;
+    console.log(`Fetching ${contentType} from Strapi: ${apiUrl}`);
 
-    const response = await fetch(`${strapiUrl}/api/${contentType}?populate=*`, {
+    const response = await fetch(apiUrl, {
       headers: {
         'Authorization': `Bearer ${strapiToken}`,
         'Content-Type': 'application/json',
@@ -36,7 +45,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log(`Successfully fetched ${contentType}:`, data);
+    console.log(`Successfully fetched ${contentType}:`, JSON.stringify(data, null, 2));
     
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
