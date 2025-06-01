@@ -25,8 +25,8 @@ serve(async (req) => {
     let response;
     
     if (contentType === 'about') {
-      // Strategy 1: Try detailed populate with nested fields
-      const detailedPopulate = 'populate[performers][populate]=*';
+      // Strategy 1: Try detailed populate with nested fields including images
+      const detailedPopulate = 'populate[performers][populate][image][populate]=*';
       apiUrl = `${strapiUrl}/api/${contentType}?${detailedPopulate}`;
       console.log(`Trying detailed populate for about: ${apiUrl}`);
 
@@ -37,9 +37,23 @@ serve(async (req) => {
         },
       });
 
-      // If detailed populate fails, try simple populate
+      // If detailed populate fails, try simpler image populate
       if (!response.ok) {
-        console.log('Detailed populate failed, trying simple populate');
+        console.log('Detailed populate failed, trying image populate');
+        apiUrl = `${strapiUrl}/api/${contentType}?populate[performers][populate]=image`;
+        console.log(`Trying image populate for about: ${apiUrl}`);
+        
+        response = await fetch(apiUrl, {
+          headers: {
+            'Authorization': `Bearer ${strapiToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      }
+
+      // If both fail, try simple populate
+      if (!response.ok) {
+        console.log('Image populate failed, trying simple populate');
         apiUrl = `${strapiUrl}/api/${contentType}?populate=*`;
         console.log(`Trying simple populate for about: ${apiUrl}`);
         
@@ -51,7 +65,7 @@ serve(async (req) => {
         });
       }
 
-      // If both fail, try just performers
+      // If all fail, try just performers
       if (!response.ok) {
         console.log('Simple populate failed, trying performers only');
         apiUrl = `${strapiUrl}/api/${contentType}?populate=performers`;
@@ -86,6 +100,20 @@ serve(async (req) => {
 
     const data = await response.json();
     console.log(`Successfully fetched ${contentType}:`, JSON.stringify(data, null, 2));
+    
+    // Extra detailed logging for performers and their images
+    if (contentType === 'about' && data.data?.performers) {
+      console.log('=== DETAILED PERFORMERS ANALYSIS ===');
+      data.data.performers.forEach((performer: any, index: number) => {
+        console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
+        if (performer.image) {
+          console.log(`Performer ${index} - IMAGE FIELD:`, JSON.stringify(performer.image, null, 2));
+        }
+        if (performer.bild) {
+          console.log(`Performer ${index} - BILD FIELD:`, JSON.stringify(performer.bild, null, 2));
+        }
+      });
+    }
     
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
