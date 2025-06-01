@@ -1,3 +1,4 @@
+
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -47,6 +48,47 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
 
 import { convertMarkdownToHtml } from './markdownHelpers';
 
+// Simple format for show listing page - only basic info
+export const formatStrapiShowSimple = (strapiShow: any) => {
+  console.log('formatStrapiShowSimple - Input show:', JSON.stringify(strapiShow, null, 2));
+  
+  if (!strapiShow) {
+    console.log('formatStrapiShowSimple - No show data provided');
+    return null;
+  }
+  
+  const showData = strapiShow.attributes || strapiShow;
+  
+  if (!showData) {
+    console.log('formatStrapiShowSimple - No show attributes found');
+    return null;
+  }
+  
+  // Handle location
+  let locationName = '';
+  if (showData.location) {
+    if (showData.location.name) {
+      locationName = showData.location.name;
+    } else if (showData.location.data?.attributes) {
+      locationName = showData.location.data.attributes.name || '';
+    }
+  }
+  
+  const formatted = {
+    id: strapiShow.id,
+    title: showData.titel || showData.title,
+    date: showData.datum || showData.date,
+    time: showData.time,
+    location: locationName,
+    slug: showData.slug,
+    image: getStrapiImageUrl(showData.bild || showData.image),
+  };
+  
+  console.log('formatStrapiShowSimple - Final formatted show:', formatted);
+  return formatted;
+};
+
+// Full format for show details page - all info
 export const formatStrapiShow = (strapiShow: any) => {
   console.log('formatStrapiShow - Input show:', JSON.stringify(strapiShow, null, 2));
   

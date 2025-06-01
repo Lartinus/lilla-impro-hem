@@ -1,10 +1,11 @@
 
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import ShowCardFromStrapi from '@/components/ShowCardFromStrapi';
+import ShowCardSimple from '@/components/ShowCardSimple';
 import { useEffect } from 'react';
 import { useShows } from '@/hooks/useStrapi';
-import { formatStrapiShow } from '@/utils/strapiHelpers';
+import { formatStrapiShowSimple } from '@/utils/strapiHelpers';
 
 const Shows = () => {
   useEffect(() => {
@@ -54,8 +55,8 @@ const Shows = () => {
     );
   }
 
-  // Format shows from Strapi
-  const shows = strapiData?.data ? strapiData.data.map(formatStrapiShow).filter(Boolean) : [];
+  // Format shows from Strapi using simple format (only basic info)
+  const shows = strapiData?.data ? strapiData.data.map(formatStrapiShowSimple).filter(Boolean) : [];
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
@@ -77,7 +78,7 @@ const Shows = () => {
           {shows.length > 0 ? (
             <div className="grid gap-6 mb-6 md:grid-cols-1 lg:grid-cols-2 auto-rows-fr">
               {shows.map((show) => (
-                <ShowCardFromStrapi key={show.id} show={show} />
+                <ShowCardSimple key={show.id} show={show} />
               ))}
             </div>
           ) : (
@@ -94,3 +95,4 @@ const Shows = () => {
 };
 
 export default Shows;
+
