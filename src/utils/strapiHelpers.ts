@@ -1,4 +1,3 @@
-
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -49,41 +48,90 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
 import { convertMarkdownToHtml } from './markdownHelpers';
 
 export const formatStrapiShow = (strapiShow: any) => {
-  if (!strapiShow?.attributes) return null;
+  console.log('formatStrapiShow - Input show:', JSON.stringify(strapiShow, null, 2));
   
-  const attrs = strapiShow.attributes;
+  if (!strapiShow) {
+    console.log('formatStrapiShow - No show data provided');
+    return null;
+  }
   
-  // Handle location relation
-  const location = attrs.location?.data?.attributes;
-  const locationName = location?.name || '';
-  const mapLink = location?.google_maps_link || location?.map_link || '';
+  // Handle both new Strapi format (direct data) and old format (attributes nested)
+  // Check if this is the old format with attributes wrapper
+  const showData = strapiShow.attributes || strapiShow;
   
-  // Handle performers relation
-  const performers = attrs.performers?.data?.map((performer: any) => ({
-    id: performer.id,
-    name: performer.attributes.name,
-    bio: performer.attributes.bio,
-    image: getStrapiImageUrl(performer.attributes.bild || performer.attributes.image),
-  })) || [];
+  if (!showData) {
+    console.log('formatStrapiShow - No show attributes found');
+    return null;
+  }
   
-  return {
+  console.log('formatStrapiShow - Using show data:', JSON.stringify(showData, null, 2));
+  
+  // Handle location - it can be direct object or nested
+  let locationName = '';
+  let mapLink = '';
+  
+  if (showData.location) {
+    // New format: direct location object
+    if (showData.location.name) {
+      locationName = showData.location.name;
+      mapLink = showData.location.google_maps_link || showData.location.map_link || '';
+    }
+    // Old format: location with data wrapper
+    else if (showData.location.data?.attributes) {
+      locationName = showData.location.data.attributes.name || '';
+      mapLink = showData.location.data.attributes.google_maps_link || showData.location.data.attributes.map_link || '';
+    }
+  }
+  
+  console.log('formatStrapiShow - Location:', locationName, 'Map link:', mapLink);
+  
+  // Handle performers - can be array of objects or array with data wrappers
+  let performers = [];
+  if (showData.performers && Array.isArray(showData.performers)) {
+    performers = showData.performers.map((performer: any) => {
+      // Handle both direct performer objects and data-wrapped performers
+      const performerData = performer.attributes || performer;
+      
+      return {
+        id: performer.id || performerData.id,
+        name: performerData.name,
+        bio: performerData.bio,
+        image: getStrapiImageUrl(performerData.bild || performerData.image),
+      };
+    });
+  }
+  
+  console.log('formatStrapiShow - Performers:', performers);
+  
+  // Parse practical info
+  let practicalInfo = [];
+  if (showData.praktisk_info) {
+    practicalInfo = showData.praktisk_info
+      .split('\n')
+      .filter((item: string) => item.trim() && !item.startsWith('#'))
+      .map((item: string) => item.replace(/^-\s*/, '').trim())
+      .filter((item: string) => item);
+  }
+  
+  const formatted = {
     id: strapiShow.id,
-    title: attrs.titel || attrs.title,
-    date: attrs.datum || attrs.date,
-    time: attrs.time,
+    title: showData.titel || showData.title,
+    date: showData.datum || showData.date,
+    time: showData.time,
     location: locationName,
-    slug: attrs.slug,
-    description: attrs.beskrivning || attrs.description,
-    practicalInfo: attrs.praktisk_info ? 
-      attrs.praktisk_info.split('\n').filter((item: string) => item.trim() && !item.startsWith('#')).map((item: string) => item.replace(/^-\s*/, '').trim()) : 
-      [],
+    slug: showData.slug,
+    description: showData.beskrivning || showData.description,
+    practicalInfo: practicalInfo,
     mapLink: mapLink,
-    image: getStrapiImageUrl(attrs.bild || attrs.image),
+    image: getStrapiImageUrl(showData.bild || showData.image),
     performers: performers,
-    ticketPrice: attrs.ticket_price || 150,
-    discountPrice: attrs.discount_price || 120,
-    availableTickets: attrs.available_tickets || 50,
+    ticketPrice: showData.ticket_price || 150,
+    discountPrice: showData.discount_price || 120,
+    availableTickets: showData.available_tickets || 50,
   };
+  
+  console.log('formatStrapiShow - Final formatted show:', formatted);
+  return formatted;
 };
 
 export const formatStrapiCourse = (strapiCourse: any) => {
