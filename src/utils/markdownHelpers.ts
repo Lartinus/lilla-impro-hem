@@ -64,7 +64,7 @@ function createCustomRenderer(isRedBox = false): any {
     const body = token.items.map((item: any) => {
       const text = getTextFromTokens(item.tokens);
       return `<div class="flex items-start my-1 ${textColor}">
-                <span class="font-bold ${arrowColor} mr-3 flex-shrink-0" style="width: var(--arrow-size); height: var(--arrow-size); line-height: var(--arrow-size);">→</span>
+                <span class="font-bold ${arrowColor} mr-3 flex-shrink-0 leading-none" style="width: var(--arrow-size); height: var(--arrow-size); display: flex; align-items: center; margin-top: 0.125rem;">→</span>
                 <span class="flex-1">${text}</span>
               </div>`;
     }).join('');
@@ -74,7 +74,7 @@ function createCustomRenderer(isRedBox = false): any {
   renderer.listitem = function(item: any) {
     const text = getTextFromTokens(item.tokens);
     return `<div class="flex items-start my-1 ${textColor}">
-              <span class="font-bold ${arrowColor} mr-3 flex-shrink-0" style="width: var(--arrow-size); height: var(--arrow-size); line-height: var(--arrow-size);">→</span>
+              <span class="font-bold ${arrowColor} mr-3 flex-shrink-0 leading-none" style="width: var(--arrow-size); height: var(--arrow-size); display: flex; align-items: center; margin-top: 0.125rem;">→</span>
               <span class="flex-1">${text}</span>
             </div>`;
   };

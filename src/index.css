@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -168,12 +169,15 @@
   }
   
   /* ===== TEACHER/PERFORMER NAME TO BIO SPACING ===== */
-  /* Avstånd mellan namn och bio för teachers och performers */
-  .teacher-name + *, .performer-name + * {
+  /* Specifika selectors för kursledare och performers */
+  .teacher-name + div,
+  .performer-name + p,
+  .teacher-name + .teacher-bio,
+  .performer-name + .performer-bio {
     margin-top: var(--name-to-bio-spacing) !important;
   }
-  
-  /* Specifik CSS för att säkerställa att inline styles också fungerar */
+
+  /* Fallback för inline styles */
   [style*="--name-to-bio-spacing"] {
     margin-top: var(--name-to-bio-spacing) !important;
   }
