@@ -30,10 +30,10 @@ serve(async (req) => {
       }
     }
     
-    // Build API endpoint with correct population for location, performers, and images
-    let endpoint = '/api/shows?populate[location]=*&populate[performers][populate][image]=*&populate[performers][populate][bild]=*&populate[image]=*&populate[bild]=*';
+    // Build API endpoint with simplified population
+    let endpoint = '/api/shows?populate=*';
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[location]=*&populate[performers][populate][image]=*&populate[performers][populate][bild]=*&populate[image]=*&populate[bild]=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
     }
 
     console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
