@@ -14,7 +14,7 @@ const About = () => {
 
   const { data: aboutData, isLoading, error } = useAboutPageContent();
 
-  console.log('About page - aboutData:', aboutData);
+  console.log('About page - RAW aboutData:', JSON.stringify(aboutData, null, 2));
   console.log('About page - isLoading:', isLoading);
   console.log('About page - error:', error);
 
@@ -37,49 +37,67 @@ const About = () => {
 
   // Handle both data.data and direct data formats from Strapi
   const content = aboutData?.data?.attributes || aboutData?.data || aboutData;
+  console.log('About page - extracted content:', JSON.stringify(content, null, 2));
   
   // Handle performers - check multiple possible data structures
   let performers = [];
+  
+  // Log the raw performers data first
+  console.log('About page - RAW performers data:', JSON.stringify(content?.performers, null, 2));
+  
   if (content?.performers?.data) {
     // New Strapi format with data wrapper
-    performers = content.performers.data.map((performer: any) => {
-      console.log('Processing performer from Strapi:', performer);
+    console.log('About page - Using performers.data format');
+    performers = content.performers.data.map((performer: any, index: number) => {
+      console.log(`About page - Processing performer ${index}:`, JSON.stringify(performer, null, 2));
       
       const attributes = performer.attributes || performer;
+      console.log(`About page - Performer ${index} attributes:`, JSON.stringify(attributes, null, 2));
       
-      // Use getStrapiImageUrl helper to get the proper image URL
-      const imageUrl = getStrapiImageUrl(attributes.image || attributes.bild);
+      // Log all possible image field locations
+      console.log(`About page - Performer ${index} image field:`, JSON.stringify(attributes.image, null, 2));
+      console.log(`About page - Performer ${index} bild field:`, JSON.stringify(attributes.bild, null, 2));
       
-      console.log('Processed performer:', attributes.name, 'imageUrl:', imageUrl);
+      // Try to get image URL - check image first since that's what Strapi shows
+      const imageField = attributes.image || attributes.bild;
+      console.log(`About page - Selected image field for performer ${index}:`, JSON.stringify(imageField, null, 2));
+      
+      const imageUrl = getStrapiImageUrl(imageField);
+      console.log(`About page - Final image URL for performer ${index}:`, imageUrl);
       
       return {
         id: performer.id,
         name: attributes.name,
         bio: attributes.bio,
-        image: imageUrl, // Pass the processed URL string directly
+        image: imageUrl,
       };
     });
   } else if (content?.performers && Array.isArray(content.performers)) {
-    // Direct performers array - ensure proper structure
-    performers = content.performers.map((performer: any) => {
-      console.log('Processing direct performer:', performer);
+    // Direct performers array
+    console.log('About page - Using direct performers array format');
+    performers = content.performers.map((performer: any, index: number) => {
+      console.log(`About page - Processing direct performer ${index}:`, JSON.stringify(performer, null, 2));
       
-      // Use getStrapiImageUrl helper to get the proper image URL
-      const imageUrl = getStrapiImageUrl(performer.image || performer.bild);
+      // Log all possible image field locations
+      console.log(`About page - Direct performer ${index} image field:`, JSON.stringify(performer.image, null, 2));
+      console.log(`About page - Direct performer ${index} bild field:`, JSON.stringify(performer.bild, null, 2));
       
-      console.log('Processed direct performer:', performer.name, 'imageUrl:', imageUrl);
+      const imageField = performer.image || performer.bild;
+      console.log(`About page - Selected image field for direct performer ${index}:`, JSON.stringify(imageField, null, 2));
+      
+      const imageUrl = getStrapiImageUrl(imageField);
+      console.log(`About page - Final image URL for direct performer ${index}:`, imageUrl);
       
       return {
         id: performer.id || performer.documentId,
         name: performer.name,
         bio: performer.bio,
-        image: imageUrl, // Pass the processed URL string directly
+        image: imageUrl,
       };
     });
   }
 
-  console.log('About page - content:', content);
-  console.log('About page - processed performers:', performers);
+  console.log('About page - FINAL processed performers:', JSON.stringify(performers, null, 2));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
