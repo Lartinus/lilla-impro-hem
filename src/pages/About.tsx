@@ -1,6 +1,7 @@
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PerformersSection from '@/components/PerformersSection';
 import { useEffect } from 'react';
 import { useAboutPageContent } from '@/hooks/useStrapi';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
@@ -11,6 +12,10 @@ const About = () => {
   }, []);
 
   const { data: aboutData, isLoading, error } = useAboutPageContent();
+
+  console.log('About page - aboutData:', aboutData);
+  console.log('About page - isLoading:', isLoading);
+  console.log('About page - error:', error);
 
   if (isLoading) {
     return (
@@ -29,7 +34,12 @@ const About = () => {
     );
   }
 
-  const content = aboutData?.data?.attributes || {};
+  // Handle both data.data and direct data formats from Strapi
+  const content = aboutData?.data || aboutData;
+  const performers = content?.performers || [];
+
+  console.log('About page - content:', content);
+  console.log('About page - performers:', performers);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
@@ -40,7 +50,7 @@ const About = () => {
       <section className="px-0.5 md:px-4 mt-20 py-6 animate-fade-in">
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
-            {content.title || 'Om Lilla Improteatern'}
+            Om Lilla Improteatern
           </h1>
         </div>
       </section>
@@ -50,46 +60,18 @@ const About = () => {
         <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
           <div className="border-4 border-white shadow-lg bg-white rounded-none p-6 md:p-8">
             
-            {/* Main content with markdown conversion */}
-            {content.content && (
+            {/* Main info content with markdown conversion */}
+            {content?.info && (
               <div 
-                className="space-y-6 text-gray-700 leading-relaxed text-base"
+                className="space-y-6 text-gray-700 leading-relaxed text-base mb-8"
                 style={{ lineHeight: '1.3' }}
-                dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(content.content) }}
+                dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(content.info) }}
               />
             )}
 
-            {/* Who can join section - FORCE MARKDOWN CONVERSION */}
-            {content.who_can_join && (
-              <div className="mt-8">
-                <div 
-                  className="space-y-6 text-gray-700 leading-relaxed text-base"
-                  style={{ lineHeight: '1.3' }}
-                  dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(content.who_can_join) }}
-                />
-              </div>
-            )}
-
-            {/* Vision section - FORCE MARKDOWN CONVERSION */}
-            {content.vision && (
-              <div className="mt-8">
-                <div 
-                  className="space-y-6 text-gray-700 leading-relaxed text-base"
-                  style={{ lineHeight: '1.3' }}
-                  dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(content.vision) }}
-                />
-              </div>
-            )}
-
-            {/* FAQ section - FORCE MARKDOWN CONVERSION */}
-            {content.faq && (
-              <div className="mt-8">
-                <div 
-                  className="space-y-6 text-gray-700 leading-relaxed text-base"
-                  style={{ lineHeight: '1.3' }}
-                  dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(content.faq) }}
-                />
-              </div>
+            {/* Performers section */}
+            {performers && performers.length > 0 && (
+              <PerformersSection performers={performers} />
             )}
 
           </div>
