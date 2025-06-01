@@ -20,47 +20,67 @@ serve(async (req) => {
     const { type } = await req.json();
     const contentType = type || 'site-settings';
     
-    // Special handling for 'about' content type to properly populate performers
-    let populateQuery = 'populate=*';
-    if (contentType === 'about') {
-      // Try to populate performers with all their related fields
-      populateQuery = 'populate=performers,performers.media';
-    }
+    // For 'about' content type, try multiple populate strategies
+    let apiUrl;
+    let response;
     
-    const apiUrl = `${strapiUrl}/api/${contentType}?${populateQuery}`;
-    console.log(`Fetching ${contentType} from Strapi: ${apiUrl}`);
+    if (contentType === 'about') {
+      // Strategy 1: Try detailed populate with nested fields
+      const detailedPopulate = 'populate[performers][populate]=*';
+      apiUrl = `${strapiUrl}/api/${contentType}?${detailedPopulate}`;
+      console.log(`Trying detailed populate for about: ${apiUrl}`);
 
-    const response = await fetch(apiUrl, {
-      headers: {
-        'Authorization': `Bearer ${strapiToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+      response = await fetch(apiUrl, {
+        headers: {
+          'Authorization': `Bearer ${strapiToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
-      const errorText = await response.text();
-      console.error('Error response:', errorText);
-      
-      // Fallback to simple populate if the complex one fails
-      if (contentType === 'about') {
-        console.log('Trying fallback populate for about');
-        const fallbackResponse = await fetch(`${strapiUrl}/api/${contentType}?populate=*`, {
+      // If detailed populate fails, try simple populate
+      if (!response.ok) {
+        console.log('Detailed populate failed, trying simple populate');
+        apiUrl = `${strapiUrl}/api/${contentType}?populate=*`;
+        console.log(`Trying simple populate for about: ${apiUrl}`);
+        
+        response = await fetch(apiUrl, {
           headers: {
             'Authorization': `Bearer ${strapiToken}`,
             'Content-Type': 'application/json',
           },
         });
-        
-        if (fallbackResponse.ok) {
-          const fallbackData = await fallbackResponse.json();
-          console.log(`Successfully fetched ${contentType} with fallback:`, JSON.stringify(fallbackData, null, 2));
-          return new Response(JSON.stringify(fallbackData), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          });
-        }
       }
-      
+
+      // If both fail, try just performers
+      if (!response.ok) {
+        console.log('Simple populate failed, trying performers only');
+        apiUrl = `${strapiUrl}/api/${contentType}?populate=performers`;
+        console.log(`Trying performers only for about: ${apiUrl}`);
+        
+        response = await fetch(apiUrl, {
+          headers: {
+            'Authorization': `Bearer ${strapiToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      }
+    } else {
+      // For other content types, use simple populate
+      apiUrl = `${strapiUrl}/api/${contentType}?populate=*`;
+      console.log(`Fetching ${contentType} from Strapi: ${apiUrl}`);
+
+      response = await fetch(apiUrl, {
+        headers: {
+          'Authorization': `Bearer ${strapiToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+
+    if (!response.ok) {
+      console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('Error response:', errorText);
       throw new Error(`Strapi API error: ${response.status}`);
     }
 
