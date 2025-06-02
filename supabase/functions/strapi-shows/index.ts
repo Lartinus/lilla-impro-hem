@@ -32,13 +32,13 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - use simple populate that Strapi accepts
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
-      console.log(`Fetching single show with wildcard populate: ${strapiUrl}${endpoint}`);
+      // For single show details - use deep populate for performers with their images
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[location]=*&populate[performers][populate][bild]=*&populate[performers][populate][image]=*`;
+      console.log(`Fetching single show with deep populate: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing - use simple populate that Strapi accepts
-      endpoint = '/api/shows?populate=*';
-      console.log(`Fetching all shows with wildcard populate: ${strapiUrl}${endpoint}`);
+      // For listing - use basic populate (images not needed for list)
+      endpoint = '/api/shows?populate[bild]=*&populate[location]=*&populate[performers]=*';
+      console.log(`Fetching all shows with basic populate: ${strapiUrl}${endpoint}`);
     }
 
     console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
