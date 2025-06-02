@@ -13,8 +13,7 @@ const PracticalInfo = ({ practicalInfo }: PracticalInfoProps) => {
         {practicalInfo.map((item: string, index: number) => (
           <div key={index} className="flex items-start space-x-3">
             <div 
-              className="bullet-point bg-blue-500 rounded-full flex-shrink-0"
-              style={{ width: 'var(--bullet-size)', height: 'var(--bullet-size)', marginTop: '0.5rem' }}
+              className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"
             ></div>
             <div 
               className="text-gray-700 text-base body-text flex-1" 

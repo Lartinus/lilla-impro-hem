@@ -18,49 +18,19 @@ interface ShowCardSimpleProps {
 }
 
 const ShowCardSimple = ({ show }: ShowCardSimpleProps) => {
-  const formatDate = (dateString: string) => {
+  const formatDateTime = (dateString: string) => {
     try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('sv-SE', {
-        day: 'numeric',
-        month: 'long'
-      });
+      const dateObj = new Date(dateString);
+      const day = dateObj.getDate();
+      const month = dateObj.toLocaleDateString('sv-SE', { month: 'long' });
+      const hours = dateObj.getHours();
+      const minutes = dateObj.getMinutes();
+      const timeStr = `${hours.toString().padStart(2, '0')}.${minutes.toString().padStart(2, '0')}`;
+      
+      return `${day} ${month} ${timeStr}`;
     } catch {
       return dateString;
     }
-  };
-
-  const formatTime = (timeData: any) => {
-    if (!timeData || timeData.value === 'undefined') return '';
-    
-    // If timeData is an object with value property
-    if (typeof timeData === 'object' && timeData.value && timeData.value !== 'undefined') {
-      const timeStr = timeData.value;
-      if (timeStr.includes(':')) {
-        return timeStr.split(':').slice(0, 2).join('.');
-      }
-      return timeStr;
-    }
-    
-    // If timeData is a string
-    if (typeof timeData === 'string' && timeData !== 'undefined') {
-      if (timeData.includes(':')) {
-        return timeData.split(':').slice(0, 2).join('.');
-      }
-      return timeData;
-    }
-    
-    return '';
-  };
-
-  const formatDateTime = (dateString: string, timeData: any) => {
-    const formattedDate = formatDate(dateString);
-    const formattedTime = formatTime(timeData);
-    
-    if (formattedTime) {
-      return `${formattedDate} ${formattedTime}`;
-    }
-    return formattedDate;
   };
 
   return (
@@ -84,7 +54,7 @@ const ShowCardSimple = ({ show }: ShowCardSimpleProps) => {
           
           <div className="space-y-1 mb-4">
             <p className="text-blue-500 font-medium">
-              {formatDateTime(show.date, show.time)}
+              {formatDateTime(show.date)}
             </p>
             <p className="text-red-600 text-sm flex items-center">
               <MapPin size={16} className="mr-1" />
