@@ -170,16 +170,14 @@ export const formatStrapiShow = (strapiShow: any) => {
       
       if (!performerImage) {
         console.log(`formatStrapiShow - Performer ${index}: No image found. Available fields:`, Object.keys(performerData));
-        console.log(`formatStrapiShow - Performer ${index}: Using placeholder image`);
-        // Use a placeholder image from unsplash for now
-        performerImage = 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=150&h=150&fit=crop&crop=face';
+        // Don't use placeholder image - let the component handle the missing image
       }
       
       const formattedPerformer = {
         id: performer.id || performerData.id || index,
         name: performerData.name || `Performer ${index + 1}`,
         bio: performerData.bio || '',
-        image: performerImage,
+        image: performerImage, // This will be null if no image is found
       };
       
       console.log(`formatStrapiShow - Performer ${index} final result:`, formattedPerformer);
