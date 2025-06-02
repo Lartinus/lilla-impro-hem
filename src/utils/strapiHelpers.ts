@@ -1,4 +1,3 @@
-
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -138,54 +137,59 @@ export const formatStrapiShow = (strapiShow: any) => {
   
   console.log('formatStrapiShow - Location:', locationName, 'Map link:', mapLink);
   
-  // Handle performers - ALWAYS include them even if they don't have images
+  // Handle performers with extensive logging and error handling
   let performers = [];
+  console.log('formatStrapiShow - Raw performers data:', JSON.stringify(showData.performers, null, 2));
+  
   if (showData.performers && Array.isArray(showData.performers)) {
     console.log('formatStrapiShow - Processing performers array:', showData.performers.length, 'performers');
-    performers = showData.performers.map((performer: any) => {
-      console.log('formatStrapiShow - Raw performer from Strapi:', JSON.stringify(performer, null, 2));
+    
+    performers = showData.performers.map((performer: any, index: number) => {
+      console.log(`formatStrapiShow - Processing performer ${index}:`, JSON.stringify(performer, null, 2));
       
       // Handle both direct performer objects and data-wrapped performers
       const performerData = performer.attributes || performer;
-      console.log('formatStrapiShow - Performer data after extraction:', JSON.stringify(performerData, null, 2));
+      console.log(`formatStrapiShow - Performer ${index} data after extraction:`, JSON.stringify(performerData, null, 2));
       
-      // Try to get performer image from multiple possible field names
+      // Try multiple image field names and log each attempt
       let performerImage = null;
-      
-      // Check all possible image field names
-      const imageFields = ['bild', 'image', 'media', 'foto', 'picture'];
+      const imageFields = ['bild', 'image', 'media', 'foto', 'picture', 'avatar'];
       
       for (const fieldName of imageFields) {
         if (performerData[fieldName]) {
-          console.log(`formatStrapiShow - Found image in field '${fieldName}':`, JSON.stringify(performerData[fieldName], null, 2));
+          console.log(`formatStrapiShow - Performer ${index}: Found field '${fieldName}' with value:`, JSON.stringify(performerData[fieldName], null, 2));
           performerImage = getStrapiImageUrl(performerData[fieldName]);
           if (performerImage) {
-            console.log(`formatStrapiShow - Successfully got image URL from field '${fieldName}':`, performerImage);
+            console.log(`formatStrapiShow - Performer ${index}: Successfully got image URL from '${fieldName}':`, performerImage);
             break;
+          } else {
+            console.log(`formatStrapiShow - Performer ${index}: Field '${fieldName}' exists but getStrapiImageUrl returned null`);
           }
         }
       }
       
       if (!performerImage) {
-        console.log('formatStrapiShow - No image found in any field for performer:', performerData.name);
-        // Log all available fields for debugging
-        console.log('formatStrapiShow - Available performer fields:', Object.keys(performerData));
+        console.log(`formatStrapiShow - Performer ${index}: No image found. Available fields:`, Object.keys(performerData));
+        console.log(`formatStrapiShow - Performer ${index}: Using placeholder image`);
+        // Use a placeholder image from unsplash for now
+        performerImage = 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=150&h=150&fit=crop&crop=face';
       }
       
-      // Return performer object even if no image is found
       const formattedPerformer = {
-        id: performer.id || performerData.id,
-        name: performerData.name,
-        bio: performerData.bio,
-        image: performerImage, // This can be null and that's fine
+        id: performer.id || performerData.id || index,
+        name: performerData.name || `Performer ${index + 1}`,
+        bio: performerData.bio || '',
+        image: performerImage,
       };
       
-      console.log('formatStrapiShow - Final formatted performer:', formattedPerformer);
+      console.log(`formatStrapiShow - Performer ${index} final result:`, formattedPerformer);
       return formattedPerformer;
     });
+  } else {
+    console.log('formatStrapiShow - No performers array found or performers is not an array');
   }
   
-  console.log('formatStrapiShow - Final performers:', performers);
+  console.log('formatStrapiShow - Final performers array:', performers);
   
   // Parse practical info
   let practicalInfo = [];
