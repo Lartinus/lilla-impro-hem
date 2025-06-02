@@ -32,13 +32,13 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - use wildcard populate that works
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
-      console.log(`Fetching single show with populate=*: ${strapiUrl}${endpoint}`);
+      // For single show details - use specific populate for performers with poster images
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate][poster]=*&populate[location]=*&populate[bild]=*`;
+      console.log(`Fetching single show with specific populate: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing - use wildcard populate that works
-      endpoint = '/api/shows?populate=*';
-      console.log(`Fetching all shows with populate=*: ${strapiUrl}${endpoint}`);
+      // For listing - use specific populate for performers with poster images
+      endpoint = '/api/shows?populate[performers][populate][poster]=*&populate[location]=*&populate[bild]=*';
+      console.log(`Fetching all shows with specific populate: ${strapiUrl}${endpoint}`);
     }
 
     console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
