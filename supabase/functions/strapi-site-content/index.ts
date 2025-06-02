@@ -20,13 +20,13 @@ serve(async (req) => {
     const { type } = await req.json();
     const contentType = type || 'site-settings';
     
-    // For 'about' content type, try multiple populate strategies
+    // For 'about' content type, try multiple populate strategies with "bild" field
     let apiUrl;
     let response;
     
     if (contentType === 'about') {
-      // Strategy 1: Try detailed populate with nested fields including images
-      const detailedPopulate = 'populate[performers][populate][image][populate]=*';
+      // Strategy 1: Try detailed populate with nested fields including "bild" images
+      const detailedPopulate = 'populate[performers][populate][bild][populate]=*';
       apiUrl = `${strapiUrl}/api/${contentType}?${detailedPopulate}`;
       console.log(`Trying detailed populate for about: ${apiUrl}`);
 
@@ -37,11 +37,11 @@ serve(async (req) => {
         },
       });
 
-      // If detailed populate fails, try simpler image populate
+      // If detailed populate fails, try simpler bild populate
       if (!response.ok) {
-        console.log('Detailed populate failed, trying image populate');
-        apiUrl = `${strapiUrl}/api/${contentType}?populate[performers][populate]=image`;
-        console.log(`Trying image populate for about: ${apiUrl}`);
+        console.log('Detailed populate failed, trying bild populate');
+        apiUrl = `${strapiUrl}/api/${contentType}?populate[performers][populate]=bild`;
+        console.log(`Trying bild populate for about: ${apiUrl}`);
         
         response = await fetch(apiUrl, {
           headers: {
@@ -53,7 +53,7 @@ serve(async (req) => {
 
       // If both fail, try simple populate
       if (!response.ok) {
-        console.log('Image populate failed, trying simple populate');
+        console.log('Bild populate failed, trying simple populate');
         apiUrl = `${strapiUrl}/api/${contentType}?populate=*`;
         console.log(`Trying simple populate for about: ${apiUrl}`);
         
@@ -106,11 +106,11 @@ serve(async (req) => {
       console.log('=== DETAILED PERFORMERS ANALYSIS ===');
       data.data.performers.forEach((performer: any, index: number) => {
         console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
-        if (performer.image) {
-          console.log(`Performer ${index} - IMAGE FIELD:`, JSON.stringify(performer.image, null, 2));
-        }
         if (performer.bild) {
           console.log(`Performer ${index} - BILD FIELD:`, JSON.stringify(performer.bild, null, 2));
+        }
+        if (performer.image) {
+          console.log(`Performer ${index} - IMAGE FIELD:`, JSON.stringify(performer.image, null, 2));
         }
       });
     }

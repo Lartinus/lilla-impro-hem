@@ -32,13 +32,13 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - using simple populate syntax with "bild"
-      endpoint = `/api/shows?populate=bild`;
-      console.log(`Fetching single show with simple populate: ${strapiUrl}${endpoint}`);
+      // For single show details - include performers with their images and location
+      endpoint = `/api/shows?populate[bild]=*&populate[performers][populate]=bild&populate[location]=*`;
+      console.log(`Fetching single show with performers and location: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing - using simple populate syntax with "bild"
+      // For listing - just show images
       endpoint = '/api/shows?populate=bild';
-      console.log(`Fetching all shows with simple populate: ${strapiUrl}${endpoint}`);
+      console.log(`Fetching all shows with bild: ${strapiUrl}${endpoint}`);
     }
 
     console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
@@ -59,6 +59,20 @@ serve(async (req) => {
 
     const data = await response.json();
     console.log(`Successfully fetched shows data:`, JSON.stringify(data, null, 2));
+    
+    // Extra logging for performers when fetching single show
+    if (targetSlug && data.data?.length > 0) {
+      const show = data.data[0];
+      if (show.performers) {
+        console.log('=== SHOW PERFORMERS ANALYSIS ===');
+        show.performers.forEach((performer: any, index: number) => {
+          console.log(`Show Performer ${index}:`, JSON.stringify(performer, null, 2));
+          if (performer.bild) {
+            console.log(`Show Performer ${index} - BILD FIELD:`, JSON.stringify(performer.bild, null, 2));
+          }
+        });
+      }
+    }
     
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
