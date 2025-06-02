@@ -1,4 +1,3 @@
-
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -176,10 +175,10 @@ export const formatStrapiShow = (strapiShow: any) => {
         }
       }
       
-      // Fallback to other possible field names including the old ones
+      // Fallback to other possible field names including avatar
       if (!performerImage) {
         console.log(`formatStrapiShow - Performer ${index}: No poster field, trying other field names`);
-        const imageFields = ['media', 'bild', 'image', 'photo', 'picture', 'foto', 'avatar'];
+        const imageFields = ['avatar', 'media', 'bild', 'image', 'photo', 'picture', 'foto'];
         
         for (const fieldName of imageFields) {
           if (performerData[fieldName]) {
@@ -270,11 +269,12 @@ export const formatStrapiCourse = (strapiCourse: any) => {
       const teacherAttrs = attrs.teacher.data.attributes;
       console.log('Teacher attributes:', JSON.stringify(teacherAttrs, null, 2));
       console.log('Teacher poster data:', JSON.stringify(teacherAttrs.poster, null, 2));
+      console.log('Teacher avatar data:', JSON.stringify(teacherAttrs.avatar, null, 2));
       console.log('Teacher bild data:', JSON.stringify(teacherAttrs.bild, null, 2));
       console.log('Teacher image data:', JSON.stringify(teacherAttrs.image, null, 2));
       
-      // Check poster field first, then fallback to other fields
-      const imageField = teacherAttrs.poster || teacherAttrs.bild || teacherAttrs.image;
+      // Check poster field first, then avatar, then fallback to other fields
+      const imageField = teacherAttrs.poster || teacherAttrs.avatar || teacherAttrs.bild || teacherAttrs.image;
       console.log('Selected image field:', JSON.stringify(imageField, null, 2));
       
       teacher = {
@@ -289,12 +289,14 @@ export const formatStrapiCourse = (strapiCourse: any) => {
     else if (attrs.teacher.name) {
       console.log('Teacher poster field exists?', 'poster' in attrs.teacher);
       console.log('Teacher poster value:', attrs.teacher.poster);
+      console.log('Teacher avatar field exists?', 'avatar' in attrs.teacher);
+      console.log('Teacher avatar value:', attrs.teacher.avatar);
       console.log('Teacher bild field exists?', 'bild' in attrs.teacher);
       console.log('Teacher bild value:', attrs.teacher.bild);
       console.log('Teacher image field exists?', 'image' in attrs.teacher);
       console.log('Teacher image value:', attrs.teacher.image);
       
-      const imageField = attrs.teacher.poster || attrs.teacher.bild || attrs.teacher.image;
+      const imageField = attrs.teacher.poster || attrs.teacher.avatar || attrs.teacher.bild || attrs.teacher.image;
       console.log('Selected direct image field:', JSON.stringify(imageField, null, 2));
       
       teacher = {
