@@ -30,12 +30,12 @@ serve(async (req) => {
       }
     }
     
-    // Build API endpoint with safe populate strategy
+    // Build API endpoint with minimal populate to avoid API errors
     let endpoint;
     if (targetSlug) {
-      // For single show details - use safe populate without nested performer fields
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[location]=*&populate[bild]=*&populate[performers]=*`;
-      console.log(`Fetching show details with safe populate: ${strapiUrl}${endpoint}`);
+      // For single show details - use minimal populate
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=location&populate=bild&populate=performers`;
+      console.log(`Fetching show details: ${strapiUrl}${endpoint}`);
     } else {
       // Basic info for show listing
       endpoint = '/api/shows?populate=location&populate=bild';
@@ -60,16 +60,14 @@ serve(async (req) => {
     const data = await response.json();
     console.log(`Successfully fetched shows data:`, JSON.stringify(data, null, 2));
     
-    // Extra detailed logging for performers if this is a detailed request
+    // Basic logging for performers if this is a detailed request
     if (targetSlug && data.data?.[0]?.performers) {
-      console.log('=== SAFE PERFORMER POPULATE ANALYSIS ===');
+      console.log('=== PERFORMER DATA ANALYSIS ===');
       data.data[0].performers.forEach((performer: any, index: number) => {
         console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
-        
-        // Check what fields are available at different levels
-        console.log(`Performer ${index} direct fields:`, Object.keys(performer));
+        console.log(`Performer ${index} available fields:`, Object.keys(performer));
         if (performer.attributes) {
-          console.log(`Performer ${index} attributes fields:`, Object.keys(performer.attributes));
+          console.log(`Performer ${index} attribute fields:`, Object.keys(performer.attributes));
         }
       });
     }
