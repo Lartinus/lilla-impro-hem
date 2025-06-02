@@ -32,13 +32,24 @@ const ShowCardSimple = ({ show }: ShowCardSimpleProps) => {
 
   const formatTime = (timeData: any) => {
     if (!timeData || timeData.value === 'undefined') return '';
-    if (typeof timeData === 'string') {
-      // Handle time string like "19:00" or full datetime
+    
+    // If timeData is an object with value property
+    if (typeof timeData === 'object' && timeData.value && timeData.value !== 'undefined') {
+      const timeStr = timeData.value;
+      if (timeStr.includes(':')) {
+        return timeStr.split(':').slice(0, 2).join('.');
+      }
+      return timeStr;
+    }
+    
+    // If timeData is a string
+    if (typeof timeData === 'string' && timeData !== 'undefined') {
       if (timeData.includes(':')) {
         return timeData.split(':').slice(0, 2).join('.');
       }
       return timeData;
     }
+    
     return '';
   };
 

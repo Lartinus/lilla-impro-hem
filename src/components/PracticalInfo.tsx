@@ -14,7 +14,7 @@ const PracticalInfo = ({ practicalInfo }: PracticalInfoProps) => {
           <div key={index} className="flex items-start space-x-3">
             <div 
               className="bullet-point bg-blue-500 rounded-full flex-shrink-0"
-              style={{ width: 'var(--bullet-size)', height: 'var(--bullet-size)', marginTop: '0.375rem' }}
+              style={{ width: 'var(--bullet-size)', height: 'var(--bullet-size)', marginTop: '0.5rem' }}
             ></div>
             <div 
               className="text-gray-700 text-base body-text flex-1" 
