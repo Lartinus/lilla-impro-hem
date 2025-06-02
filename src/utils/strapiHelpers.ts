@@ -1,4 +1,3 @@
-
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -137,14 +136,27 @@ export const formatStrapiShow = (strapiShow: any) => {
       const performerData = performer.attributes || performer;
       console.log('formatStrapiShow - Performer data:', JSON.stringify(performerData, null, 2));
       
-      // Handle performer image - check both 'bild' and 'image' fields
+      // Handle performer image - check both 'bild' and 'image' fields, also check for media arrays
       let performerImage = null;
+      
+      // First try 'bild' field (Swedish)
       if (performerData.bild) {
         console.log('formatStrapiShow - Found bild field:', JSON.stringify(performerData.bild, null, 2));
         performerImage = getStrapiImageUrl(performerData.bild);
-      } else if (performerData.image) {
+      } 
+      // Then try 'image' field (English)
+      else if (performerData.image) {
         console.log('formatStrapiShow - Found image field:', JSON.stringify(performerData.image, null, 2));
         performerImage = getStrapiImageUrl(performerData.image);
+      }
+      // Also check for media field that might contain images
+      else if (performerData.media && Array.isArray(performerData.media) && performerData.media.length > 0) {
+        console.log('formatStrapiShow - Found media array:', JSON.stringify(performerData.media, null, 2));
+        // Take the first media item if it's an image
+        const firstMedia = performerData.media[0];
+        if (firstMedia && (firstMedia.mime?.startsWith('image/') || firstMedia.ext?.match(/\.(jpg|jpeg|png|gif|webp)$/))) {
+          performerImage = getStrapiImageUrl(firstMedia);
+        }
       }
       
       console.log('formatStrapiShow - Final performer image URL:', performerImage);
