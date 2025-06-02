@@ -30,12 +30,12 @@ serve(async (req) => {
       }
     }
     
-    // Build API endpoint - try different populate strategies for Strapi v5
+    // Build API endpoint - try simplest possible populate for performers
     let endpoint;
     if (targetSlug) {
-      // For single show details - try explicit deep populate for performer images
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate][0]=bild&populate[performers][populate][1]=image&populate[location]=*&populate[bild]=*`;
-      console.log(`Fetching show details with deep populate: ${strapiUrl}${endpoint}`);
+      // For single show details - use wildcard populate to get everything
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
+      console.log(`Fetching show details with wildcard populate: ${strapiUrl}${endpoint}`);
     } else {
       // Basic info for show listing
       endpoint = '/api/shows?populate=location&populate=bild';
@@ -62,17 +62,15 @@ serve(async (req) => {
     
     // Extra detailed logging for performers if this is a detailed request
     if (targetSlug && data.data?.[0]?.performers) {
-      console.log('=== DETAILED PERFORMERS ANALYSIS ===');
+      console.log('=== WILDCARD POPULATE ANALYSIS ===');
       data.data[0].performers.forEach((performer: any, index: number) => {
         console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
         
-        // Check what image fields are available
-        const performerData = performer.attributes || performer;
-        console.log(`Performer ${index} image fields:`, {
-          bild: performerData.bild,
-          image: performerData.image,
-          media: performerData.media
-        });
+        // Check what image fields are available at different levels
+        console.log(`Performer ${index} direct fields:`, Object.keys(performer));
+        if (performer.attributes) {
+          console.log(`Performer ${index} attributes fields:`, Object.keys(performer.attributes));
+        }
       });
     }
     
