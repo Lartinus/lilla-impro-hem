@@ -16,6 +16,21 @@ interface OtherShowsSectionProps {
 }
 
 const OtherShowsSection = ({ shows }: OtherShowsSectionProps) => {
+  const formatDateTime = (dateString: string) => {
+    try {
+      const dateObj = new Date(dateString);
+      const day = dateObj.getDate();
+      const month = dateObj.toLocaleDateString('sv-SE', { month: 'long' });
+      const hours = dateObj.getHours();
+      const minutes = dateObj.getMinutes();
+      const timeStr = `${hours.toString().padStart(2, '0')}.${minutes.toString().padStart(2, '0')}`;
+      
+      return `${day} ${month} ${timeStr}`;
+    } catch {
+      return dateString;
+    }
+  };
+
   if (shows.length === 0) return null;
 
   return (
@@ -34,7 +49,7 @@ const OtherShowsSection = ({ shows }: OtherShowsSectionProps) => {
               </div>
               <div className="flex-1 p-6 flex flex-col">
                 <h4 className="text-blue-500 font-bold text-lg mb-1">
-                  {show.title} {show.date}
+                  {show.title} {formatDateTime(show.date)}
                 </h4>
                 <div className="flex items-center mb-3">
                   <MapPin size={16} className="text-red-800 mr-2" />
