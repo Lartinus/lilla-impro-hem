@@ -1,5 +1,4 @@
 
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -33,13 +32,13 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - using simple populate syntax
-      endpoint = `/api/shows?populate=performer.bild'`;
-      console.log(`Fetching single show with simple populate: ${strapiUrl}${endpoint}`);
+      // For single show details - populate bild, performers and their bild, and location
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[performers][populate][bild]=*&populate[location]=*`;
+      console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing - using simple populate syntax
-      endpoint = '/api/shows?populate=bild';
-      console.log(`Fetching all shows with simple populate: ${strapiUrl}${endpoint}`);
+      // For listing - only populate bild for the show itself
+      endpoint = '/api/shows?populate[bild]=*';
+      console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
     console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
@@ -72,4 +71,3 @@ serve(async (req) => {
     });
   }
 });
-
