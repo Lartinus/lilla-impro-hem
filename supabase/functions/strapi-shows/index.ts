@@ -33,9 +33,9 @@ serve(async (req) => {
     // Build API endpoint - different populate based on whether we want full details or just basic info
     let endpoint;
     if (targetSlug) {
-      // Full details for single show - include performer images
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate][bild][populate]=*&populate[performers][populate][image][populate]=*&populate[location]=*&populate[bild]=*`;
-      console.log(`Fetching show details with performers and images: ${strapiUrl}${endpoint}`);
+      // Full details for single show - use a simpler populate that should work
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers]=*&populate[location]=*&populate[bild]=*`;
+      console.log(`Fetching show details with performers: ${strapiUrl}${endpoint}`);
     } else {
       // Basic info for show listing - simplified populate to avoid errors
       endpoint = '/api/shows?populate=location&populate=bild';
@@ -60,17 +60,11 @@ serve(async (req) => {
     const data = await response.json();
     console.log(`Successfully fetched shows data:`, JSON.stringify(data, null, 2));
     
-    // Extra detailed logging for performers and their images if this is a detailed request
+    // Extra detailed logging for performers if this is a detailed request
     if (targetSlug && data.data?.[0]?.performers) {
       console.log('=== DETAILED PERFORMERS ANALYSIS ===');
       data.data[0].performers.forEach((performer: any, index: number) => {
         console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
-        if (performer.bild) {
-          console.log(`Performer ${index} - BILD FIELD:`, JSON.stringify(performer.bild, null, 2));
-        }
-        if (performer.image) {
-          console.log(`Performer ${index} - IMAGE FIELD:`, JSON.stringify(performer.image, null, 2));
-        }
       });
     }
     
