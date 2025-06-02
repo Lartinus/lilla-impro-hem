@@ -30,14 +30,13 @@ serve(async (req) => {
       }
     }
     
-    // Use the simplest possible endpoint structure
     let endpoint;
     if (targetSlug) {
-      // For single show details - just basic filter, no populate at all first
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}`;
-      console.log(`Fetching show details: ${strapiUrl}${endpoint}`);
+      // For single show details - try with just performers populated
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers]=*`;
+      console.log(`Fetching show with performers: ${strapiUrl}${endpoint}`);
     } else {
-      // Basic info for show listing - no populate at all
+      // For listing - just basic data
       endpoint = '/api/shows';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
@@ -55,6 +54,52 @@ serve(async (req) => {
       console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
       const errorText = await response.text();
       console.error('Error response:', errorText);
+      
+      // If populate failed, try without it
+      if (targetSlug && response.status === 400) {
+        console.log('Populate failed, trying basic endpoint...');
+        const basicEndpoint = `/api/shows?filters[slug][$eq]=${targetSlug}`;
+        const basicResponse = await fetch(`${strapiUrl}${basicEndpoint}`, {
+          headers: {
+            'Authorization': `Bearer ${strapiToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (basicResponse.ok) {
+          const basicData = await basicResponse.json();
+          console.log('Basic fetch successful:', JSON.stringify(basicData, null, 2));
+          
+          // Try to fetch performers separately if we have a show
+          if (basicData.data?.[0]?.id) {
+            try {
+              const performersResponse = await fetch(`${strapiUrl}/api/performers`, {
+                headers: {
+                  'Authorization': `Bearer ${strapiToken}`,
+                  'Content-Type': 'application/json',
+                },
+              });
+              
+              if (performersResponse.ok) {
+                const performersData = await performersResponse.json();
+                console.log('Performers data:', JSON.stringify(performersData, null, 2));
+                
+                // Add empty performers array to show for now
+                if (basicData.data[0]) {
+                  basicData.data[0].performers = [];
+                }
+              }
+            } catch (e) {
+              console.log('Could not fetch performers separately:', e);
+            }
+          }
+          
+          return new Response(JSON.stringify(basicData), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+      }
+      
       throw new Error(`Strapi API error: ${response.status}`);
     }
 
