@@ -1,10 +1,7 @@
-
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
   console.log('getStrapiImageUrl - Image type:', typeof image);
-  console.log('getStrapiImageUrl - Is null?', image === null);
-  console.log('getStrapiImageUrl - Is undefined?', image === undefined);
   
   if (!image) {
     console.log('getStrapiImageUrl - No image provided (null/undefined)');
@@ -18,15 +15,26 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
     return fullUrl;
   }
   
-  // Handle different image formats from Strapi
-  if (image?.data?.attributes?.url) {
-    const url = image.data.attributes.url;
-    const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
-    console.log('getStrapiImageUrl - Using data.attributes.url:', fullUrl);
-    return fullUrl;
+  // Handle Strapi v5 format with data wrapper first
+  if (image?.data) {
+    // Single image with data wrapper
+    if (image.data.url) {
+      const url = image.data.url;
+      const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+      console.log('getStrapiImageUrl - Using data.url:', fullUrl);
+      return fullUrl;
+    }
+    
+    // Array of images with data wrapper
+    if (Array.isArray(image.data) && image.data.length > 0 && image.data[0].url) {
+      const url = image.data[0].url;
+      const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+      console.log('getStrapiImageUrl - Using data[0].url:', fullUrl);
+      return fullUrl;
+    }
   }
   
-  // Handle direct image object
+  // Handle direct image object (legacy format)
   if (image?.url) {
     const url = image.url;
     const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
@@ -34,7 +42,7 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
     return fullUrl;
   }
   
-  // Handle nested data structure
+  // Handle legacy attributes format
   if (image?.attributes?.url) {
     const url = image.attributes.url;
     const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
@@ -46,12 +54,6 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
   if (Array.isArray(image) && image.length > 0) {
     console.log('getStrapiImageUrl - Processing array, taking first image');
     return getStrapiImageUrl(image[0], baseUrl);
-  }
-  
-  // Handle data array structure
-  if (image?.data && Array.isArray(image.data) && image.data.length > 0) {
-    console.log('getStrapiImageUrl - Processing data array, taking first image');
-    return getStrapiImageUrl(image.data[0], baseUrl);
   }
   
   console.log('getStrapiImageUrl - No valid image URL found, returning null');
@@ -110,7 +112,6 @@ export const formatStrapiShow = (strapiShow: any) => {
   }
   
   // Handle both new Strapi format (direct data) and old format (attributes nested)
-  // Check if this is the old format with attributes wrapper
   const showData = strapiShow.attributes || strapiShow;
   
   if (!showData) {
@@ -120,18 +121,15 @@ export const formatStrapiShow = (strapiShow: any) => {
   
   console.log('formatStrapiShow - Using show data:', JSON.stringify(showData, null, 2));
   
-  // Handle location - it can be direct object or nested
+  // Handle location
   let locationName = '';
   let mapLink = '';
   
   if (showData.location) {
-    // New format: direct location object
     if (showData.location.name) {
       locationName = showData.location.name;
       mapLink = showData.location.google_maps_link || showData.location.map_link || '';
-    }
-    // Old format: location with data wrapper
-    else if (showData.location.data?.attributes) {
+    } else if (showData.location.data?.attributes) {
       locationName = showData.location.data.attributes.name || '';
       mapLink = showData.location.data.attributes.google_maps_link || showData.location.data.attributes.map_link || '';
     }
@@ -139,7 +137,7 @@ export const formatStrapiShow = (strapiShow: any) => {
   
   console.log('formatStrapiShow - Location:', locationName, 'Map link:', mapLink);
   
-  // Handle performers - can be array of objects or array with data wrappers
+  // Handle performers with simplified approach
   let performers = [];
   if (showData.performers && Array.isArray(showData.performers)) {
     performers = showData.performers.map((performer: any) => {
@@ -149,28 +147,25 @@ export const formatStrapiShow = (strapiShow: any) => {
       const performerData = performer.attributes || performer;
       console.log('formatStrapiShow - Performer data:', JSON.stringify(performerData, null, 2));
       
-      // Handle performer image - check both 'bild' and 'image' fields, also check for media arrays
+      // Simplified image handling - try each possible field
       let performerImage = null;
       
-      // Check all possible image field locations
-      const imageFields = [
-        performerData.bild,
-        performerData.image, 
-        performerData.media
-      ];
+      // Try bild field first (Swedish)
+      if (performerData.bild) {
+        console.log('formatStrapiShow - Trying bild field:', JSON.stringify(performerData.bild, null, 2));
+        performerImage = getStrapiImageUrl(performerData.bild);
+      }
       
-      console.log('formatStrapiShow - All image fields for performer:', JSON.stringify(imageFields, null, 2));
+      // If no image from bild, try image field
+      if (!performerImage && performerData.image) {
+        console.log('formatStrapiShow - Trying image field:', JSON.stringify(performerData.image, null, 2));
+        performerImage = getStrapiImageUrl(performerData.image);
+      }
       
-      // Try each image field until we find one with data
-      for (const field of imageFields) {
-        if (field) {
-          console.log('formatStrapiShow - Trying image field:', JSON.stringify(field, null, 2));
-          performerImage = getStrapiImageUrl(field);
-          if (performerImage) {
-            console.log('formatStrapiShow - Successfully got image URL:', performerImage);
-            break;
-          }
-        }
+      // If still no image, try media field
+      if (!performerImage && performerData.media) {
+        console.log('formatStrapiShow - Trying media field:', JSON.stringify(performerData.media, null, 2));
+        performerImage = getStrapiImageUrl(performerData.media);
       }
       
       console.log('formatStrapiShow - Final performer image URL:', performerImage);

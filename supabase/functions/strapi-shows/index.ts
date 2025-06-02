@@ -30,14 +30,14 @@ serve(async (req) => {
       }
     }
     
-    // Build API endpoint - different populate based on whether we want full details or just basic info
+    // Build API endpoint - simplified populate strategy
     let endpoint;
     if (targetSlug) {
-      // Full details for single show - specifically populate performer images
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate][bild]=*&populate[performers][populate][image]=*&populate[performers][populate][media]=*&populate[location]=*&populate[bild]=*`;
+      // For single show details - use simpler populate that works with Strapi v5
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[0]=performers&populate[1]=location&populate[2]=bild&populate[performers][populate]=*`;
       console.log(`Fetching show details: ${strapiUrl}${endpoint}`);
     } else {
-      // Basic info for show listing - simplified populate to avoid errors
+      // Basic info for show listing
       endpoint = '/api/shows?populate=location&populate=bild';
     }
 
@@ -65,6 +65,14 @@ serve(async (req) => {
       console.log('=== DETAILED PERFORMERS ANALYSIS ===');
       data.data[0].performers.forEach((performer: any, index: number) => {
         console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
+        
+        // Check what image fields are available
+        const performerData = performer.attributes || performer;
+        console.log(`Performer ${index} image fields:`, {
+          bild: performerData.bild,
+          image: performerData.image,
+          media: performerData.media
+        });
       });
     }
     
