@@ -14,6 +14,7 @@ const PracticalInfo = ({ practicalInfo }: PracticalInfoProps) => {
           <div key={index} className="flex items-start space-x-3">
             <div 
               className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"
+              style={{ marginTop: '8px' }}
             ></div>
             <div 
               className="text-gray-700 text-base body-text flex-1" 
