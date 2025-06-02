@@ -1,3 +1,4 @@
+
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -151,26 +152,43 @@ export const formatStrapiShow = (strapiShow: any) => {
       const performerData = performer.attributes || performer;
       console.log(`formatStrapiShow - Performer ${index} data after extraction:`, JSON.stringify(performerData, null, 2));
       
-      // Try multiple image field names and log each attempt
-      let performerImage = null;
-      const imageFields = ['bild', 'image', 'media', 'foto', 'picture', 'avatar'];
+      // Log ALL available fields for this performer to see what Strapi is actually returning
+      console.log(`formatStrapiShow - Performer ${index} ALL AVAILABLE FIELDS:`, Object.keys(performerData));
       
-      for (const fieldName of imageFields) {
+      // Try to find image data in the original performer object (not just performerData)
+      let performerImage = null;
+      const allImageFields = ['bild', 'image', 'media', 'foto', 'picture', 'avatar', 'profileImage', 'profile_image'];
+      
+      // First check in the extracted performerData
+      for (const fieldName of allImageFields) {
         if (performerData[fieldName]) {
-          console.log(`formatStrapiShow - Performer ${index}: Found field '${fieldName}' with value:`, JSON.stringify(performerData[fieldName], null, 2));
+          console.log(`formatStrapiShow - Performer ${index}: Found field '${fieldName}' in performerData:`, JSON.stringify(performerData[fieldName], null, 2));
           performerImage = getStrapiImageUrl(performerData[fieldName]);
           if (performerImage) {
-            console.log(`formatStrapiShow - Performer ${index}: Successfully got image URL from '${fieldName}':`, performerImage);
+            console.log(`formatStrapiShow - Performer ${index}: Successfully got image URL from performerData.${fieldName}:`, performerImage);
             break;
-          } else {
-            console.log(`formatStrapiShow - Performer ${index}: Field '${fieldName}' exists but getStrapiImageUrl returned null`);
+          }
+        }
+      }
+      
+      // If no image found in performerData, check in the original performer object
+      if (!performerImage) {
+        console.log(`formatStrapiShow - Performer ${index}: No image in performerData, checking original performer object`);
+        for (const fieldName of allImageFields) {
+          if (performer[fieldName]) {
+            console.log(`formatStrapiShow - Performer ${index}: Found field '${fieldName}' in original performer:`, JSON.stringify(performer[fieldName], null, 2));
+            performerImage = getStrapiImageUrl(performer[fieldName]);
+            if (performerImage) {
+              console.log(`formatStrapiShow - Performer ${index}: Successfully got image URL from performer.${fieldName}:`, performerImage);
+              break;
+            }
           }
         }
       }
       
       if (!performerImage) {
-        console.log(`formatStrapiShow - Performer ${index}: No image found. Available fields:`, Object.keys(performerData));
-        // Don't use placeholder image - let the component handle the missing image
+        console.log(`formatStrapiShow - Performer ${index}: No image found anywhere. Original performer object:`, JSON.stringify(performer, null, 2));
+        console.log(`formatStrapiShow - Performer ${index}: PerformerData object:`, JSON.stringify(performerData, null, 2));
       }
       
       const formattedPerformer = {
