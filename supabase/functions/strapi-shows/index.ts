@@ -30,15 +30,16 @@ serve(async (req) => {
       }
     }
     
-    // Use simple populate syntax for Strapi v5
+    // Use the simplest possible endpoint structure
     let endpoint;
     if (targetSlug) {
-      // For single show details - use simple populate syntax
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
-      console.log(`Fetching show details with deep populate: ${strapiUrl}${endpoint}`);
+      // For single show details - just basic filter, no populate at all first
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}`;
+      console.log(`Fetching show details: ${strapiUrl}${endpoint}`);
     } else {
-      // Basic info for show listing
-      endpoint = '/api/shows?populate=location,bild';
+      // Basic info for show listing - no populate at all
+      endpoint = '/api/shows';
+      console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
     console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
@@ -59,24 +60,6 @@ serve(async (req) => {
 
     const data = await response.json();
     console.log(`Successfully fetched shows data:`, JSON.stringify(data, null, 2));
-    
-    // Detailed logging for performer images
-    if (targetSlug && data.data?.[0]?.performers) {
-      console.log('=== PERFORMER IMAGE ANALYSIS ===');
-      data.data[0].performers.forEach((performer: any, index: number) => {
-        console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
-        console.log(`Performer ${index} available fields:`, Object.keys(performer));
-        if (performer.attributes) {
-          console.log(`Performer ${index} attribute fields:`, Object.keys(performer.attributes));
-        }
-        if (performer.image) {
-          console.log(`Performer ${index} image field:`, JSON.stringify(performer.image, null, 2));
-        }
-        if (performer.video) {
-          console.log(`Performer ${index} video field:`, JSON.stringify(performer.video, null, 2));
-        }
-      });
-    }
     
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
