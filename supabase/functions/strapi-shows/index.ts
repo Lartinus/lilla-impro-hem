@@ -33,9 +33,9 @@ serve(async (req) => {
     // Build API endpoint - different populate based on whether we want full details or just basic info
     let endpoint;
     if (targetSlug) {
-      // Full details for single show - only populate bild for performers, not image
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate][bild]=*&populate[location]=*&populate[bild]=*`;
-      console.log(`Fetching show details with performers and their bild: ${strapiUrl}${endpoint}`);
+      // Full details for single show - simplified performers populate to avoid errors
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers]=*&populate[location]=*&populate[bild]=*`;
+      console.log(`Fetching show details: ${strapiUrl}${endpoint}`);
     } else {
       // Basic info for show listing - simplified populate to avoid errors
       endpoint = '/api/shows?populate=location&populate=bild';
