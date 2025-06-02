@@ -32,9 +32,9 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - try with deep populate for performers and media
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[location]=*&populate[performers]=*`;
-      console.log(`Fetching single show with deep populate: ${strapiUrl}${endpoint}`);
+      // For single show details - use simple populate that works
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
+      console.log(`Fetching single show with populate=*: ${strapiUrl}${endpoint}`);
     } else {
       // For listing - use simple populate that works
       endpoint = '/api/shows?populate=*';
