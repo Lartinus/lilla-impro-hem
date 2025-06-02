@@ -34,7 +34,7 @@ serve(async (req) => {
     let endpoint;
     if (targetSlug) {
       // For single show details - using simple populate syntax
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=image`;
+      endpoint = `/api/shows?populate=performer.image'`;
       console.log(`Fetching single show with simple populate: ${strapiUrl}${endpoint}`);
     } else {
       // For listing - using simple populate syntax
