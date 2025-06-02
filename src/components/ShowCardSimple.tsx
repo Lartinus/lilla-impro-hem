@@ -1,6 +1,7 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
+import { MapPin } from 'lucide-react';
 
 interface SimpleShow {
   id: number;
@@ -31,8 +32,24 @@ const ShowCardSimple = ({ show }: ShowCardSimpleProps) => {
 
   const formatTime = (timeData: any) => {
     if (!timeData || timeData.value === 'undefined') return '';
-    if (typeof timeData === 'string') return timeData;
+    if (typeof timeData === 'string') {
+      // Handle time string like "19:00" or full datetime
+      if (timeData.includes(':')) {
+        return timeData.split(':').slice(0, 2).join('.');
+      }
+      return timeData;
+    }
     return '';
+  };
+
+  const formatDateTime = (dateString: string, timeData: any) => {
+    const formattedDate = formatDate(dateString);
+    const formattedTime = formatTime(timeData);
+    
+    if (formattedTime) {
+      return `${formattedDate} ${formattedTime}`;
+    }
+    return formattedDate;
   };
 
   return (
@@ -56,11 +73,10 @@ const ShowCardSimple = ({ show }: ShowCardSimpleProps) => {
           
           <div className="space-y-1 mb-4">
             <p className="text-blue-500 font-medium">
-              {formatDate(show.date)}
-              {formatTime(show.time) && ` ${formatTime(show.time)}`}
+              {formatDateTime(show.date, show.time)}
             </p>
             <p className="text-red-600 text-sm flex items-center">
-              <span className="mr-1">📍</span>
+              <MapPin size={16} className="mr-1" />
               {show.location}
             </p>
           </div>
