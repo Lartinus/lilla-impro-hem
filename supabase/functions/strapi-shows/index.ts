@@ -1,4 +1,5 @@
 
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -32,9 +33,9 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - use simple populate that works
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
-      console.log(`Fetching single show with wildcard populate: ${strapiUrl}${endpoint}`);
+      // For single show details - populate performers with media field
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[location]=*&populate[performers][populate][media]=*`;
+      console.log(`Fetching single show with performer media populate: ${strapiUrl}${endpoint}`);
     } else {
       // For listing - use simple populate that works
       endpoint = '/api/shows?populate=*';
@@ -71,3 +72,4 @@ serve(async (req) => {
     });
   }
 });
+

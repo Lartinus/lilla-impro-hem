@@ -137,66 +137,55 @@ export const formatStrapiShow = (strapiShow: any) => {
   
   console.log('formatStrapiShow - Location:', locationName, 'Map link:', mapLink);
   
-  // Handle performers with VERY extensive logging and investigation
+  // Handle performers - now looking for media field
   let performers = [];
-  console.log('formatStrapiShow - Raw performers data (FULL DEBUG):', JSON.stringify(showData.performers, null, 2));
+  console.log('formatStrapiShow - Raw performers data:', JSON.stringify(showData.performers, null, 2));
   
   if (showData.performers && Array.isArray(showData.performers)) {
-    console.log('formatStrapiShow - Processing performers array with', showData.performers.length, 'performers');
+    console.log('formatStrapiShow - Processing performers array:', showData.performers.length, 'performers');
     
     performers = showData.performers.map((performer: any, index: number) => {
-      console.log(`\n=== PERFORMER ${index} DEBUG START ===`);
-      console.log(`Performer ${index} - RAW OBJECT:`, JSON.stringify(performer, null, 2));
-      console.log(`Performer ${index} - Object keys:`, Object.keys(performer));
+      console.log(`formatStrapiShow - Processing performer ${index}:`, JSON.stringify(performer, null, 2));
       
-      // Let's check if the performer has ANY image-related fields
-      const possibleImageFields = ['bild', 'image', 'photo', 'picture', 'foto', 'avatar', 'profileImage', 'profile_image', 'media'];
-      console.log(`Performer ${index} - Checking for image fields...`);
-      
-      possibleImageFields.forEach(fieldName => {
-        if (performer.hasOwnProperty(fieldName)) {
-          console.log(`Performer ${index} - Found field '${fieldName}':`, JSON.stringify(performer[fieldName], null, 2));
-        } else {
-          console.log(`Performer ${index} - No field '${fieldName}'`);
-        }
-      });
-      
-      // Now let's try to extract the performer data
+      // Extract performer data (handle both new and old formats)
       const performerData = performer.attributes || performer;
-      console.log(`Performer ${index} - After extraction, performerData:`, JSON.stringify(performerData, null, 2));
-      console.log(`Performer ${index} - PerformerData keys:`, Object.keys(performerData));
+      console.log(`formatStrapiShow - Performer ${index} data after extraction:`, JSON.stringify(performerData, null, 2));
+      console.log(`formatStrapiShow - Performer ${index} ALL AVAILABLE FIELDS:`, Object.keys(performerData));
       
-      // Check for image fields in performerData too
-      console.log(`Performer ${index} - Checking performerData for image fields...`);
-      possibleImageFields.forEach(fieldName => {
-        if (performerData.hasOwnProperty(fieldName)) {
-          console.log(`Performer ${index} - Found performerData field '${fieldName}':`, JSON.stringify(performerData[fieldName], null, 2));
-        }
-      });
-      
-      // Try to get the image using our helper function
+      // Try to find performer image in the media field
       let performerImage = null;
       
-      // First try the most common field names
-      for (const fieldName of possibleImageFields) {
-        if (performerData[fieldName]) {
-          console.log(`Performer ${index} - Trying getStrapiImageUrl with performerData.${fieldName}`);
-          performerImage = getStrapiImageUrl(performerData[fieldName]);
-          if (performerImage) {
-            console.log(`Performer ${index} - SUCCESS! Got image from performerData.${fieldName}:`, performerImage);
-            break;
-          }
+      // First try the media field (most likely in Strapi)
+      if (performerData.media) {
+        console.log(`formatStrapiShow - Performer ${index}: Found media field:`, JSON.stringify(performerData.media, null, 2));
+        performerImage = getStrapiImageUrl(performerData.media);
+        if (performerImage) {
+          console.log(`formatStrapiShow - Performer ${index}: Successfully got image from media field:`, performerImage);
+        } else {
+          console.log(`formatStrapiShow - Performer ${index}: Media field exists but couldn't extract URL`);
         }
       }
       
-      // If still no image, try the original performer object
+      // If no media field in performerData, check the original performer object
+      if (!performerImage && performer.media) {
+        console.log(`formatStrapiShow - Performer ${index}: Trying media field from original performer object:`, JSON.stringify(performer.media, null, 2));
+        performerImage = getStrapiImageUrl(performer.media);
+        if (performerImage) {
+          console.log(`formatStrapiShow - Performer ${index}: Successfully got image from original performer media:`, performerImage);
+        }
+      }
+      
+      // Fallback to other possible field names
       if (!performerImage) {
-        for (const fieldName of possibleImageFields) {
-          if (performer[fieldName]) {
-            console.log(`Performer ${index} - Trying getStrapiImageUrl with performer.${fieldName}`);
-            performerImage = getStrapiImageUrl(performer[fieldName]);
+        console.log(`formatStrapiShow - Performer ${index}: No media field, trying other field names`);
+        const imageFields = ['bild', 'image', 'photo', 'picture', 'foto', 'avatar'];
+        
+        for (const fieldName of imageFields) {
+          if (performerData[fieldName]) {
+            console.log(`formatStrapiShow - Performer ${index}: Trying field ${fieldName}:`, JSON.stringify(performerData[fieldName], null, 2));
+            performerImage = getStrapiImageUrl(performerData[fieldName]);
             if (performerImage) {
-              console.log(`Performer ${index} - SUCCESS! Got image from performer.${fieldName}:`, performerImage);
+              console.log(`formatStrapiShow - Performer ${index}: Successfully got image from ${fieldName}:`, performerImage);
               break;
             }
           }
@@ -204,23 +193,7 @@ export const formatStrapiShow = (strapiShow: any) => {
       }
       
       if (!performerImage) {
-        console.log(`Performer ${index} - STILL NO IMAGE FOUND! Final check - does Strapi have bild in a different structure?`);
-        // Let's check if there's any nested structure we missed
-        const deepCheck = (obj: any, path: string = '') => {
-          if (!obj || typeof obj !== 'object') return;
-          
-          Object.keys(obj).forEach(key => {
-            const currentPath = path ? `${path}.${key}` : key;
-            if (possibleImageFields.includes(key.toLowerCase())) {
-              console.log(`Performer ${index} - Found potential image field at path '${currentPath}':`, JSON.stringify(obj[key], null, 2));
-            }
-            if (typeof obj[key] === 'object' && obj[key] !== null) {
-              deepCheck(obj[key], currentPath);
-            }
-          });
-        };
-        
-        deepCheck(performer, 'performer');
+        console.log(`formatStrapiShow - Performer ${index}: No image found anywhere. Available fields:`, Object.keys(performerData));
       }
       
       const formattedPerformer = {
@@ -230,9 +203,7 @@ export const formatStrapiShow = (strapiShow: any) => {
         image: performerImage,
       };
       
-      console.log(`Performer ${index} - FINAL RESULT:`, formattedPerformer);
-      console.log(`=== PERFORMER ${index} DEBUG END ===\n`);
-      
+      console.log(`formatStrapiShow - Performer ${index} final result:`, formattedPerformer);
       return formattedPerformer;
     });
   } else {
