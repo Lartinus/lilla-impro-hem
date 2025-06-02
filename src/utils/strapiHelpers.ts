@@ -1,3 +1,4 @@
+
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -137,7 +138,7 @@ export const formatStrapiShow = (strapiShow: any) => {
   
   console.log('formatStrapiShow - Location:', locationName, 'Map link:', mapLink);
   
-  // Handle performers - now looking for media field
+  // Handle performers - now looking for poster field
   let performers = [];
   console.log('formatStrapiShow - Raw performers data:', JSON.stringify(showData.performers, null, 2));
   
@@ -152,33 +153,33 @@ export const formatStrapiShow = (strapiShow: any) => {
       console.log(`formatStrapiShow - Performer ${index} data after extraction:`, JSON.stringify(performerData, null, 2));
       console.log(`formatStrapiShow - Performer ${index} ALL AVAILABLE FIELDS:`, Object.keys(performerData));
       
-      // Try to find performer image in the media field
+      // Try to find performer image in the poster field (based on user's info)
       let performerImage = null;
       
-      // First try the media field (most likely in Strapi)
-      if (performerData.media) {
-        console.log(`formatStrapiShow - Performer ${index}: Found media field:`, JSON.stringify(performerData.media, null, 2));
-        performerImage = getStrapiImageUrl(performerData.media);
+      // First try the poster field (most likely based on user's schema)
+      if (performerData.poster) {
+        console.log(`formatStrapiShow - Performer ${index}: Found poster field:`, JSON.stringify(performerData.poster, null, 2));
+        performerImage = getStrapiImageUrl(performerData.poster);
         if (performerImage) {
-          console.log(`formatStrapiShow - Performer ${index}: Successfully got image from media field:`, performerImage);
+          console.log(`formatStrapiShow - Performer ${index}: Successfully got image from poster field:`, performerImage);
         } else {
-          console.log(`formatStrapiShow - Performer ${index}: Media field exists but couldn't extract URL`);
+          console.log(`formatStrapiShow - Performer ${index}: Poster field exists but couldn't extract URL`);
         }
       }
       
-      // If no media field in performerData, check the original performer object
-      if (!performerImage && performer.media) {
-        console.log(`formatStrapiShow - Performer ${index}: Trying media field from original performer object:`, JSON.stringify(performer.media, null, 2));
-        performerImage = getStrapiImageUrl(performer.media);
+      // If no poster field in performerData, check the original performer object
+      if (!performerImage && performer.poster) {
+        console.log(`formatStrapiShow - Performer ${index}: Trying poster field from original performer object:`, JSON.stringify(performer.poster, null, 2));
+        performerImage = getStrapiImageUrl(performer.poster);
         if (performerImage) {
-          console.log(`formatStrapiShow - Performer ${index}: Successfully got image from original performer media:`, performerImage);
+          console.log(`formatStrapiShow - Performer ${index}: Successfully got image from original performer poster:`, performerImage);
         }
       }
       
-      // Fallback to other possible field names
+      // Fallback to other possible field names including the old ones
       if (!performerImage) {
-        console.log(`formatStrapiShow - Performer ${index}: No media field, trying other field names`);
-        const imageFields = ['bild', 'image', 'photo', 'picture', 'foto', 'avatar'];
+        console.log(`formatStrapiShow - Performer ${index}: No poster field, trying other field names`);
+        const imageFields = ['media', 'bild', 'image', 'photo', 'picture', 'foto', 'avatar'];
         
         for (const fieldName of imageFields) {
           if (performerData[fieldName]) {
@@ -268,11 +269,12 @@ export const formatStrapiCourse = (strapiCourse: any) => {
     if (attrs.teacher.data?.attributes) {
       const teacherAttrs = attrs.teacher.data.attributes;
       console.log('Teacher attributes:', JSON.stringify(teacherAttrs, null, 2));
+      console.log('Teacher poster data:', JSON.stringify(teacherAttrs.poster, null, 2));
       console.log('Teacher bild data:', JSON.stringify(teacherAttrs.bild, null, 2));
       console.log('Teacher image data:', JSON.stringify(teacherAttrs.image, null, 2));
       
-      // Check all possible image field locations
-      const imageField = teacherAttrs.bild || teacherAttrs.image;
+      // Check poster field first, then fallback to other fields
+      const imageField = teacherAttrs.poster || teacherAttrs.bild || teacherAttrs.image;
       console.log('Selected image field:', JSON.stringify(imageField, null, 2));
       
       teacher = {
@@ -285,12 +287,14 @@ export const formatStrapiCourse = (strapiCourse: any) => {
     }
     // Direct teacher data (older format or simplified)
     else if (attrs.teacher.name) {
+      console.log('Teacher poster field exists?', 'poster' in attrs.teacher);
+      console.log('Teacher poster value:', attrs.teacher.poster);
       console.log('Teacher bild field exists?', 'bild' in attrs.teacher);
       console.log('Teacher bild value:', attrs.teacher.bild);
       console.log('Teacher image field exists?', 'image' in attrs.teacher);
       console.log('Teacher image value:', attrs.teacher.image);
       
-      const imageField = attrs.teacher.bild || attrs.teacher.image;
+      const imageField = attrs.teacher.poster || attrs.teacher.bild || attrs.teacher.image;
       console.log('Selected direct image field:', JSON.stringify(imageField, null, 2));
       
       teacher = {
