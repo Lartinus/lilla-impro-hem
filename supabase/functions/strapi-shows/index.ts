@@ -1,5 +1,4 @@
 
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -33,13 +32,13 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - use simple populate like courses does
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=performers`;
-      console.log(`Fetching show with performers: ${strapiUrl}${endpoint}`);
+      // For single show details - populate all needed relations
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate]=*&populate[location]=*&populate[bild]=*`;
+      console.log(`Fetching show with full relations: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing - just basic data
-      endpoint = '/api/shows';
-      console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
+      // For listing - populate basic relations for card display
+      endpoint = '/api/shows?populate[bild]=*&populate[location]=*';
+      console.log(`Fetching all shows with basic relations: ${strapiUrl}${endpoint}`);
     }
 
     console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
@@ -55,6 +54,32 @@ serve(async (req) => {
       console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
       const errorText = await response.text();
       console.error('Error response:', errorText);
+      
+      // If detailed populate failed for single show, try simplified version
+      if (targetSlug && response.status === 400) {
+        console.log('Detailed populate failed, trying simplified...');
+        const simpleEndpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
+        console.log(`Trying wildcard populate: ${strapiUrl}${simpleEndpoint}`);
+        
+        const simpleResponse = await fetch(`${strapiUrl}${simpleEndpoint}`, {
+          headers: {
+            'Authorization': `Bearer ${strapiToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!simpleResponse.ok) {
+          throw new Error(`Simplified populate also failed: ${simpleResponse.status}`);
+        }
+        
+        const simpleData = await simpleResponse.json();
+        console.log(`Successfully fetched shows data with wildcard populate:`, JSON.stringify(simpleData, null, 2));
+        
+        return new Response(JSON.stringify(simpleData), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
       throw new Error(`Strapi API error: ${response.status}`);
     }
 
@@ -72,4 +97,3 @@ serve(async (req) => {
     });
   }
 });
-
