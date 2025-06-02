@@ -63,19 +63,20 @@ function createCustomRenderer(isRedBox = false): any {
   renderer.list = function(token: any) {
     const body = token.items.map((item: any) => {
       const text = getTextFromTokens(item.tokens);
-      return `<div class="flex items-start my-1 ${textColor}">
-                <span class="font-bold ${arrowColor} mr-3 flex-shrink-0 leading-none" style="width: var(--arrow-size); height: var(--arrow-size); display: flex; align-items: center; margin-top: 0.125rem;">→</span>
-                <span class="flex-1">${text}</span>
+      return `<div class="flex items-start space-x-3 my-1">
+                <div class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" style="margin-top: 8px;"></div>
+                <span class="flex-1 ${textColor}">${text}</span>
               </div>`;
     }).join('');
-    return `<div class="my-5">${body}</div>`;
+    return `<div class="space-y-2">${body}</div>`;
   };
   
   renderer.listitem = function(item: any) {
+    // This shouldn't be called when we override the list renderer
     const text = getTextFromTokens(item.tokens);
-    return `<div class="flex items-start my-1 ${textColor}">
-              <span class="font-bold ${arrowColor} mr-3 flex-shrink-0 leading-none" style="width: var(--arrow-size); height: var(--arrow-size); display: flex; align-items: center; margin-top: 0.125rem;">→</span>
-              <span class="flex-1">${text}</span>
+    return `<div class="flex items-start space-x-3 my-1">
+              <div class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" style="margin-top: 8px;"></div>
+              <span class="flex-1 ${textColor}">${text}</span>
             </div>`;
   };
 
