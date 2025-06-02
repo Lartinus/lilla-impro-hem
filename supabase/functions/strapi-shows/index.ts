@@ -34,11 +34,11 @@ serve(async (req) => {
     let endpoint;
     if (targetSlug) {
       // For single show details - using simple populate syntax
-      endpoint = `/api/shows?populate=performer.image'`;
+      endpoint = `/api/shows?populate=performer.bild'`;
       console.log(`Fetching single show with simple populate: ${strapiUrl}${endpoint}`);
     } else {
       // For listing - using simple populate syntax
-      endpoint = '/api/shows?populate=image';
+      endpoint = '/api/shows?populate=bild';
       console.log(`Fetching all shows with simple populate: ${strapiUrl}${endpoint}`);
     }
 
