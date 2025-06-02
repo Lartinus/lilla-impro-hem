@@ -131,19 +131,34 @@ export const formatStrapiShow = (strapiShow: any) => {
   let performers = [];
   if (showData.performers && Array.isArray(showData.performers)) {
     performers = showData.performers.map((performer: any) => {
+      console.log('formatStrapiShow - Processing performer:', JSON.stringify(performer, null, 2));
+      
       // Handle both direct performer objects and data-wrapped performers
       const performerData = performer.attributes || performer;
+      console.log('formatStrapiShow - Performer data:', JSON.stringify(performerData, null, 2));
+      
+      // Handle performer image - check both 'bild' and 'image' fields
+      let performerImage = null;
+      if (performerData.bild) {
+        console.log('formatStrapiShow - Found bild field:', JSON.stringify(performerData.bild, null, 2));
+        performerImage = getStrapiImageUrl(performerData.bild);
+      } else if (performerData.image) {
+        console.log('formatStrapiShow - Found image field:', JSON.stringify(performerData.image, null, 2));
+        performerImage = getStrapiImageUrl(performerData.image);
+      }
+      
+      console.log('formatStrapiShow - Final performer image URL:', performerImage);
       
       return {
         id: performer.id || performerData.id,
         name: performerData.name,
         bio: performerData.bio,
-        image: getStrapiImageUrl(performerData.bild || performerData.image),
+        image: performerImage,
       };
     });
   }
   
-  console.log('formatStrapiShow - Performers:', performers);
+  console.log('formatStrapiShow - Final performers:', performers);
   
   // Parse practical info
   let practicalInfo = [];
