@@ -137,9 +137,10 @@ export const formatStrapiShow = (strapiShow: any) => {
   
   console.log('formatStrapiShow - Location:', locationName, 'Map link:', mapLink);
   
-  // Handle performers with simplified approach
+  // Handle performers - ALWAYS include them even if they don't have images
   let performers = [];
   if (showData.performers && Array.isArray(showData.performers)) {
+    console.log('formatStrapiShow - Processing performers array:', showData.performers.length, 'performers');
     performers = showData.performers.map((performer: any) => {
       console.log('formatStrapiShow - Processing performer:', JSON.stringify(performer, null, 2));
       
@@ -147,7 +148,7 @@ export const formatStrapiShow = (strapiShow: any) => {
       const performerData = performer.attributes || performer;
       console.log('formatStrapiShow - Performer data:', JSON.stringify(performerData, null, 2));
       
-      // Simplified image handling - try each possible field
+      // Try to get performer image, but don't filter out performers without images
       let performerImage = null;
       
       // Try bild field first (Swedish)
@@ -170,12 +171,16 @@ export const formatStrapiShow = (strapiShow: any) => {
       
       console.log('formatStrapiShow - Final performer image URL:', performerImage);
       
-      return {
+      // Return performer object even if no image is found
+      const formattedPerformer = {
         id: performer.id || performerData.id,
         name: performerData.name,
         bio: performerData.bio,
-        image: performerImage,
+        image: performerImage, // This can be null and that's fine
       };
+      
+      console.log('formatStrapiShow - Formatted performer:', formattedPerformer);
+      return formattedPerformer;
     });
   }
   
