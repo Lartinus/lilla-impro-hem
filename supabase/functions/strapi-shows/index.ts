@@ -1,5 +1,4 @@
 
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -33,11 +32,11 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - using simple populate syntax
-      endpoint = `/api/shows?populate=performer.bild'`;
+      // For single show details - using simple populate syntax with "bild"
+      endpoint = `/api/shows?populate=bild`;
       console.log(`Fetching single show with simple populate: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing - using simple populate syntax
+      // For listing - using simple populate syntax with "bild"
       endpoint = '/api/shows?populate=bild';
       console.log(`Fetching all shows with simple populate: ${strapiUrl}${endpoint}`);
     }
@@ -72,4 +71,3 @@ serve(async (req) => {
     });
   }
 });
-
