@@ -30,12 +30,12 @@ serve(async (req) => {
       }
     }
     
-    // Build API endpoint - try simplest possible populate for performers
+    // Build API endpoint with very specific populate for performers
     let endpoint;
     if (targetSlug) {
-      // For single show details - use wildcard populate to get everything
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
-      console.log(`Fetching show details with wildcard populate: ${strapiUrl}${endpoint}`);
+      // For single show details - try explicit performer image populate
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[location]=*&populate[bild]=*&populate[performers][populate][bild]=*&populate[performers][populate][image]=*&populate[performers][populate][media]=*`;
+      console.log(`Fetching show details with explicit performer image populate: ${strapiUrl}${endpoint}`);
     } else {
       // Basic info for show listing
       endpoint = '/api/shows?populate=location&populate=bild';
@@ -62,7 +62,7 @@ serve(async (req) => {
     
     // Extra detailed logging for performers if this is a detailed request
     if (targetSlug && data.data?.[0]?.performers) {
-      console.log('=== WILDCARD POPULATE ANALYSIS ===');
+      console.log('=== EXPLICIT PERFORMER IMAGE POPULATE ANALYSIS ===');
       data.data[0].performers.forEach((performer: any, index: number) => {
         console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
         
@@ -70,6 +70,28 @@ serve(async (req) => {
         console.log(`Performer ${index} direct fields:`, Object.keys(performer));
         if (performer.attributes) {
           console.log(`Performer ${index} attributes fields:`, Object.keys(performer.attributes));
+          
+          // Check for image fields in attributes
+          if (performer.attributes.bild) {
+            console.log(`Performer ${index} bild in attributes:`, JSON.stringify(performer.attributes.bild, null, 2));
+          }
+          if (performer.attributes.image) {
+            console.log(`Performer ${index} image in attributes:`, JSON.stringify(performer.attributes.image, null, 2));
+          }
+          if (performer.attributes.media) {
+            console.log(`Performer ${index} media in attributes:`, JSON.stringify(performer.attributes.media, null, 2));
+          }
+        }
+        
+        // Check for direct image fields
+        if (performer.bild) {
+          console.log(`Performer ${index} direct bild:`, JSON.stringify(performer.bild, null, 2));
+        }
+        if (performer.image) {
+          console.log(`Performer ${index} direct image:`, JSON.stringify(performer.image, null, 2));
+        }
+        if (performer.media) {
+          console.log(`Performer ${index} direct media:`, JSON.stringify(performer.media, null, 2));
         }
       });
     }
