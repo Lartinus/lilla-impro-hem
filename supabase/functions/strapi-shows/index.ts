@@ -30,11 +30,11 @@ serve(async (req) => {
       }
     }
     
-    // Build API endpoint - simplified populate strategy
+    // Build API endpoint - much simpler approach
     let endpoint;
     if (targetSlug) {
-      // For single show details - use simpler populate that works with Strapi v5
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[0]=performers&populate[1]=location&populate[2]=bild&populate[performers][populate]=*`;
+      // For single show details - use simple populate that should work with Strapi v5
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=performers&populate=location&populate=bild`;
       console.log(`Fetching show details: ${strapiUrl}${endpoint}`);
     } else {
       // Basic info for show listing
