@@ -30,12 +30,12 @@ serve(async (req) => {
       }
     }
     
-    // Build API endpoint - much simpler approach
+    // Build API endpoint - try different populate strategies for Strapi v5
     let endpoint;
     if (targetSlug) {
-      // For single show details - use simple populate that should work with Strapi v5
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=performers&populate=location&populate=bild`;
-      console.log(`Fetching show details: ${strapiUrl}${endpoint}`);
+      // For single show details - try explicit deep populate for performer images
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate][0]=bild&populate[performers][populate][1]=image&populate[location]=*&populate[bild]=*`;
+      console.log(`Fetching show details with deep populate: ${strapiUrl}${endpoint}`);
     } else {
       // Basic info for show listing
       endpoint = '/api/shows?populate=location&populate=bild';
