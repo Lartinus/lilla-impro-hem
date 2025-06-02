@@ -32,13 +32,13 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - populate all needed relations
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate]=*&populate[location]=*&populate[bild]=*`;
-      console.log(`Fetching show with full relations: ${strapiUrl}${endpoint}`);
+      // For single show details - try wildcard populate first (most compatible)
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
+      console.log(`Fetching show with wildcard populate: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing - populate basic relations for card display
-      endpoint = '/api/shows?populate[bild]=*&populate[location]=*';
-      console.log(`Fetching all shows with basic relations: ${strapiUrl}${endpoint}`);
+      // For listing - use simple populate without complex syntax
+      endpoint = '/api/shows?populate=bild,location';
+      console.log(`Fetching all shows with simple populate: ${strapiUrl}${endpoint}`);
     }
 
     console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
@@ -55,11 +55,13 @@ serve(async (req) => {
       const errorText = await response.text();
       console.error('Error response:', errorText);
       
-      // If detailed populate failed for single show, try simplified version
-      if (targetSlug && response.status === 400) {
-        console.log('Detailed populate failed, trying simplified...');
-        const simpleEndpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
-        console.log(`Trying wildcard populate: ${strapiUrl}${simpleEndpoint}`);
+      // If wildcard populate failed, try without populate
+      if (response.status === 400) {
+        console.log('Populate failed, trying without populate...');
+        const simpleEndpoint = targetSlug 
+          ? `/api/shows?filters[slug][$eq]=${targetSlug}`
+          : '/api/shows';
+        console.log(`Trying without populate: ${strapiUrl}${simpleEndpoint}`);
         
         const simpleResponse = await fetch(`${strapiUrl}${simpleEndpoint}`, {
           headers: {
@@ -69,11 +71,11 @@ serve(async (req) => {
         });
         
         if (!simpleResponse.ok) {
-          throw new Error(`Simplified populate also failed: ${simpleResponse.status}`);
+          throw new Error(`Simple fetch also failed: ${simpleResponse.status}`);
         }
         
         const simpleData = await simpleResponse.json();
-        console.log(`Successfully fetched shows data with wildcard populate:`, JSON.stringify(simpleData, null, 2));
+        console.log(`Successfully fetched shows data without populate:`, JSON.stringify(simpleData, null, 2));
         
         return new Response(JSON.stringify(simpleData), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
