@@ -1,3 +1,4 @@
+
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -142,34 +143,34 @@ export const formatStrapiShow = (strapiShow: any) => {
   if (showData.performers && Array.isArray(showData.performers)) {
     console.log('formatStrapiShow - Processing performers array:', showData.performers.length, 'performers');
     performers = showData.performers.map((performer: any) => {
-      console.log('formatStrapiShow - Processing performer:', JSON.stringify(performer, null, 2));
+      console.log('formatStrapiShow - Raw performer from Strapi:', JSON.stringify(performer, null, 2));
       
       // Handle both direct performer objects and data-wrapped performers
       const performerData = performer.attributes || performer;
-      console.log('formatStrapiShow - Performer data:', JSON.stringify(performerData, null, 2));
+      console.log('formatStrapiShow - Performer data after extraction:', JSON.stringify(performerData, null, 2));
       
-      // Try to get performer image, but don't filter out performers without images
+      // Try to get performer image from multiple possible field names
       let performerImage = null;
       
-      // Try bild field first (Swedish)
-      if (performerData.bild) {
-        console.log('formatStrapiShow - Trying bild field:', JSON.stringify(performerData.bild, null, 2));
-        performerImage = getStrapiImageUrl(performerData.bild);
+      // Check all possible image field names
+      const imageFields = ['bild', 'image', 'media', 'foto', 'picture'];
+      
+      for (const fieldName of imageFields) {
+        if (performerData[fieldName]) {
+          console.log(`formatStrapiShow - Found image in field '${fieldName}':`, JSON.stringify(performerData[fieldName], null, 2));
+          performerImage = getStrapiImageUrl(performerData[fieldName]);
+          if (performerImage) {
+            console.log(`formatStrapiShow - Successfully got image URL from field '${fieldName}':`, performerImage);
+            break;
+          }
+        }
       }
       
-      // If no image from bild, try image field
-      if (!performerImage && performerData.image) {
-        console.log('formatStrapiShow - Trying image field:', JSON.stringify(performerData.image, null, 2));
-        performerImage = getStrapiImageUrl(performerData.image);
+      if (!performerImage) {
+        console.log('formatStrapiShow - No image found in any field for performer:', performerData.name);
+        // Log all available fields for debugging
+        console.log('formatStrapiShow - Available performer fields:', Object.keys(performerData));
       }
-      
-      // If still no image, try media field
-      if (!performerImage && performerData.media) {
-        console.log('formatStrapiShow - Trying media field:', JSON.stringify(performerData.media, null, 2));
-        performerImage = getStrapiImageUrl(performerData.media);
-      }
-      
-      console.log('formatStrapiShow - Final performer image URL:', performerImage);
       
       // Return performer object even if no image is found
       const formattedPerformer = {
@@ -179,7 +180,7 @@ export const formatStrapiShow = (strapiShow: any) => {
         image: performerImage, // This can be null and that's fine
       };
       
-      console.log('formatStrapiShow - Formatted performer:', formattedPerformer);
+      console.log('formatStrapiShow - Final formatted performer:', formattedPerformer);
       return formattedPerformer;
     });
   }
