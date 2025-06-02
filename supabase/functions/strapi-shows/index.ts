@@ -32,13 +32,13 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - try wildcard populate first (most compatible)
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
-      console.log(`Fetching show with wildcard populate: ${strapiUrl}${endpoint}`);
+      // For single show details - populate all relations with explicit syntax
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[location]=*&populate[performers][populate][bild]=*`;
+      console.log(`Fetching show with explicit populate: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing - use simple populate without complex syntax
-      endpoint = '/api/shows?populate=bild,location';
-      console.log(`Fetching all shows with simple populate: ${strapiUrl}${endpoint}`);
+      // For listing - use explicit populate for images and location
+      endpoint = '/api/shows?populate[bild]=*&populate[location]=*';
+      console.log(`Fetching all shows with explicit populate: ${strapiUrl}${endpoint}`);
     }
 
     console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
@@ -55,29 +55,51 @@ serve(async (req) => {
       const errorText = await response.text();
       console.error('Error response:', errorText);
       
-      // If wildcard populate failed, try without populate
+      // If explicit populate failed, try with wildcard populate
       if (response.status === 400) {
-        console.log('Populate failed, trying without populate...');
-        const simpleEndpoint = targetSlug 
-          ? `/api/shows?filters[slug][$eq]=${targetSlug}`
-          : '/api/shows';
-        console.log(`Trying without populate: ${strapiUrl}${simpleEndpoint}`);
+        console.log('Explicit populate failed, trying wildcard populate...');
+        const wildcardEndpoint = targetSlug 
+          ? `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`
+          : '/api/shows?populate=*';
+        console.log(`Trying wildcard populate: ${strapiUrl}${wildcardEndpoint}`);
         
-        const simpleResponse = await fetch(`${strapiUrl}${simpleEndpoint}`, {
+        const wildcardResponse = await fetch(`${strapiUrl}${wildcardEndpoint}`, {
           headers: {
             'Authorization': `Bearer ${strapiToken}`,
             'Content-Type': 'application/json',
           },
         });
         
-        if (!simpleResponse.ok) {
-          throw new Error(`Simple fetch also failed: ${simpleResponse.status}`);
+        if (!wildcardResponse.ok) {
+          console.log('Wildcard populate also failed, trying without populate...');
+          const simpleEndpoint = targetSlug 
+            ? `/api/shows?filters[slug][$eq]=${targetSlug}`
+            : '/api/shows';
+          console.log(`Trying without populate: ${strapiUrl}${simpleEndpoint}`);
+          
+          const simpleResponse = await fetch(`${strapiUrl}${simpleEndpoint}`, {
+            headers: {
+              'Authorization': `Bearer ${strapiToken}`,
+              'Content-Type': 'application/json',
+            },
+          });
+          
+          if (!simpleResponse.ok) {
+            throw new Error(`All fetch attempts failed: ${simpleResponse.status}`);
+          }
+          
+          const simpleData = await simpleResponse.json();
+          console.log(`Successfully fetched shows data without populate:`, JSON.stringify(simpleData, null, 2));
+          
+          return new Response(JSON.stringify(simpleData), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
         }
         
-        const simpleData = await simpleResponse.json();
-        console.log(`Successfully fetched shows data without populate:`, JSON.stringify(simpleData, null, 2));
+        const wildcardData = await wildcardResponse.json();
+        console.log(`Successfully fetched shows data with wildcard populate:`, JSON.stringify(wildcardData, null, 2));
         
-        return new Response(JSON.stringify(simpleData), {
+        return new Response(JSON.stringify(wildcardData), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
@@ -86,7 +108,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log(`Successfully fetched shows data:`, JSON.stringify(data, null, 2));
+    console.log(`Successfully fetched shows data with explicit populate:`, JSON.stringify(data, null, 2));
     
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
