@@ -36,7 +36,6 @@ function createCustomRenderer(isRedBox = false): any {
   
   const textColor = isRedBox ? 'text-white' : 'text-gray-800';
   const linkColor = isRedBox ? 'text-ljusbla hover:text-ljusbla' : 'text-blue-500 hover:text-blue-700';
-  const arrowColor = isRedBox ? 'text-blue-300' : 'text-blue-500';
 
   renderer.heading = function(token: any) {
     const text = getTextFromTokens(token.tokens);
@@ -62,21 +61,20 @@ function createCustomRenderer(isRedBox = false): any {
   renderer.list = function(token: any) {
     const body = token.items.map((item: any) => {
       const text = getTextFromTokens(item.tokens);
-      return `<div class="flex items-start space-x-3 my-1">
+      return `<li class="flex items-start space-x-3 my-1">
                 <div class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" style="margin-top: 8px;"></div>
                 <span class="flex-1 ${textColor}">${text}</span>
-              </div>`;
+              </li>`;
     }).join('');
-    return `<div class="space-y-2">${body}</div>`;
+    return `<ul class="space-y-2 my-4">${body}</ul>`;
   };
   
   renderer.listitem = function(item: any) {
-    // This shouldn't be called when we override the list renderer
     const text = getTextFromTokens(item.tokens);
-    return `<div class="flex items-start space-x-3 my-1">
+    return `<li class="flex items-start space-x-3 my-1">
               <div class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" style="margin-top: 8px;"></div>
               <span class="flex-1 ${textColor}">${text}</span>
-            </div>`;
+            </li>`;
   };
 
   renderer.link = function(token: any) {
@@ -136,7 +134,7 @@ export const convertMarkdownToHtml = (markdown: string): string => {
     // Configure marked to properly parse markdown tokens including bold, italic, strikethrough
     const html = marked.parse(preprocessed, {
       gfm: true,
-      breaks: true,
+      breaks: false, // Don't treat single line breaks as <br>
       renderer: createCustomRenderer(false)
     });
     
