@@ -28,7 +28,20 @@ function preprocess(md: string): string {
   // Konvertera pil-listor till markdown-listor för korrekt hantering
   s = s.replace(/^→\s*/gm, '- ');
 
-  return s;
+  // Konvertera rader som börjar med "- " till korrekt markdown-lista
+  const lines = s.split('\n');
+  const processedLines = lines.map(line => {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('- ')) {
+      return trimmed;
+    } else if (trimmed && !trimmed.startsWith('#') && lines.some(l => l.trim().startsWith('- '))) {
+      // Om vi har andra rader som är listformat och denna inte börjar med -, lägg till -
+      return `- ${trimmed}`;
+    }
+    return line;
+  });
+
+  return processedLines.join('\n');
 }
 
 // Custom renderer för att hantera specifika markdown-element
