@@ -20,53 +20,115 @@ serve(async (req) => {
     const { type } = await req.json();
     const contentType = type || 'site-settings';
     
-    // For 'about' content type, try different populate strategies with fallback
+    // For 'about' content type, try multiple populate strategies like courses function
     let apiUrl;
     
     if (contentType === 'about') {
-      // First try with simple populate, then handle performers separately if needed
-      apiUrl = `${strapiUrl}/api/${contentType}?populate=*`;
-      console.log(`Fetching about content with populate=*: ${apiUrl}`);
+      // Try multiple populate strategies for Strapi v5 - same approach as courses
+      let endpoint = `/api/${contentType}?populate[performers][populate][bild]=*`;
+      
+      console.log(`Fetching about content from Strapi: ${strapiUrl}${endpoint}`);
+
+      let response = await fetch(`${strapiUrl}${endpoint}`, {
+        headers: {
+          'Authorization': `Bearer ${strapiToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`Strapi API error with specific populate: ${response.status} - ${response.statusText}`);
+        
+        // Try alternative populate syntax
+        endpoint = `/api/${contentType}?populate=performers.bild`;
+        console.log(`Trying alternative populate: ${strapiUrl}${endpoint}`);
+        
+        response = await fetch(`${strapiUrl}${endpoint}`, {
+          headers: {
+            'Authorization': `Bearer ${strapiToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!response.ok) {
+          console.error(`Alternative populate failed: ${response.status}`);
+          
+          // Final fallback with deep populate
+          endpoint = `/api/${contentType}?populate=deep`;
+          console.log(`Trying deep populate: ${strapiUrl}${endpoint}`);
+          
+          response = await fetch(`${strapiUrl}${endpoint}`, {
+            headers: {
+              'Authorization': `Bearer ${strapiToken}`,
+              'Content-Type': 'application/json',
+            },
+          });
+          
+          if (!response.ok) {
+            // Last resort - simple populate
+            endpoint = `/api/${contentType}?populate=*`;
+            console.log(`Final fallback to populate=*: ${strapiUrl}${endpoint}`);
+            
+            response = await fetch(`${strapiUrl}${endpoint}`, {
+              headers: {
+                'Authorization': `Bearer ${strapiToken}`,
+                'Content-Type': 'application/json',
+              },
+            });
+            
+            if (!response.ok) {
+              throw new Error(`All Strapi API attempts failed: ${response.status}`);
+            }
+          }
+        }
+      }
+
+      const data = await response.json();
+      console.log(`Successfully fetched about data:`, JSON.stringify(data, null, 2));
+      
+      // Log specific performer data to see what we're getting - same as courses function
+      if (data.data?.performers) {
+        console.log('=== CHECKING PERFORMERS FOR IMAGES ===');
+        data.data.performers.forEach((performer: any, index: number) => {
+          console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
+          if (performer.bild) {
+            console.log(`Performer ${index} - BILD FIELD:`, JSON.stringify(performer.bild, null, 2));
+          }
+          if (performer.image) {
+            console.log(`Performer ${index} - IMAGE FIELD:`, JSON.stringify(performer.image, null, 2));
+          }
+        });
+      }
+      
+      return new Response(JSON.stringify(data), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     } else {
       // For other content types, use simple populate
       apiUrl = `${strapiUrl}/api/${contentType}?populate=*`;
       console.log(`Fetching ${contentType} from Strapi: ${apiUrl}`);
-    }
 
-    const response = await fetch(apiUrl, {
-      headers: {
-        'Authorization': `Bearer ${strapiToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+      const response = await fetch(apiUrl, {
+        headers: {
+          'Authorization': `Bearer ${strapiToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
-      const errorText = await response.text();
-      console.error('Error response:', errorText);
-      throw new Error(`Strapi API error: ${response.status}`);
-    }
+      if (!response.ok) {
+        console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error(`Strapi API error: ${response.status}`);
+      }
 
-    const data = await response.json();
-    console.log(`Successfully fetched ${contentType}:`, JSON.stringify(data, null, 2));
-    
-    // If this is about content and we have performers without images, try to fetch performer images separately
-    if (contentType === 'about' && data.data?.performers) {
-      console.log('=== CHECKING PERFORMERS FOR IMAGES ===');
-      data.data.performers.forEach((performer: any, index: number) => {
-        console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
-        if (performer.bild) {
-          console.log(`Performer ${index} - BILD FIELD:`, JSON.stringify(performer.bild, null, 2));
-        }
-        if (performer.image) {
-          console.log(`Performer ${index} - IMAGE FIELD:`, JSON.stringify(performer.image, null, 2));
-        }
+      const data = await response.json();
+      console.log(`Successfully fetched ${contentType}:`, JSON.stringify(data, null, 2));
+      
+      return new Response(JSON.stringify(data), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    
-    return new Response(JSON.stringify(data), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
   } catch (error) {
     console.error('Error in strapi-site-content function:', error);
     return new Response(JSON.stringify({ 
