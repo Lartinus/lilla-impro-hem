@@ -20,15 +20,13 @@ serve(async (req) => {
     const { type } = await req.json();
     const contentType = type || 'site-settings';
     
-    // For 'about' content type, try multiple populate strategies
-    let apiUrl;
-    
+    // For 'about' content type, fetch with populated performers
     if (contentType === 'about') {
-      // First, let's try to get the content without any specific populate to see the raw structure
-      let endpoint = `/api/${contentType}`;
+      console.log(`=== FETCHING ABOUT CONTENT WITH PERFORMERS ===`);
       
-      console.log(`=== DEBUGGING ABOUT CONTENT STRUCTURE ===`);
-      console.log(`Fetching basic about content from Strapi: ${strapiUrl}${endpoint}`);
+      // First fetch the about content with populated performers
+      let endpoint = `/api/${contentType}?populate[performers][populate]=*`;
+      console.log(`Fetching about content: ${strapiUrl}${endpoint}`);
 
       let response = await fetch(`${strapiUrl}${endpoint}`, {
         headers: {
@@ -37,33 +35,10 @@ serve(async (req) => {
         },
       });
 
-      if (response.ok) {
-        const basicData = await response.json();
-        console.log(`=== BASIC ABOUT DATA STRUCTURE ===`);
-        console.log(JSON.stringify(basicData, null, 2));
-        
-        // Now check what relations are available
-        if (basicData.data?.performers) {
-          console.log(`=== PERFORMERS RELATION FOUND ===`);
-          console.log('Performers data:', JSON.stringify(basicData.data.performers, null, 2));
-        }
-      }
-
-      // Now try with deep populate to get everything
-      endpoint = `/api/${contentType}?populate=deep`;
-      console.log(`Trying deep populate: ${strapiUrl}${endpoint}`);
-      
-      response = await fetch(`${strapiUrl}${endpoint}`, {
-        headers: {
-          'Authorization': `Bearer ${strapiToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
       if (!response.ok) {
-        // Fallback to populate all
-        endpoint = `/api/${contentType}?populate=*`;
-        console.log(`Deep populate failed, trying populate all: ${strapiUrl}${endpoint}`);
+        // Fallback to deep populate
+        endpoint = `/api/${contentType}?populate=deep`;
+        console.log(`Specific populate failed, trying deep populate: ${strapiUrl}${endpoint}`);
         
         response = await fetch(`${strapiUrl}${endpoint}`, {
           headers: {
@@ -73,9 +48,9 @@ serve(async (req) => {
         });
         
         if (!response.ok) {
-          // Final fallback - try specific performer populate
-          endpoint = `/api/${contentType}?populate[performers]=*`;
-          console.log(`Populate all failed, trying specific performers: ${strapiUrl}${endpoint}`);
+          // Final fallback to populate all
+          endpoint = `/api/${contentType}?populate=*`;
+          console.log(`Deep populate failed, trying populate all: ${strapiUrl}${endpoint}`);
           
           response = await fetch(`${strapiUrl}${endpoint}`, {
             headers: {
@@ -91,51 +66,47 @@ serve(async (req) => {
       }
 
       const data = await response.json();
-      console.log(`=== FINAL ABOUT DATA WITH POPULATE ===`);
+      console.log(`=== ABOUT DATA RESULT ===`);
       console.log(JSON.stringify(data, null, 2));
       
-      // Let's also check if we can fetch performers separately to see their structure
-      try {
-        console.log(`=== FETCHING PERFORMERS SEPARATELY ===`);
-        const performersResponse = await fetch(`${strapiUrl}/api/performers?populate=*`, {
-          headers: {
-            'Authorization': `Bearer ${strapiToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
+      // If we didn't get populated performers, fetch them separately and merge
+      if (data.data && (!data.data.performers || (Array.isArray(data.data.performers) && data.data.performers.length > 0 && !data.data.performers[0].bild))) {
+        console.log(`=== PERFORMERS NOT POPULATED, FETCHING SEPARATELY ===`);
         
-        if (performersResponse.ok) {
-          const performersData = await performersResponse.json();
-          console.log(`=== SEPARATE PERFORMERS DATA ===`);
-          console.log(JSON.stringify(performersData, null, 2));
+        try {
+          const performersResponse = await fetch(`${strapiUrl}/api/performers?populate=*`, {
+            headers: {
+              'Authorization': `Bearer ${strapiToken}`,
+              'Content-Type': 'application/json',
+            },
+          });
           
-          // Check each performer's available fields
-          if (performersData.data && Array.isArray(performersData.data)) {
-            performersData.data.forEach((performer: any, index: number) => {
-              console.log(`=== PERFORMER ${index} AVAILABLE FIELDS ===`);
-              const performerData = performer.attributes || performer;
-              console.log(`Available fields:`, Object.keys(performerData));
-              
-              // Check all possible image field names
-              const imageFields = ['image', 'bild', 'foto', 'picture', 'avatar', 'media', 'poster'];
-              imageFields.forEach(field => {
-                if (performerData[field]) {
-                  console.log(`Found ${field} field:`, JSON.stringify(performerData[field], null, 2));
-                }
-              });
-            });
+          if (performersResponse.ok) {
+            const performersData = await performersResponse.json();
+            console.log(`=== SEPARATE PERFORMERS DATA ===`);
+            console.log(JSON.stringify(performersData, null, 2));
+            
+            // Merge the populated performers into the about data
+            if (performersData.data && Array.isArray(performersData.data)) {
+              data.data.performers = performersData.data;
+              console.log(`=== MERGED PERFORMERS INTO ABOUT DATA ===`);
+              console.log(`Merged ${performersData.data.length} performers`);
+            }
           }
+        } catch (performersError) {
+          console.log('Could not fetch performers separately:', performersError);
         }
-      } catch (performersError) {
-        console.log('Could not fetch performers separately:', performersError);
       }
+      
+      console.log(`=== FINAL ABOUT DATA TO SEND ===`);
+      console.log(JSON.stringify(data, null, 2));
       
       return new Response(JSON.stringify(data), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     } else {
       // For other content types, use simple populate
-      apiUrl = `${strapiUrl}/api/${contentType}?populate=*`;
+      const apiUrl = `${strapiUrl}/api/${contentType}?populate=*`;
       console.log(`Fetching ${contentType} from Strapi: ${apiUrl}`);
 
       const response = await fetch(apiUrl, {
