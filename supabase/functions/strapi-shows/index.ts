@@ -32,16 +32,14 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - use simpler populate strategy to avoid API errors
-      endpoint = `/api/shows?populate[bild]=*&populate[performers]=*&populate[location]=*`;
-      console.log(`Fetching single show with performers and location: ${strapiUrl}${endpoint}`);
+      // For single show details
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[image]=*&populate[performers]=*&populate[location]=*`;
+      console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing - just show images
-      endpoint = '/api/shows?populate[bild]=*';
-      console.log(`Fetching all shows with bild: ${strapiUrl}${endpoint}`);
+      // For listing all shows
+      endpoint = '/api/shows?populate[image]=*';
+      console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
-
-    console.log(`Fetching from Strapi: ${strapiUrl}${endpoint}`);
 
     const response = await fetch(`${strapiUrl}${endpoint}`, {
       headers: {
@@ -58,19 +56,32 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log(`Successfully fetched shows data:`, JSON.stringify(data, null, 2));
+    console.log('Successfully fetched shows data:', JSON.stringify(data, null, 2));
     
     // Extra logging for performers when fetching single show
-    if (targetSlug && data.data?.length > 0) {
+    if (targetSlug && data.data && data.data.length > 0) {
       const show = data.data[0];
-      if (show.performers) {
-        console.log('=== SHOW PERFORMERS ANALYSIS ===');
-        show.performers.forEach((performer: any, index: number) => {
-          console.log(`Show Performer ${index}:`, JSON.stringify(performer, null, 2));
-          if (performer.bild) {
-            console.log(`Show Performer ${index} - BILD FIELD:`, JSON.stringify(performer.bild, null, 2));
+      console.log('=== SINGLE SHOW ANALYSIS ===');
+      
+      // Log main show image
+      if (show.attributes?.image) {
+        console.log('Show main image:', JSON.stringify(show.attributes.image, null, 2));
+      }
+      
+      // Log performers and their images
+      if (show.attributes?.performers) {
+        console.log('=== PERFORMERS ANALYSIS ===');
+        show.attributes.performers.forEach((perf: any, i: number) => {
+          console.log(`Performer ${i}:`, JSON.stringify(perf, null, 2));
+          if (perf.image) {
+            console.log(`Performer ${i} image:`, JSON.stringify(perf.image, null, 2));
           }
         });
+      }
+      
+      // Log location
+      if (show.attributes?.location) {
+        console.log('Show location:', JSON.stringify(show.attributes.location, null, 2));
       }
     }
     
