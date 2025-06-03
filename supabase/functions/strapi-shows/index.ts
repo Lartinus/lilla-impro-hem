@@ -32,12 +32,12 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - include performers with their images and location
-      endpoint = `/api/shows?populate[bild]=*&populate[performers][populate]=bild&populate[location]=*`;
+      // For single show details - use simpler populate strategy to avoid API errors
+      endpoint = `/api/shows?populate[bild]=*&populate[performers]=*&populate[location]=*`;
       console.log(`Fetching single show with performers and location: ${strapiUrl}${endpoint}`);
     } else {
       // For listing - just show images
-      endpoint = '/api/shows?populate=bild';
+      endpoint = '/api/shows?populate[bild]=*';
       console.log(`Fetching all shows with bild: ${strapiUrl}${endpoint}`);
     }
 
