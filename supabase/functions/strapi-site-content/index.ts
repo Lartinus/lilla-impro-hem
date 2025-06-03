@@ -25,7 +25,8 @@ serve(async (req) => {
     
     if (contentType === 'about') {
       // Try multiple populate strategies for Strapi v5 - same approach as courses and shows
-      let endpoint = `/api/${contentType}?populate[performers][populate][image]=*`;
+      // First try with bild field since that's what works for courses
+      let endpoint = `/api/${contentType}?populate[performers][populate][bild]=*`;
       
       console.log(`Fetching about content from Strapi: ${strapiUrl}${endpoint}`);
 
@@ -37,11 +38,11 @@ serve(async (req) => {
       });
 
       if (!response.ok) {
-        console.error(`Strapi API error with specific populate: ${response.status} - ${response.statusText}`);
+        console.error(`Strapi API error with specific populate (bild): ${response.status} - ${response.statusText}`);
         
-        // Try alternative populate syntax
-        endpoint = `/api/${contentType}?populate=performers.image`;
-        console.log(`Trying alternative populate: ${strapiUrl}${endpoint}`);
+        // Try alternative populate syntax with bild
+        endpoint = `/api/${contentType}?populate=performers.bild`;
+        console.log(`Trying alternative populate with bild: ${strapiUrl}${endpoint}`);
         
         response = await fetch(`${strapiUrl}${endpoint}`, {
           headers: {
@@ -51,11 +52,11 @@ serve(async (req) => {
         });
         
         if (!response.ok) {
-          console.error(`Alternative populate failed: ${response.status}`);
+          console.error(`Alternative populate with bild failed: ${response.status}`);
           
-          // Final fallback with deep populate
-          endpoint = `/api/${contentType}?populate=deep`;
-          console.log(`Trying deep populate: ${strapiUrl}${endpoint}`);
+          // Try with image field instead
+          endpoint = `/api/${contentType}?populate[performers][populate][image]=*`;
+          console.log(`Trying with image field: ${strapiUrl}${endpoint}`);
           
           response = await fetch(`${strapiUrl}${endpoint}`, {
             headers: {
@@ -65,9 +66,11 @@ serve(async (req) => {
           });
           
           if (!response.ok) {
-            // Last resort - simple populate
-            endpoint = `/api/${contentType}?populate=*`;
-            console.log(`Final fallback to populate=*: ${strapiUrl}${endpoint}`);
+            console.error(`Image field populate failed: ${response.status}`);
+            
+            // Try alternative syntax with image
+            endpoint = `/api/${contentType}?populate=performers.image`;
+            console.log(`Trying alternative populate with image: ${strapiUrl}${endpoint}`);
             
             response = await fetch(`${strapiUrl}${endpoint}`, {
               headers: {
@@ -77,7 +80,35 @@ serve(async (req) => {
             });
             
             if (!response.ok) {
-              throw new Error(`All Strapi API attempts failed: ${response.status}`);
+              console.error(`Alternative image populate failed: ${response.status}`);
+              
+              // Final fallback with deep populate
+              endpoint = `/api/${contentType}?populate=deep`;
+              console.log(`Trying deep populate: ${strapiUrl}${endpoint}`);
+              
+              response = await fetch(`${strapiUrl}${endpoint}`, {
+                headers: {
+                  'Authorization': `Bearer ${strapiToken}`,
+                  'Content-Type': 'application/json',
+                },
+              });
+              
+              if (!response.ok) {
+                // Last resort - simple populate
+                endpoint = `/api/${contentType}?populate=*`;
+                console.log(`Final fallback to populate=*: ${strapiUrl}${endpoint}`);
+                
+                response = await fetch(`${strapiUrl}${endpoint}`, {
+                  headers: {
+                    'Authorization': `Bearer ${strapiToken}`,
+                    'Content-Type': 'application/json',
+                  },
+                });
+                
+                if (!response.ok) {
+                  throw new Error(`All Strapi API attempts failed: ${response.status}`);
+                }
+              }
             }
           }
         }
@@ -86,16 +117,16 @@ serve(async (req) => {
       const data = await response.json();
       console.log(`Successfully fetched about data:`, JSON.stringify(data, null, 2));
       
-      // Log specific performer data to see what we're getting - same as shows function
+      // Log specific performer data to see what we're getting - same as courses function
       if (data.data?.performers) {
         console.log('=== CHECKING PERFORMERS FOR IMAGES ===');
         data.data.performers.forEach((performer: any, index: number) => {
           console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
-          if (performer.image) {
-            console.log(`Performer ${index} - IMAGE FIELD:`, JSON.stringify(performer.image, null, 2));
-          }
           if (performer.bild) {
             console.log(`Performer ${index} - BILD FIELD:`, JSON.stringify(performer.bild, null, 2));
+          }
+          if (performer.image) {
+            console.log(`Performer ${index} - IMAGE FIELD:`, JSON.stringify(performer.image, null, 2));
           }
         });
       }
