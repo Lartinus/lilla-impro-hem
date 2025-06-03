@@ -32,12 +32,12 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - use "bild" instead of "image"
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[performers]=*&populate[location]=*`;
+      // For single show details - use simple populate all approach
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing all shows - use "bild" instead of "image"
-      endpoint = '/api/shows?populate[bild]=*';
+      // For listing all shows - use simple populate all approach
+      endpoint = '/api/shows?populate=*';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
