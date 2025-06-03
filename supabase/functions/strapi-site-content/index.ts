@@ -20,13 +20,13 @@ serve(async (req) => {
     const { type } = await req.json();
     const contentType = type || 'site-settings';
     
-    // For 'about' content type, specifically populate performer images
+    // For 'about' content type, try different populate strategies with fallback
     let apiUrl;
     
     if (contentType === 'about') {
-      // Specifically populate performers with their bild field
-      apiUrl = `${strapiUrl}/api/${contentType}?populate[performers][populate][bild]=*`;
-      console.log(`Fetching about content with performer images: ${apiUrl}`);
+      // First try with simple populate, then handle performers separately if needed
+      apiUrl = `${strapiUrl}/api/${contentType}?populate=*`;
+      console.log(`Fetching about content with populate=*: ${apiUrl}`);
     } else {
       // For other content types, use simple populate
       apiUrl = `${strapiUrl}/api/${contentType}?populate=*`;
@@ -50,9 +50,9 @@ serve(async (req) => {
     const data = await response.json();
     console.log(`Successfully fetched ${contentType}:`, JSON.stringify(data, null, 2));
     
-    // Extra detailed logging for performers and their images
+    // If this is about content and we have performers without images, try to fetch performer images separately
     if (contentType === 'about' && data.data?.performers) {
-      console.log('=== DETAILED PERFORMERS ANALYSIS ===');
+      console.log('=== CHECKING PERFORMERS FOR IMAGES ===');
       data.data.performers.forEach((performer: any, index: number) => {
         console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
         if (performer.bild) {
@@ -72,7 +72,7 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       error: error.message,
       strapiUrl: strapiUrl,
-      contentType: 'course-main-info'
+      contentType: 'about'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
