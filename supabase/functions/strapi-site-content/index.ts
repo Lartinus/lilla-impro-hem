@@ -20,13 +20,13 @@ serve(async (req) => {
     const { type } = await req.json();
     const contentType = type || 'site-settings';
     
-    // For 'about' content type, use simpler populate strategy
+    // For 'about' content type, specifically populate performer images
     let apiUrl;
     
     if (contentType === 'about') {
-      // Use simple populate to avoid API errors
-      apiUrl = `${strapiUrl}/api/${contentType}?populate=*`;
-      console.log(`Fetching about content: ${apiUrl}`);
+      // Specifically populate performers with their bild field
+      apiUrl = `${strapiUrl}/api/${contentType}?populate[performers][populate][bild]=*`;
+      console.log(`Fetching about content with performer images: ${apiUrl}`);
     } else {
       // For other content types, use simple populate
       apiUrl = `${strapiUrl}/api/${contentType}?populate=*`;
