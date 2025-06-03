@@ -20,12 +20,12 @@ serve(async (req) => {
     const { type } = await req.json();
     const contentType = type || 'site-settings';
     
-    // For 'about' content type, try multiple populate strategies like courses function
+    // For 'about' content type, try multiple populate strategies like courses and shows functions
     let apiUrl;
     
     if (contentType === 'about') {
-      // Try multiple populate strategies for Strapi v5 - same approach as courses
-      let endpoint = `/api/${contentType}?populate[performers][populate][bild]=*`;
+      // Try multiple populate strategies for Strapi v5 - same approach as courses and shows
+      let endpoint = `/api/${contentType}?populate[performers][populate][image]=*`;
       
       console.log(`Fetching about content from Strapi: ${strapiUrl}${endpoint}`);
 
@@ -40,7 +40,7 @@ serve(async (req) => {
         console.error(`Strapi API error with specific populate: ${response.status} - ${response.statusText}`);
         
         // Try alternative populate syntax
-        endpoint = `/api/${contentType}?populate=performers.bild`;
+        endpoint = `/api/${contentType}?populate=performers.image`;
         console.log(`Trying alternative populate: ${strapiUrl}${endpoint}`);
         
         response = await fetch(`${strapiUrl}${endpoint}`, {
@@ -86,16 +86,16 @@ serve(async (req) => {
       const data = await response.json();
       console.log(`Successfully fetched about data:`, JSON.stringify(data, null, 2));
       
-      // Log specific performer data to see what we're getting - same as courses function
+      // Log specific performer data to see what we're getting - same as shows function
       if (data.data?.performers) {
         console.log('=== CHECKING PERFORMERS FOR IMAGES ===');
         data.data.performers.forEach((performer: any, index: number) => {
           console.log(`Performer ${index}:`, JSON.stringify(performer, null, 2));
-          if (performer.bild) {
-            console.log(`Performer ${index} - BILD FIELD:`, JSON.stringify(performer.bild, null, 2));
-          }
           if (performer.image) {
             console.log(`Performer ${index} - IMAGE FIELD:`, JSON.stringify(performer.image, null, 2));
+          }
+          if (performer.bild) {
+            console.log(`Performer ${index} - BILD FIELD:`, JSON.stringify(performer.bild, null, 2));
           }
         });
       }
