@@ -32,12 +32,12 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[image]=*&populate[performers]=*&populate[location]=*`;
+      // For single show details - use "bild" instead of "image"
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[performers]=*&populate[location]=*`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing all shows
-      endpoint = '/api/shows?populate[image]=*';
+      // For listing all shows - use "bild" instead of "image"
+      endpoint = '/api/shows?populate[bild]=*';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
@@ -63,9 +63,9 @@ serve(async (req) => {
       const show = data.data[0];
       console.log('=== SINGLE SHOW ANALYSIS ===');
       
-      // Log main show image
-      if (show.attributes?.image) {
-        console.log('Show main image:', JSON.stringify(show.attributes.image, null, 2));
+      // Log main show image (now using "bild")
+      if (show.attributes?.bild) {
+        console.log('Show main bild:', JSON.stringify(show.attributes.bild, null, 2));
       }
       
       // Log performers and their images
@@ -73,8 +73,8 @@ serve(async (req) => {
         console.log('=== PERFORMERS ANALYSIS ===');
         show.attributes.performers.forEach((perf: any, i: number) => {
           console.log(`Performer ${i}:`, JSON.stringify(perf, null, 2));
-          if (perf.image) {
-            console.log(`Performer ${i} image:`, JSON.stringify(perf.image, null, 2));
+          if (perf.bild) {
+            console.log(`Performer ${i} bild:`, JSON.stringify(perf.bild, null, 2));
           }
         });
       }
