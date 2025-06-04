@@ -30,12 +30,12 @@ serve(async (req) => {
       }
     }
     
-    // Build endpoint - simple populate without problematic nested relations
+    // Build endpoint - try deeper populate for performers
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=performers&populate=location&populate=bild`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate]=bild&populate=location&populate=bild`;
     } else {
-      endpoint = '/api/shows?populate=performers&populate=location&populate=bild';
+      endpoint = '/api/shows?populate[performers][populate]=bild&populate=location&populate=bild';
     }
 
     console.log(`Fetching shows from: ${strapiUrl}${endpoint}`);
