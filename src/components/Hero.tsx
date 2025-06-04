@@ -6,7 +6,7 @@ import ServiceBoxes from './ServiceBoxes';
 const Hero = () => {
   return (
     <>
-      <section className="min-h-screen flex flex-col justify-center py-12 px-5 md:px-4 relative overflow-hidden">
+      <section className="min-h-screen flex flex-col justify-start py-12 px-0.5 md:px-4 relative overflow-hidden">
         <div className="relative z-10">
           {/* Hero heading outside the box */}
           {/* Combined content box */}
