@@ -30,11 +30,7 @@ const Courses = () => {
 
   // Fallback practical info if course doesn't have its own
   const practicalInfo = [
-    "8 tillfällen á 2,5h",
-    "Startdatum: 28 oktober", 
-    "12 deltagare",
-    "2 800 kr (ordinarie)",
-    "2 200 kr (pensionär, student eller omtag)"
+    "Kommer inom kort."
   ];
 
   if (coursesLoading || mainInfoLoading) {
