@@ -1,3 +1,4 @@
+
 // Helper functions for transforming Strapi data
 export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
@@ -90,6 +91,11 @@ export const formatStrapiShowSimple = (strapiShow: any) => {
   
   // Log the bild field to debug image issues
   console.log('formatStrapiShowSimple - Raw bild field:', JSON.stringify(showData.bild, null, 2));
+  console.log('formatStrapiShowSimple - Checking for bild field:', 'bild' in showData);
+  console.log('formatStrapiShowSimple - Show data keys:', Object.keys(showData));
+  
+  const showImage = getStrapiImageUrl(showData.bild);
+  console.log('formatStrapiShowSimple - Processed image URL:', showImage);
   
   const formatted = {
     id: strapiShow.id,
@@ -98,7 +104,7 @@ export const formatStrapiShowSimple = (strapiShow: any) => {
     time: showData.time,
     location: locationName,
     slug: showData.slug,
-    image: getStrapiImageUrl(showData.bild),
+    image: showImage,
   };
   
   console.log('formatStrapiShowSimple - Final formatted show:', formatted);
