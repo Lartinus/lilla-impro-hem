@@ -1,5 +1,4 @@
 
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -31,13 +30,13 @@ serve(async (req) => {
       }
     }
     
-    // Strapi v5 specific populate syntax for nested relations
+    // Simplified populate strategy - avoid location populate to prevent circular references
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[location]=*&populate[bild]=*&populate[performers][populate][bild]=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[performers][populate][bild]=*`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate[location]=*&populate[bild]=*&populate[performers][populate][bild]=*';
+      endpoint = '/api/shows?populate[bild]=*&populate[performers][populate][bild]=*';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
@@ -91,9 +90,9 @@ serve(async (req) => {
         console.log('No performers found in show');
       }
       
-      // Log location
+      // Log location manually since we're not populating it
       if (show.location) {
-        console.log('Show location:', JSON.stringify(show.location, null, 2));
+        console.log('Show location (not populated):', JSON.stringify(show.location, null, 2));
       }
     }
     
@@ -108,4 +107,3 @@ serve(async (req) => {
     });
   }
 });
-
