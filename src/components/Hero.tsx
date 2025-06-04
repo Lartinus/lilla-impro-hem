@@ -20,6 +20,9 @@ const Hero = () => {
           {/* Combined content box */}
           <div className="text-left space-y-4 p-6 md:p-16 lg:p-20 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
             {/* Description */}
+            <div className="text-lg max-w-4xl mx-auto">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-regular leading-tight text-theatre-light tracking-normal mb-4 max-w-4xl mx-auto">
+                Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
             <div className="max-w-4xl space-y-2 pb-1">
               <p className="text-lg text-gray-700 font-light" style={{ lineHeight: '1.2' }}>
                 Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
