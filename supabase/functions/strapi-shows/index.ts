@@ -54,7 +54,7 @@ serve(async (req) => {
       }
     }
     
-    // Build endpoint
+    // Build endpoint - simplified populate without nested performer images
     let endpoint;
     if (targetSlug) {
       endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers]=*&populate[location]=*&populate[bild]=*`;
