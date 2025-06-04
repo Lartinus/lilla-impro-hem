@@ -31,13 +31,13 @@ serve(async (req) => {
       }
     }
     
-    // Simplified populate strategy to avoid Strapi v5 issues
+    // Strapi v5 specific populate syntax for nested relations
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[location]=*&populate[bild]=*&populate[performers][populate][bild]=*`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate=*';
+      endpoint = '/api/shows?populate[location]=*&populate[bild]=*&populate[performers][populate][bild]=*';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
