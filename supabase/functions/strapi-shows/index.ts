@@ -31,13 +31,13 @@ serve(async (req) => {
       }
     }
     
-    // Use simple populate strategy that works with Strapi v5
+    // Use basic populate that works with Strapi v5
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=deep`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate=deep';
+      endpoint = '/api/shows?populate=*';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
