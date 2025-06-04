@@ -24,7 +24,7 @@ const Shows = () => {
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
               Föreställningar
             </h1>
-            <p className="text-theatre-light/80">Laddar föreställningar...</p>
+            <p className="text-theatre-light/80">Laddar föreställningar.</p>
           </div>
         </section>
 
@@ -45,7 +45,7 @@ const Shows = () => {
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
               Föreställningar
             </h1>
-            <p className="text-theatre-light/80">Ett fel uppstod vid laddning av föreställningar.</p>
+            <p className="text-theatre-light/80">Ett fel uppstod vid laddning av föreställningar. Försök igen! </p>
           </div>
         </section>
 
@@ -82,7 +82,7 @@ const Shows = () => {
             </div>
           ) : (
             <div className="text-center text-theatre-light/80">
-              <p>Inga föreställningar tillgängliga för tillfället.</p>
+              <p>Vi har inga föreställningar ute just nu. Kom gärna tillbaka senare!</p>
             </div>
           )}
         </div>
