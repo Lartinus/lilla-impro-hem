@@ -1,4 +1,5 @@
 
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -30,14 +31,13 @@ serve(async (req) => {
       }
     }
     
+    // Use simple populate=deep which should work with Strapi v5
     let endpoint;
     if (targetSlug) {
-      // For single show details - use deep populate to get performer images
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[performers][populate][bild]=*&populate[location]=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=deep`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing all shows - use deep populate for performer images
-      endpoint = '/api/shows?populate[bild]=*&populate[performers][populate][bild]=*&populate[location]=*';
+      endpoint = '/api/shows?populate=deep';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
@@ -53,11 +53,11 @@ serve(async (req) => {
       const errorText = await response.text();
       console.error('Error response:', errorText);
       
-      // Fallback to simple populate if specific populate fails
-      console.log('Trying fallback populate strategy...');
+      // Final fallback to simple populate=*
+      console.log('Trying final fallback with populate=*...');
       const fallbackEndpoint = targetSlug 
-        ? `/api/shows?filters[slug][$eq]=${targetSlug}&populate=deep`
-        : '/api/shows?populate=deep';
+        ? `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`
+        : '/api/shows?populate=*';
       
       const fallbackResponse = await fetch(`${strapiUrl}${fallbackEndpoint}`, {
         headers: {
@@ -67,27 +67,7 @@ serve(async (req) => {
       });
       
       if (!fallbackResponse.ok) {
-        // Final fallback
-        const finalEndpoint = targetSlug 
-          ? `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`
-          : '/api/shows?populate=*';
-        
-        const finalResponse = await fetch(`${strapiUrl}${finalEndpoint}`, {
-          headers: {
-            'Authorization': `Bearer ${strapiToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        
-        if (!finalResponse.ok) {
-          throw new Error(`All Strapi API attempts failed: ${finalResponse.status}`);
-        }
-        
-        const finalData = await finalResponse.json();
-        console.log('Using final fallback data:', JSON.stringify(finalData, null, 2));
-        return new Response(JSON.stringify(finalData), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
+        throw new Error(`All Strapi API attempts failed: ${fallbackResponse.status}`);
       }
       
       const fallbackData = await fallbackResponse.json();
@@ -138,3 +118,4 @@ serve(async (req) => {
     });
   }
 });
+
