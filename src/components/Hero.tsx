@@ -8,11 +8,12 @@ const Hero = () => {
     <>
       <section className="min-h-screen flex flex-col justify-center py-12 px-0.5 md:px-4 relative overflow-hidden">
         <div className="relative z-10">
-          {/* Hero heading outside the box */}
           {/* Combined content box */}
-          <div className="text-left space-y-4 mt-12 p-6 md:p-16 lg:p-20 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
+          <div className="text-left space-y-4 p-6 md:p-16 lg:p-20 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
             {/* Description */}
             <div className="max-w-4xl space-y-2 pb-1">
+             <h2 className="text-xl font-bold text-gray-800 mb-2">
+               Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.</h2>
               <p className="text-lg text-gray-700 font-light" style={{ lineHeight: '1.2' }}>
                 Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, 
