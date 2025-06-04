@@ -1,3 +1,4 @@
+
 import { MapPin, Phone, Mail, Facebook, Instagram } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -10,7 +11,7 @@ const Footer = () => {
             <img 
               src="/lovable-uploads/ac906279-978d-4e9c-b9a1-eb3a90b48aef.png" 
               alt="Lilla Improteatern" 
-              className="h-16 w-auto"
+              className="h-16 w-auto hidden md:block"
             />
             <p className="text-theatre-light/80 leading-relaxed">
               Ditt nya hem för Improv Comedy i Stockholm. Vi skapar tillsammans genom humor, kreativitet och gemenskap.
