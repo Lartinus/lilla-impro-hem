@@ -4,13 +4,8 @@ const Hero = () => {
   return (
     <section className="min-h-screen flex flex-col justify-center py-12 px-0.5 md:px-4 relative overflow-hidden">
       <div className="relative z-10">
-        <div className="
-            mt-12 md:mt-8 
-            py-12 md:py-8        {/* lika mycket upp som ner */}
-            px-4 md:px-16 lg:px-20 {/* valfri horisontell padding */}
-            text-left space-y-4 
-            bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto 
-            animate-fade-in">
+        {/* På mobil: mt-12, på desktop: mt-8 */}
+        <div className="mt-12 md:mt-8 p-6 md:p-16 lg:p-20 text-left space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
           
           {/* Beskrivning */}
           <div className="max-w-4xl space-y-2 pb-1">
