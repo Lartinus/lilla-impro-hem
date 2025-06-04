@@ -21,7 +21,7 @@ const Shows = () => {
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
         
-        <section className="px-0.5 md:px-4 mt-16 py-6 animate-fade-in">
+        <section className="px-0.5 md:px-4 mt-4 py-8 animate-fade-in">
           <div className="text-center">
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
               Föreställningar
