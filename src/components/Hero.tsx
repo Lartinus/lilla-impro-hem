@@ -1,15 +1,16 @@
+
 import ServiceBoxes from './ServiceBoxes';
 
 const Hero = () => {
   return (
     <section className="min-h-screen flex flex-col justify-center py-12 px-0.5 md:px-4 relative overflow-hidden">
       <div className="relative z-10">
-        {/* På mobil: mt-12, på desktop: mt-8 */}
-        <div className="mt-12 md:mt-8 p-6 md:p-16 lg:p-20 text-left space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
+        {/* På mobil: mt-12, på desktop: mt-20 för mer avstånd till header */}
+        <div className="mt-12 md:mt-20 p-6 md:p-16 lg:p-20 text-left space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
           
           {/* Beskrivning */}
           <div className="max-w-4xl space-y-2 pb-1">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left md:text-center">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left">
               Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
             </h1>
             <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
@@ -38,10 +39,10 @@ const Hero = () => {
 
           {/* Video‐rubriker */}
           <div className="max-w-4xl space-y-3 pt-8">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left md:text-center">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left">
               Vad är improv comedy egentligen?
             </h1>
-            <h3 className="text-theatre-secondary font-medium mb-4 text-left md:text-center">
+            <h3 className="text-theatre-secondary font-medium mb-4 text-left">
               Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
             </h3>
           </div>
