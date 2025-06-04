@@ -3,7 +3,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import CourseBookingForm from '@/components/CourseBookingForm';
 import CourseLeaderInfo from '@/components/CourseLeaderInfo';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
-import { getStrapiImageUrl } from '@/utils/strapiHelpers';
 
 interface Teacher {
   id: number;
@@ -67,7 +66,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           <CourseLeaderInfo courseLeader={{
             id: course.teacher.id,
             name: course.teacher.name,
-            image: getStrapiImageUrl(course.teacher.image),
+            image: course.teacher.image,
             bio: course.teacher.bio
           }} />
         )}
