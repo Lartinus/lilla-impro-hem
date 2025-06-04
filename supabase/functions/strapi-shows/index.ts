@@ -31,14 +31,14 @@ serve(async (req) => {
       }
     }
     
-    // Use deep populate to get all nested relations including performer images
+    // Use simple populate to avoid validation errors
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate]=bild&populate[location]=*&populate[bild]=*`;
-      console.log(`Fetching single show with deep population: ${strapiUrl}${endpoint}`);
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
+      console.log(`Fetching single show with simple populate: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate[performers][populate]=bild&populate[location]=*&populate[bild]=*';
-      console.log(`Fetching all shows with deep population: ${strapiUrl}${endpoint}`);
+      endpoint = '/api/shows?populate=*';
+      console.log(`Fetching all shows with simple populate: ${strapiUrl}${endpoint}`);
     }
 
     console.log(`Making request to: ${strapiUrl}${endpoint}`);
@@ -81,11 +81,16 @@ serve(async (req) => {
             const performer = show.performers[perfIndex];
             console.log(`Show ${showIndex}, Performer ${perfIndex} (${performer.name}):`, JSON.stringify(performer, null, 2));
             
-            // Check if performer has bild field
-            if (performer.bild) {
-              console.log(`Performer ${perfIndex} has bild:`, JSON.stringify(performer.bild, null, 2));
-            } else {
-              console.log(`Performer ${perfIndex} missing bild field`);
+            // Check if performer has any image-related fields
+            const imageFields = ['bild', 'image', 'picture', 'photo', 'avatar'];
+            imageFields.forEach(field => {
+              if (performer[field]) {
+                console.log(`Performer ${perfIndex} has ${field}:`, JSON.stringify(performer[field], null, 2));
+              }
+            });
+            
+            if (!imageFields.some(field => performer[field])) {
+              console.log(`Performer ${perfIndex} has no image fields. Available fields:`, Object.keys(performer));
             }
           }
         }
