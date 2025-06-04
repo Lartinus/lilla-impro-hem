@@ -10,30 +10,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Helper function to fetch performer with image
-const fetchPerformerWithImage = async (performerId: number) => {
-  try {
-    const response = await fetch(`${strapiUrl}/api/performers/${performerId}?populate=bild`, {
-      headers: {
-        'Authorization': `Bearer ${strapiToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      console.log(`Fetched performer ${performerId} with image:`, JSON.stringify(data, null, 2));
-      return data.data;
-    } else {
-      console.log(`Failed to fetch performer ${performerId}:`, response.status);
-      return null;
-    }
-  } catch (error) {
-    console.error(`Error fetching performer ${performerId}:`, error);
-    return null;
-  }
-};
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -82,38 +58,9 @@ serve(async (req) => {
 
     const data = await response.json();
     console.log('Successfully fetched shows data');
+    console.log('Shows data structure:', JSON.stringify(data, null, 2));
     
-    // Enhance performer data with images by making separate API calls
-    if (data.data && data.data.length > 0) {
-      for (let showIndex = 0; showIndex < data.data.length; showIndex++) {
-        const show = data.data[showIndex];
-        console.log(`Processing show ${showIndex}: ${show.titel || show.title}`);
-        
-        if (show.performers && Array.isArray(show.performers)) {
-          console.log(`Show ${showIndex} has ${show.performers.length} performers`);
-          
-          // Fetch detailed performer data with images
-          for (let perfIndex = 0; perfIndex < show.performers.length; perfIndex++) {
-            const performer = show.performers[perfIndex];
-            console.log(`Fetching detailed data for performer ${perfIndex}: ${performer.name} (ID: ${performer.id})`);
-            
-            const detailedPerformer = await fetchPerformerWithImage(performer.id);
-            if (detailedPerformer) {
-              // Merge the detailed data (including image) with existing performer data
-              show.performers[perfIndex] = {
-                ...performer, // Keep existing data
-                ...detailedPerformer, // Add detailed data including bild
-              };
-              console.log(`Enhanced performer ${perfIndex} data:`, JSON.stringify(show.performers[perfIndex], null, 2));
-            } else {
-              console.log(`Could not enhance performer ${perfIndex} data`);
-            }
-          }
-        }
-      }
-    }
-    
-    console.log('Final enhanced data ready to return');
+    console.log('Final shows data ready to return');
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
