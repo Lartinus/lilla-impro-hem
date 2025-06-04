@@ -1,5 +1,4 @@
 
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -31,13 +30,13 @@ serve(async (req) => {
       }
     }
     
-    // Use simple populate=deep which should work with Strapi v5
+    // Use specific populate strategy that works with Strapi v5
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=deep`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[performers][populate][bild]=*&populate[location]=*`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate=deep';
+      endpoint = '/api/shows?populate[bild]=*&populate[performers][populate][bild]=*&populate[location]=*';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
@@ -53,8 +52,8 @@ serve(async (req) => {
       const errorText = await response.text();
       console.error('Error response:', errorText);
       
-      // Final fallback to simple populate=*
-      console.log('Trying final fallback with populate=*...');
+      // Fallback to simpler populate strategy
+      console.log('Trying fallback with populate=*...');
       const fallbackEndpoint = targetSlug 
         ? `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`
         : '/api/shows?populate=*';
@@ -118,4 +117,3 @@ serve(async (req) => {
     });
   }
 });
-
