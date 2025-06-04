@@ -30,7 +30,7 @@ serve(async (req) => {
       }
     }
     
-    // Build endpoint - try deeper populate for performers
+    // Build endpoint - populate both show images and performer images correctly
     let endpoint;
     if (targetSlug) {
       endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate]=bild&populate=location&populate=bild`;
