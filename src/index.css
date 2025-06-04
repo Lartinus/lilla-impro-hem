@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -268,5 +267,18 @@
       orphans: 2;
       widows: 2;
     }
+  }
+  
+  /* ===== SHOW CARD LINE HEIGHT SETTINGS ===== */
+  /* Kompakt radavstånd för show card titlar och datum */
+  .show-card h2,
+  .show-card .date-time {
+    line-height: 1.2 !important;
+  }
+  
+  /* ===== COURSE CARD TITLE LINE HEIGHT SETTINGS ===== */
+  /* Kompakt radavstånd för kurstitlar */
+  .course-card h2 {
+    line-height: 1.2 !important;
   }
 }
