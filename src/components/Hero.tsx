@@ -1,3 +1,4 @@
+
 import ServiceBoxes from './ServiceBoxes';
 
 const Hero = () => {
@@ -45,14 +46,12 @@ const Hero = () => {
             {/* Video section content moved here */}
             <div className="mt-8">
               <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white">
-                <div className="space-y-4">
-                  <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left md:text-center">
-                    Vad är improv comedy egentligen?
-                  </h1>
-                  <h3 className="text-theatre-secondary font-medium mb-4 text-left md:text-center">
-                    Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
-                  </h3>
-                </div>
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left md:text-center">
+                  Vad är improv comedy egentligen?
+                </h1>
+                <h3 className="text-theatre-secondary font-medium mb-4 text-left md:text-center">
+                  Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
+                </h3>
                 
                 <div className="grid md:grid-cols-3 gap-6">
                   {[1, 2, 3].map((video) => (
