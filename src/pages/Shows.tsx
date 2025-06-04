@@ -44,7 +44,7 @@ const Shows = () => {
       <Header />
       
       {/* Hero */}
-      <section className="px-0.5 md:px-4 mt-32 py-6 animate-fade-in">
+      <section className="px-0.5 md:px-4 mt-24 md:mt-32 py-4 md:py-6 animate-fade-in">
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
             Föreställningar
