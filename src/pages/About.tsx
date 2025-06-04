@@ -21,7 +21,7 @@ const About = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex items-center justify-center">
-        <div className="text-white text-xl">Laddar...</div>
+        <div className="text-white text-xl">Laddar.</div>
       </div>
     );
   }
