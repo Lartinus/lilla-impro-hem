@@ -30,15 +30,18 @@ serve(async (req) => {
       }
     }
     
-    // Simplified populate strategy - avoid location populate to prevent circular references
+    // Start with basic endpoint - no population at all to debug
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[performers][populate][bild]=*`;
-      console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}`;
+      console.log(`Fetching single show (basic): ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate[bild]=*&populate[performers][populate][bild]=*';
-      console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
+      endpoint = '/api/shows';
+      console.log(`Fetching all shows (basic): ${strapiUrl}${endpoint}`);
     }
+
+    console.log(`Making request to: ${strapiUrl}${endpoint}`);
+    console.log(`Using token: ${strapiToken.substring(0, 20)}...`);
 
     const response = await fetch(`${strapiUrl}${endpoint}`, {
       headers: {
@@ -47,60 +50,25 @@ serve(async (req) => {
       },
     });
 
+    console.log(`Response status: ${response.status}`);
+    console.log(`Response headers:`, Object.fromEntries(response.headers.entries()));
+
     if (!response.ok) {
       console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
       const errorText = await response.text();
-      console.error('Error response:', errorText);
-      throw new Error(`Strapi API failed: ${response.status}`);
+      console.error('Error response body:', errorText);
+      throw new Error(`Strapi API failed: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log('Successfully fetched shows data:', JSON.stringify(data, null, 2));
-    
-    // Extra logging for performers when fetching single show
-    if (targetSlug && data.data && data.data.length > 0) {
-      const show = data.data[0];
-      console.log('=== SINGLE SHOW ANALYSIS ===');
-      
-      // Log main show image (now using "bild")
-      if (show.bild) {
-        console.log('Show main bild:', JSON.stringify(show.bild, null, 2));
-      }
-      
-      // Log performers and their images with detailed analysis
-      if (show.performers) {
-        console.log('=== PERFORMERS ANALYSIS ===');
-        console.log('Raw performers structure:', JSON.stringify(show.performers, null, 2));
-        
-        if (Array.isArray(show.performers)) {
-          show.performers.forEach((perf: any, i: number) => {
-            console.log(`Performer ${i} FULL STRUCTURE:`, JSON.stringify(perf, null, 2));
-            
-            if (perf?.bild) {
-              console.log(`Performer ${i} bild field:`, JSON.stringify(perf.bild, null, 2));
-            } else {
-              console.log(`Performer ${i} NO BILD FIELD FOUND`);
-              console.log(`Available fields in performer ${i}:`, Object.keys(perf || {}));
-            }
-          });
-        } else {
-          console.log('Performers is not an array:', typeof show.performers);
-        }
-      } else {
-        console.log('No performers found in show');
-      }
-      
-      // Log location manually since we're not populating it
-      if (show.location) {
-        console.log('Show location (not populated):', JSON.stringify(show.location, null, 2));
-      }
-    }
+    console.log('Successfully fetched shows data (basic):', JSON.stringify(data, null, 2));
     
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Error in strapi-shows function:', error);
+    console.error('Error stack:', error.stack);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
