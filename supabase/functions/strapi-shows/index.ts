@@ -30,13 +30,13 @@ serve(async (req) => {
       }
     }
     
-    // Use specific populate strategy that works with Strapi v5
+    // Try simple populate strategy that includes all relations
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[performers][populate][bild]=*&populate[location]=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate[bild]=*&populate[performers][populate][bild]=*&populate[location]=*';
+      endpoint = '/api/shows?populate=*';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
@@ -51,29 +51,7 @@ serve(async (req) => {
       console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
       const errorText = await response.text();
       console.error('Error response:', errorText);
-      
-      // Fallback to simpler populate strategy
-      console.log('Trying fallback with populate=*...');
-      const fallbackEndpoint = targetSlug 
-        ? `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`
-        : '/api/shows?populate=*';
-      
-      const fallbackResponse = await fetch(`${strapiUrl}${fallbackEndpoint}`, {
-        headers: {
-          'Authorization': `Bearer ${strapiToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      if (!fallbackResponse.ok) {
-        throw new Error(`All Strapi API attempts failed: ${fallbackResponse.status}`);
-      }
-      
-      const fallbackData = await fallbackResponse.json();
-      console.log('Using fallback data:', JSON.stringify(fallbackData, null, 2));
-      return new Response(JSON.stringify(fallbackData), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      throw new Error(`Strapi API failed: ${response.status}`);
     }
 
     const data = await response.json();
@@ -92,10 +70,10 @@ serve(async (req) => {
       // Log performers and their images
       if (show.attributes?.performers) {
         console.log('=== PERFORMERS ANALYSIS ===');
-        show.attributes.performers.forEach((perf: any, i: number) => {
+        show.attributes.performers.data?.forEach((perf: any, i: number) => {
           console.log(`Performer ${i}:`, JSON.stringify(perf, null, 2));
-          if (perf.bild) {
-            console.log(`Performer ${i} bild:`, JSON.stringify(perf.bild, null, 2));
+          if (perf.attributes?.bild) {
+            console.log(`Performer ${i} bild:`, JSON.stringify(perf.attributes.bild, null, 2));
           }
         });
       }
