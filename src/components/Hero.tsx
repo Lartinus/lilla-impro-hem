@@ -5,7 +5,7 @@ const Hero = () => {
     <section className="min-h-screen flex flex-col justify-center py-12 px-0.5 md:px-4 relative overflow-hidden">
       <div className="relative z-10">
         {/* På mobil: mt-12, på desktop: mt-8 */}
-        <div className="mt-12 md:mt-8 p-6 md:p-16 lg:p-20 text-left space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
+        <div className="mt-20 md:mt-8 p-6 md:p-16 lg:p-20 text-left space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
           
           {/* Beskrivning */}
           <div className="max-w-4xl space-y-2 pb-1">
