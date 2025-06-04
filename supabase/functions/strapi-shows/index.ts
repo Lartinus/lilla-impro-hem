@@ -1,4 +1,5 @@
 
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -30,13 +31,13 @@ serve(async (req) => {
       }
     }
     
-    // Use Strapi v5 populate strategy that specifically includes performer images
+    // Use simple populate strategy that works with Strapi v5
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[location]=*&populate[performers][populate][bild]=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=deep`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate[bild]=*&populate[location]=*&populate[performers][populate][bild]=*';
+      endpoint = '/api/shows?populate=deep';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
@@ -114,3 +115,4 @@ serve(async (req) => {
     });
   }
 });
+
