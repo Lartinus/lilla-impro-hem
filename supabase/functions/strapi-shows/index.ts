@@ -1,4 +1,5 @@
 
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -30,14 +31,14 @@ serve(async (req) => {
       }
     }
     
-    // Try a different approach - fetch performers separately if needed
+    // Use deep populate to get all nested relations including performer images
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
-      console.log(`Fetching single show with all relations: ${strapiUrl}${endpoint}`);
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate]=bild&populate[location]=*&populate[bild]=*`;
+      console.log(`Fetching single show with deep population: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate=*';
-      console.log(`Fetching all shows with all relations: ${strapiUrl}${endpoint}`);
+      endpoint = '/api/shows?populate[performers][populate]=bild&populate[location]=*&populate[bild]=*';
+      console.log(`Fetching all shows with deep population: ${strapiUrl}${endpoint}`);
     }
 
     console.log(`Making request to: ${strapiUrl}${endpoint}`);
@@ -63,12 +64,11 @@ serve(async (req) => {
     const data = await response.json();
     console.log('Successfully fetched shows data:', JSON.stringify(data, null, 2));
     
-    // Now try to fetch performer details with images separately
+    // Log performer details to debug image issues
     if (data.data && data.data.length > 0) {
       for (let showIndex = 0; showIndex < data.data.length; showIndex++) {
         const show = data.data[showIndex];
         console.log(`Show ${showIndex} - Title:`, show.titel || show.title);
-        console.log(`Show ${showIndex} - All fields:`, Object.keys(show));
         
         if (show.bild) {
           console.log(`Show ${showIndex} bild data:`, JSON.stringify(show.bild, null, 2));
@@ -77,33 +77,15 @@ serve(async (req) => {
         if (show.performers && Array.isArray(show.performers)) {
           console.log(`Show ${showIndex} - Number of performers:`, show.performers.length);
           
-          // Try to fetch each performer with their image
           for (let perfIndex = 0; perfIndex < show.performers.length; perfIndex++) {
             const performer = show.performers[perfIndex];
-            console.log(`Show ${showIndex}, Performer ${perfIndex} fields:`, Object.keys(performer));
+            console.log(`Show ${showIndex}, Performer ${perfIndex} (${performer.name}):`, JSON.stringify(performer, null, 2));
             
-            // Try to fetch this performer with populate to get the image
-            try {
-              const performerResponse = await fetch(`${strapiUrl}/api/performers/${performer.id}?populate=*`, {
-                headers: {
-                  'Authorization': `Bearer ${strapiToken}`,
-                  'Content-Type': 'application/json',
-                },
-              });
-              
-              if (performerResponse.ok) {
-                const performerData = await performerResponse.json();
-                console.log(`Fetched performer ${perfIndex} with images:`, JSON.stringify(performerData, null, 2));
-                
-                // Update the performer in the original data with the populated version
-                if (performerData.data) {
-                  data.data[showIndex].performers[perfIndex] = performerData.data;
-                }
-              } else {
-                console.log(`Failed to fetch performer ${perfIndex} details:`, performerResponse.status);
-              }
-            } catch (performerError) {
-              console.log(`Error fetching performer ${perfIndex}:`, performerError);
+            // Check if performer has bild field
+            if (performer.bild) {
+              console.log(`Performer ${perfIndex} has bild:`, JSON.stringify(performer.bild, null, 2));
+            } else {
+              console.log(`Performer ${perfIndex} missing bild field`);
             }
           }
         }
@@ -122,3 +104,4 @@ serve(async (req) => {
     });
   }
 });
+
