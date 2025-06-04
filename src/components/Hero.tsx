@@ -1,5 +1,6 @@
 
 
+
 import ServiceBoxes from './ServiceBoxes';
 
 const Hero = () => {
@@ -44,12 +45,12 @@ const Hero = () => {
               </p>
             </div>
 
-            {/* Video section headings - moved out to same container level */}
+            {/* Video section headings - responsive alignment */}
             <div className="max-w-4xl space-y-3 pt-8">
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left md:text-center">
                 Vad är improv comedy egentligen?
               </h1>
-              <h3 className="text-theatre-secondary font-medium mb-4">
+              <h3 className="text-theatre-secondary font-medium mb-4 text-left md:text-center">
                 Upptäck konstformen som bygger på spontanitet, kreativitet och samarbete.
               </h3>
             </div>
@@ -83,4 +84,5 @@ const Hero = () => {
 };
 
 export default Hero;
+
 
