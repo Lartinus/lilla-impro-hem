@@ -245,28 +245,49 @@
   /* För rubriker på mobil - minska storlek om wrap sker */
   @media (max-width: 767px) {
     .text-xl {
-      font-size: clamp(1.125rem, 4vw, 1.25rem);
+      font-size: clamp(1rem, 4.5vw, 1.25rem);
+      line-height: 1.2;
     }
     
     .text-2xl {
-      font-size: clamp(1.25rem, 5vw, 1.5rem);
+      font-size: clamp(1.125rem, 5vw, 1.5rem);
+      line-height: 1.2;
     }
     
     .text-3xl {
-      font-size: clamp(1.5rem, 6vw, 1.875rem);
+      font-size: clamp(1.25rem, 6vw, 1.875rem);
+      line-height: 1.2;
     }
     
     /* Specifikt för kursrubriker som ofta wrappas */
     .course-card h2 {
-      font-size: clamp(1rem, 4.5vw, 1.25rem);
+      font-size: clamp(0.9rem, 4.2vw, 1.25rem);
       hyphens: auto;
       word-break: break-word;
+      line-height: 1.2;
+      text-wrap: balance;
     }
     
     /* Förhindra orphan words (enstaka ord på sista raden) */
     p, h1, h2, h3, h4, h5, h6 {
       orphans: 2;
       widows: 2;
+      text-wrap: balance;
+    }
+    
+    /* Extra aggressiv textbalansering för långa titlar */
+    .course-card h2[class*="text-xl"] {
+      font-size: clamp(0.85rem, 4vw, 1.125rem) !important;
+      word-spacing: -0.05em;
+      letter-spacing: -0.01em;
+    }
+  }
+  
+  /* Ytterligare responsive justering för mycket smala skärmar */
+  @media (max-width: 375px) {
+    .course-card h2 {
+      font-size: clamp(0.8rem, 3.8vw, 1rem);
+      line-height: 1.15;
     }
   }
 }
