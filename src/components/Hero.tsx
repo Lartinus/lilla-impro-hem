@@ -11,7 +11,7 @@ const Hero = () => {
           {/* Hero heading outside the box */}
           <section className="px-0.5 md:px-4 mt-20 py-6">
             <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4 max-w-4xl mx-auto">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-regular leading-tight text-theatre-light tracking-normal mb-4 max-w-4xl mx-auto">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
             </div>
