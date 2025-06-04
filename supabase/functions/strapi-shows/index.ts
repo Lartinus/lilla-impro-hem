@@ -1,5 +1,4 @@
 
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -31,13 +30,13 @@ serve(async (req) => {
       }
     }
     
-    // Use basic populate that works with Strapi v5
+    // Use explicit populate for Strapi v5 to ensure we get performer images
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[location]=*&populate[bild]=*&populate[performers][populate][bild]=*`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate=*';
+      endpoint = '/api/shows?populate[location]=*&populate[bild]=*&populate[performers][populate][bild]=*';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
@@ -64,43 +63,36 @@ serve(async (req) => {
       console.log('=== SINGLE SHOW ANALYSIS ===');
       
       // Log main show image (now using "bild")
-      if (show.attributes?.bild) {
-        console.log('Show main bild:', JSON.stringify(show.attributes.bild, null, 2));
+      if (show.bild) {
+        console.log('Show main bild:', JSON.stringify(show.bild, null, 2));
       }
       
       // Log performers and their images with detailed analysis
-      if (show.attributes?.performers) {
+      if (show.performers) {
         console.log('=== PERFORMERS ANALYSIS ===');
-        console.log('Raw performers structure:', JSON.stringify(show.attributes.performers, null, 2));
+        console.log('Raw performers structure:', JSON.stringify(show.performers, null, 2));
         
-        // Check if performers have data wrapper
-        const performersArray = show.attributes.performers.data || show.attributes.performers;
-        
-        if (Array.isArray(performersArray)) {
-          performersArray.forEach((perf: any, i: number) => {
+        if (Array.isArray(show.performers)) {
+          show.performers.forEach((perf: any, i: number) => {
             console.log(`Performer ${i} FULL STRUCTURE:`, JSON.stringify(perf, null, 2));
             
-            // Check different possible image field locations
-            const performerData = perf.attributes || perf;
-            console.log(`Performer ${i} attributes:`, JSON.stringify(performerData, null, 2));
-            
-            if (performerData?.bild) {
-              console.log(`Performer ${i} bild field:`, JSON.stringify(performerData.bild, null, 2));
+            if (perf?.bild) {
+              console.log(`Performer ${i} bild field:`, JSON.stringify(perf.bild, null, 2));
             } else {
               console.log(`Performer ${i} NO BILD FIELD FOUND`);
-              console.log(`Available fields in performer ${i}:`, Object.keys(performerData || {}));
+              console.log(`Available fields in performer ${i}:`, Object.keys(perf || {}));
             }
           });
         } else {
-          console.log('Performers is not an array:', typeof performersArray);
+          console.log('Performers is not an array:', typeof show.performers);
         }
       } else {
-        console.log('No performers found in show attributes');
+        console.log('No performers found in show');
       }
       
       // Log location
-      if (show.attributes?.location) {
-        console.log('Show location:', JSON.stringify(show.attributes.location, null, 2));
+      if (show.location) {
+        console.log('Show location:', JSON.stringify(show.location, null, 2));
       }
     }
     
@@ -115,4 +107,3 @@ serve(async (req) => {
     });
   }
 });
-
