@@ -1,5 +1,4 @@
 
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -31,17 +30,104 @@ serve(async (req) => {
       }
     }
     
-    // Use simple populate to avoid validation errors
+    // Try different populate strategies for Strapi v5
     let endpoint;
     if (targetSlug) {
+      // Try multiple populate approaches for single show
+      const populateOptions = [
+        'populate[performers][populate][0]=bild&populate[location]=*&populate[bild]=*',
+        'populate[performers][populate]=*&populate[location]=*&populate[bild]=*',
+        'populate=deep,2',
+        'populate=*'
+      ];
+      
+      for (let i = 0; i < populateOptions.length; i++) {
+        endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&${populateOptions[i]}`;
+        console.log(`Attempt ${i + 1}: Fetching single show: ${strapiUrl}${endpoint}`);
+        
+        const response = await fetch(`${strapiUrl}${endpoint}`, {
+          headers: {
+            'Authorization': `Bearer ${strapiToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`Attempt ${i + 1} successful!`);
+          
+          // Check if we got performer images
+          if (data.data && data.data.length > 0 && data.data[0].performers) {
+            const firstPerformer = data.data[0].performers[0];
+            if (firstPerformer && (firstPerformer.bild || firstPerformer.image || firstPerformer.picture)) {
+              console.log('Successfully got performer images with this populate strategy');
+              return new Response(JSON.stringify(data), {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              });
+            }
+          }
+          
+          // If no images found, try next strategy
+          console.log(`Attempt ${i + 1}: No performer images found, trying next strategy...`);
+          continue;
+        } else {
+          console.log(`Attempt ${i + 1} failed with status: ${response.status}`);
+          continue;
+        }
+      }
+      
+      // If all attempts failed, use simple populate as fallback
       endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
-      console.log(`Fetching single show with simple populate: ${strapiUrl}${endpoint}`);
+      console.log(`All attempts failed, using fallback: ${strapiUrl}${endpoint}`);
     } else {
+      // For all shows, try different strategies too
+      const populateOptions = [
+        'populate[performers][populate][0]=bild&populate[location]=*&populate[bild]=*',
+        'populate[performers][populate]=*&populate[location]=*&populate[bild]=*',
+        'populate=deep,2',
+        'populate=*'
+      ];
+      
+      for (let i = 0; i < populateOptions.length; i++) {
+        endpoint = `/api/shows?${populateOptions[i]}`;
+        console.log(`Attempt ${i + 1}: Fetching all shows: ${strapiUrl}${endpoint}`);
+        
+        const response = await fetch(`${strapiUrl}${endpoint}`, {
+          headers: {
+            'Authorization': `Bearer ${strapiToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`Attempt ${i + 1} successful!`);
+          
+          // Check if we got performer images
+          if (data.data && data.data.length > 0 && data.data[0].performers && data.data[0].performers.length > 0) {
+            const firstPerformer = data.data[0].performers[0];
+            if (firstPerformer && (firstPerformer.bild || firstPerformer.image || firstPerformer.picture)) {
+              console.log('Successfully got performer images with this populate strategy');
+              return new Response(JSON.stringify(data), {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              });
+            }
+          }
+          
+          console.log(`Attempt ${i + 1}: No performer images found, trying next strategy...`);
+          continue;
+        } else {
+          console.log(`Attempt ${i + 1} failed with status: ${response.status}`);
+          continue;
+        }
+      }
+      
+      // Fallback
       endpoint = '/api/shows?populate=*';
-      console.log(`Fetching all shows with simple populate: ${strapiUrl}${endpoint}`);
+      console.log(`All attempts failed, using fallback: ${strapiUrl}${endpoint}`);
     }
 
-    console.log(`Making request to: ${strapiUrl}${endpoint}`);
+    console.log(`Making final request to: ${strapiUrl}${endpoint}`);
     console.log(`Using token: ${strapiToken.substring(0, 20)}...`);
 
     const response = await fetch(`${strapiUrl}${endpoint}`, {
@@ -52,7 +138,6 @@ serve(async (req) => {
     });
 
     console.log(`Response status: ${response.status}`);
-    console.log(`Response headers:`, Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
@@ -109,4 +194,3 @@ serve(async (req) => {
     });
   }
 });
-
