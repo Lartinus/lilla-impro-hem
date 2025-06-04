@@ -30,13 +30,13 @@ serve(async (req) => {
       }
     }
     
-    // Use explicit populate for Strapi v5 to ensure we get performer images
+    // Use more specific populate to avoid circular reference issues
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[location]=*&populate[bild]=*&populate[performers][populate][bild]=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[location][fields][0]=name&populate[location][fields][1]=google_maps_link&populate[bild]=*&populate[performers][populate][bild]=*`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate[location]=*&populate[bild]=*&populate[performers][populate][bild]=*';
+      endpoint = '/api/shows?populate[location][fields][0]=name&populate[location][fields][1]=google_maps_link&populate[bild]=*&populate[performers][populate][bild]=*';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
