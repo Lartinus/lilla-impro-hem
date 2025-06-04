@@ -9,14 +9,6 @@ const Hero = () => {
       <section className="min-h-screen flex flex-col justify-center py-12 px-0.5 md:px-4 relative overflow-hidden">
         <div className="relative z-10">
           {/* Hero heading outside the box */}
-          <section className="px-0.5 md:px-4 mt-20 py-6">
-            <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-regular leading-tight text-theatre-light tracking-normal mb-4 max-w-4xl mx-auto">
-                Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
-              </h1>
-            </div>
-          </section>
-
           {/* Combined content box */}
           <div className="text-left space-y-4 p-6 md:p-16 lg:p-20 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
             {/* Description */}
