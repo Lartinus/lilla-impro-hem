@@ -7,11 +7,11 @@ const Hero = () => {
         {/*
           Lägg till `mt-12` på den vita boxen för att få luft mot headern:
         */}
-        <div className="mt-12 text-left space-y-4 p-6 md:p-16 lg:p-20 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
+        <div className="mt-12 text-left space-y-4 p-6 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
           
           {/* Beskrivning */}
           <div className="max-w-4xl space-y-2 pb-1">
-            <h2 className="mt-12 md:mt-8 text-xl font-bold text-gray-800 mb-2 leading-tight">
+            <h2 className="text-xl font-bold text-gray-800 mb-2 leading-tight">
               Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
             </h2>
             <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
