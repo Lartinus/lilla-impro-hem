@@ -1,4 +1,5 @@
 
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -30,13 +31,13 @@ serve(async (req) => {
       }
     }
     
-    // Use more specific populate to avoid circular reference issues
+    // Simplified populate strategy to avoid Strapi v5 issues
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[location][fields][0]=name&populate[location][fields][1]=google_maps_link&populate[bild]=*&populate[performers][populate][bild]=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate[location][fields][0]=name&populate[location][fields][1]=google_maps_link&populate[bild]=*&populate[performers][populate][bild]=*';
+      endpoint = '/api/shows?populate=*';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
@@ -107,3 +108,4 @@ serve(async (req) => {
     });
   }
 });
+
