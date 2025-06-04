@@ -54,12 +54,12 @@ serve(async (req) => {
       }
     }
     
-    // Build endpoint - simplified populate without nested performer images
+    // Build endpoint - simple populate without problematic nested relations
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers]=*&populate[location]=*&populate[bild]=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=performers&populate=location&populate=bild`;
     } else {
-      endpoint = '/api/shows?populate[performers]=*&populate[location]=*&populate[bild]=*';
+      endpoint = '/api/shows?populate=performers&populate=location&populate=bild';
     }
 
     console.log(`Fetching shows from: ${strapiUrl}${endpoint}`);
