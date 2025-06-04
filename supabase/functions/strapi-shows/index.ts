@@ -30,13 +30,13 @@ serve(async (req) => {
       }
     }
     
-    // Try simple populate strategy that includes all relations
+    // Use Strapi v5 populate strategy that specifically includes performer images
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[location]=*&populate[performers][populate][bild]=*`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate=*';
+      endpoint = '/api/shows?populate[bild]=*&populate[location]=*&populate[performers][populate][bild]=*';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
@@ -67,15 +67,34 @@ serve(async (req) => {
         console.log('Show main bild:', JSON.stringify(show.attributes.bild, null, 2));
       }
       
-      // Log performers and their images
+      // Log performers and their images with detailed analysis
       if (show.attributes?.performers) {
         console.log('=== PERFORMERS ANALYSIS ===');
-        show.attributes.performers.data?.forEach((perf: any, i: number) => {
-          console.log(`Performer ${i}:`, JSON.stringify(perf, null, 2));
-          if (perf.attributes?.bild) {
-            console.log(`Performer ${i} bild:`, JSON.stringify(perf.attributes.bild, null, 2));
-          }
-        });
+        console.log('Raw performers structure:', JSON.stringify(show.attributes.performers, null, 2));
+        
+        // Check if performers have data wrapper
+        const performersArray = show.attributes.performers.data || show.attributes.performers;
+        
+        if (Array.isArray(performersArray)) {
+          performersArray.forEach((perf: any, i: number) => {
+            console.log(`Performer ${i} FULL STRUCTURE:`, JSON.stringify(perf, null, 2));
+            
+            // Check different possible image field locations
+            const performerData = perf.attributes || perf;
+            console.log(`Performer ${i} attributes:`, JSON.stringify(performerData, null, 2));
+            
+            if (performerData?.bild) {
+              console.log(`Performer ${i} bild field:`, JSON.stringify(performerData.bild, null, 2));
+            } else {
+              console.log(`Performer ${i} NO BILD FIELD FOUND`);
+              console.log(`Available fields in performer ${i}:`, Object.keys(performerData || {}));
+            }
+          });
+        } else {
+          console.log('Performers is not an array:', typeof performersArray);
+        }
+      } else {
+        console.log('No performers found in show attributes');
       }
       
       // Log location
