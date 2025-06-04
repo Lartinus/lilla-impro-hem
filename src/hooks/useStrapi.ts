@@ -10,6 +10,8 @@ export const useShows = () => {
       if (error) throw error;
       return data;
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 };
 
@@ -24,6 +26,8 @@ export const useShow = (slug: string) => {
       return data;
     },
     enabled: !!slug,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 };
 
@@ -35,6 +39,8 @@ export const useCourses = () => {
       if (error) throw error;
       return data;
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 };
 
@@ -48,6 +54,8 @@ export const useCourseMainInfo = () => {
       if (error) throw error;
       return data;
     },
+    staleTime: 10 * 60 * 1000, // 10 minutes - längre cache för sällan ändrat innehåll
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
 };
 
@@ -61,6 +69,8 @@ export const usePrivateParty = () => {
       if (error) throw error;
       return data;
     },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
 };
 
@@ -74,6 +84,8 @@ export const useAboutPageContent = () => {
       if (error) throw error;
       return data;
     },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
 };
 
@@ -87,5 +99,7 @@ export const useSiteContent = (contentType: string = 'site-settings') => {
       if (error) throw error;
       return data;
     },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
 };

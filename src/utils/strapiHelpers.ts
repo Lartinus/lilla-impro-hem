@@ -1,6 +1,5 @@
-
 // Helper functions for transforming Strapi data
-export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com') => {
+export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com', preferredSize?: 'small' | 'medium' | 'large') => {
   console.log('getStrapiImageUrl - Input image:', JSON.stringify(image, null, 2));
   console.log('getStrapiImageUrl - Image type:', typeof image);
   
@@ -9,11 +8,28 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
     return null;
   }
   
+  // Helper function to get optimized URL
+  const getOptimizedUrl = (url: string) => {
+    if (!preferredSize) return url;
+    
+    // If it's a Strapi media URL, try to get the optimized version
+    if (url.includes('reliable-chicken-da8c8aa37e.media.strapiapp.com')) {
+      const parts = url.split('/');
+      const filename = parts[parts.length - 1];
+      const baseUrlParts = parts.slice(0, -1).join('/');
+      
+      // Return the preferred size version if available
+      return `${baseUrlParts}/${preferredSize}_${filename}`;
+    }
+    
+    return url;
+  };
+  
   // Handle if image is just a string URL
   if (typeof image === 'string') {
     const fullUrl = image.startsWith('http') ? image : `${baseUrl}${image}`;
     console.log('getStrapiImageUrl - Using string url:', fullUrl);
-    return fullUrl;
+    return getOptimizedUrl(fullUrl);
   }
   
   // Handle direct image object with url field (current Strapi format)
@@ -21,7 +37,7 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
     const url = image.url;
     const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
     console.log('getStrapiImageUrl - Using direct url:', fullUrl);
-    return fullUrl;
+    return getOptimizedUrl(fullUrl);
   }
   
   // Handle Strapi v5 format with data wrapper
@@ -31,7 +47,7 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
       const url = image.data.url;
       const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
       console.log('getStrapiImageUrl - Using data.url:', fullUrl);
-      return fullUrl;
+      return getOptimizedUrl(fullUrl);
     }
     
     // Handle nested data with attributes
@@ -39,7 +55,7 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
       const url = image.data.attributes.url;
       const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
       console.log('getStrapiImageUrl - Using data.attributes.url:', fullUrl);
-      return fullUrl;
+      return getOptimizedUrl(fullUrl);
     }
     
     // Array of images with data wrapper
@@ -49,13 +65,13 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
         const url = firstImage.url;
         const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
         console.log('getStrapiImageUrl - Using data[0].url:', fullUrl);
-        return fullUrl;
+        return getOptimizedUrl(fullUrl);
       }
       if (firstImage?.attributes?.url) {
         const url = firstImage.attributes.url;
         const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
         console.log('getStrapiImageUrl - Using data[0].attributes.url:', fullUrl);
-        return fullUrl;
+        return getOptimizedUrl(fullUrl);
       }
     }
   }
@@ -65,13 +81,13 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
     const url = image.attributes.url;
     const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
     console.log('getStrapiImageUrl - Using attributes.url:', fullUrl);
-    return fullUrl;
+    return getOptimizedUrl(fullUrl);
   }
   
   // Handle array of images (take first one)
   if (Array.isArray(image) && image.length > 0) {
     console.log('getStrapiImageUrl - Processing array, taking first image');
-    return getStrapiImageUrl(image[0], baseUrl);
+    return getStrapiImageUrl(image[0], baseUrl, preferredSize);
   }
   
   console.log('getStrapiImageUrl - No valid image URL found, returning null');
@@ -107,12 +123,8 @@ export const formatStrapiShowSimple = (strapiShow: any) => {
     }
   }
   
-  // Log the bild field to debug image issues
-  console.log('formatStrapiShowSimple - Raw bild field:', JSON.stringify(showData.bild, null, 2));
-  console.log('formatStrapiShowSimple - Checking for bild field:', 'bild' in showData);
-  console.log('formatStrapiShowSimple - Show data keys:', Object.keys(showData));
-  
-  const showImage = getStrapiImageUrl(showData.bild);
+  // Use optimized image with medium size for show cards
+  const showImage = getStrapiImageUrl(showData.bild, undefined, 'medium');
   console.log('formatStrapiShowSimple - Processed image URL:', showImage);
   
   const formatted = {
@@ -164,7 +176,7 @@ export const formatStrapiShow = (strapiShow: any) => {
   
   console.log('formatStrapiShow - Location:', locationName, 'Map link:', mapLink);
   
-  // Handle performers - now with proper image processing
+  // Handle performers - now with optimized image processing
   let performers = [];
   console.log('formatStrapiShow - Raw performers data:', JSON.stringify(showData.performers, null, 2));
   
@@ -179,8 +191,8 @@ export const formatStrapiShow = (strapiShow: any) => {
       console.log(`formatStrapiShow - Performer ${index} data after extraction:`, JSON.stringify(performerData, null, 2));
       console.log(`formatStrapiShow - Performer ${index} bild field:`, JSON.stringify(performerData.bild, null, 2));
       
-      // Process performer image using our helper function
-      const performerImage = getStrapiImageUrl(performerData.bild);
+      // Process performer image using our helper function with small size optimization
+      const performerImage = getStrapiImageUrl(performerData.bild, undefined, 'small');
       console.log(`formatStrapiShow - Performer ${index} processed image:`, performerImage);
       
       const formattedPerformer = {
@@ -209,9 +221,7 @@ export const formatStrapiShow = (strapiShow: any) => {
       .filter((item: string) => item);
   }
   
-  // Log the show bild field to debug image issues
-  console.log('formatStrapiShow - Raw show bild field:', JSON.stringify(showData.bild, null, 2));
-  
+  // Use large size for detailed show view
   const formatted = {
     id: strapiShow.id,
     title: showData.titel || showData.title,
@@ -222,7 +232,7 @@ export const formatStrapiShow = (strapiShow: any) => {
     description: showData.beskrivning || showData.description,
     practicalInfo: practicalInfo,
     mapLink: mapLink,
-    image: getStrapiImageUrl(showData.bild),
+    image: getStrapiImageUrl(showData.bild, undefined, 'large'),
     performers: performers,
     ticketPrice: showData.ticket_price || 150,
     discountPrice: showData.discount_price || 120,
@@ -249,7 +259,7 @@ export const formatStrapiCourse = (strapiCourse: any) => {
     return null;
   }
   
-  // Handle teacher relation with proper image handling - now using "bild" field
+  // Handle teacher relation with optimized image handling
   let teacher = null;
   if (attrs.teacher) {
     console.log('Teacher data found:', JSON.stringify(attrs.teacher, null, 2));
@@ -258,12 +268,8 @@ export const formatStrapiCourse = (strapiCourse: any) => {
     if (attrs.teacher.data?.attributes) {
       const teacherAttrs = attrs.teacher.data.attributes;
       console.log('Teacher attributes:', JSON.stringify(teacherAttrs, null, 2));
-      console.log('Teacher bild data:', JSON.stringify(teacherAttrs.bild, null, 2));
-      console.log('Teacher poster data:', JSON.stringify(teacherAttrs.poster, null, 2));
-      console.log('Teacher avatar data:', JSON.stringify(teacherAttrs.avatar, null, 2));
-      console.log('Teacher image data:', JSON.stringify(teacherAttrs.image, null, 2));
       
-      // Check bild field first (updated for consistency), then poster, then avatar, then fallback to other fields
+      // Check bild field first, then poster, then avatar, then fallback to other fields
       const imageField = teacherAttrs.bild || teacherAttrs.poster || teacherAttrs.avatar || teacherAttrs.image;
       console.log('Selected image field:', JSON.stringify(imageField, null, 2));
       
@@ -271,21 +277,12 @@ export const formatStrapiCourse = (strapiCourse: any) => {
         id: attrs.teacher.data.id,
         name: teacherAttrs.name,
         bio: teacherAttrs.bio,
-        image: getStrapiImageUrl(imageField),
+        image: getStrapiImageUrl(imageField, undefined, 'small'), // Use small for teacher images
       };
       console.log('Created teacher object (v4/v5 format):', teacher);
     }
     // Direct teacher data (older format or simplified)
     else if (attrs.teacher.name) {
-      console.log('Teacher bild field exists?', 'bild' in attrs.teacher);
-      console.log('Teacher bild value:', attrs.teacher.bild);
-      console.log('Teacher poster field exists?', 'poster' in attrs.teacher);
-      console.log('Teacher poster value:', attrs.teacher.poster);
-      console.log('Teacher avatar field exists?', 'avatar' in attrs.teacher);
-      console.log('Teacher avatar value:', attrs.teacher.avatar);
-      console.log('Teacher image field exists?', 'image' in attrs.teacher);
-      console.log('Teacher image value:', attrs.teacher.image);
-      
       const imageField = attrs.teacher.bild || attrs.teacher.poster || attrs.teacher.avatar || attrs.teacher.image;
       console.log('Selected direct image field:', JSON.stringify(imageField, null, 2));
       
@@ -293,7 +290,7 @@ export const formatStrapiCourse = (strapiCourse: any) => {
         id: attrs.teacher.id,
         name: attrs.teacher.name,
         bio: attrs.teacher.bio,
-        image: getStrapiImageUrl(imageField),
+        image: getStrapiImageUrl(imageField, undefined, 'small'), // Use small for teacher images
       };
       console.log('Created teacher object (direct format):', teacher);
     }

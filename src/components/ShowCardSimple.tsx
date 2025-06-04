@@ -2,6 +2,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
+import OptimizedImage from './OptimizedImage';
 
 interface SimpleShow {
   id: number;
@@ -36,24 +37,23 @@ const ShowCardSimple = ({ show }: ShowCardSimpleProps) => {
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none overflow-hidden">
       <CardContent className="p-0">
-        {/* Show Image */}
+        {/* Optimized Show Image */}
         {show.image && (
-          <div className="w-full h-48 md:h-56">
-            <img 
-              src={show.image} 
-              alt={show.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <OptimizedImage
+            src={show.image}
+            alt={show.title}
+            className="w-full h-48 md:h-56 object-cover"
+            preferredSize="medium"
+          />
         )}
 
         <div className="p-4">
-          <h2 className="text-lg font-bold text-blue-500 mb-2">
+          <h2 className="text-lg font-bold text-blue-500 mb-2 show-card">
             {show.title}
           </h2>
           
           <div className="space-y-1 mb-4">
-            <p className="text-blue-500 font-medium">
+            <p className="text-blue-500 font-medium show-card date-time">
               {formatDateTime(show.date)}
             </p>
             <p className="text-red-600 text-sm flex items-center">
