@@ -1,18 +1,17 @@
-
 import ServiceBoxes from './ServiceBoxes';
 
 const Hero = () => {
   return (
     <section className="min-h-screen flex flex-col justify-center py-12 px-0.5 md:px-4 relative overflow-hidden">
       <div className="relative z-10">
-        {/* På mobil: mt-12, på desktop: mt-16 för mer luft */}
-        <div className="mt-20 md:mt-16 lg:mt-20 xl:mt-24 p-6 md:p-16 lg:p-20 text-left space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
+        {/* På mobil: mt-12, på desktop: mt-8 */}
+        <div className="mt-12 md:mt-8 p-6 md:p-16 lg:p-20 text-left space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto animate-fade-in">
           
           {/* Beskrivning */}
           <div className="max-w-4xl space-y-2 pb-1">
-            <h2 className="text-xl font-bold text-gray-800 mb-2 leading-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left md:text-center">
               Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
-            </h2>
+            </h1>
             <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
               Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
               På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, 
