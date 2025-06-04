@@ -27,19 +27,36 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
   // Handle Strapi v5 format with data wrapper
   if (image?.data) {
     // Single image with data wrapper
-    if (image.data.url) {
+    if (image.data?.url) {
       const url = image.data.url;
       const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
       console.log('getStrapiImageUrl - Using data.url:', fullUrl);
       return fullUrl;
     }
     
-    // Array of images with data wrapper
-    if (Array.isArray(image.data) && image.data.length > 0 && image.data[0].url) {
-      const url = image.data[0].url;
+    // Handle nested data with attributes
+    if (image.data?.attributes?.url) {
+      const url = image.data.attributes.url;
       const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
-      console.log('getStrapiImageUrl - Using data[0].url:', fullUrl);
+      console.log('getStrapiImageUrl - Using data.attributes.url:', fullUrl);
       return fullUrl;
+    }
+    
+    // Array of images with data wrapper
+    if (Array.isArray(image.data) && image.data.length > 0) {
+      const firstImage = image.data[0];
+      if (firstImage?.url) {
+        const url = firstImage.url;
+        const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+        console.log('getStrapiImageUrl - Using data[0].url:', fullUrl);
+        return fullUrl;
+      }
+      if (firstImage?.attributes?.url) {
+        const url = firstImage.attributes.url;
+        const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+        console.log('getStrapiImageUrl - Using data[0].attributes.url:', fullUrl);
+        return fullUrl;
+      }
     }
   }
   
@@ -58,6 +75,7 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
   }
   
   console.log('getStrapiImageUrl - No valid image URL found, returning null');
+  console.log('getStrapiImageUrl - Available keys in image object:', Object.keys(image || {}));
   return null;
 };
 

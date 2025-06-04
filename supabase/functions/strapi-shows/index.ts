@@ -30,12 +30,12 @@ serve(async (req) => {
       }
     }
     
-    // Build endpoint - populate both show images and performer images correctly
+    // Build endpoint - populate show images and performer images with full data
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate]=bild&populate=location&populate=bild`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate][bild][populate]=*&populate[location][populate]=*&populate[bild][populate]=*`;
     } else {
-      endpoint = '/api/shows?populate[performers][populate]=bild&populate=location&populate=bild';
+      endpoint = '/api/shows?populate[performers][populate][bild][populate]=*&populate[location][populate]=*&populate[bild][populate]=*';
     }
 
     console.log(`Fetching shows from: ${strapiUrl}${endpoint}`);
@@ -58,7 +58,12 @@ serve(async (req) => {
 
     const data = await response.json();
     console.log('Successfully fetched shows data');
-    console.log('Shows data structure:', JSON.stringify(data, null, 2));
+    console.log('Full shows data structure:', JSON.stringify(data, null, 2));
+    
+    // Log the first show's bild field specifically
+    if (data?.data && data.data.length > 0) {
+      console.log('First show bild field:', JSON.stringify(data.data[0].bild || data.data[0].attributes?.bild, null, 2));
+    }
     
     console.log('Final shows data ready to return');
     return new Response(JSON.stringify(data), {
