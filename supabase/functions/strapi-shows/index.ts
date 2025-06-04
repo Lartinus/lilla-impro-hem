@@ -1,4 +1,5 @@
 
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -30,14 +31,14 @@ serve(async (req) => {
       }
     }
     
-    // Start with basic endpoint - no population at all to debug
+    // Add back image population but avoid location populate
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}`;
-      console.log(`Fetching single show (basic): ${strapiUrl}${endpoint}`);
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[performers][populate][bild]=*`;
+      console.log(`Fetching single show with images: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows';
-      console.log(`Fetching all shows (basic): ${strapiUrl}${endpoint}`);
+      endpoint = '/api/shows?populate[bild]=*&populate[performers][populate][bild]=*';
+      console.log(`Fetching all shows with images: ${strapiUrl}${endpoint}`);
     }
 
     console.log(`Making request to: ${strapiUrl}${endpoint}`);
@@ -61,7 +62,19 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('Successfully fetched shows data (basic):', JSON.stringify(data, null, 2));
+    console.log('Successfully fetched shows data with images:', JSON.stringify(data, null, 2));
+    
+    // Log image data for debugging
+    if (data.data && data.data.length > 0) {
+      data.data.forEach((show: any, index: number) => {
+        console.log(`Show ${index} bild:`, JSON.stringify(show.bild, null, 2));
+        if (show.performers && Array.isArray(show.performers)) {
+          show.performers.forEach((performer: any, perfIndex: number) => {
+            console.log(`Show ${index}, Performer ${perfIndex} bild:`, JSON.stringify(performer.bild, null, 2));
+          });
+        }
+      });
+    }
     
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -75,3 +88,4 @@ serve(async (req) => {
     });
   }
 });
+
