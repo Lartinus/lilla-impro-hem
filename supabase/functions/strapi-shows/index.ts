@@ -10,6 +10,30 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Helper function to fetch performer with image
+const fetchPerformerWithImage = async (performerId: number) => {
+  try {
+    const response = await fetch(`${strapiUrl}/api/performers/${performerId}?populate=bild`, {
+      headers: {
+        'Authorization': `Bearer ${strapiToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      console.log(`Fetched performer ${performerId} with image:`, JSON.stringify(data, null, 2));
+      return data.data;
+    } else {
+      console.log(`Failed to fetch performer ${performerId}:`, response.status);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error fetching performer ${performerId}:`, error);
+    return null;
+  }
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -30,105 +54,15 @@ serve(async (req) => {
       }
     }
     
-    // Try different populate strategies for Strapi v5
+    // Build endpoint
     let endpoint;
     if (targetSlug) {
-      // Try multiple populate approaches for single show
-      const populateOptions = [
-        'populate[performers][populate][0]=bild&populate[location]=*&populate[bild]=*',
-        'populate[performers][populate]=*&populate[location]=*&populate[bild]=*',
-        'populate=deep,2',
-        'populate=*'
-      ];
-      
-      for (let i = 0; i < populateOptions.length; i++) {
-        endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&${populateOptions[i]}`;
-        console.log(`Attempt ${i + 1}: Fetching single show: ${strapiUrl}${endpoint}`);
-        
-        const response = await fetch(`${strapiUrl}${endpoint}`, {
-          headers: {
-            'Authorization': `Bearer ${strapiToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log(`Attempt ${i + 1} successful!`);
-          
-          // Check if we got performer images
-          if (data.data && data.data.length > 0 && data.data[0].performers) {
-            const firstPerformer = data.data[0].performers[0];
-            if (firstPerformer && (firstPerformer.bild || firstPerformer.image || firstPerformer.picture)) {
-              console.log('Successfully got performer images with this populate strategy');
-              return new Response(JSON.stringify(data), {
-                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-              });
-            }
-          }
-          
-          // If no images found, try next strategy
-          console.log(`Attempt ${i + 1}: No performer images found, trying next strategy...`);
-          continue;
-        } else {
-          console.log(`Attempt ${i + 1} failed with status: ${response.status}`);
-          continue;
-        }
-      }
-      
-      // If all attempts failed, use simple populate as fallback
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
-      console.log(`All attempts failed, using fallback: ${strapiUrl}${endpoint}`);
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers]=*&populate[location]=*&populate[bild]=*`;
     } else {
-      // For all shows, try different strategies too
-      const populateOptions = [
-        'populate[performers][populate][0]=bild&populate[location]=*&populate[bild]=*',
-        'populate[performers][populate]=*&populate[location]=*&populate[bild]=*',
-        'populate=deep,2',
-        'populate=*'
-      ];
-      
-      for (let i = 0; i < populateOptions.length; i++) {
-        endpoint = `/api/shows?${populateOptions[i]}`;
-        console.log(`Attempt ${i + 1}: Fetching all shows: ${strapiUrl}${endpoint}`);
-        
-        const response = await fetch(`${strapiUrl}${endpoint}`, {
-          headers: {
-            'Authorization': `Bearer ${strapiToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log(`Attempt ${i + 1} successful!`);
-          
-          // Check if we got performer images
-          if (data.data && data.data.length > 0 && data.data[0].performers && data.data[0].performers.length > 0) {
-            const firstPerformer = data.data[0].performers[0];
-            if (firstPerformer && (firstPerformer.bild || firstPerformer.image || firstPerformer.picture)) {
-              console.log('Successfully got performer images with this populate strategy');
-              return new Response(JSON.stringify(data), {
-                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-              });
-            }
-          }
-          
-          console.log(`Attempt ${i + 1}: No performer images found, trying next strategy...`);
-          continue;
-        } else {
-          console.log(`Attempt ${i + 1} failed with status: ${response.status}`);
-          continue;
-        }
-      }
-      
-      // Fallback
-      endpoint = '/api/shows?populate=*';
-      console.log(`All attempts failed, using fallback: ${strapiUrl}${endpoint}`);
+      endpoint = '/api/shows?populate[performers]=*&populate[location]=*&populate[bild]=*';
     }
 
-    console.log(`Making final request to: ${strapiUrl}${endpoint}`);
-    console.log(`Using token: ${strapiToken.substring(0, 20)}...`);
+    console.log(`Fetching shows from: ${strapiUrl}${endpoint}`);
 
     const response = await fetch(`${strapiUrl}${endpoint}`, {
       headers: {
@@ -147,41 +81,39 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('Successfully fetched shows data:', JSON.stringify(data, null, 2));
+    console.log('Successfully fetched shows data');
     
-    // Log performer details to debug image issues
+    // Enhance performer data with images by making separate API calls
     if (data.data && data.data.length > 0) {
       for (let showIndex = 0; showIndex < data.data.length; showIndex++) {
         const show = data.data[showIndex];
-        console.log(`Show ${showIndex} - Title:`, show.titel || show.title);
-        
-        if (show.bild) {
-          console.log(`Show ${showIndex} bild data:`, JSON.stringify(show.bild, null, 2));
-        }
+        console.log(`Processing show ${showIndex}: ${show.titel || show.title}`);
         
         if (show.performers && Array.isArray(show.performers)) {
-          console.log(`Show ${showIndex} - Number of performers:`, show.performers.length);
+          console.log(`Show ${showIndex} has ${show.performers.length} performers`);
           
+          // Fetch detailed performer data with images
           for (let perfIndex = 0; perfIndex < show.performers.length; perfIndex++) {
             const performer = show.performers[perfIndex];
-            console.log(`Show ${showIndex}, Performer ${perfIndex} (${performer.name}):`, JSON.stringify(performer, null, 2));
+            console.log(`Fetching detailed data for performer ${perfIndex}: ${performer.name} (ID: ${performer.id})`);
             
-            // Check if performer has any image-related fields
-            const imageFields = ['bild', 'image', 'picture', 'photo', 'avatar'];
-            imageFields.forEach(field => {
-              if (performer[field]) {
-                console.log(`Performer ${perfIndex} has ${field}:`, JSON.stringify(performer[field], null, 2));
-              }
-            });
-            
-            if (!imageFields.some(field => performer[field])) {
-              console.log(`Performer ${perfIndex} has no image fields. Available fields:`, Object.keys(performer));
+            const detailedPerformer = await fetchPerformerWithImage(performer.id);
+            if (detailedPerformer) {
+              // Merge the detailed data (including image) with existing performer data
+              show.performers[perfIndex] = {
+                ...performer, // Keep existing data
+                ...detailedPerformer, // Add detailed data including bild
+              };
+              console.log(`Enhanced performer ${perfIndex} data:`, JSON.stringify(show.performers[perfIndex], null, 2));
+            } else {
+              console.log(`Could not enhance performer ${perfIndex} data`);
             }
           }
         }
       }
     }
     
+    console.log('Final enhanced data ready to return');
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
