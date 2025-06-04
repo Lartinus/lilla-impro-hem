@@ -55,7 +55,7 @@ const Courses = () => {
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
 
-      <section className="py-2 px-0.5 md:px-4 pb-8 mt-20 animate-fade-in">
+      <section className="py-8 px-0.5 md:px-4 pb-8 mt-20 animate-fade-in">
         <CourseGrid courses={courses} practicalInfo={practicalInfo} />
         <CourseInfoSection mainInfo={mainInfo} />
       </section>
