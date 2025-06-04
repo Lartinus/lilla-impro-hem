@@ -1,6 +1,6 @@
-
 import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getStrapiImageUrl } from '@/utils/strapiHelpers';
 
 interface OptimizedImageProps {
   src: string | null;
@@ -20,25 +20,20 @@ const OptimizedImage = ({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  // Get optimized image URL based on preferred size
-  const getOptimizedImageUrl = (imageUrl: string | null) => {
-    if (!imageUrl) return null;
+  // Get optimized image URL - handle both processed URLs and raw Strapi data
+  const getImageUrl = () => {
+    if (!src) return null;
     
-    // If it's already a Strapi URL, try to get the optimized version
-    if (imageUrl.includes('reliable-chicken-da8c8aa37e.media.strapiapp.com')) {
-      // Extract the hash from the URL
-      const parts = imageUrl.split('/');
-      const filename = parts[parts.length - 1];
-      const baseUrl = parts.slice(0, -1).join('/');
-      
-      // Return the preferred size version
-      return `${baseUrl}/${preferredSize}_${filename}`;
+    // If it's already a full URL, use it directly
+    if (src.startsWith('http')) {
+      return src;
     }
     
-    return imageUrl;
+    // Otherwise, treat it as Strapi data and process it
+    return getStrapiImageUrl(src, undefined, preferredSize);
   };
 
-  const optimizedSrc = getOptimizedImageUrl(src);
+  const optimizedSrc = getImageUrl();
 
   if (!optimizedSrc || hasError) {
     return (
