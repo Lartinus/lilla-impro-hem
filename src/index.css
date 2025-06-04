@@ -235,4 +235,38 @@
   ul li::marker {
     font-size: var(--bullet-size);
   }
+
+  /* ===== FLEXIBLE TEXT SIZING TO PREVENT SINGLE WORD WRAP ===== */
+  /* Automatisk minskning av textstorlek när bara ett ord hamnar på nästa rad */
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  
+  /* För rubriker på mobil - minska storlek om wrap sker */
+  @media (max-width: 767px) {
+    .text-xl {
+      font-size: clamp(1.125rem, 4vw, 1.25rem);
+    }
+    
+    .text-2xl {
+      font-size: clamp(1.25rem, 5vw, 1.5rem);
+    }
+    
+    .text-3xl {
+      font-size: clamp(1.5rem, 6vw, 1.875rem);
+    }
+    
+    /* Specifikt för kursrubriker som ofta wrappas */
+    .course-card h2 {
+      font-size: clamp(1rem, 4.5vw, 1.25rem);
+      hyphens: auto;
+      word-break: break-word;
+    }
+    
+    /* Förhindra orphan words (enstaka ord på sista raden) */
+    p, h1, h2, h3, h4, h5, h6 {
+      orphans: 2;
+      widows: 2;
+    }
+  }
 }
