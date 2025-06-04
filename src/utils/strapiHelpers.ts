@@ -15,7 +15,15 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
     return fullUrl;
   }
   
-  // Handle Strapi v5 format with data wrapper first
+  // Handle direct image object with url field (current Strapi format)
+  if (image?.url) {
+    const url = image.url;
+    const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+    console.log('getStrapiImageUrl - Using direct url:', fullUrl);
+    return fullUrl;
+  }
+  
+  // Handle Strapi v5 format with data wrapper
   if (image?.data) {
     // Single image with data wrapper
     if (image.data.url) {
@@ -32,14 +40,6 @@ export const getStrapiImageUrl = (image: any, baseUrl = 'https://reliable-chicke
       console.log('getStrapiImageUrl - Using data[0].url:', fullUrl);
       return fullUrl;
     }
-  }
-  
-  // Handle direct image object (legacy format)
-  if (image?.url) {
-    const url = image.url;
-    const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
-    console.log('getStrapiImageUrl - Using direct url:', fullUrl);
-    return fullUrl;
   }
   
   // Handle legacy attributes format
@@ -88,6 +88,9 @@ export const formatStrapiShowSimple = (strapiShow: any) => {
     }
   }
   
+  // Log the bild field to debug image issues
+  console.log('formatStrapiShowSimple - Raw bild field:', JSON.stringify(showData.bild, null, 2));
+  
   const formatted = {
     id: strapiShow.id,
     title: showData.titel || showData.title,
@@ -95,7 +98,7 @@ export const formatStrapiShowSimple = (strapiShow: any) => {
     time: showData.time,
     location: locationName,
     slug: showData.slug,
-    image: getStrapiImageUrl(showData.bild || showData.image),
+    image: getStrapiImageUrl(showData.bild),
   };
   
   console.log('formatStrapiShowSimple - Final formatted show:', formatted);
@@ -137,7 +140,7 @@ export const formatStrapiShow = (strapiShow: any) => {
   
   console.log('formatStrapiShow - Location:', locationName, 'Map link:', mapLink);
   
-  // Handle performers - since images aren't populated, we'll need a different approach
+  // Handle performers - now with proper image processing
   let performers = [];
   console.log('formatStrapiShow - Raw performers data:', JSON.stringify(showData.performers, null, 2));
   
@@ -150,17 +153,17 @@ export const formatStrapiShow = (strapiShow: any) => {
       // Extract performer data (handle both new and old formats)
       const performerData = performer.attributes || performer;
       console.log(`formatStrapiShow - Performer ${index} data after extraction:`, JSON.stringify(performerData, null, 2));
-      console.log(`formatStrapiShow - Performer ${index} ALL AVAILABLE FIELDS:`, Object.keys(performerData));
+      console.log(`formatStrapiShow - Performer ${index} bild field:`, JSON.stringify(performerData.bild, null, 2));
       
-      // Since performer images aren't being populated by Strapi, we'll set them to null for now
-      // This is likely because the populate=* doesn't work for nested relations in this Strapi version
-      console.log(`formatStrapiShow - Performer ${index}: No bild field found in data, setting image to null`);
+      // Process performer image using our helper function
+      const performerImage = getStrapiImageUrl(performerData.bild);
+      console.log(`formatStrapiShow - Performer ${index} processed image:`, performerImage);
       
       const formattedPerformer = {
         id: performer.id || performerData.id || index,
         name: performerData.name || `Performer ${index + 1}`,
         bio: performerData.bio || '',
-        image: null, // Setting to null since images aren't being populated
+        image: performerImage,
       };
       
       console.log(`formatStrapiShow - Performer ${index} final result:`, formattedPerformer);
@@ -182,6 +185,9 @@ export const formatStrapiShow = (strapiShow: any) => {
       .filter((item: string) => item);
   }
   
+  // Log the show bild field to debug image issues
+  console.log('formatStrapiShow - Raw show bild field:', JSON.stringify(showData.bild, null, 2));
+  
   const formatted = {
     id: strapiShow.id,
     title: showData.titel || showData.title,
@@ -192,7 +198,7 @@ export const formatStrapiShow = (strapiShow: any) => {
     description: showData.beskrivning || showData.description,
     practicalInfo: practicalInfo,
     mapLink: mapLink,
-    image: getStrapiImageUrl(showData.bild || showData.image),
+    image: getStrapiImageUrl(showData.bild),
     performers: performers,
     ticketPrice: showData.ticket_price || 150,
     discountPrice: showData.discount_price || 120,
