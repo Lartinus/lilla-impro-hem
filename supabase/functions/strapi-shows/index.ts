@@ -1,5 +1,4 @@
 
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -31,14 +30,14 @@ serve(async (req) => {
       }
     }
     
-    // Add back image population but avoid location populate
+    // Use simpler populate syntax that works with Strapi v4/v5
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[performers][populate][bild]=*`;
-      console.log(`Fetching single show with images: ${strapiUrl}${endpoint}`);
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
+      console.log(`Fetching single show with all relations: ${strapiUrl}${endpoint}`);
     } else {
-      endpoint = '/api/shows?populate[bild]=*&populate[performers][populate][bild]=*';
-      console.log(`Fetching all shows with images: ${strapiUrl}${endpoint}`);
+      endpoint = '/api/shows?populate=*';
+      console.log(`Fetching all shows with all relations: ${strapiUrl}${endpoint}`);
     }
 
     console.log(`Making request to: ${strapiUrl}${endpoint}`);
@@ -62,15 +61,23 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('Successfully fetched shows data with images:', JSON.stringify(data, null, 2));
+    console.log('Successfully fetched shows data:', JSON.stringify(data, null, 2));
     
-    // Log image data for debugging
+    // Log specific image data for debugging
     if (data.data && data.data.length > 0) {
       data.data.forEach((show: any, index: number) => {
-        console.log(`Show ${index} bild:`, JSON.stringify(show.bild, null, 2));
+        console.log(`Show ${index} - Title:`, show.titel || show.title);
+        console.log(`Show ${index} - All fields:`, Object.keys(show));
+        if (show.bild) {
+          console.log(`Show ${index} bild data:`, JSON.stringify(show.bild, null, 2));
+        }
         if (show.performers && Array.isArray(show.performers)) {
+          console.log(`Show ${index} - Number of performers:`, show.performers.length);
           show.performers.forEach((performer: any, perfIndex: number) => {
-            console.log(`Show ${index}, Performer ${perfIndex} bild:`, JSON.stringify(performer.bild, null, 2));
+            console.log(`Show ${index}, Performer ${perfIndex} fields:`, Object.keys(performer));
+            if (performer.bild) {
+              console.log(`Show ${index}, Performer ${perfIndex} bild:`, JSON.stringify(performer.bild, null, 2));
+            }
           });
         }
       });
@@ -88,4 +95,3 @@ serve(async (req) => {
     });
   }
 });
-
