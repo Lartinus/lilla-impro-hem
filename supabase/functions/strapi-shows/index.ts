@@ -32,12 +32,12 @@ serve(async (req) => {
     
     let endpoint;
     if (targetSlug) {
-      // For single show details - use simple populate all approach
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
+      // For single show details - use deep populate to get performer images
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[bild]=*&populate[performers][populate][bild]=*&populate[location]=*`;
       console.log(`Fetching single show: ${strapiUrl}${endpoint}`);
     } else {
-      // For listing all shows - use simple populate all approach
-      endpoint = '/api/shows?populate=*';
+      // For listing all shows - use deep populate for performer images
+      endpoint = '/api/shows?populate[bild]=*&populate[performers][populate][bild]=*&populate[location]=*';
       console.log(`Fetching all shows: ${strapiUrl}${endpoint}`);
     }
 
@@ -52,7 +52,49 @@ serve(async (req) => {
       console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
       const errorText = await response.text();
       console.error('Error response:', errorText);
-      throw new Error(`Strapi API error: ${response.status}`);
+      
+      // Fallback to simple populate if specific populate fails
+      console.log('Trying fallback populate strategy...');
+      const fallbackEndpoint = targetSlug 
+        ? `/api/shows?filters[slug][$eq]=${targetSlug}&populate=deep`
+        : '/api/shows?populate=deep';
+      
+      const fallbackResponse = await fetch(`${strapiUrl}${fallbackEndpoint}`, {
+        headers: {
+          'Authorization': `Bearer ${strapiToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!fallbackResponse.ok) {
+        // Final fallback
+        const finalEndpoint = targetSlug 
+          ? `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`
+          : '/api/shows?populate=*';
+        
+        const finalResponse = await fetch(`${strapiUrl}${finalEndpoint}`, {
+          headers: {
+            'Authorization': `Bearer ${strapiToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!finalResponse.ok) {
+          throw new Error(`All Strapi API attempts failed: ${finalResponse.status}`);
+        }
+        
+        const finalData = await finalResponse.json();
+        console.log('Using final fallback data:', JSON.stringify(finalData, null, 2));
+        return new Response(JSON.stringify(finalData), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      const fallbackData = await fallbackResponse.json();
+      console.log('Using fallback data:', JSON.stringify(fallbackData, null, 2));
+      return new Response(JSON.stringify(fallbackData), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const data = await response.json();
