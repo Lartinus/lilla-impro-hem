@@ -30,7 +30,7 @@ serve(async (req) => {
       }
     }
     
-    // Use simpler populate syntax that works with Strapi v4/v5
+    // Try a different approach - fetch performers separately if needed
     let endpoint;
     if (targetSlug) {
       endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
@@ -63,24 +63,51 @@ serve(async (req) => {
     const data = await response.json();
     console.log('Successfully fetched shows data:', JSON.stringify(data, null, 2));
     
-    // Log specific image data for debugging
+    // Now try to fetch performer details with images separately
     if (data.data && data.data.length > 0) {
-      data.data.forEach((show: any, index: number) => {
-        console.log(`Show ${index} - Title:`, show.titel || show.title);
-        console.log(`Show ${index} - All fields:`, Object.keys(show));
+      for (let showIndex = 0; showIndex < data.data.length; showIndex++) {
+        const show = data.data[showIndex];
+        console.log(`Show ${showIndex} - Title:`, show.titel || show.title);
+        console.log(`Show ${showIndex} - All fields:`, Object.keys(show));
+        
         if (show.bild) {
-          console.log(`Show ${index} bild data:`, JSON.stringify(show.bild, null, 2));
+          console.log(`Show ${showIndex} bild data:`, JSON.stringify(show.bild, null, 2));
         }
+        
         if (show.performers && Array.isArray(show.performers)) {
-          console.log(`Show ${index} - Number of performers:`, show.performers.length);
-          show.performers.forEach((performer: any, perfIndex: number) => {
-            console.log(`Show ${index}, Performer ${perfIndex} fields:`, Object.keys(performer));
-            if (performer.bild) {
-              console.log(`Show ${index}, Performer ${perfIndex} bild:`, JSON.stringify(performer.bild, null, 2));
+          console.log(`Show ${showIndex} - Number of performers:`, show.performers.length);
+          
+          // Try to fetch each performer with their image
+          for (let perfIndex = 0; perfIndex < show.performers.length; perfIndex++) {
+            const performer = show.performers[perfIndex];
+            console.log(`Show ${showIndex}, Performer ${perfIndex} fields:`, Object.keys(performer));
+            
+            // Try to fetch this performer with populate to get the image
+            try {
+              const performerResponse = await fetch(`${strapiUrl}/api/performers/${performer.id}?populate=*`, {
+                headers: {
+                  'Authorization': `Bearer ${strapiToken}`,
+                  'Content-Type': 'application/json',
+                },
+              });
+              
+              if (performerResponse.ok) {
+                const performerData = await performerResponse.json();
+                console.log(`Fetched performer ${perfIndex} with images:`, JSON.stringify(performerData, null, 2));
+                
+                // Update the performer in the original data with the populated version
+                if (performerData.data) {
+                  data.data[showIndex].performers[perfIndex] = performerData.data;
+                }
+              } else {
+                console.log(`Failed to fetch performer ${perfIndex} details:`, performerResponse.status);
+              }
+            } catch (performerError) {
+              console.log(`Error fetching performer ${perfIndex}:`, performerError);
             }
-          });
+          }
         }
-      });
+      }
     }
     
     return new Response(JSON.stringify(data), {

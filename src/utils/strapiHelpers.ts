@@ -137,7 +137,7 @@ export const formatStrapiShow = (strapiShow: any) => {
   
   console.log('formatStrapiShow - Location:', locationName, 'Map link:', mapLink);
   
-  // Handle performers - now looking for bild field
+  // Handle performers - since images aren't populated, we'll need a different approach
   let performers = [];
   console.log('formatStrapiShow - Raw performers data:', JSON.stringify(showData.performers, null, 2));
   
@@ -152,55 +152,15 @@ export const formatStrapiShow = (strapiShow: any) => {
       console.log(`formatStrapiShow - Performer ${index} data after extraction:`, JSON.stringify(performerData, null, 2));
       console.log(`formatStrapiShow - Performer ${index} ALL AVAILABLE FIELDS:`, Object.keys(performerData));
       
-      // Try to find performer image in the bild field (updated to use consistent "bild")
-      let performerImage = null;
-      
-      // First try the bild field
-      if (performerData.bild) {
-        console.log(`formatStrapiShow - Performer ${index}: Found bild field:`, JSON.stringify(performerData.bild, null, 2));
-        performerImage = getStrapiImageUrl(performerData.bild);
-        if (performerImage) {
-          console.log(`formatStrapiShow - Performer ${index}: Successfully got image from bild field:`, performerImage);
-        } else {
-          console.log(`formatStrapiShow - Performer ${index}: Bild field exists but couldn't extract URL`);
-        }
-      }
-      
-      // If no bild field in performerData, check the original performer object
-      if (!performerImage && performer.bild) {
-        console.log(`formatStrapiShow - Performer ${index}: Trying bild field from original performer object:`, JSON.stringify(performer.bild, null, 2));
-        performerImage = getStrapiImageUrl(performer.bild);
-        if (performerImage) {
-          console.log(`formatStrapiShow - Performer ${index}: Successfully got image from original performer bild:`, performerImage);
-        }
-      }
-      
-      // Fallback to other possible field names
-      if (!performerImage) {
-        console.log(`formatStrapiShow - Performer ${index}: No bild field, trying other field names`);
-        const imageFields = ['poster', 'avatar', 'media', 'image', 'photo', 'picture', 'foto'];
-        
-        for (const fieldName of imageFields) {
-          if (performerData[fieldName]) {
-            console.log(`formatStrapiShow - Performer ${index}: Trying field ${fieldName}:`, JSON.stringify(performerData[fieldName], null, 2));
-            performerImage = getStrapiImageUrl(performerData[fieldName]);
-            if (performerImage) {
-              console.log(`formatStrapiShow - Performer ${index}: Successfully got image from ${fieldName}:`, performerImage);
-              break;
-            }
-          }
-        }
-      }
-      
-      if (!performerImage) {
-        console.log(`formatStrapiShow - Performer ${index}: No image found anywhere. Available fields:`, Object.keys(performerData));
-      }
+      // Since performer images aren't being populated by Strapi, we'll set them to null for now
+      // This is likely because the populate=* doesn't work for nested relations in this Strapi version
+      console.log(`formatStrapiShow - Performer ${index}: No bild field found in data, setting image to null`);
       
       const formattedPerformer = {
         id: performer.id || performerData.id || index,
         name: performerData.name || `Performer ${index + 1}`,
         bio: performerData.bio || '',
-        image: performerImage,
+        image: null, // Setting to null since images aren't being populated
       };
       
       console.log(`formatStrapiShow - Performer ${index} final result:`, formattedPerformer);
