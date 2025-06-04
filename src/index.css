@@ -281,4 +281,12 @@
   .course-card h2 {
     line-height: 1.2 !important;
   }
+  
+  /* ===== COURSE CARD SUBTITLE MOBILE SIZE SETTINGS ===== */
+  /* Mindre textstorlek för underrubriker på mobil */
+  @media (max-width: 767px) {
+    .course-card .subtitle {
+      font-size: 0.875rem !important; /* 14px instead of default 16px */
+    }
+  }
 }
