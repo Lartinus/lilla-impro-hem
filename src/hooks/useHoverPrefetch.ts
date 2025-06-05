@@ -40,8 +40,23 @@ export const useHoverPrefetch = () => {
     });
   };
 
+  const prefetchPrivateParty = () => {
+    queryClient.prefetchQuery({
+      queryKey: ['private-party'],
+      queryFn: async () => {
+        const { data, error } = await supabase.functions.invoke('strapi-site-content', {
+          body: { type: 'private-party' }
+        });
+        if (error) throw error;
+        return data;
+      },
+      staleTime: 60 * 60 * 1000, // 1 hour
+    });
+  };
+
   return {
     prefetchShows,
     prefetchCourses,
+    prefetchPrivateParty,
   };
 };

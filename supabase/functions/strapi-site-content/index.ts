@@ -29,8 +29,78 @@ serve(async (req) => {
     const { type } = await req.json();
     const contentType = type || 'site-settings';
     
+    // Optimized handling for private-party content - only fetch text fields
+    if (contentType === 'private-party') {
+      console.log(`=== FETCHING OPTIMIZED PRIVATE-PARTY CONTENT ===`);
+      
+      // Only fetch the text fields we actually use in the UI
+      const endpoint = `/api/${contentType}?fields[0]=info&fields[1]=redbox&fields[2]=info_efter_redbox`;
+      console.log(`Fetching optimized private-party: ${strapiUrl}${endpoint}`);
+
+      const response = await fetch(`${strapiUrl}${endpoint}`, {
+        headers: {
+          'Authorization': `Bearer ${strapiToken}`,
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br',
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error(`Strapi API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(`Successfully fetched optimized private-party content`);
+      
+      return new Response(JSON.stringify(data), {
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json',
+          'Cache-Control': 'public, max-age=3600', // 1 hour cache for static content
+        },
+      });
+    }
+    
+    // Optimized handling for course-main-info - only fetch text fields
+    else if (contentType === 'course-main-info') {
+      console.log(`=== FETCHING OPTIMIZED COURSE-MAIN-INFO CONTENT ===`);
+      
+      // Only fetch the text fields we actually use in the UI
+      const endpoint = `/api/${contentType}?fields[0]=info&fields[1]=redbox&fields[2]=info_efter_redbox`;
+      console.log(`Fetching optimized course-main-info: ${strapiUrl}${endpoint}`);
+
+      const response = await fetch(`${strapiUrl}${endpoint}`, {
+        headers: {
+          'Authorization': `Bearer ${strapiToken}`,
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip, deflate, br',
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error(`Strapi API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(`Successfully fetched optimized course-main-info content`);
+      
+      return new Response(JSON.stringify(data), {
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json',
+          'Cache-Control': 'public, max-age=3600', // 1 hour cache for static content
+        },
+      });
+    }
+    
     // For 'about' content type, fetch with populated performers
-    if (contentType === 'about') {
+    else if (contentType === 'about') {
       console.log(`=== FETCHING ABOUT CONTENT WITH PERFORMERS ===`);
       
       // First fetch the about content with populated performers

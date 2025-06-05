@@ -1,3 +1,4 @@
+
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -87,7 +88,7 @@ export const useCourseMainInfo = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 45 * 60 * 1000, // 45 minutes - static content changes rarely
+    staleTime: 60 * 60 * 1000, // 1 hour - static content changes rarely
     gcTime: 2 * 60 * 60 * 1000, // 2 hours
     retry: 1,
     refetchOnWindowFocus: false,
@@ -104,8 +105,9 @@ export const usePrivateParty = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 30 * 60 * 1000, // 30 minutes
-    gcTime: 60 * 60 * 1000, // 60 minutes
+    staleTime: 60 * 60 * 1000, // 1 hour - static content changes rarely
+    gcTime: 2 * 60 * 60 * 1000, // 2 hours
+    retry: 1,
     refetchOnWindowFocus: false,
   });
 };
