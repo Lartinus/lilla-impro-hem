@@ -1,19 +1,12 @@
-
 import { MapPin, Phone, Mail, Facebook, Instagram } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
 const Footer = () => {
-  return (
-    <footer className="bg-theatre-tertiary text-theatre-light py-8 md:py-16">
+  return <footer className="bg-theatre-tertiary text-theatre-light md:py-16 my-0 py-[10px]">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-3 gap-6">
           <div className="space-y-2 md:space-y-4">
-            <img 
-              src="/lovable-uploads/ac906279-978d-4e9c-b9a1-eb3a90b48aef.png" 
-              alt="Lilla Improteatern" 
-              className="h-16 w-auto hidden md:block"
-            />
-            <p className="text-theatre-light/80 leading-relaxed">
+            <img src="/lovable-uploads/ac906279-978d-4e9c-b9a1-eb3a90b48aef.png" alt="Lilla Improteatern" className="h-16 w-auto hidden md:block" />
+            <p className="text-theatre-light/80 leading-relaxed my-0 py-[14px] mx-0 px-0">
               Ditt nya hem för Improv Comedy i Stockholm. Vi skapar tillsammans genom humor, kreativitet och gemenskap.
             </p>
             <div className="flex space-x-4">
@@ -70,8 +63,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;

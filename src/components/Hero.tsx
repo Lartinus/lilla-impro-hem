@@ -1,16 +1,13 @@
-
 import ServiceBoxes from './ServiceBoxes';
-
 const Hero = () => {
-  return (
-    <section className="min-h-screen flex flex-col justify-center py-12 px-0.5 md:px-4 relative overflow-hidden">
+  return <section className="min-h-screen flex flex-col justify-center py-12 px-0.5 md:px-4 relative overflow-hidden">
       <div className="relative z-10">
         {/* På mobil: mt-12, på desktop: mt-20 för mer avstånd till header */}
         <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
           
           {/* Beskrivning */}
           <div className="max-w-4xl space-y-2 pb-1">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left">
+            <h1 className="sm:text-2xl md:text-3xl leading-tight text-gray-800 tracking-normal mb-4 text-left lg:text-5xl font-bold text-xl py-px mx-[2px] my-[10px]">
               Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
             </h1>
             <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
@@ -39,7 +36,7 @@ const Hero = () => {
 
           {/* Video‐rubriker */}
           <div className="max-w-4xl space-y-3 pt-8">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left md:text–center">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left md:text\u2013center lg:text-3xl">
               Vad är improv comedy egentligen?
             </h1>
             <h3 className="text-theatre-secondary font-medium mb-4 text-left">
@@ -51,8 +48,7 @@ const Hero = () => {
           <div className="mt-8">
             <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white">
               <div className="grid md:grid-cols-3 gap-6">
-                {[1, 2, 3].map((video) => (
-                  <div key={video} className="group">
+                {[1, 2, 3].map(video => <div key={video} className="group">
                     <div className="bg-red-700 backdrop-blur-sm border border-theatre-primary/20 rounded-2xl p-6 hover:bg-red-800 transition-all duration-500 hover:border-theatre-primary/30 hover:transform hover:scale-105 aspect-video flex items-center justify-center">
                       <div className="text-centre space-y-4">
                         <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto">
@@ -63,16 +59,13 @@ const Hero = () => {
                         </p>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  </div>)}
               </div>
             </div>
           </div>
           
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
