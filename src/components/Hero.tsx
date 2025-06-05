@@ -51,7 +51,7 @@ const Hero = () => {
             </p>
           </div>
 
-          {/* Services‐sektionen */}
+          {/* Services‐sektionen - prioriterad laddning */}
           <div className="space-y-4">
             <ServiceBoxes />
           </div>
@@ -78,39 +78,38 @@ const Hero = () => {
             </h3>
           </div>
 
-          {/* Video‐innehåll */}
+          {/* Video‐innehåll - laddas efter bilder */}
           <div className="mt-8">
-            <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white">
+            <div className="space-y-8 p-6 md:p-6 lg:p-12 bg-white">
               <div className="grid md:grid-cols-3 gap-6">
                 {videos.map((video, index) => (
                   <div key={video.id} className="group">
-                    <div className="bg-red-700 backdrop-blur-sm border border-theatre-primary/20 rounded-2xl p-6 hover:bg-red-800 transition-all duration-500 hover:border-theatre-primary/30 hover:transform hover:scale-105 aspect-video flex items-center justify-center">
+                    <div className="bg-gray-100 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 aspect-video">
                       {isLoading ? (
-                        <div className="text-centre space-y-4">
-                          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto animate-pulse">
-                            <div className="w-0 h-0 border-l-[12px] border-l-white border-y-[8px] border-y-transparent ml-1"></div>
+                        <div className="w-full h-full bg-gray-300 animate-pulse flex items-center justify-center">
+                          <div className="text-gray-500 text-sm">
+                            Laddar video...
                           </div>
-                          <p className="text-white text-sm font-light">
-                            Laddar...
-                          </p>
                         </div>
                       ) : video.url ? (
                         <video 
                           controls 
-                          className="w-full h-full object-cover rounded-lg"
-                          poster=""
+                          className="w-full h-full object-cover"
+                          preload="metadata"
                         >
                           <source src={video.url} type="video/mp4" />
                           Din webbläsare stöder inte video-taggen.
                         </video>
                       ) : (
-                        <div className="text-centre space-y-4">
-                          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto">
-                            <div className="w-0 h-0 border-l-[12px] border-l-white border-y-[8px] border-y-transparent ml-1"></div>
+                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                          <div className="text-center space-y-2">
+                            <div className="w-12 h-12 bg-gray-400 rounded-full flex items-center justify-center mx-auto">
+                              <div className="w-0 h-0 border-l-[8px] border-l-white border-y-[6px] border-y-transparent ml-1"></div>
+                            </div>
+                            <p className="text-gray-600 text-sm">
+                              {video.title}
+                            </p>
                           </div>
-                          <p className="text-white text-sm font-light">
-                            {video.title}
-                          </p>
                         </div>
                       )}
                     </div>

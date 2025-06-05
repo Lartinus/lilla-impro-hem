@@ -43,7 +43,7 @@ const ServiceBoxes = () => {
       {services.map((service, index) => (
         <div key={index} className="group">
           <div className="border border-gray-200 rounded-none overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col min-h-[300px]">
-            {/* Image section */}
+            {/* Image section - prioritized loading */}
             <div className="relative h-48 overflow-hidden">
               {isLoading ? (
                 <div className="w-full h-full bg-gray-300 animate-pulse"></div>
@@ -53,6 +53,7 @@ const ServiceBoxes = () => {
                   alt={service.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   preferredSize="medium"
+                  loading="eager"
                 />
               )}
               <div className="absolute inset-0 bg-black/20"></div>
