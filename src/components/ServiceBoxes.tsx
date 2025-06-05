@@ -5,19 +5,19 @@ import { Link } from 'react-router-dom';
 const ServiceBoxes = () => {
   const services = [
     {
-      title: "Kurser i Improv Comedy – från nybörjare till ensemble.",
+      title: "Kurser i Improv Comedy - från nybörjare till ensemble.",
       cta: "Utforska våra kurser",
       link: "/kurser",
       image: "/lovable-uploads/f96ff1ae-f9cb-4df9-8aa9-846ef0297538.png"
     },
     {
-      title: "Föreställningar i hög variation med fokus på komik",
+      title: "Föreställningar av några av Sveriges bästa improvisatörer.",
       cta: "Se kommande föreställningar", 
       link: "/shows",
       image: "/lovable-uploads/a018eb4f-8f59-4895-b9b0-565c2b8ad636.png"
     },
     {
-      title: "Workshops och events för företag, myndigheter och organisationer",
+      title: "Workshops och events för företag, myndigheter och organisationer.",
       cta: "Läs mer",
       link: "/foretag",
       image: "/lovable-uploads/7e10e177-5707-44b1-bbf3-e5f9507d3054.png"
