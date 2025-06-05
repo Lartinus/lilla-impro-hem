@@ -99,15 +99,20 @@ export const usePrivateParty = () => {
   return useQuery({
     queryKey: ['private-party'],
     queryFn: async () => {
+      console.log('=== STARTING PRIVATE PARTY QUERY ===');
       const { data, error } = await supabase.functions.invoke('strapi-site-content', {
         body: { type: 'private-party' }
       });
-      if (error) throw error;
+      console.log('Private party response:', { data, error });
+      if (error) {
+        console.error('Private party error:', error);
+        throw error;
+      }
       return data;
     },
-    staleTime: 60 * 60 * 1000, // 1 hour - static content changes rarely
-    gcTime: 2 * 60 * 60 * 1000, // 2 hours
-    retry: 1,
+    staleTime: 30 * 60 * 1000, // 30 minutes - reduced for debugging
+    gcTime: 60 * 60 * 1000, // 60 minutes
+    retry: 3, // Increased retry attempts
     refetchOnWindowFocus: false,
   });
 };
