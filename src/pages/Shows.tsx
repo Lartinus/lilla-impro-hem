@@ -4,7 +4,8 @@ import Footer from '@/components/Footer';
 import ShowCardSimple from '@/components/ShowCardSimple';
 import ShowCardSkeleton from '@/components/ShowCardSkeleton';
 import { useEffect, useMemo } from 'react';
-import { useShows } from '@/hooks/useStrapi';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { formatStrapiShowSimple } from '@/utils/strapiHelpers';
 
 const Shows = () => {
@@ -12,7 +13,19 @@ const Shows = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data: strapiData, isLoading, error } = useShows();
+  // Single query for shows data
+  const { data: strapiData, isLoading, error } = useQuery({
+    queryKey: ['shows'],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('strapi-shows');
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes - longer cache for shows
+    gcTime: 30 * 60 * 1000, // 30 minutes
+    retry: 2, // Only retry twice
+    refetchOnWindowFocus: false, // Don't refetch on window focus
+  });
 
   // Memoize the formatted shows to avoid recalculating on every render
   const shows = useMemo(() => {

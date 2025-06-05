@@ -5,7 +5,8 @@ import CourseGrid from '@/components/CourseGrid';
 import CourseInfoSection from '@/components/CourseInfoSection';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 import { useEffect, useMemo } from 'react';
-import { useCourses, useCourseMainInfo } from '@/hooks/useStrapi';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { formatStrapiCourse, formatCourseMainInfo, sortCourses } from '@/utils/strapiHelpers';
 
 const Courses = () => {
@@ -13,23 +14,47 @@ const Courses = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data: coursesData, isLoading: coursesLoading, error: coursesError } = useCourses();
-  const { data: mainInfoData, isLoading: mainInfoLoading, error: mainInfoError } = useCourseMainInfo();
+  // Parallel data fetching using a single useQuery
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['courses-parallel'],
+    queryFn: async () => {
+      // Execute both API calls in parallel
+      const [coursesResponse, mainInfoResponse] = await Promise.all([
+        supabase.functions.invoke('strapi-courses'),
+        supabase.functions.invoke('strapi-site-content', {
+          body: { type: 'course-main-info' }
+        })
+      ]);
 
-  console.log('Courses page - Raw courses data:', coursesData);
-  console.log('Courses page - Raw main info data:', mainInfoData);
+      if (coursesResponse.error) throw coursesResponse.error;
+      if (mainInfoResponse.error) throw mainInfoResponse.error;
+
+      return {
+        coursesData: coursesResponse.data,
+        mainInfoData: mainInfoResponse.data
+      };
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
+    retry: 2,
+    refetchOnWindowFocus: false,
+  });
+
+  console.log('Courses page - Parallel data:', data);
 
   // Memoize formatted and sorted courses to avoid recalculating
   const { courses, mainInfo } = useMemo(() => {
-    const formattedCourses = coursesData?.data ? coursesData.data.map(formatStrapiCourse).filter(Boolean) : [];
+    if (!data) return { courses: [], mainInfo: null };
+    
+    const formattedCourses = data.coursesData?.data ? data.coursesData.data.map(formatStrapiCourse).filter(Boolean) : [];
     const sortedCourses = sortCourses(formattedCourses);
-    const formattedMainInfo = formatCourseMainInfo(mainInfoData);
+    const formattedMainInfo = formatCourseMainInfo(data.mainInfoData);
     
     return {
       courses: sortedCourses,
       mainInfo: formattedMainInfo
     };
-  }, [coursesData, mainInfoData]);
+  }, [data]);
 
   console.log('Formatted courses:', courses);
   console.log('Formatted main info:', mainInfo);
@@ -40,7 +65,7 @@ const Courses = () => {
   ];
 
   // Show loading state with skeletons
-  if (coursesLoading || mainInfoLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
@@ -59,8 +84,8 @@ const Courses = () => {
     );
   }
 
-  if (coursesError || mainInfoError) {
-    console.error('Error loading data:', { coursesError, mainInfoError });
+  if (error) {
+    console.error('Error loading data:', error);
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex items-center justify-center">
         <div className="text-white text-xl">Ett fel uppstod vid laddning av kurser. Testa igen!</div>

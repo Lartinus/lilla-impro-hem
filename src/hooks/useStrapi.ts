@@ -34,6 +34,7 @@ export const useShow = (slug: string) => {
   });
 };
 
+// Keep for backward compatibility and other pages that might use them individually
 export const useCourses = () => {
   return useQuery({
     queryKey: ['courses'],
