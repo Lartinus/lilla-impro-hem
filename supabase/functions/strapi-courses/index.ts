@@ -55,8 +55,8 @@ serve(async (req) => {
       });
     }
 
-    // Optimized endpoint with only essential data
-    const endpoint = '/api/courses?populate[teacher][populate][bild]=*&fields[0]=titel&fields[1]=undertitel&fields[2]=description&fields[3]=praktisk_info&fields[4]=prioritet';
+    // Use the basic endpoint with populate for teacher and their image
+    const endpoint = '/api/courses?populate[teacher][populate][bild]=*';
     
     console.log(`Fetching courses from Strapi: ${strapiUrl}${endpoint}`);
 

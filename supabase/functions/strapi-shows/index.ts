@@ -69,14 +69,14 @@ serve(async (req) => {
       }
     }
     
-    // Build optimized endpoint based on whether we need detailed or simple data
+    // Build endpoint based on whether we need detailed or simple data
     let endpoint;
     if (targetSlug) {
       // Detailed view - include all data
       endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate][bild][populate]=*&populate[location][populate]=*&populate[bild][populate]=*`;
     } else {
-      // List view - only essential fields for performance
-      endpoint = '/api/shows?populate[location]=*&populate[bild]=*&fields[0]=titel&fields[1]=datum&fields[2]=time&fields[3]=slug';
+      // List view - basic data with location and image
+      endpoint = '/api/shows?populate[location]=*&populate[bild]=*';
     }
 
     console.log(`Fetching shows from: ${strapiUrl}${endpoint}`);
