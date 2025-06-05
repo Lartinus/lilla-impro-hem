@@ -11,7 +11,7 @@ const ServiceBoxes = () => {
       image: "/lovable-uploads/f96ff1ae-f9cb-4df9-8aa9-846ef0297538.png"
     },
     {
-      title: "Föreställningar av några av Sveriges bästa improvisatörer.",
+      title: "Föreställningar med hög variation och fokus på humor.",
       cta: "Se kommande föreställningar", 
       link: "/shows",
       image: "/lovable-uploads/a018eb4f-8f59-4895-b9b0-565c2b8ad636.png"
