@@ -84,7 +84,7 @@ const Hero = () => {
               <div className="grid md:grid-cols-3 gap-6">
                 {videos.map((video, index) => (
                   <div key={video.id} className="group">
-                    <div className="bg-gray-100 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 aspect-video">
+                    <div className="bg-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 aspect-video">
                       {isLoading ? (
                         <div className="w-full h-full bg-gray-300 animate-pulse flex items-center justify-center">
                           <div className="text-gray-500 text-sm">
