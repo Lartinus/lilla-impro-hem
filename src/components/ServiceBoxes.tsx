@@ -53,7 +53,6 @@ const ServiceBoxes = () => {
                   alt={service.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   preferredSize="medium"
-                  loading="eager"
                 />
               )}
               <div className="absolute inset-0 bg-black/20"></div>
