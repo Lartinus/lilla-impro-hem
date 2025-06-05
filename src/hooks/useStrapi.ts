@@ -1,4 +1,3 @@
-
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -10,8 +9,10 @@ export const useShows = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes - longer cache for shows
+    gcTime: 30 * 60 * 1000, // 30 minutes
+    retry: 2, // Only retry twice
+    refetchOnWindowFocus: false, // Don't refetch on window focus
   });
 };
 
@@ -26,8 +27,10 @@ export const useShow = (slug: string) => {
       return data;
     },
     enabled: !!slug,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 15 * 60 * 1000, // 15 minutes for individual shows
+    gcTime: 45 * 60 * 1000, // 45 minutes
+    retry: 2,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -39,8 +42,10 @@ export const useCourses = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 15 * 60 * 1000, // 15 minutes - courses change less frequently
+    gcTime: 45 * 60 * 1000, // 45 minutes
+    retry: 2,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -54,8 +59,10 @@ export const useCourseMainInfo = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 10 * 60 * 1000, // 10 minutes - längre cache för sällan ändrat innehåll
-    gcTime: 30 * 60 * 1000, // 30 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes - static content changes rarely
+    gcTime: 60 * 60 * 1000, // 60 minutes
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 };
 

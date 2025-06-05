@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ShowCardSimple from '@/components/ShowCardSimple';
 import ShowCardSkeleton from '@/components/ShowCardSkeleton';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useShows } from '@/hooks/useStrapi';
 import { formatStrapiShowSimple } from '@/utils/strapiHelpers';
 
@@ -13,6 +13,11 @@ const Shows = () => {
   }, []);
 
   const { data: strapiData, isLoading, error } = useShows();
+
+  // Memoize the formatted shows to avoid recalculating on every render
+  const shows = useMemo(() => {
+    return strapiData?.data ? strapiData.data.map(formatStrapiShowSimple).filter(Boolean) : [];
+  }, [strapiData]);
 
   if (error) {
     console.error('Error loading shows from Strapi:', error);
@@ -34,9 +39,6 @@ const Shows = () => {
       </div>
     );
   }
-
-  // Format shows from Strapi using simple format (only basic info)
-  const shows = strapiData?.data ? strapiData.data.map(formatStrapiShowSimple).filter(Boolean) : [];
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
@@ -64,7 +66,7 @@ const Shows = () => {
           ) : shows.length > 0 ? (
             <div className="grid gap-6 mb-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
               {shows.map((show) => (
-                <ShowCardSimple key={show.id} show={show} />
+                <ShowCardSimple key={`show-${show.id}-${show.slug}`} show={show} />
               ))}
             </div>
           ) : (
