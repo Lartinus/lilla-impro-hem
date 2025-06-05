@@ -15,8 +15,8 @@ export const usePrefetch = () => {
         if (error) throw error;
         return data;
       },
-      staleTime: 10 * 60 * 1000, // 10 minutes
-      gcTime: 30 * 60 * 1000, // 30 minutes
+      staleTime: 15 * 60 * 1000, // 15 minutes
+      gcTime: 45 * 60 * 1000, // 45 minutes
     });
 
     // Prefetch courses data (parallel)
@@ -38,8 +38,8 @@ export const usePrefetch = () => {
           mainInfoData: mainInfoResponse.data
         };
       },
-      staleTime: 10 * 60 * 1000, // 10 minutes
-      gcTime: 30 * 60 * 1000, // 30 minutes
+      staleTime: 20 * 60 * 1000, // 20 minutes
+      gcTime: 60 * 60 * 1000, // 60 minutes
     });
 
     console.log('Prefetching critical data in background...');

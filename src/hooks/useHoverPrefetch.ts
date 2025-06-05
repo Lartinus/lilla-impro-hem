@@ -13,7 +13,7 @@ export const useHoverPrefetch = () => {
         if (error) throw error;
         return data;
       },
-      staleTime: 10 * 60 * 1000,
+      staleTime: 15 * 60 * 1000,
     });
   };
 
@@ -36,7 +36,7 @@ export const useHoverPrefetch = () => {
           mainInfoData: mainInfoResponse.data
         };
       },
-      staleTime: 10 * 60 * 1000,
+      staleTime: 20 * 60 * 1000,
     });
   };
 

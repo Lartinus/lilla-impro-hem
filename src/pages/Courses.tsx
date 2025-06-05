@@ -5,8 +5,7 @@ import CourseGrid from '@/components/CourseGrid';
 import CourseInfoSection from '@/components/CourseInfoSection';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 import { useEffect, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { useCoursesParallel } from '@/hooks/useStrapi';
 import { formatStrapiCourse, formatCourseMainInfo, sortCourses } from '@/utils/strapiHelpers';
 
 const Courses = () => {
@@ -14,31 +13,8 @@ const Courses = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Parallel data fetching using a single useQuery
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['courses-parallel'],
-    queryFn: async () => {
-      // Execute both API calls in parallel
-      const [coursesResponse, mainInfoResponse] = await Promise.all([
-        supabase.functions.invoke('strapi-courses'),
-        supabase.functions.invoke('strapi-site-content', {
-          body: { type: 'course-main-info' }
-        })
-      ]);
-
-      if (coursesResponse.error) throw coursesResponse.error;
-      if (mainInfoResponse.error) throw mainInfoResponse.error;
-
-      return {
-        coursesData: coursesResponse.data,
-        mainInfoData: mainInfoResponse.data
-      };
-    },
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
-    retry: 2,
-    refetchOnWindowFocus: false,
-  });
+  // Use the optimized parallel query
+  const { data, isLoading, error } = useCoursesParallel();
 
   console.log('Courses page - Parallel data:', data);
 

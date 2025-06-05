@@ -9,8 +9,8 @@ export const useShows = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 10 * 60 * 1000, // 10 minutes - longer cache for shows
-    gcTime: 30 * 60 * 1000, // 30 minutes
+    staleTime: 15 * 60 * 1000, // 15 minutes - longer cache for shows
+    gcTime: 45 * 60 * 1000, // 45 minutes
     retry: 2, // Only retry twice
     refetchOnWindowFocus: false, // Don't refetch on window focus
   });
@@ -27,8 +27,35 @@ export const useShow = (slug: string) => {
       return data;
     },
     enabled: !!slug,
-    staleTime: 15 * 60 * 1000, // 15 minutes for individual shows
-    gcTime: 45 * 60 * 1000, // 45 minutes
+    staleTime: 20 * 60 * 1000, // 20 minutes for individual shows
+    gcTime: 60 * 60 * 1000, // 60 minutes
+    retry: 2,
+    refetchOnWindowFocus: false,
+  });
+};
+
+// Optimized parallel courses query with better caching
+export const useCoursesParallel = () => {
+  return useQuery({
+    queryKey: ['courses-parallel'],
+    queryFn: async () => {
+      const [coursesResponse, mainInfoResponse] = await Promise.all([
+        supabase.functions.invoke('strapi-courses'),
+        supabase.functions.invoke('strapi-site-content', {
+          body: { type: 'course-main-info' }
+        })
+      ]);
+
+      if (coursesResponse.error) throw coursesResponse.error;
+      if (mainInfoResponse.error) throw mainInfoResponse.error;
+
+      return {
+        coursesData: coursesResponse.data,
+        mainInfoData: mainInfoResponse.data
+      };
+    },
+    staleTime: 20 * 60 * 1000, // 20 minutes - courses change less frequently
+    gcTime: 60 * 60 * 1000, // 60 minutes
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -43,8 +70,8 @@ export const useCourses = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 15 * 60 * 1000, // 15 minutes - courses change less frequently
-    gcTime: 45 * 60 * 1000, // 45 minutes
+    staleTime: 20 * 60 * 1000, // 20 minutes - courses change less frequently
+    gcTime: 60 * 60 * 1000, // 60 minutes
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -60,8 +87,8 @@ export const useCourseMainInfo = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 30 * 60 * 1000, // 30 minutes - static content changes rarely
-    gcTime: 60 * 60 * 1000, // 60 minutes
+    staleTime: 45 * 60 * 1000, // 45 minutes - static content changes rarely
+    gcTime: 2 * 60 * 60 * 1000, // 2 hours
     retry: 1,
     refetchOnWindowFocus: false,
   });
@@ -77,8 +104,9 @@ export const usePrivateParty = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes
+    gcTime: 60 * 60 * 1000, // 60 minutes
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -92,8 +120,9 @@ export const useAboutPageContent = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes
+    gcTime: 60 * 60 * 1000, // 60 minutes
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -107,7 +136,8 @@ export const useSiteContent = (contentType: string = 'site-settings') => {
       if (error) throw error;
       return data;
     },
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes
+    gcTime: 60 * 60 * 1000, // 60 minutes
+    refetchOnWindowFocus: false,
   });
 };
