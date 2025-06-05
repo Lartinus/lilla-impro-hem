@@ -16,10 +16,23 @@ const Shows = () => {
 
   // Memoize the formatted shows to avoid recalculating on every render
   const shows = useMemo(() => {
-    return strapiData?.data ? strapiData.data.map(formatStrapiShowSimple).filter(Boolean) : [];
+    // Handle case where data might be undefined or have unexpected structure
+    if (strapiData?.data && Array.isArray(strapiData.data)) {
+      return strapiData.data
+        .map(formatStrapiShowSimple)
+        .filter(Boolean); // Remove any null/undefined results
+    } else if (strapiData && Array.isArray(strapiData)) {
+      // Fallback if data is directly an array
+      return strapiData
+        .map(formatStrapiShowSimple)
+        .filter(Boolean);
+    }
+    
+    return [];
   }, [strapiData]);
 
-  if (error) {
+  // Don't show error immediately if we're still loading or have no data yet
+  if (error && !isLoading && shows.length === 0) {
     console.error('Error loading shows from Strapi:', error);
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">

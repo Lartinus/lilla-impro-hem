@@ -11,6 +11,35 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Retry function with exponential backoff
+async function fetchWithRetry(url: string, options: RequestInit, maxRetries = 2) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.ok) {
+        return response;
+      }
+      
+      if (response.status === 429 && attempt < maxRetries) {
+        // Rate limited, wait before retry
+        const delay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      
+      return response;
+    } catch (error) {
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      // Wait before retry
+      const delay = Math.pow(2, attempt) * 500; // 0.5s, 1s, 2s
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  throw new Error('Max retries exceeded');
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -40,50 +69,60 @@ serve(async (req) => {
       }
     }
     
-    // Build endpoint - populate show images and performer images with full data
+    // Build optimized endpoint based on whether we need detailed or simple data
     let endpoint;
     if (targetSlug) {
+      // Detailed view - include all data
       endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate][bild][populate]=*&populate[location][populate]=*&populate[bild][populate]=*`;
     } else {
-      endpoint = '/api/shows?populate[performers][populate][bild][populate]=*&populate[location][populate]=*&populate[bild][populate]=*';
+      // List view - only essential fields for performance
+      endpoint = '/api/shows?populate[location]=*&populate[bild]=*&fields[0]=titel&fields[1]=datum&fields[2]=time&fields[3]=slug';
     }
 
     console.log(`Fetching shows from: ${strapiUrl}${endpoint}`);
 
-    const response = await fetch(`${strapiUrl}${endpoint}`, {
+    const response = await fetchWithRetry(`${strapiUrl}${endpoint}`, {
       headers: {
         'Authorization': `Bearer ${strapiToken}`,
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
     });
-
-    console.log(`Response status: ${response.status}`);
 
     if (!response.ok) {
       console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
       const errorText = await response.text();
       console.error('Error response body:', errorText);
-      throw new Error(`Strapi API failed: ${response.status} - ${errorText}`);
+      
+      // Return empty data instead of error to prevent UI breaking
+      return new Response(JSON.stringify({ data: [] }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const data = await response.json();
     console.log('Successfully fetched shows data');
-    console.log('Full shows data structure:', JSON.stringify(data, null, 2));
     
-    // Log the first show's bild field specifically
-    if (data?.data && data.data.length > 0) {
-      console.log('First show bild field:', JSON.stringify(data.data[0].bild || data.data[0].attributes?.bild, null, 2));
+    // Validate data structure
+    if (!data || !data.data) {
+      console.warn('Invalid data structure received from Strapi');
+      return new Response(JSON.stringify({ data: [] }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
     
-    console.log('Final shows data ready to return');
     return new Response(JSON.stringify(data), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=600' // 10 minutes cache
+      },
     });
   } catch (error) {
     console.error('Error in strapi-shows function:', error);
-    console.error('Error stack:', error.stack);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
+    // Return empty data instead of error to prevent UI breaking
+    return new Response(JSON.stringify({ data: [] }), {
+      status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
