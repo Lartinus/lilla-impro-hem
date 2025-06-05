@@ -89,7 +89,7 @@ const ShowDetails = () => {
       
       <ShowDetailsHeader showsUrl="/shows" />
 
-      <section className="py-2 px-0.5 md:px-4 pb-8 animate-fade-in">
+      <section className="py-2 px-0.5 md:px-4 pb-8">
         <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
           <div className="border-4 border-white shadow-lg bg-white rounded-none p-6 md:p-8">
             <ShowInfo 

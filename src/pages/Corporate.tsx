@@ -15,7 +15,7 @@ const Corporate = () => {
       <Header />
 
       {/* Content */}
-      <section className="py-8 px-0.5 md:px-4 mt-20 animate-fade-in">
+      <section className="py-8 px-0.5 md:px-4 mt-20">
         <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
           
           {/* Main content */}

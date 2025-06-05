@@ -71,7 +71,7 @@ const Courses = () => {
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
 
-        <section className="py-8 px-0.5 md:px-4 pb-8 mt-20 animate-fade-in">
+        <section className="py-8 px-0.5 md:px-4 pb-8 mt-20">
           <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
             {[...Array(4)].map((_, index) => (
               <CourseCardSkeleton key={index} />
@@ -98,7 +98,7 @@ const Courses = () => {
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
 
-      <section className="py-8 px-0.5 md:px-4 pb-8 mt-20 animate-fade-in">
+      <section className="py-8 px-0.5 md:px-4 pb-8 mt-20">
         <CourseGrid courses={courses} practicalInfo={practicalInfo} />
         <CourseInfoSection mainInfo={mainInfo} />
       </section>

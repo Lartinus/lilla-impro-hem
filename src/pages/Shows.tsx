@@ -39,7 +39,7 @@ const Shows = () => {
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
         
-        <section className="px-0.5 md:px-4 mt-16 py-6 animate-fade-in">
+        <section className="px-0.5 md:px-4 mt-16 py-6">
           <div className="text-center">
             <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
               Föreställningar
@@ -59,7 +59,7 @@ const Shows = () => {
       <Header />
       
       {/* Hero */}
-      <section className="px-0.5 md:px-4 mt-24 md:mt-32 py-4 md:py-6 animate-fade-in">
+      <section className="px-0.5 md:px-4 mt-24 md:mt-32 py-4 md:py-6">
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
             Föreställningar
@@ -68,7 +68,7 @@ const Shows = () => {
       </section>
 
       {/* Shows Grid */}
-      <section className="py-2 px-0.5 md:px-4 pb-8 animate-fade-in flex-1">
+      <section className="py-2 px-0.5 md:px-4 pb-8 flex-1">
         <div className="mx-[12px] md:mx-0 md:max-w-6xl md:mx-auto">
           {isLoading ? (
             <div className="grid gap-6 mb-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">

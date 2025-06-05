@@ -19,7 +19,7 @@ const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
         ))
       ) : (
         <div className="col-span-2 text-center text-white text-xl">
-          Inga kurser hittades
+          Vi har inga kurser planerade just nu! Kom gärna tillbaka senare eller följ oss i våra kanaler för info om framtida kurser.
         </div>
       )}
     </div>
