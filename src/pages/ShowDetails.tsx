@@ -46,10 +46,10 @@ const ShowDetails = () => {
 
   if (showLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
-        <div className="pt-32 text-center">
+        <div className="pt-32 text-center flex-1 flex items-center justify-center">
           <h1 className="text-2xl">Laddar...</h1>
         </div>
         <Footer />
@@ -59,14 +59,16 @@ const ShowDetails = () => {
 
   if (error || !showDataFromStrapi) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
-        <div className="pt-32 text-center">
-          <h1 className="text-2xl">Föreställning hittades inte</h1>
-          <p className="mt-4 text-theatre-light/80">
-            {error ? 'Ett fel uppstod vid laddning av föreställningen.' : 'Denna föreställning existerar inte.'}
-          </p>
+        <div className="pt-32 text-center flex-1 flex items-center justify-center">
+          <div>
+            <h1 className="text-2xl">Föreställning hittades inte</h1>
+            <p className="mt-4 text-theatre-light/80">
+              {error ? 'Ett fel uppstod vid laddning av föreställningen.' : 'Denna föreställning existerar inte.'}
+            </p>
+          </div>
         </div>
         <Footer />
       </div>
@@ -83,13 +85,13 @@ const ShowDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       
       <ShowDetailsHeader showsUrl="/shows" />
 
-      <section className="py-2 px-0.5 md:px-4 pb-8">
+      <section className="py-2 px-0.5 md:px-4 pb-8 flex-1">
         <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
           <div className="border-4 border-white shadow-lg bg-white rounded-none p-6 md:p-8">
             <ShowInfo 

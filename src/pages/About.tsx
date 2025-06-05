@@ -100,30 +100,28 @@ const About = () => {
   console.log('About page - FINAL processed performers:', JSON.stringify(performers, null, 2));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
 
       {/* Main Content */}
-      <section className="py-8 px-0.5 md:px-4 pb-8 mt-20">
-        <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
-          <div className="border-4 border-white shadow-lg bg-white rounded-none p-6 md:p-8">
-            
-            {/* Main info content with markdown conversion */}
-            {content?.info && (
-              <div 
-                className="space-y-6 text-gray-700 leading-relaxed text-base mb-8"
-                style={{ lineHeight: '1.3' }}
-                dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(content.info) }}
-              />
-            )}
+      <section className="py-8 px-0.5 md:px-4 mt-20 flex-1">
+        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
+          
+          {/* Main info content with markdown conversion */}
+          {content?.info && (
+            <div 
+              className="space-y-6 text-gray-700 leading-relaxed text-base"
+              style={{ lineHeight: '1.3' }}
+              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(content.info) }}
+            />
+          )}
 
-            {/* Performers section */}
-            {performers && performers.length > 0 && (
-              <PerformersSection performers={performers} />
-            )}
+          {/* Performers section */}
+          {performers && performers.length > 0 && (
+            <PerformersSection performers={performers} />
+          )}
 
-          </div>
         </div>
       </section>
 

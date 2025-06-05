@@ -67,11 +67,11 @@ const Courses = () => {
   // Show loading state with skeletons
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
 
-        <section className="py-8 px-0.5 md:px-4 pb-8 mt-20">
+        <section className="py-8 px-0.5 md:px-4 pb-8 mt-20 flex-1">
           <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
             {[...Array(4)].map((_, index) => (
               <CourseCardSkeleton key={index} />
@@ -87,18 +87,21 @@ const Courses = () => {
   if (error) {
     console.error('Error loading data:', error);
     return (
-      <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex items-center justify-center">
-        <div className="text-white text-xl">Ett fel uppstod vid laddning av kurser. Testa igen!</div>
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-white text-xl">Ett fel uppstod vid laddning av kurser. Testa igen!</div>
+        </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
 
-      <section className="py-8 px-0.5 md:px-4 pb-8 mt-20">
+      <section className="py-8 px-0.5 md:px-4 pb-8 mt-20 flex-1">
         <CourseGrid courses={courses} practicalInfo={practicalInfo} />
         <CourseInfoSection mainInfo={mainInfo} />
       </section>
