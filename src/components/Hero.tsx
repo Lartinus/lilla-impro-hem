@@ -15,8 +15,8 @@ const Hero = () => {
             </h1>
             <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
               Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
-              På vår teater får du utvecklas som improvisatör i trygga, tydliga och inspirerande kursmiljöer, 
-              och samtidigt ta del av roliga, smarta och lekfulla föreställningar.
+              På vår teater får du utvecklas som improvisatör i trygga och inspirerande kursmiljöer, 
+              och ta del av roliga, smarta och lekfulla föreställningar.
             </p>
           </div>
 
@@ -28,7 +28,7 @@ const Hero = () => {
           {/* Mission statement */}
           <div className="max-w-4xl space-y-3 pt-4">
             <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
-              Vi bygger långsamt, med kvalitet, nyfikenhet och ett stort fokus på att göra 
+              Vi bygger med kvalitet, nyfikenhet och ett stort fokus på att göra 
               improvisatörerna bättre och publiken gladare – och på att skapa ett community 
               där du som elev, improvisatör och publik blir en del av något större.
             </p>
