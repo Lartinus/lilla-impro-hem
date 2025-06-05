@@ -55,8 +55,8 @@ serve(async (req) => {
       });
     }
 
-    // Simplified endpoint - just populate teacher without nested bild
-    const endpoint = '/api/courses?populate=teacher';
+    // Start with the simplest possible endpoint - no populate at all
+    const endpoint = '/api/courses';
     
     console.log(`Fetching courses from Strapi: ${strapiUrl}${endpoint}`);
 
@@ -80,7 +80,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('Successfully fetched courses data');
+    console.log('Successfully fetched courses data:', JSON.stringify(data, null, 2));
     
     // Validate data structure
     if (!data || !data.data) {
@@ -94,7 +94,7 @@ serve(async (req) => {
       headers: { 
         ...corsHeaders, 
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=900' // 15 minutes cache
+        'Cache-Control': 'public, max-age=300' // 5 minutes cache
       },
     });
   } catch (error) {

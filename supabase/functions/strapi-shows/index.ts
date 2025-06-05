@@ -69,14 +69,12 @@ serve(async (req) => {
       }
     }
     
-    // Build endpoint based on whether we need detailed or simple data
+    // Build endpoint - start simple without populate
     let endpoint;
     if (targetSlug) {
-      // Detailed view - include all data but simplified populate
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}`;
     } else {
-      // List view - basic data only
-      endpoint = '/api/shows?populate=*';
+      endpoint = '/api/shows';
     }
 
     console.log(`Fetching shows from: ${strapiUrl}${endpoint}`);
@@ -101,7 +99,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('Successfully fetched shows data');
+    console.log('Successfully fetched shows data:', JSON.stringify(data, null, 2));
     
     // Validate data structure
     if (!data || !data.data) {
@@ -115,7 +113,7 @@ serve(async (req) => {
       headers: { 
         ...corsHeaders, 
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=600' // 10 minutes cache
+        'Cache-Control': 'public, max-age=300' // 5 minutes cache
       },
     });
   } catch (error) {
