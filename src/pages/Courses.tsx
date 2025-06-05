@@ -21,20 +21,7 @@ const Courses = () => {
 
   // Memoize formatted and sorted courses to avoid recalculating
   const { courses, mainInfo } = useMemo(() => {
-    // Handle case where data might be undefined or have unexpected structure
-    let formattedCourses = [];
-    
-    if (coursesData?.data && Array.isArray(coursesData.data)) {
-      formattedCourses = coursesData.data
-        .map(formatStrapiCourse)
-        .filter(Boolean); // Remove any null/undefined results
-    } else if (coursesData && Array.isArray(coursesData)) {
-      // Fallback if data is directly an array
-      formattedCourses = coursesData
-        .map(formatStrapiCourse)
-        .filter(Boolean);
-    }
-    
+    const formattedCourses = coursesData?.data ? coursesData.data.map(formatStrapiCourse).filter(Boolean) : [];
     const sortedCourses = sortCourses(formattedCourses);
     const formattedMainInfo = formatCourseMainInfo(mainInfoData);
     
@@ -52,7 +39,7 @@ const Courses = () => {
     "Kommer inom kort."
   ];
 
-  // Show loading state with skeletons - only show if actually loading
+  // Show loading state with skeletons
   if (coursesLoading || mainInfoLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
@@ -72,8 +59,7 @@ const Courses = () => {
     );
   }
 
-  // Don't show error state immediately - give a chance for data to load
-  if (coursesError && mainInfoError && !coursesLoading && !mainInfoLoading) {
+  if (coursesError || mainInfoError) {
     console.error('Error loading data:', { coursesError, mainInfoError });
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex items-center justify-center">
