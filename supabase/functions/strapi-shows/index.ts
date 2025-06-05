@@ -72,11 +72,11 @@ serve(async (req) => {
     // Build endpoint based on whether we need detailed or simple data
     let endpoint;
     if (targetSlug) {
-      // Detailed view - include all data
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate][bild][populate]=*&populate[location][populate]=*&populate[bild][populate]=*`;
+      // Detailed view - include all data but simplified populate
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate=*`;
     } else {
-      // List view - basic data with location and image
-      endpoint = '/api/shows?populate[location]=*&populate[bild]=*';
+      // List view - basic data only
+      endpoint = '/api/shows?populate=*';
     }
 
     console.log(`Fetching shows from: ${strapiUrl}${endpoint}`);

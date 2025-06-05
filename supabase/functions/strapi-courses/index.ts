@@ -55,8 +55,8 @@ serve(async (req) => {
       });
     }
 
-    // Use the basic endpoint with populate for teacher and their image
-    const endpoint = '/api/courses?populate[teacher][populate][bild]=*';
+    // Simplified endpoint - just populate teacher without nested bild
+    const endpoint = '/api/courses?populate=teacher';
     
     console.log(`Fetching courses from Strapi: ${strapiUrl}${endpoint}`);
 
