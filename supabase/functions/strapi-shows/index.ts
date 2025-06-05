@@ -40,20 +40,21 @@ serve(async (req) => {
       }
     }
     
-    // Build endpoint - populate show images and performer images with full data
+    // Optimized endpoint - only fetch the fields we actually use
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&populate[performers][populate][bild][populate]=*&populate[location][populate]=*&populate[bild][populate]=*`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&fields[0]=titel&fields[1]=slug&fields[2]=datum&fields[3]=beskrivning&fields[4]=praktisk_info&fields[5]=ticket_price&fields[6]=discount_price&fields[7]=available_tickets&populate[performers][fields][0]=name&populate[performers][fields][1]=bio&populate[performers][populate][bild][fields][0]=url&populate[performers][populate][bild][fields][1]=alternativeText&populate[performers][populate][bild][fields][2]=formats&populate[location][fields][0]=name&populate[location][fields][1]=google_maps_link&populate[bild][fields][0]=url&populate[bild][fields][1]=alternativeText&populate[bild][fields][2]=formats`;
     } else {
-      endpoint = '/api/shows?populate[performers][populate][bild][populate]=*&populate[location][populate]=*&populate[bild][populate]=*';
+      endpoint = '/api/shows?fields[0]=titel&fields[1]=slug&fields[2]=datum&fields[3]=beskrivning&fields[4]=ticket_price&fields[5]=discount_price&fields[6]=available_tickets&populate[performers][fields][0]=name&populate[performers][fields][1]=bio&populate[performers][populate][bild][fields][0]=url&populate[performers][populate][bild][fields][1]=alternativeText&populate[performers][populate][bild][fields][2]=formats&populate[location][fields][0]=name&populate[location][fields][1]=google_maps_link&populate[bild][fields][0]=url&populate[bild][fields][1]=alternativeText&populate[bild][fields][2]=formats';
     }
 
-    console.log(`Fetching shows from: ${strapiUrl}${endpoint}`);
+    console.log(`Fetching optimized shows from: ${strapiUrl}${endpoint}`);
 
     const response = await fetch(`${strapiUrl}${endpoint}`, {
       headers: {
         'Authorization': `Bearer ${strapiToken}`,
         'Content-Type': 'application/json',
+        'Accept-Encoding': 'gzip, deflate, br',
       },
     });
 
@@ -67,17 +68,15 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('Successfully fetched shows data');
-    console.log('Full shows data structure:', JSON.stringify(data, null, 2));
+    console.log('Successfully fetched optimized shows data');
+    console.log(`Fetched ${data?.data?.length || 0} shows with minimal fields`);
     
-    // Log the first show's bild field specifically
-    if (data?.data && data.data.length > 0) {
-      console.log('First show bild field:', JSON.stringify(data.data[0].bild || data.data[0].attributes?.bild, null, 2));
-    }
-    
-    console.log('Final shows data ready to return');
     return new Response(JSON.stringify(data), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=900', // 15 minutes cache
+      },
     });
   } catch (error) {
     console.error('Error in strapi-shows function:', error);

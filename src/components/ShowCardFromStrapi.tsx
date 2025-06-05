@@ -49,13 +49,14 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
       <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
-        {/* Show Image */}
+        {/* Show Image - only render if exists */}
         {show.image && (
           <div className="w-full h-48 mb-4 flex-shrink-0">
             <img 
               src={show.image} 
               alt={show.title}
               className="w-full h-full object-cover rounded-none"
+              loading="lazy"
             />
           </div>
         )}
@@ -84,10 +85,12 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
           dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(show.description) }}
         />
         
+        {/* Only render performers section if performers exist */}
         {show.performers && show.performers.length > 0 && (
           <PerformersSection performers={show.performers} />
         )}
         
+        {/* Only render practical info if it exists */}
         {show.practicalInfo && show.practicalInfo.length > 0 && (
           <div className="mb-6">
             <h4 className="text-gray-800 font-bold mb-3">Praktisk information</h4>
@@ -113,6 +116,7 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
                 <button
                   onClick={() => setTicketCount(Math.max(0, ticketCount - 1))}
                   className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
+                  aria-label="Minska antal biljetter"
                 >
                   -
                 </button>
@@ -120,6 +124,7 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
                 <button
                   onClick={() => setTicketCount(ticketCount + 1)}
                   className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
+                  aria-label="Öka antal biljetter"
                 >
                   +
                 </button>
@@ -145,6 +150,7 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
                 <button
                   onClick={() => setDiscountTickets(Math.max(0, discountTickets - 1))}
                   className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
+                  aria-label="Minska antal rabattbiljetter"
                 >
                   -
                 </button>
@@ -152,6 +158,7 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
                 <button
                   onClick={() => setDiscountTickets(discountTickets + 1)}
                   className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
+                  aria-label="Öka antal rabattbiljetter"
                 >
                   +
                 </button>

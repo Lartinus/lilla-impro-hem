@@ -26,83 +26,38 @@ serve(async (req) => {
       });
     }
 
-    // Try multiple populate strategies for Strapi v5
-    let endpoint = '/api/courses?populate[teacher][populate][bild]=*';
+    // Optimized endpoint - only fetch the fields we actually use in the UI
+    const endpoint = '/api/courses?fields[0]=titel&fields[1]=undertitel&fields[2]=description&fields[3]=praktisk_info&fields[4]=prioritet&populate[teacher][fields][0]=name&populate[teacher][fields][1]=bio&populate[teacher][populate][bild][fields][0]=url&populate[teacher][populate][bild][fields][1]=alternativeText&populate[teacher][populate][bild][fields][2]=formats';
     
-    console.log(`Fetching courses from Strapi: ${strapiUrl}${endpoint}`);
+    console.log(`Fetching optimized courses from Strapi: ${strapiUrl}${endpoint}`);
 
-    let response = await fetch(`${strapiUrl}${endpoint}`, {
+    const response = await fetch(`${strapiUrl}${endpoint}`, {
       headers: {
         'Authorization': `Bearer ${strapiToken}`,
         'Content-Type': 'application/json',
+        'Accept-Encoding': 'gzip, deflate, br',
       },
     });
 
+    console.log(`Response status: ${response.status}`);
+
     if (!response.ok) {
-      console.error(`Strapi API error with specific populate: ${response.status} - ${response.statusText}`);
-      
-      // Try alternative populate syntax
-      endpoint = '/api/courses?populate=teacher.bild';
-      console.log(`Trying alternative populate: ${strapiUrl}${endpoint}`);
-      
-      response = await fetch(`${strapiUrl}${endpoint}`, {
-        headers: {
-          'Authorization': `Bearer ${strapiToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      if (!response.ok) {
-        console.error(`Alternative populate failed: ${response.status}`);
-        
-        // Final fallback with deep populate
-        endpoint = '/api/courses?populate=deep';
-        console.log(`Trying deep populate: ${strapiUrl}${endpoint}`);
-        
-        response = await fetch(`${strapiUrl}${endpoint}`, {
-          headers: {
-            'Authorization': `Bearer ${strapiToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        
-        if (!response.ok) {
-          // Last resort - simple populate
-          endpoint = '/api/courses?populate=*';
-          console.log(`Final fallback to populate=*: ${strapiUrl}${endpoint}`);
-          
-          response = await fetch(`${strapiUrl}${endpoint}`, {
-            headers: {
-              'Authorization': `Bearer ${strapiToken}`,
-              'Content-Type': 'application/json',
-            },
-          });
-          
-          if (!response.ok) {
-            throw new Error(`All Strapi API attempts failed: ${response.status}`);
-          }
-        }
-      }
+      console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('Error response body:', errorText);
+      throw new Error(`Strapi API failed: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log('Successfully fetched courses data:', JSON.stringify(data, null, 2));
-    
-    // Log specific teacher data to see what we're getting
-    if (data.data && data.data.length > 0) {
-      data.data.forEach((course: any, index: number) => {
-        console.log(`Course ${index} teacher data:`, JSON.stringify(course.teacher, null, 2));
-        if (course.teacher?.bild) {
-          console.log(`Course ${index} teacher bild:`, JSON.stringify(course.teacher.bild, null, 2));
-        }
-        if (course.teacher?.image) {
-          console.log(`Course ${index} teacher image:`, JSON.stringify(course.teacher.image, null, 2));
-        }
-      });
-    }
+    console.log('Successfully fetched optimized courses data');
+    console.log(`Fetched ${data?.data?.length || 0} courses with minimal fields`);
     
     return new Response(JSON.stringify(data), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=1800', // 30 minutes cache
+      },
     });
   } catch (error) {
     console.error('Error in strapi-courses function:', error);
