@@ -1,6 +1,40 @@
+
 import ServiceBoxes from './ServiceBoxes';
+import { useHeroImages } from '@/hooks/useHeroImages';
+import { getStrapiImageUrl } from '@/utils/strapiHelpers';
+
 const Hero = () => {
-  return <section className="min-h-screen flex flex-col justify-center py-12 px-0.5 md:px-4 relative overflow-hidden">
+  const { data: heroData, isLoading } = useHeroImages();
+  
+  console.log('Hero - Hero data:', heroData);
+  
+  // Extract video URLs from hero data
+  const getVideoUrl = (fieldName: string) => {
+    if (!heroData?.data) return null;
+    const videoField = heroData.data[fieldName];
+    return getStrapiImageUrl(videoField); // Videos are stored as media files
+  };
+
+  const videos = [
+    { 
+      id: 1, 
+      url: getVideoUrl('video_1'),
+      title: "Video 1"
+    },
+    { 
+      id: 2, 
+      url: getVideoUrl('video_2'),
+      title: "Video 2" 
+    },
+    { 
+      id: 3, 
+      url: getVideoUrl('video_3'),
+      title: "Video 3"
+    }
+  ];
+
+  return (
+    <section className="min-h-screen flex flex-col justify-center py-12 px-0.5 md:px-4 relative overflow-hidden">
       <div className="relative z-10">
         {/* På mobil: mt-12, på desktop: mt-20 för mer avstånd till header */}
         <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
@@ -36,7 +70,7 @@ const Hero = () => {
 
           {/* Video‐rubriker */}
           <div className="max-w-4xl space-y-3 pt-8 py-[17px]">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left md:text\u2013center lg:text-3xl">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left md:text‑center lg:text-3xl">
               Vad är improv comedy egentligen?
             </h1>
             <h3 className="text-theatre-secondary font-medium mb-4 text-left">
@@ -48,24 +82,48 @@ const Hero = () => {
           <div className="mt-8">
             <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white">
               <div className="grid md:grid-cols-3 gap-6">
-                {[1, 2, 3].map(video => <div key={video} className="group">
+                {videos.map((video, index) => (
+                  <div key={video.id} className="group">
                     <div className="bg-red-700 backdrop-blur-sm border border-theatre-primary/20 rounded-2xl p-6 hover:bg-red-800 transition-all duration-500 hover:border-theatre-primary/30 hover:transform hover:scale-105 aspect-video flex items-center justify-center">
-                      <div className="text-centre space-y-4">
-                        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto">
-                          <div className="w-0 h-0 border-l-[12px] border-l-white border-y-[8px] border-y-transparent ml-1"></div>
+                      {isLoading ? (
+                        <div className="text-centre space-y-4">
+                          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto animate-pulse">
+                            <div className="w-0 h-0 border-l-[12px] border-l-white border-y-[8px] border-y-transparent ml-1"></div>
+                          </div>
+                          <p className="text-white text-sm font-light">
+                            Laddar...
+                          </p>
                         </div>
-                        <p className="text-white text-sm font-light">
-                          Video {video}
-                        </p>
-                      </div>
+                      ) : video.url ? (
+                        <video 
+                          controls 
+                          className="w-full h-full object-cover rounded-lg"
+                          poster=""
+                        >
+                          <source src={video.url} type="video/mp4" />
+                          Din webbläsare stöder inte video-taggen.
+                        </video>
+                      ) : (
+                        <div className="text-centre space-y-4">
+                          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto">
+                            <div className="w-0 h-0 border-l-[12px] border-l-white border-y-[8px] border-y-transparent ml-1"></div>
+                          </div>
+                          <p className="text-white text-sm font-light">
+                            {video.title}
+                          </p>
+                        </div>
+                      )}
                     </div>
-                  </div>)}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
           
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default Hero;

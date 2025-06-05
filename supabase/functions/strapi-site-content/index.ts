@@ -1,4 +1,3 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -29,8 +28,41 @@ serve(async (req) => {
     const { type } = await req.json();
     const contentType = type || 'site-settings';
     
+    // Handle hero-image content with all media populated
+    if (contentType === 'hero-image') {
+      console.log(`=== FETCHING HERO-IMAGE CONTENT ===`);
+      
+      const endpoint = `/api/${contentType}?populate=*`;
+      console.log(`Fetching hero-image: ${strapiUrl}${endpoint}`);
+
+      const response = await fetch(`${strapiUrl}${endpoint}`, {
+        headers: {
+          'Authorization': `Bearer ${strapiToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error(`Strapi API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(`Successfully fetched hero-image content:`, JSON.stringify(data, null, 2));
+      
+      return new Response(JSON.stringify(data), {
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json',
+          'Cache-Control': 'public, max-age=1800', // 30 minutes cache
+        },
+      });
+    }
+    
     // Handle private-party content with proper error handling
-    if (contentType === 'private-party') {
+    else if (contentType === 'private-party') {
       console.log(`=== FETCHING PRIVATE-PARTY CONTENT ===`);
       
       const endpoint = `/api/${contentType}`;
