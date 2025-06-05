@@ -39,7 +39,7 @@ const Hero = () => {
 
           {/* Video‐rubriker */}
           <div className="max-w-4xl space-y-3 pt-8">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-gray-800 tracking-normal mb-4 text-left lg:text–center">
               Vad är improv comedy egentligen?
             </h1>
             <h3 className="text-theatre-secondary font-medium mb-4 text-left">
