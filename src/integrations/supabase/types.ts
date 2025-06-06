@@ -48,6 +48,39 @@ export type Database = {
         }
         Relationships: []
       }
+      course_instances: {
+        Row: {
+          course_title: string
+          created_at: string
+          end_date: string | null
+          id: string
+          is_active: boolean | null
+          max_participants: number | null
+          start_date: string | null
+          table_name: string
+        }
+        Insert: {
+          course_title: string
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_participants?: number | null
+          start_date?: string | null
+          table_name: string
+        }
+        Update: {
+          course_title?: string
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_participants?: number | null
+          start_date?: string | null
+          table_name?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -74,6 +107,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_course_booking_table: {
+        Args: { table_name: string }
+        Returns: undefined
+      }
+      drop_course_booking_table: {
+        Args: { table_name: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _user_id: string

@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useCourseInstances, createCourseInstance, getCurrentCourseBookings } from '@/hooks/useCourseInstances';
 
 interface BookingFormData {
   name: string;
@@ -40,7 +40,10 @@ const CourseBookingForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentBookings, setCurrentBookings] = useState<number | null>(null);
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
+  const [activeInstance, setActiveInstance] = useState<any>(null);
   const { toast } = useToast();
+  
+  const { data: courseInstances, isLoading: isLoadingInstances } = useCourseInstances(courseTitle);
   
   const form = useForm<BookingFormData>({
     defaultValues: {
@@ -54,26 +57,40 @@ const CourseBookingForm = ({
     },
   });
 
-  // Check if course is full
-  const isFull = maxParticipants && currentBookings !== null && currentBookings >= maxParticipants;
+  // Set active instance when data loads
+  useEffect(() => {
+    if (courseInstances && courseInstances.length > 0) {
+      setActiveInstance(courseInstances[0]);
+    }
+  }, [courseInstances]);
+
+  // Use maxParticipants from instance if available, otherwise fall back to prop
+  const effectiveMaxParticipants = activeInstance?.max_participants || maxParticipants;
+  const isFull = effectiveMaxParticipants && currentBookings !== null && currentBookings >= effectiveMaxParticipants;
 
   // Check current bookings when dialog opens
   const handleDialogOpen = async (open: boolean) => {
-    if (open && maxParticipants) {
+    if (open) {
       setIsCheckingAvailability(true);
       try {
-        const { count, error } = await supabase
-          .from('course_bookings')
-          .select('*', { count: 'exact', head: true })
-          .eq('course_title', courseTitle);
-
-        if (error) {
-          console.error('Error checking course availability:', error);
-        } else {
-          setCurrentBookings(count || 0);
+        // If no active instance exists, create one
+        if (!activeInstance && !isLoadingInstances) {
+          console.log('No active instance found, creating new one...');
+          const newInstance = await createCourseInstance(courseTitle);
+          setActiveInstance(newInstance);
+          setCurrentBookings(0);
+        } else if (activeInstance) {
+          // Check current bookings for the active instance
+          const count = await getCurrentCourseBookings(activeInstance.table_name);
+          setCurrentBookings(count);
         }
       } catch (error) {
-        console.error('Error checking course availability:', error);
+        console.error('Error handling course instance:', error);
+        toast({
+          title: "Fel",
+          description: "Det gick inte att förbereda bokningen. Försök igen.",
+          variant: "destructive",
+        });
       } finally {
         setIsCheckingAvailability(false);
       }
@@ -91,12 +108,11 @@ const CourseBookingForm = ({
     return phoneRegex.test(phone.replace(/\s|-/g, ''));
   };
 
-  const checkDuplicateBooking = async (email: string) => {
+  const checkDuplicateBooking = async (email: string, tableName: string) => {
     const { data, error } = await supabase
-      .from('course_bookings')
+      .from(tableName)
       .select('id')
       .eq('email', email.toLowerCase())
-      .eq('course_title', courseTitle)
       .limit(1);
 
     if (error) {
@@ -120,7 +136,6 @@ const CourseBookingForm = ({
 
       if (error) {
         console.error('Error sending confirmation email:', error);
-        // Don't throw error - booking should still succeed even if email fails
         toast({
           title: "Varning",
           description: "Bokningen lyckades men bekräftelsemail kunde inte skickas.",
@@ -129,12 +144,10 @@ const CourseBookingForm = ({
       }
     } catch (error) {
       console.error('Error sending confirmation email:', error);
-      // Don't throw error - booking should still succeed even if email fails
     }
   };
 
   const onSubmit = async (data: BookingFormData) => {
-    // Enhanced validation
     if (!validateEmail(data.email)) {
       toast({
         title: "Fel",
@@ -153,15 +166,24 @@ const CourseBookingForm = ({
       return;
     }
 
+    if (!activeInstance) {
+      toast({
+        title: "Fel",
+        description: "Ingen aktiv kursomgång hittades. Försök igen.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
-      // Check for duplicate booking
-      const isDuplicate = await checkDuplicateBooking(data.email);
+      // Check for duplicate booking in the specific course instance table
+      const isDuplicate = await checkDuplicateBooking(data.email, activeInstance.table_name);
       if (isDuplicate) {
         toast({
           title: "Redan anmäld",
-          description: "Den här e-postadressen är redan anmäld till kursen.",
+          description: "Den här e-postadressen är redan anmäld till denna kursomgång.",
           variant: "destructive",
         });
         setIsSubmitting(false);
@@ -169,17 +191,9 @@ const CourseBookingForm = ({
       }
 
       // Check if course is full before submitting
-      if (maxParticipants) {
-        const { count, error } = await supabase
-          .from('course_bookings')
-          .select('*', { count: 'exact', head: true })
-          .eq('course_title', courseTitle);
-
-        if (error) {
-          throw error;
-        }
-
-        if (count && count >= maxParticipants) {
+      if (effectiveMaxParticipants) {
+        const count = await getCurrentCourseBookings(activeInstance.table_name);
+        if (count >= effectiveMaxParticipants) {
           toast({
             title: "Kursen är fullbokad",
             description: "Tyvärr är kursen nu fullbokad. Försök anmäla intresse istället.",
@@ -191,7 +205,6 @@ const CourseBookingForm = ({
       }
 
       const submitData = {
-        course_title: courseTitle,
         name: data.name.trim(),
         phone: data.phone.trim(),
         email: data.email.trim().toLowerCase(),
@@ -201,18 +214,18 @@ const CourseBookingForm = ({
         message: !isAvailable ? (data.message?.trim() || '') : '',
       };
 
+      // Insert into the specific course instance table
       const { error } = await supabase
-        .from('course_bookings')
+        .from(activeInstance.table_name)
         .insert(submitData);
 
       if (error) {
         console.error('Error submitting booking:', error);
         
-        // Check if it's a duplicate constraint error
-        if (error.code === '23505' && error.message.includes('unique_email_per_course')) {
+        if (error.code === '23505' && error.message.includes('unique_email')) {
           toast({
             title: "Redan anmäld",
-            description: "Du är redan anmäld till den här kursen.",
+            description: "Du är redan anmäld till den här kursomgången.",
             variant: "destructive",
           });
         } else {
@@ -225,7 +238,6 @@ const CourseBookingForm = ({
         return;
       }
 
-      // Send confirmation email
       await sendConfirmationEmail(data);
 
       toast({
@@ -239,7 +251,7 @@ const CourseBookingForm = ({
       setIsOpen(false);
 
       // Update current bookings count
-      if (maxParticipants) {
+      if (effectiveMaxParticipants) {
         setCurrentBookings(prev => prev !== null ? prev + 1 : 1);
       }
     } catch (error) {
@@ -283,9 +295,9 @@ const CourseBookingForm = ({
               color: 'white',
               borderColor: '#3B82F6'
             } : undefined}
-            disabled={buttonDisabled}
+            disabled={buttonDisabled || isLoadingInstances}
           >
-            {isCheckingAvailability ? "Kontrollerar..." : displayButtonText}
+            {isCheckingAvailability || isLoadingInstances ? "Kontrollerar..." : displayButtonText}
           </Button>
         </DialogTrigger>
         
@@ -294,11 +306,11 @@ const CourseBookingForm = ({
             <DialogTitle className="text-theatre-primary">{dialogTitle}</DialogTitle>
           </DialogHeader>
 
-          {maxParticipants && (
+          {effectiveMaxParticipants && (
             <div className="mb-4 text-sm text-gray-500">
-              {currentBookings !== null && maxParticipants !== null ? (
+              {currentBookings !== null && effectiveMaxParticipants !== null ? (
                 <span>
-                  {maxParticipants - currentBookings} av {maxParticipants} platser kvar
+                  {effectiveMaxParticipants - currentBookings} av {effectiveMaxParticipants} platser kvar
                 </span>
               ) : (
                 <span>Kontrollerar tillgänglighet...</span>
@@ -363,7 +375,6 @@ const CourseBookingForm = ({
               />
               
               {isAvailable ? (
-                // Original booking form fields for available courses
                 <>
                   <FormField
                     control={form.control}
@@ -413,7 +424,6 @@ const CourseBookingForm = ({
                   </div>
                 </>
               ) : (
-                // Interest form with free text field
                 <FormField
                   control={form.control}
                   name="message"
