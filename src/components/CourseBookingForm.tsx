@@ -269,8 +269,7 @@ const CourseBookingForm = ({
     displayButtonText = isAvailable ? 'Boka din plats' : 'Anmäl ditt intresse';
   }
 
-  const dialogTitle = isAvailable ? `Boka plats - ${courseTitle}` : `Anmäl intresse - ${course
-Title}`;
+  const dialogTitle = isAvailable ? `Boka plats - ${courseTitle}` : `Anmäl intresse - ${courseTitle}`;
 
   return (
     <div className="mt-auto">
