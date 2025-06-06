@@ -77,21 +77,16 @@ export const createCourseInstance = async (courseTitle: string) => {
 
 export const getCurrentCourseBookings = async (tableName: string) => {
   try {
-    // Try to query the table directly to get count
-    const { count, error } = await supabase
-      .from(tableName as any)
-      .select('*', { count: 'exact', head: true });
+    const { data, error } = await supabase.rpc('get_course_booking_count', {
+      table_name: tableName
+    });
 
     if (error) {
       console.error('Error getting course bookings count:', error);
-      // If the table doesn't exist yet, return 0
-      if (error.message.includes('does not exist') || error.code === 'PGRST116') {
-        return 0;
-      }
-      throw error;
+      return 0;
     }
 
-    return count || 0;
+    return data || 0;
   } catch (error) {
     console.error('Error in getCurrentCourseBookings:', error);
     return 0;
@@ -100,23 +95,17 @@ export const getCurrentCourseBookings = async (tableName: string) => {
 
 export const checkDuplicateBooking = async (email: string, tableName: string) => {
   try {
-    // Try to query the table directly
-    const { data, error } = await supabase
-      .from(tableName as any)
-      .select('id')
-      .eq('email', email.toLowerCase())
-      .limit(1);
+    const { data, error } = await supabase.rpc('check_duplicate_course_booking', {
+      table_name: tableName,
+      email_address: email.toLowerCase()
+    });
 
     if (error) {
       console.error('Error checking duplicate booking:', error);
-      // If the table doesn't exist yet, no duplicates
-      if (error.message.includes('does not exist') || error.code === 'PGRST116') {
-        return false;
-      }
       return false;
     }
 
-    return data && data.length > 0;
+    return data || false;
   } catch (error) {
     console.error('Error in checkDuplicateBooking:', error);
     return false;
@@ -124,14 +113,26 @@ export const checkDuplicateBooking = async (email: string, tableName: string) =>
 };
 
 export const insertCourseBooking = async (tableName: string, bookingData: any) => {
-  const { error } = await supabase
-    .from(tableName as any)
-    .insert(bookingData);
+  try {
+    const { error } = await supabase.rpc('insert_course_booking', {
+      table_name: tableName,
+      booking_name: bookingData.name,
+      booking_phone: bookingData.phone,
+      booking_email: bookingData.email,
+      booking_address: bookingData.address || '',
+      booking_postal_code: bookingData.postal_code || '',
+      booking_city: bookingData.city || '',
+      booking_message: bookingData.message || ''
+    });
 
-  if (error) {
-    console.error('Error inserting course booking:', error);
+    if (error) {
+      console.error('Error inserting course booking:', error);
+      throw error;
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error in insertCourseBooking:', error);
     throw error;
   }
-
-  return { success: true };
 };

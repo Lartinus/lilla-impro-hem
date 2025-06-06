@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -113,21 +112,6 @@ const CourseBookingForm = ({
   const validatePhone = (phone: string) => {
     const phoneRegex = /^(\+46|0)[0-9]{8,9}$/;
     return phoneRegex.test(phone.replace(/\s|-/g, ''));
-  };
-
-  const checkDuplicateBooking = async (email: string, tableName: string) => {
-    const { data, error } = await supabase
-      .from(tableName)
-      .select('id')
-      .eq('email', email.toLowerCase())
-      .limit(1);
-
-    if (error) {
-      console.error('Error checking duplicate booking:', error);
-      return false;
-    }
-
-    return data && data.length > 0;
   };
 
   const sendConfirmationEmail = async (data: BookingFormData) => {

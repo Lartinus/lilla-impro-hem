@@ -107,6 +107,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_duplicate_course_booking: {
+        Args: { table_name: string; email_address: string }
+        Returns: boolean
+      }
       create_course_booking_table: {
         Args: { table_name: string }
         Returns: undefined
@@ -115,12 +119,29 @@ export type Database = {
         Args: { table_name: string }
         Returns: undefined
       }
+      get_course_booking_count: {
+        Args: { table_name: string }
+        Returns: number
+      }
       has_role: {
         Args: {
           _user_id: string
           _role: Database["public"]["Enums"]["app_role"]
         }
         Returns: boolean
+      }
+      insert_course_booking: {
+        Args: {
+          table_name: string
+          booking_name: string
+          booking_phone: string
+          booking_email: string
+          booking_address?: string
+          booking_postal_code?: string
+          booking_city?: string
+          booking_message?: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
