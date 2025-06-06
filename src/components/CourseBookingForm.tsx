@@ -50,31 +50,49 @@ const CourseBookingForm = ({
     },
   });
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email);
+  };
+
+  const validatePhone = (phone: string) => {
+    const phoneRegex = /^(\+46|0)[0-9]{8,9}$/;
+    return phoneRegex.test(phone.replace(/\s|-/g, ''));
+  };
+
   const onSubmit = async (data: BookingFormData) => {
+    // Enhanced validation
+    if (!validateEmail(data.email)) {
+      toast({
+        title: "Fel",
+        description: "Ange en giltig e-postadress.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!validatePhone(data.phone)) {
+      toast({
+        title: "Fel",
+        description: "Ange ett giltigt telefonnummer (svenskt format).",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
-      // Prepare data based on form type
-      const submitData = isAvailable 
-        ? {
-            course_title: courseTitle,
-            name: data.name,
-            phone: data.phone,
-            email: data.email,
-            address: data.address || '',
-            postal_code: data.postal_code || '',
-            city: data.city || '',
-          }
-        : {
-            course_title: courseTitle,
-            name: data.name,
-            phone: data.phone,
-            email: data.email,
-            address: '',
-            postal_code: '',
-            city: '',
-            message: data.message || '',
-          };
+      const submitData = {
+        course_title: courseTitle,
+        name: data.name.trim(),
+        phone: data.phone.trim(),
+        email: data.email.trim().toLowerCase(),
+        address: isAvailable ? (data.address?.trim() || '') : '',
+        postal_code: isAvailable ? (data.postal_code?.trim() || '') : '',
+        city: isAvailable ? (data.city?.trim() || '') : '',
+        message: !isAvailable ? (data.message?.trim() || '') : '',
+      };
 
       const { error } = await supabase
         .from('course_bookings')
@@ -144,7 +162,10 @@ const CourseBookingForm = ({
               <FormField
                 control={form.control}
                 name="name"
-                rules={{ required: "Namn är obligatoriskt" }}
+                rules={{ 
+                  required: "Namn är obligatoriskt",
+                  minLength: { value: 2, message: "Namnet måste vara minst 2 tecken" }
+                }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Namn *</FormLabel>
@@ -159,7 +180,10 @@ const CourseBookingForm = ({
               <FormField
                 control={form.control}
                 name="phone"
-                rules={{ required: "Telefonnummer är obligatoriskt" }}
+                rules={{ 
+                  required: "Telefonnummer är obligatoriskt",
+                  validate: (value) => validatePhone(value) || "Ange ett giltigt svenskt telefonnummer"
+                }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Telefonnummer *</FormLabel>
@@ -176,10 +200,7 @@ const CourseBookingForm = ({
                 name="email"
                 rules={{ 
                   required: "E-postadress är obligatorisk",
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Ange en giltig e-postadress"
-                  }
+                  validate: (value) => validateEmail(value) || "Ange en giltig e-postadress"
                 }}
                 render={({ field }) => (
                   <FormItem>
