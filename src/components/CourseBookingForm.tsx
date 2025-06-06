@@ -5,9 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useCourseInstances, createCourseInstance, getCurrentCourseBookings } from '@/hooks/useCourseInstances';
+import { 
+  useCourseInstances, 
+  createCourseInstance, 
+  getCurrentCourseBookings,
+  checkDuplicateBooking,
+  insertCourseBooking
+} from '@/hooks/useCourseInstances';
 
 interface BookingFormData {
   name: string;
@@ -215,30 +220,7 @@ const CourseBookingForm = ({
       };
 
       // Insert into the specific course instance table
-      const { error } = await supabase
-        .from(activeInstance.table_name)
-        .insert(submitData);
-
-      if (error) {
-        console.error('Error submitting booking:', error);
-        
-        if (error.code === '23505' && error.message.includes('unique_email')) {
-          toast({
-            title: "Redan anmäld",
-            description: "Du är redan anmäld till den här kursomgången.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Fel",
-            description: "Det gick inte att skicka din bokning. Försök igen.",
-            variant: "destructive",
-          });
-        }
-        return;
-      }
-
-      await sendConfirmationEmail(data);
+      await insertCourseBooking(activeInstance.table_name, submitData);
 
       toast({
         title: isAvailable ? "Bokning skickad!" : "Intresse anmält!",

@@ -76,14 +76,64 @@ export const createCourseInstance = async (courseTitle: string) => {
 };
 
 export const getCurrentCourseBookings = async (tableName: string) => {
-  const { count, error } = await supabase
-    .from(tableName)
-    .select('*', { count: 'exact', head: true });
+  // Use a raw SQL query to count bookings in the dynamic table
+  const { data, error } = await supabase.rpc('sql', {
+    query: `SELECT COUNT(*) as count FROM ${tableName}`
+  });
 
   if (error) {
     console.error('Error getting course bookings count:', error);
+    // If the table doesn't exist yet, return 0
+    if (error.message.includes('does not exist')) {
+      return 0;
+    }
     throw error;
   }
 
-  return count || 0;
+  return data?.[0]?.count || 0;
+};
+
+export const checkDuplicateBooking = async (email: string, tableName: string) => {
+  // Use a raw SQL query to check for duplicate bookings
+  const { data, error } = await supabase.rpc('sql', {
+    query: `SELECT id FROM ${tableName} WHERE email = $1 LIMIT 1`,
+    params: [email.toLowerCase()]
+  });
+
+  if (error) {
+    console.error('Error checking duplicate booking:', error);
+    // If the table doesn't exist yet, no duplicates
+    if (error.message.includes('does not exist')) {
+      return false;
+    }
+    return false;
+  }
+
+  return data && data.length > 0;
+};
+
+export const insertCourseBooking = async (tableName: string, bookingData: any) => {
+  // Use a raw SQL query to insert booking into the dynamic table
+  const { error } = await supabase.rpc('sql', {
+    query: `
+      INSERT INTO ${tableName} (name, phone, email, address, postal_code, city, message)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `,
+    params: [
+      bookingData.name,
+      bookingData.phone,
+      bookingData.email,
+      bookingData.address || '',
+      bookingData.postal_code || '',
+      bookingData.city || '',
+      bookingData.message || ''
+    ]
+  });
+
+  if (error) {
+    console.error('Error inserting course booking:', error);
+    throw error;
+  }
+
+  return { success: true };
 };
