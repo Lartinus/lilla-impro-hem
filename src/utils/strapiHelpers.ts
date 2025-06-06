@@ -330,7 +330,8 @@ export const formatStrapiCourse = (strapiCourse: any) => {
     showButton: true,
     priority: attrs.prioritet || attrs.priority || 'low',
     priorityValue: getPriorityValue(attrs.prioritet || attrs.priority),
-    isLevel1: (attrs.titel || attrs.title || '').toLowerCase().includes('nivå 1')
+    isLevel1: (attrs.titel || attrs.title || '').toLowerCase().includes('nivå 1'),
+    maxParticipants: attrs.platser || attrs.max_participants || null // Add max participants field
   };
   
   console.log('Formatted course result:', formatted);

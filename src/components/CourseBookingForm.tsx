@@ -25,6 +25,7 @@ interface CourseBookingFormProps {
   showButton: boolean;
   buttonText?: string;
   buttonVariant?: "default" | "outline";
+  maxParticipants?: number | null;
 }
 
 const CourseBookingForm = ({ 
@@ -32,10 +33,13 @@ const CourseBookingForm = ({
   isAvailable, 
   showButton, 
   buttonText = "Boka din plats",
-  buttonVariant = "default"
+  buttonVariant = "default",
+  maxParticipants
 }: CourseBookingFormProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentBookings, setCurrentBookings] = useState<number | null>(null);
+  const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
   const { toast } = useToast();
   
   const form = useForm<BookingFormData>({
@@ -50,6 +54,33 @@ const CourseBookingForm = ({
     },
   });
 
+  // Check if course is full
+  const isFull = maxParticipants && currentBookings !== null && currentBookings >= maxParticipants;
+
+  // Check current bookings when dialog opens
+  const handleDialogOpen = async (open: boolean) => {
+    if (open && maxParticipants) {
+      setIsCheckingAvailability(true);
+      try {
+        const { count, error } = await supabase
+          .from('course_bookings')
+          .select('*', { count: 'exact', head: true })
+          .eq('course_title', courseTitle);
+
+        if (error) {
+          console.error('Error checking course availability:', error);
+        } else {
+          setCurrentBookings(count || 0);
+        }
+      } catch (error) {
+        console.error('Error checking course availability:', error);
+      } finally {
+        setIsCheckingAvailability(false);
+      }
+    }
+    setIsOpen(open);
+  };
+
   const validateEmail = (email: string) => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     return emailRegex.test(email);
@@ -58,6 +89,48 @@ const CourseBookingForm = ({
   const validatePhone = (phone: string) => {
     const phoneRegex = /^(\+46|0)[0-9]{8,9}$/;
     return phoneRegex.test(phone.replace(/\s|-/g, ''));
+  };
+
+  const checkDuplicateBooking = async (email: string) => {
+    const { data, error } = await supabase
+      .from('course_bookings')
+      .select('id')
+      .eq('email', email.toLowerCase())
+      .eq('course_title', courseTitle)
+      .limit(1);
+
+    if (error) {
+      console.error('Error checking duplicate booking:', error);
+      return false;
+    }
+
+    return data && data.length > 0;
+  };
+
+  const sendConfirmationEmail = async (data: BookingFormData) => {
+    try {
+      const { error } = await supabase.functions.invoke('send-course-confirmation', {
+        body: {
+          name: data.name,
+          email: data.email,
+          courseTitle: courseTitle,
+          isAvailable: isAvailable,
+        },
+      });
+
+      if (error) {
+        console.error('Error sending confirmation email:', error);
+        // Don't throw error - booking should still succeed even if email fails
+        toast({
+          title: "Varning",
+          description: "Bokningen lyckades men bekräftelsemail kunde inte skickas.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error sending confirmation email:', error);
+      // Don't throw error - booking should still succeed even if email fails
+    }
   };
 
   const onSubmit = async (data: BookingFormData) => {
@@ -83,6 +156,40 @@ const CourseBookingForm = ({
     setIsSubmitting(true);
     
     try {
+      // Check for duplicate booking
+      const isDuplicate = await checkDuplicateBooking(data.email);
+      if (isDuplicate) {
+        toast({
+          title: "Redan anmäld",
+          description: "Den här e-postadressen är redan anmäld till kursen.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Check if course is full before submitting
+      if (maxParticipants) {
+        const { count, error } = await supabase
+          .from('course_bookings')
+          .select('*', { count: 'exact', head: true })
+          .eq('course_title', courseTitle);
+
+        if (error) {
+          throw error;
+        }
+
+        if (count && count >= maxParticipants) {
+          toast({
+            title: "Kursen är fullbokad",
+            description: "Tyvärr är kursen nu fullbokad. Försök anmäla intresse istället.",
+            variant: "destructive",
+          });
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       const submitData = {
         course_title: courseTitle,
         name: data.name.trim(),
@@ -100,23 +207,41 @@ const CourseBookingForm = ({
 
       if (error) {
         console.error('Error submitting booking:', error);
-        toast({
-          title: "Fel",
-          description: "Det gick inte att skicka din bokning. Försök igen.",
-          variant: "destructive",
-        });
+        
+        // Check if it's a duplicate constraint error
+        if (error.code === '23505' && error.message.includes('unique_email_per_course')) {
+          toast({
+            title: "Redan anmäld",
+            description: "Du är redan anmäld till den här kursen.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Fel",
+            description: "Det gick inte att skicka din bokning. Försök igen.",
+            variant: "destructive",
+          });
+        }
         return;
       }
+
+      // Send confirmation email
+      await sendConfirmationEmail(data);
 
       toast({
         title: isAvailable ? "Bokning skickad!" : "Intresse anmält!",
         description: isAvailable 
-          ? "Vi har tagit emot din kursbokning och kommer att kontakta dig snart."
-          : "Vi har tagit emot din intresseanmälan och kommer att kontakta dig snart.",
+          ? "Vi har tagit emot din kursbokning och skickat en bekräftelse via e-post."
+          : "Vi har tagit emot din intresseanmälan och skickat en bekräftelse via e-post.",
       });
       
       form.reset();
       setIsOpen(false);
+
+      // Update current bookings count
+      if (maxParticipants) {
+        setCurrentBookings(prev => prev !== null ? prev + 1 : 1);
+      }
     } catch (error) {
       console.error('Error submitting booking:', error);
       toast({
@@ -133,12 +258,23 @@ const CourseBookingForm = ({
     return null;
   }
 
-  const displayButtonText = buttonText || (isAvailable ? 'Boka din plats' : 'Anmäl ditt intresse');
-  const dialogTitle = isAvailable ? `Boka plats - ${courseTitle}` : `Anmäl intresse - ${courseTitle}`;
+  // Determine button text and availability
+  let displayButtonText = buttonText;
+  let buttonDisabled = false;
+
+  if (isFull) {
+    displayButtonText = "Fullbokad!";
+    buttonDisabled = true;
+  } else if (!displayButtonText) {
+    displayButtonText = isAvailable ? 'Boka din plats' : 'Anmäl ditt intresse';
+  }
+
+  const dialogTitle = isAvailable ? `Boka plats - ${courseTitle}` : `Anmäl intresse - ${course
+Title}`;
 
   return (
     <div className="mt-auto">
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={isOpen} onOpenChange={handleDialogOpen}>
         <DialogTrigger asChild>
           <Button 
             className="w-full" 
@@ -148,8 +284,9 @@ const CourseBookingForm = ({
               color: 'white',
               borderColor: '#3B82F6'
             } : undefined}
+            disabled={buttonDisabled}
           >
-            {displayButtonText}
+            {isCheckingAvailability ? "Kontrollerar..." : displayButtonText}
           </Button>
         </DialogTrigger>
         
@@ -157,6 +294,19 @@ const CourseBookingForm = ({
           <DialogHeader>
             <DialogTitle className="text-theatre-primary">{dialogTitle}</DialogTitle>
           </DialogHeader>
+
+          {maxParticipants && (
+            <div className="mb-4 text-sm text-gray-500">
+              {currentBookings !== null && maxParticipants !== null ? (
+                <span>
+                  {maxParticipants - currentBookings} av {maxParticipants} platser kvar
+                </span>
+              ) : (
+                <span>Kontrollerar tillgänglighet...</span>
+              )}
+            </div>
+          )}
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField

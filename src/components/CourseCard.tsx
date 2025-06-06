@@ -21,6 +21,7 @@ interface Course {
   showButton: boolean;
   buttonText?: string;
   practicalInfo?: string[];
+  maxParticipants?: number | null;
 }
 
 interface CourseCardProps {
@@ -97,6 +98,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             showButton={shouldShowButton}
             buttonText={buttonText}
             buttonVariant={isHouseTeams ? "outline" : "default"}
+            maxParticipants={course.maxParticipants}
           />
         )}
       </CardContent>
