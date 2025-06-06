@@ -76,59 +76,57 @@ export const createCourseInstance = async (courseTitle: string) => {
 };
 
 export const getCurrentCourseBookings = async (tableName: string) => {
-  // Use a raw SQL query to count bookings in the dynamic table
-  const { data, error } = await supabase.rpc('sql', {
-    query: `SELECT COUNT(*) as count FROM ${tableName}`
-  });
+  try {
+    // Try to query the table directly to get count
+    const { count, error } = await supabase
+      .from(tableName as any)
+      .select('*', { count: 'exact', head: true });
 
-  if (error) {
-    console.error('Error getting course bookings count:', error);
-    // If the table doesn't exist yet, return 0
-    if (error.message.includes('does not exist')) {
-      return 0;
+    if (error) {
+      console.error('Error getting course bookings count:', error);
+      // If the table doesn't exist yet, return 0
+      if (error.message.includes('does not exist') || error.code === 'PGRST116') {
+        return 0;
+      }
+      throw error;
     }
-    throw error;
-  }
 
-  return data?.[0]?.count || 0;
+    return count || 0;
+  } catch (error) {
+    console.error('Error in getCurrentCourseBookings:', error);
+    return 0;
+  }
 };
 
 export const checkDuplicateBooking = async (email: string, tableName: string) => {
-  // Use a raw SQL query to check for duplicate bookings
-  const { data, error } = await supabase.rpc('sql', {
-    query: `SELECT id FROM ${tableName} WHERE email = $1 LIMIT 1`,
-    params: [email.toLowerCase()]
-  });
+  try {
+    // Try to query the table directly
+    const { data, error } = await supabase
+      .from(tableName as any)
+      .select('id')
+      .eq('email', email.toLowerCase())
+      .limit(1);
 
-  if (error) {
-    console.error('Error checking duplicate booking:', error);
-    // If the table doesn't exist yet, no duplicates
-    if (error.message.includes('does not exist')) {
+    if (error) {
+      console.error('Error checking duplicate booking:', error);
+      // If the table doesn't exist yet, no duplicates
+      if (error.message.includes('does not exist') || error.code === 'PGRST116') {
+        return false;
+      }
       return false;
     }
+
+    return data && data.length > 0;
+  } catch (error) {
+    console.error('Error in checkDuplicateBooking:', error);
     return false;
   }
-
-  return data && data.length > 0;
 };
 
 export const insertCourseBooking = async (tableName: string, bookingData: any) => {
-  // Use a raw SQL query to insert booking into the dynamic table
-  const { error } = await supabase.rpc('sql', {
-    query: `
-      INSERT INTO ${tableName} (name, phone, email, address, postal_code, city, message)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-    `,
-    params: [
-      bookingData.name,
-      bookingData.phone,
-      bookingData.email,
-      bookingData.address || '',
-      bookingData.postal_code || '',
-      bookingData.city || '',
-      bookingData.message || ''
-    ]
-  });
+  const { error } = await supabase
+    .from(tableName as any)
+    .insert(bookingData);
 
   if (error) {
     console.error('Error inserting course booking:', error);
