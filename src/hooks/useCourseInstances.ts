@@ -1,4 +1,3 @@
-
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -46,69 +45,34 @@ export const createCourseInstance = async (courseTitle: string) => {
   const tableName = `course_${sanitizedTitle}_${timestamp}`;
 
   try {
-    // First create the course instance record with proper authentication
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      // If no user is authenticated, we'll insert without RLS restrictions
-      // by using the service role or bypassing RLS for this operation
-      const { data: instanceData, error: instanceError } = await supabase
-        .from('course_instances')
-        .insert({
-          course_title: courseTitle,
-          table_name: tableName,
-          max_participants: 12,
-          is_active: true
-        })
-        .select()
-        .single();
+    // Create the course instance record
+    const { data: instanceData, error: instanceError } = await supabase
+      .from('course_instances')
+      .insert({
+        course_title: courseTitle,
+        table_name: tableName,
+        max_participants: 12,
+        is_active: true
+      })
+      .select()
+      .single();
 
-      if (instanceError) {
-        console.error('Error creating course instance:', instanceError);
-        throw instanceError;
-      }
-
-      // Then create the actual booking table
-      const { error: tableError } = await supabase.rpc('create_course_booking_table', {
-        table_name: tableName
-      });
-
-      if (tableError) {
-        console.error('Error creating course booking table:', tableError);
-        throw tableError;
-      }
-
-      return instanceData;
-    } else {
-      // User is authenticated, proceed normally
-      const { data: instanceData, error: instanceError } = await supabase
-        .from('course_instances')
-        .insert({
-          course_title: courseTitle,
-          table_name: tableName,
-          max_participants: 12,
-          is_active: true
-        })
-        .select()
-        .single();
-
-      if (instanceError) {
-        console.error('Error creating course instance:', instanceError);
-        throw instanceError;
-      }
-
-      // Then create the actual booking table
-      const { error: tableError } = await supabase.rpc('create_course_booking_table', {
-        table_name: tableName
-      });
-
-      if (tableError) {
-        console.error('Error creating course booking table:', tableError);
-        throw tableError;
-      }
-
-      return instanceData;
+    if (instanceError) {
+      console.error('Error creating course instance:', instanceError);
+      throw instanceError;
     }
+
+    // Then create the actual booking table
+    const { error: tableError } = await supabase.rpc('create_course_booking_table', {
+      table_name: tableName
+    });
+
+    if (tableError) {
+      console.error('Error creating course booking table:', tableError);
+      throw tableError;
+    }
+
+    return instanceData;
   } catch (error) {
     console.error('Error in createCourseInstance:', error);
     throw error;
