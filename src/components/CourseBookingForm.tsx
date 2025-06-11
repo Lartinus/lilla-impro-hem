@@ -7,6 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Loader } from 'lucide-react';
 import { 
   useCourseInstances, 
   createCourseInstance, 
@@ -267,7 +268,12 @@ const CourseBookingForm = ({
             } : undefined}
             disabled={buttonDisabled || isLoadingInstances}
           >
-            {isCheckingAvailability || isLoadingInstances ? "Kontrollerar..." : displayButtonText}
+            {(isCheckingAvailability || isLoadingInstances) ? (
+              <div className="flex items-center gap-2">
+                <Loader className="h-4 w-4 animate-spin" />
+                <span>Kontrollerar...</span>
+              </div>
+            ) : displayButtonText}
           </Button>
         </DialogTrigger>
         
@@ -283,7 +289,10 @@ const CourseBookingForm = ({
                   {effectiveMaxParticipants - currentBookings} av {effectiveMaxParticipants} platser kvar
                 </span>
               ) : (
-                <span>Kontrollerar tillgänglighet...</span>
+                <div className="flex items-center gap-2">
+                  <Loader className="h-3 w-3 animate-spin" />
+                  <span>Kontrollerar tillgänglighet...</span>
+                </div>
               )}
             </div>
           )}
@@ -427,7 +436,12 @@ const CourseBookingForm = ({
                   disabled={isSubmitting}
                   className="flex-1"
                 >
-                  {isSubmitting ? "Skickar..." : (isAvailable ? "Skicka bokning" : "Skicka intresse")}
+                  {isSubmitting ? (
+                    <div className="flex items-center gap-2">
+                      <Loader className="h-4 w-4 animate-spin" />
+                      <span>Skickar...</span>
+                    </div>
+                  ) : (isAvailable ? "Skicka bokning" : "Skicka intresse")}
                 </Button>
               </div>
             </form>

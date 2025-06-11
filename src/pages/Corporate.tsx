@@ -1,11 +1,15 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
 import { useEffect } from 'react';
+import { Loader } from 'lucide-react';
+
 const Corporate = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   return <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
@@ -153,4 +157,5 @@ const Corporate = () => {
       <Footer />
     </div>;
 };
+
 export default Corporate;
