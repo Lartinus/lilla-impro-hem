@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useAboutPageContent } from '@/hooks/useStrapi';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 import { getStrapiImageUrl } from '@/utils/strapiHelpers';
+import { Loader } from 'lucide-react';
 
 const About = () => {
   useEffect(() => {
@@ -21,7 +22,7 @@ const About = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex items-center justify-center">
-        <div className="text-white text-xl">Laddar.</div>
+        <Loader className="w-8 h-8 animate-spin text-white" />
       </div>
     );
   }

@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import PrivateInquiryForm from '@/components/PrivateInquiryForm';
 import CourseInfoSection from '@/components/CourseInfoSection';
 import { useEffect } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader } from 'lucide-react';
 import { usePrivateParty } from '@/hooks/useStrapi';
 import { formatCourseMainInfo } from '@/utils/strapiHelpers';
 import { convertMarkdownToHtml, convertMarkdownToHtmlForRedBox } from '@/utils/markdownHelpers';
@@ -20,7 +20,7 @@ const Mohippa = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex items-center justify-center">
-        <div className="text-white text-xl">Laddar.</div>
+        <Loader className="w-8 h-8 animate-spin text-white" />
       </div>
     );
   }

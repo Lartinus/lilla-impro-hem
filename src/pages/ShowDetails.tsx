@@ -12,6 +12,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useShow, useShows } from '@/hooks/useStrapi';
 import { formatStrapiShow } from '@/utils/strapiHelpers';
+import { Loader } from 'lucide-react';
 
 const ShowDetails = () => {
   const { slug } = useParams();
@@ -50,7 +51,7 @@ const ShowDetails = () => {
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
         <div className="pt-32 text-center flex-1 flex items-center justify-center">
-          <h1 className="text-2xl">Laddar...</h1>
+          <Loader className="w-8 h-8 animate-spin text-white" />
         </div>
         <Footer />
       </div>
