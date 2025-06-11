@@ -34,7 +34,7 @@ const Hero = () => {
           
           {/* Beskrivning */}
           <div className="max-w-4xl space-y-2 pb-1">
-            <h1 className="sm:text-2xl md:text-3xl leading-tight text-gray-800 tracking-normal mb-4 text-left lg:text-5xl font-bold text-xl py-px mx-[2px] my-[10px]">
+            <h1 className="sm:text-2xl md:text-3xl leading-tight text-gray-800 tracking-normal mb-4 text-left lg:text-3xl font-bold text-xl py-px mx-[2px] my-[10px]">
               Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
             </h1>
             <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
