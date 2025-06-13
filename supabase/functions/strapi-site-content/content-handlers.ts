@@ -5,7 +5,7 @@ import type { StrapiResponse } from './types.ts';
 export async function handlePrivatePartyContent(): Promise<Response> {
   console.log(`=== FETCHING PRIVATE-PARTY CONTENT (OPTIMIZED) ===`);
   
-  const endpoint = `/api/private-party?fields[0]=info`;
+  const endpoint = `/api/private-party?fields[0]=info&fields[1]=redbox&fields[2]=info_efter_redbox`;
   console.log(`Fetching private-party: ${STRAPI_CONFIG.url}${endpoint}`);
 
   const response = await fetch(`${STRAPI_CONFIG.url}${endpoint}`, {

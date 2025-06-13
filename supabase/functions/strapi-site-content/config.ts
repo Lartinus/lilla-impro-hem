@@ -10,9 +10,9 @@ export const CORS_HEADERS = {
 };
 
 export const CACHE_HEADERS = {
-  PRIVATE_PARTY: 'public, max-age=3600', // 1 hour
-  ABOUT: 'public, max-age=3600', // 1 hour
-  COURSE_MAIN_INFO: 'public, max-age=7200', // 2 hours
-  HERO_IMAGE: 'public, max-age=3600', // 1 hour
-  DEFAULT: 'public, max-age=1800', // 30 minutes
+  PRIVATE_PARTY: 'public, max-age=7200', // 2 hours - increased from 1 hour
+  ABOUT: 'public, max-age=7200', // 2 hours - increased from 1 hour
+  COURSE_MAIN_INFO: 'public, max-age=14400', // 4 hours - increased from 2 hours
+  HERO_IMAGE: 'public, max-age=7200', // 2 hours - increased from 1 hour
+  DEFAULT: 'public, max-age=3600', // 1 hour - increased from 30 minutes
 };
