@@ -1,4 +1,3 @@
-
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -10,10 +9,10 @@ export const useShows = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 15 * 60 * 1000, // 15 minutes - longer cache for shows
+    staleTime: 15 * 60 * 1000, // 15 minutes
     gcTime: 45 * 60 * 1000, // 45 minutes
-    retry: 2, // Only retry twice
-    refetchOnWindowFocus: false, // Don't refetch on window focus
+    retry: 2,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -28,7 +27,7 @@ export const useShow = (slug: string) => {
       return data;
     },
     enabled: !!slug,
-    staleTime: 20 * 60 * 1000, // 20 minutes for individual shows
+    staleTime: 20 * 60 * 1000, // 20 minutes
     gcTime: 60 * 60 * 1000, // 60 minutes
     retry: 2,
     refetchOnWindowFocus: false,
@@ -55,14 +54,14 @@ export const useCoursesParallel = () => {
         mainInfoData: mainInfoResponse.data
       };
     },
-    staleTime: 20 * 60 * 1000, // 20 minutes - courses change less frequently
-    gcTime: 60 * 60 * 1000, // 60 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes - increased cache time
+    gcTime: 2 * 60 * 60 * 1000, // 2 hours
     retry: 2,
     refetchOnWindowFocus: false,
   });
 };
 
-// Keep for backward compatibility and other pages that might use them individually
+// Keep for backward compatibility
 export const useCourses = () => {
   return useQuery({
     queryKey: ['courses'],
@@ -71,8 +70,8 @@ export const useCourses = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 20 * 60 * 1000, // 20 minutes - courses change less frequently
-    gcTime: 60 * 60 * 1000, // 60 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes - increased cache
+    gcTime: 2 * 60 * 60 * 1000, // 2 hours
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -88,8 +87,8 @@ export const useCourseMainInfo = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 60 * 60 * 1000, // 1 hour - static content changes rarely
-    gcTime: 2 * 60 * 60 * 1000, // 2 hours
+    staleTime: 2 * 60 * 60 * 1000, // 2 hours - much longer cache for static content
+    gcTime: 4 * 60 * 60 * 1000, // 4 hours
     retry: 1,
     refetchOnWindowFocus: false,
   });
@@ -110,9 +109,9 @@ export const usePrivateParty = () => {
       }
       return data;
     },
-    staleTime: 30 * 60 * 1000, // 30 minutes - reduced for debugging
-    gcTime: 60 * 60 * 1000, // 60 minutes
-    retry: 3, // Increased retry attempts
+    staleTime: 60 * 60 * 1000, // 1 hour - increased cache time
+    gcTime: 2 * 60 * 60 * 1000, // 2 hours
+    retry: 2,
     refetchOnWindowFocus: false,
   });
 };
@@ -127,8 +126,8 @@ export const useAboutPageContent = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 30 * 60 * 1000, // 30 minutes
-    gcTime: 60 * 60 * 1000, // 60 minutes
+    staleTime: 60 * 60 * 1000, // 1 hour - increased cache time
+    gcTime: 2 * 60 * 60 * 1000, // 2 hours
     refetchOnWindowFocus: false,
   });
 };
@@ -143,8 +142,8 @@ export const useSiteContent = (contentType: string = 'site-settings') => {
       if (error) throw error;
       return data;
     },
-    staleTime: 30 * 60 * 1000, // 30 minutes
-    gcTime: 60 * 60 * 1000, // 60 minutes
+    staleTime: 60 * 60 * 1000, // 1 hour - increased cache
+    gcTime: 2 * 60 * 60 * 1000, // 2 hours
     refetchOnWindowFocus: false,
   });
 };
