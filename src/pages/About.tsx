@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PerformersSection from '@/components/PerformersSection';
@@ -14,10 +13,6 @@ const About = () => {
   }, []);
 
   const { data: aboutData, isLoading, error } = useAboutPageContent();
-
-  console.log('About page - RAW aboutData:', JSON.stringify(aboutData, null, 2));
-  console.log('About page - isLoading:', isLoading);
-  console.log('About page - error:', error);
 
   if (isLoading) {
     return (
@@ -38,34 +33,15 @@ const About = () => {
 
   // Handle both data.data and direct data formats from Strapi
   const content = aboutData?.data?.attributes || aboutData?.data || aboutData;
-  console.log('About page - extracted content:', JSON.stringify(content, null, 2));
   
-  // Handle performers - check multiple possible data structures
+  // Hantera performers-data utan logs
   let performers = [];
-  
-  // Log the raw performers data first
-  console.log('About page - RAW performers data:', JSON.stringify(content?.performers, null, 2));
-  
   if (content?.performers?.data) {
-    // New Strapi format with data wrapper
-    console.log('About page - Using performers.data format');
-    performers = content.performers.data.map((performer: any, index: number) => {
-      console.log(`About page - Processing performer ${index}:`, JSON.stringify(performer, null, 2));
-      
+    // Ny Strapi-format med data wrapper
+    performers = content.performers.data.map((performer: any) => {
       const attributes = performer.attributes || performer;
-      console.log(`About page - Performer ${index} attributes:`, JSON.stringify(attributes, null, 2));
-      
-      // Log all possible image field locations
-      console.log(`About page - Performer ${index} image field:`, JSON.stringify(attributes.image, null, 2));
-      console.log(`About page - Performer ${index} bild field:`, JSON.stringify(attributes.bild, null, 2));
-      
-      // Try to get image URL - check image first since that's what Strapi shows
       const imageField = attributes.image || attributes.bild;
-      console.log(`About page - Selected image field for performer ${index}:`, JSON.stringify(imageField, null, 2));
-      
       const imageUrl = getStrapiImageUrl(imageField);
-      console.log(`About page - Final image URL for performer ${index}:`, imageUrl);
-      
       return {
         id: performer.id,
         name: attributes.name,
@@ -74,21 +50,10 @@ const About = () => {
       };
     });
   } else if (content?.performers && Array.isArray(content.performers)) {
-    // Direct performers array
-    console.log('About page - Using direct performers array format');
-    performers = content.performers.map((performer: any, index: number) => {
-      console.log(`About page - Processing direct performer ${index}:`, JSON.stringify(performer, null, 2));
-      
-      // Log all possible image field locations
-      console.log(`About page - Direct performer ${index} image field:`, JSON.stringify(performer.image, null, 2));
-      console.log(`About page - Direct performer ${index} bild field:`, JSON.stringify(performer.bild, null, 2));
-      
+    // Direkt performers-array
+    performers = content.performers.map((performer: any) => {
       const imageField = performer.image || performer.bild;
-      console.log(`About page - Selected image field for direct performer ${index}:`, JSON.stringify(imageField, null, 2));
-      
       const imageUrl = getStrapiImageUrl(imageField);
-      console.log(`About page - Final image URL for direct performer ${index}:`, imageUrl);
-      
       return {
         id: performer.id || performer.documentId,
         name: performer.name,
@@ -97,8 +62,6 @@ const About = () => {
       };
     });
   }
-
-  console.log('About page - FINAL processed performers:', JSON.stringify(performers, null, 2));
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
