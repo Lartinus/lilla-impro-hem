@@ -8,8 +8,7 @@ const PARALLAX_HEIGHT_MOBILE = 400;
 const PARALLAX_HEIGHT_MD = 620;
 const PARALLAX_HEIGHT_LG = 750;
 
-const PARALLAX_IMAGE_FACTOR = 0.4; // långsammare, men följer med
-const PARALLAX_BOX_FACTOR = 1.0;
+const PARALLAX_IMAGE_FACTOR = 0.4;
 
 const getParallaxHeights = () => {
   if (window.innerWidth >= 1024) return PARALLAX_HEIGHT_LG;
@@ -20,7 +19,6 @@ const getParallaxHeights = () => {
 const Corporate = () => {
   const [scrollY, setScrollY] = useState(0);
   const [parallaxHeight, setParallaxHeight] = useState(PARALLAX_HEIGHT_MOBILE);
-  const [contentHeight, setContentHeight] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -34,40 +32,29 @@ const Corporate = () => {
   }, []);
 
   useEffect(() => {
-    // Listen for scroll and update scrollY
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    // Mät höjden på contentlådan + hero
-    const updateSectionHeight = () => {
-      if (sectionRef.current) setContentHeight(sectionRef.current.offsetHeight);
-    };
-    updateSectionHeight();
-    window.addEventListener("resize", updateSectionHeight);
-    return () => window.removeEventListener("resize", updateSectionHeight);
   }, []);
 
   // Parallax Offsets (bildens offset har kvar sin animering)
   const maxImageOffset = parallaxHeight * 0.6;
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
 
-  // Förenklad marginTop - se till att boxen hamnar snyggt just över hero-bildens slut
-  // Ingen dynamik: bara ett lagom snyggt overlap!
-  const marginTop = parallaxHeight - 70;
+  // Viktigt: Använd negativ margin på content bara, inte på wrapper-sektionen!
+  const contentOverlap = 70;
+  const contentMarginTop = -contentOverlap;
 
   return (
     <div 
-      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative"
+      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi min-h-screen relative"
     >
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
 
-      {/* Parallax Hero Section */}
+      {/* Parallax Hero Section - INTE LÄNGRE ABSOLUTE */}
       <div
-        className="absolute top-0 left-0 w-full z-0 select-none pointer-events-none"
+        className="w-full z-0 select-none pointer-events-none relative"
         style={{
           height: parallaxHeight,
           transform: `translateY(-${imageOffset}px)`,
@@ -100,20 +87,19 @@ const Corporate = () => {
       {/* Content */}
       <section
         ref={sectionRef}
-        className="relative z-10 transition-transform"
+        className="relative z-10 transition-transform flex justify-center"
         style={{
-          marginTop,
+          marginTop: contentMarginTop, // överlapp—INTE stor positiv margin!
           willChange: "transform"
         }}
       >
         <div
-          className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto py-[23px] -mt-14 md:-mt-20 lg:-mt-24 shadow-xl"
+          className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto py-[23px] shadow-xl"
           style={{
             boxShadow: '0 10px 36px 4px rgba(50, 38, 22, 0.16)',
             transition: 'box-shadow 0.4s, transform 0.3s cubic-bezier(.22,1.04,.79,1)',
             backdropFilter: 'blur(0.5px)',
             background: 'rgba(255,255,255,0.97)',
-            // Vi drar INTE ned boxen längre med transform: translateY(-boxOffset)
             willChange: "transform"
           }}
         >
@@ -247,16 +233,16 @@ const Corporate = () => {
         </div>
       </section>
 
-      {/* Responsive höjder + fallback för section's marginTop på större skärmar */}
+      {/* Responsive höjder + fallback för hero på större skärmar */}
       <style>
         {`
           @media (min-width: 768px) {
-            .absolute.top-0.left-0.w-full.z-0 {
+            .w-full.z-0.select-none.pointer-events-none.relative {
               height: ${PARALLAX_HEIGHT_MD}px !important;
             }
           }
           @media (min-width: 1024px) {
-            .absolute.top-0.left-0.w-full.z-0 {
+            .w-full.z-0.select-none.pointer-events-none.relative {
               height: ${PARALLAX_HEIGHT_LG}px !important;
             }
           }
