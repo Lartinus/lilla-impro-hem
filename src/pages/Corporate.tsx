@@ -39,8 +39,8 @@ const Corporate = () => {
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
   const boxOffset = Math.min(scrollY, parallaxHeight - 64);
 
-  // Nytt! Låt boxen börja t.ex. 60% ner i parallaxbilden (så bilden syns först)
-  const boxTopMargin = Math.round(parallaxHeight * 0.62);
+  // Låt boxen börja t.ex. 62% NER i parallaxbilden = så att bilden syns först.
+  const overlapStart = Math.round(parallaxHeight * 0.62);
 
   return (
     <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative min-h-screen overflow-x-hidden">
@@ -63,10 +63,10 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* Innehållsrutan placeras en bit ner, så bilden syns först */}
+      {/* Contentboxen placeras med NEGATIV margin-top, så den börjar _inuti_ bilden */}
       <main
         className="relative z-10 flex justify-center pb-0"
-        style={{ marginTop: boxTopMargin }}
+        style={{ marginTop: `-${parallaxHeight - overlapStart}px` }}
       >
         <CorporateContentBox boxOffset={boxOffset} />
       </main>
