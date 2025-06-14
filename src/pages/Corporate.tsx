@@ -67,28 +67,36 @@ const Corporate = () => {
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
   const boxOffset = Math.min(scrollY * PARALLAX_BOX_FACTOR, maxBoxOffset);
 
-  // Justera marginTop för att eliminera den stora vita boxen
-  const baseMarginTop = parallaxHeight * 0.7; // Minska från tidigare värde
-  const marginTop = Math.max(baseMarginTop - boxOffset, 20); // Mindre minimum margin
+  // Content boxen ska aldrig gå under toppen av bilden
+  const minMarginTop = parallaxHeight - 70;
+  const marginTop = Math.max(minMarginTop - boxOffset, 40);
 
   // 2. Beräkna exakt höjd - endast baserat på vart innehållet faktiskt slutar
   const actualPageHeight = contentHeight ? marginTop + contentHeight : windowHeight;
 
-  // 3. Återställ body height till normal
+  // 3. Sätt body height för att matcha exakt
   useEffect(() => {
-    // Låt sidan ha sin naturliga höjd
-    document.body.style.height = '';
-    document.body.style.overflow = '';
+    if (contentHeight) {
+      const exactHeight = marginTop + contentHeight;
+      document.body.style.height = `${exactHeight}px`;
+      document.body.style.overflow = 'hidden';
+      console.log('Setting body height to:', exactHeight, 'marginTop:', marginTop, 'contentHeight:', contentHeight);
+    }
     return () => {
       // Återställ vid unmount
       document.body.style.height = '';
       document.body.style.overflow = '';
     };
-  }, []);
+  }, [contentHeight, marginTop]);
 
   return (
     <div 
-      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative min-h-screen"
+      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative"
+      style={{ 
+        height: `${actualPageHeight}px`,
+        overflow: 'hidden',
+        position: 'relative'
+      }}
     >
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
