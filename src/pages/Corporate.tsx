@@ -76,7 +76,9 @@ const Corporate = () => {
   useEffect(() => {
     // Undvik scroll längre än till contentboxens slut
     if (contentHeight) {
-      const totalHeight = parallaxHeight + contentHeight + 50; // 50px margin för safety 
+      // Sidans totala höjd ska vara toppen av innehållsboxen plus boxens höjd.
+      // Boxen börjar `parallaxHeight - 70` från toppen av sidan.
+      const totalHeight = (parallaxHeight - 70) + contentHeight;
       // sätt på body:
       document.body.style.height = `${Math.max(windowHeight, totalHeight)}px`;
       document.body.style.overflowY = 'auto';
