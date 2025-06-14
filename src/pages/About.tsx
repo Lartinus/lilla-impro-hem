@@ -34,7 +34,7 @@ const About = () => {
           <div className="space-y-6 text-gray-700 leading-relaxed text-base" style={{
           lineHeight: '1.3'
         }}>
-            <h2 className="text-2xl font-bold mb-5 text-gray-800">Om Lilla Improteatern</h2>
+            <h2 className="text-xl font-bold text-black mb-2">Om Lilla Improteatern</h2>
             <p className="text-base font-normal text-left">Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy – och en stark vilja att skapa en plats där både skratten, hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron – och i viljan att bygga något nytt tillsammans.</p>
           </div>
 

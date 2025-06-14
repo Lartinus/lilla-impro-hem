@@ -24,9 +24,9 @@ const Mohippa = () => {
           <div>
             {/* Rubrik */}
             <div className="mb-8">
-              <h3 className="text-theatre-secondary mb-6 font-medium text-2xl">
+              <h2 className="text-xl font-bold text-black mb-2">
                 Boka en improworkshop eller en skräddarsydd show till din fest, möhippa, svensexa, födelsedag eller annan tillställning.
-              </h3>
+              </h2>
               <p className="text-black text-base leading-relaxed">
                 Improv Comedy är en perfekt aktivitet för att skapa skratt, gemenskap och minnen. Vi tar med oss det vi älskar med improv comedy – värme, överraskning och lekfullhet – och skapar något som passar just er.
               </p>
