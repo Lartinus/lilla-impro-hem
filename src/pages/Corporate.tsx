@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
@@ -74,12 +75,13 @@ const Corporate = () => {
   // 2. Beräkna exakt höjd - endast baserat på vart innehållet faktiskt slutar
   const actualPageHeight = contentHeight ? marginTop + contentHeight : windowHeight;
 
-  // 3. Sätt body height för att matcha exakt
+  // 3. Sätt body height för att matcha exakt men behåll scrollning
   useEffect(() => {
     if (contentHeight) {
       const exactHeight = marginTop + contentHeight;
       document.body.style.height = `${exactHeight}px`;
-      document.body.style.overflow = 'hidden';
+      // Ta bort overflow hidden för att tillåta scrollning
+      document.body.style.overflow = '';
       console.log('Setting body height to:', exactHeight, 'marginTop:', marginTop, 'contentHeight:', contentHeight);
     }
     return () => {
@@ -94,7 +96,6 @@ const Corporate = () => {
       className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative"
       style={{ 
         height: `${actualPageHeight}px`,
-        overflow: 'hidden',
         position: 'relative'
       }}
     >
