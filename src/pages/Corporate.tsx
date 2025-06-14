@@ -21,7 +21,6 @@ const Corporate = () => {
   const [scrollY, setScrollY] = useState(0);
   const [parallaxHeight, setParallaxHeight] = useState(PARALLAX_HEIGHT_MOBILE);
   const [contentHeight, setContentHeight] = useState<number | null>(null);
-  const [containerHeight, setContainerHeight] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   // UPD: Håll koll på window height för att räkna max scroll
@@ -72,24 +71,9 @@ const Corporate = () => {
   const minMarginTop = parallaxHeight - 70;
   const marginTop = Math.max(minMarginTop - boxOffset, 40);
 
-  // 2. Beräkna total höjd för hela sidan - exakt beräkning
-  useEffect(() => {
-    if (contentHeight) {
-      // Beräkna exakt var innehållet slutar med alla transformationer
-      const contentBoxStartTop = marginTop; // var boxen faktiskt börjar
-      const totalContentHeight = contentBoxStartTop + contentHeight; // total höjd vi behöver
-      
-      setContainerHeight(totalContentHeight);
-    }
-  }, [contentHeight, marginTop]);
-
   return (
     <div 
       className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative"
-      style={{ 
-        height: containerHeight ? `${containerHeight}px` : '100vh',
-        overflow: 'hidden' // Förhindra extra scrollning
-      }}
     >
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
@@ -145,7 +129,7 @@ const Corporate = () => {
             backdropFilter: 'blur(0.5px)',
             background: 'rgba(255,255,255,0.97)',
             transform: `translateY(-${boxOffset}px)`,
-            willChange: "transform",
+            willChange: "transform"
           }}
         >
           {/* Contentboxen överlappar bilden snyggt */}
