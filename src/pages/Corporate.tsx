@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
@@ -72,13 +73,13 @@ const Corporate = () => {
   const minMarginTop = parallaxHeight - 70;
   const marginTop = Math.max(minMarginTop - boxOffset, 40);
 
-  // 2. Beräkna total höjd för hela sidan - justerad för att minska extra utrymme
+  // 2. Beräkna total höjd för hela sidan - mer exakt för att minimera extra utrymme
   useEffect(() => {
     if (contentHeight) {
-      // Beräkna mer exakt höjd baserat på innehållets faktiska position
+      // Beräkna exakt höjd baserat på innehållets faktiska position
       const contentBoxTop = parallaxHeight - 70; // boxens startposition
-      const actualContentEnd = contentBoxTop + contentHeight - boxOffset + 100; // lägg till lite padding
-      const totalRequiredHeight = Math.max(actualContentEnd, windowHeight);
+      const actualContentEnd = contentBoxTop + contentHeight - boxOffset; // ingen extra padding
+      const totalRequiredHeight = Math.max(actualContentEnd + 50, windowHeight); // minimal padding
       
       setContainerHeight(totalRequiredHeight);
     }
@@ -88,7 +89,8 @@ const Corporate = () => {
     <div 
       className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative"
       style={{ 
-        height: containerHeight ? `${containerHeight}px` : '100vh',
+        height: containerHeight ? `${containerHeight}px` : 'auto',
+        minHeight: '100vh',
         overflow: 'auto'
       }}
     >
@@ -135,7 +137,8 @@ const Corporate = () => {
         className="relative z-10 transition-transform"
         style={{
           marginTop: marginTop,
-          willChange: "transform"
+          willChange: "transform",
+          paddingBottom: '2rem' // Minimal padding för att undvika att innehållet klistrar mot botten
         }}
       >
         <div
