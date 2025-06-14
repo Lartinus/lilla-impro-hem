@@ -1,17 +1,51 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Loader } from 'lucide-react';
 
 const PARALLAX_HEIGHT_MOBILE = 400;
 const PARALLAX_HEIGHT_MD = 620;
 const PARALLAX_HEIGHT_LG = 750;
 
+// Hur mycket långsammare bakgrundsbilden ska röra sig (lägre = långsammare bild)
+const PARALLAX_IMAGE_FACTOR = 0.4;
+const PARALLAX_BOX_FACTOR = 1.0;
+
+const getParallaxHeights = () => {
+  if (window.innerWidth >= 1024) return PARALLAX_HEIGHT_LG;
+  if (window.innerWidth >= 768) return PARALLAX_HEIGHT_MD;
+  return PARALLAX_HEIGHT_MOBILE;
+};
+
 const Corporate = () => {
+  const [scrollY, setScrollY] = useState(0);
+  const [parallaxHeight, setParallaxHeight] = useState(PARALLAX_HEIGHT_MOBILE);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    // Update parallax height on resize
+    const handleResize = () => setParallaxHeight(getParallaxHeights());
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    // Listen for scroll and update scrollY
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Beräkna förskjutning för bakgrundsbild och box
+  const imageOffset = scrollY * PARALLAX_IMAGE_FACTOR;
+  const boxOffset = scrollY * PARALLAX_BOX_FACTOR;
+
+  // Content boxen ska aldrig gå under toppen av bilden
+  const minMarginTop = parallaxHeight - 70;
+  const marginTop = Math.max(minMarginTop - boxOffset, 40); // Lägsta marginTop så boxen inte försvinner
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-hidden">
@@ -20,44 +54,51 @@ const Corporate = () => {
 
       {/* Parallax Hero Section */}
       <div
-        className="fixed top-0 left-0 w-full z-0"
+        className="fixed top-0 left-0 w-full z-0 select-none"
         style={{
-          height: `calc(${PARALLAX_HEIGHT_MOBILE}px + 8vw)`, // För lite extra höjd
+          height: parallaxHeight,
+          transform: `translateY(-${imageOffset}px)`,
+          transition: "height 0.3s",
         }}
+        aria-hidden="true"
       >
         <img
           src="/lovable-uploads/9e2e2703-327c-416d-8e04-082ee11225ea.png"
           alt=""
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-cover object-center pointer-events-none"
           style={{
             height: '100%',
             width: '100%',
             display: 'block',
             margin: 0,
             padding: 0,
-            filter: 'brightness(0.98)', // Lite mörkare, valfritt
+            filter: 'brightness(0.99)', // Mindre mörk overlay
             willChange: 'transform',
+            userSelect: 'none',
           }}
           draggable={false}
         />
-        {/* Transparent overlay för tydlig text ovanpå */}
-        <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+        {/* Transparent overlay – gör bilden liiite mörkare för att text ovanpå blir tydlig */}
+        <div className="absolute inset-0 pointer-events-none" style={{background: "rgba(0,0,0,0.10)" }} />
       </div>
 
       {/* Content */}
       <section
-        className="relative z-10"
+        className="relative z-10 transition-transform"
         style={{
-          marginTop: `calc(${PARALLAX_HEIGHT_MOBILE}px + 8vw - 70px)`, // Skjuter ned contentboxen så “parallax” syns
+          marginTop: marginTop,
+          willChange: "transform",
         }}
       >
-        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto py-[23px] -mt-14 md:-mt-20 lg:-mt-24 shadow-xl"
+        <div
+          className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto py-[23px] -mt-14 md:-mt-20 lg:-mt-24 shadow-xl"
           style={{
-            // Lite fade/skugga nertill för flytande känsla
             boxShadow: '0 10px 36px 4px rgba(50, 38, 22, 0.16)',
             transition: 'box-shadow 0.4s, transform 0.3s cubic-bezier(.22,1.04,.79,1)',
             backdropFilter: 'blur(0.5px)',
             background: 'rgba(255,255,255,0.97)',
+            transform: `translateY(-${boxOffset}px)`,
+            willChange: "transform",
           }}
         >
           {/* Contentboxen överlappar bilden snyggt */}
@@ -190,23 +231,17 @@ const Corporate = () => {
         </div>
       </section>
 
-      {/* MOBILE/RESPONSIVE HEIGHTS */}
+      {/* Responsive höjder + fallback för section's marginTop på större skärmar */}
       <style>
         {`
           @media (min-width: 768px) {
             .fixed.top-0.left-0.w-full.z-0 {
               height: ${PARALLAX_HEIGHT_MD}px !important;
             }
-            section[style] {
-              margin-top: calc(${PARALLAX_HEIGHT_MD}px - 64px) !important;
-            }
           }
           @media (min-width: 1024px) {
             .fixed.top-0.left-0.w-full.z-0 {
               height: ${PARALLAX_HEIGHT_LG}px !important;
-            }
-            section[style] {
-              margin-top: calc(${PARALLAX_HEIGHT_LG}px - 64px) !important;
             }
           }
         `}
@@ -216,3 +251,4 @@ const Corporate = () => {
 };
 
 export default Corporate;
+
