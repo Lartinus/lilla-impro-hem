@@ -72,32 +72,24 @@ const Corporate = () => {
   const minMarginTop = parallaxHeight - 70;
   const marginTop = Math.max(minMarginTop - boxOffset, 40);
 
-  // 2. Beräkna total höjd för hela sidan
+  // 2. Beräkna total höjd för hela sidan - justerad för att minska extra utrymme
   useEffect(() => {
     if (contentHeight) {
-      // Beräkna exakt var innehållsboxen slutar
+      // Beräkna mer exakt höjd baserat på innehållets faktiska position
       const contentBoxTop = parallaxHeight - 70; // boxens startposition
-      const totalRequiredHeight = contentBoxTop + contentHeight;
+      const actualContentEnd = contentBoxTop + contentHeight - boxOffset + 100; // lägg till lite padding
+      const totalRequiredHeight = Math.max(actualContentEnd, windowHeight);
       
-      // Sätt både container och body height
       setContainerHeight(totalRequiredHeight);
-      document.body.style.height = `${totalRequiredHeight}px`;
-      document.body.style.overflowY = 'auto';
-      document.body.style.overflowX = 'hidden';
     }
-    return () => {
-      // Återställ vid unmount
-      document.body.style.height = '';
-      document.body.style.overflowY = '';
-      document.body.style.overflowX = '';
-    };
-  }, [contentHeight, parallaxHeight]);
+  }, [contentHeight, parallaxHeight, boxOffset, windowHeight]);
 
   return (
     <div 
-      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-hidden"
+      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative"
       style={{ 
-        height: containerHeight ? `${containerHeight}px` : '100vh'
+        height: containerHeight ? `${containerHeight}px` : '100vh',
+        overflow: 'auto'
       }}
     >
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
