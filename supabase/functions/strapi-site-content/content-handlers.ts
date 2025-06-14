@@ -1,4 +1,3 @@
-
 import { STRAPI_CONFIG, CORS_HEADERS, CACHE_HEADERS } from './config.ts';
 import type { StrapiResponse } from './types.ts';
 
@@ -16,14 +15,12 @@ export async function handlePrivatePartyContent(): Promise<Response> {
   });
 
   if (!response.ok) {
-    console.error(`Strapi API error: ${response.status} - ${response.statusText}`);
     const errorText = await response.text();
-    console.error('Error response:', errorText);
+    console.error('Strapi API error:', response.status, response.statusText, errorText);
     throw new Error(`Strapi API error: ${response.status}`);
   }
 
   const data = await response.json();
-  console.log(`Successfully fetched optimized private-party content`);
   
   return new Response(JSON.stringify(data), {
     headers: { 
@@ -66,7 +63,6 @@ export async function handleAboutContent(): Promise<Response> {
   }
 
   const data = await response.json();
-  console.log(`Successfully fetched optimized about content`);
   
   // If performers are not fully populated, fetch them separately with minimal fields
   if (data.data && data.data.performers && Array.isArray(data.data.performers) && 
