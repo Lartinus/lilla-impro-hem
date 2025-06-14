@@ -39,14 +39,14 @@ const Corporate = () => {
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
   const boxOffset = Math.min(scrollY, parallaxHeight - 64);
 
-  // Låt boxen börja t.ex. 62% NER i parallaxbilden = så att bilden syns först.
+  // Boxen ska börja t.ex. 62% ner i parallaxen
   const overlapStart = Math.round(parallaxHeight * 0.62);
 
   return (
     <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative min-h-screen overflow-x-hidden">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      {/* Parallax-bakgrund flyter bakom allt utan att skjuta ner innehållet */}
+      {/* Parallaxen ligger absolut, täcker toppen */}
       <div
         className="pointer-events-none select-none absolute top-0 left-0 w-full z-0"
         style={{
@@ -63,13 +63,12 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* Contentboxen placeras med NEGATIV margin-top, så den börjar _inuti_ bilden */}
-      <main
-        className="relative z-10 flex justify-center pb-0"
-        style={{ marginTop: `-${parallaxHeight - overlapStart}px` }}
-      >
-        <CorporateContentBox boxOffset={boxOffset} />
-      </main>
+      {/* Wrapper med padding-top – så börjar boxen längre ner på sidan */}
+      <div style={{ paddingTop: overlapStart }}>
+        <main className="relative z-10 flex justify-center pb-0">
+          <CorporateContentBox boxOffset={boxOffset} />
+        </main>
+      </div>
       {/* Inget Footer! */}
       <style>{`
         html, body {
