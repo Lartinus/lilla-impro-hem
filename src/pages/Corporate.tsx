@@ -8,7 +8,7 @@ const PARALLAX_HEIGHT_MOBILE = 400;
 const PARALLAX_HEIGHT_MD = 620;
 const PARALLAX_HEIGHT_LG = 750;
 
-const PARALLAX_IMAGE_FACTOR = 0.4;
+const PARALLAX_IMAGE_FACTOR = 0.4; // Bilden scrollar långsamt
 
 const getParallaxHeights = () => {
   if (window.innerWidth >= 1024) return PARALLAX_HEIGHT_LG;
@@ -37,13 +37,11 @@ const Corporate = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Parallax Offsets (bildens offset har kvar sin animering)
+  // Parallax offsets
   const maxImageOffset = parallaxHeight * 0.6;
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
 
-  // Viktigt: Använd negativ margin på content bara, inte på wrapper-sektionen!
-  const contentOverlap = 70;
-  const contentMarginTop = -contentOverlap;
+  const boxOffset = Math.min(scrollY, parallaxHeight - 64); // Boxen följer med scroll, men inte längre upp än bildytan
 
   return (
     <div 
@@ -52,13 +50,13 @@ const Corporate = () => {
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
 
-      {/* Parallax Hero Section - INTE LÄNGRE ABSOLUTE */}
+      {/* Parallax Hero Section */}
       <div
         className="w-full z-0 select-none pointer-events-none relative"
         style={{
           height: parallaxHeight,
           transform: `translateY(-${imageOffset}px)`,
-          transition: "height 0.3s",
+          transition: "height 0.3s, transform 0.36s cubic-bezier(.22,1.04,.79,1)",
           overflow: 'hidden',
           maskImage: imageOffset >= maxImageOffset ? 'linear-gradient(to bottom, black 75%, transparent 100%)' : undefined
         }}
@@ -87,9 +85,8 @@ const Corporate = () => {
       {/* Content */}
       <section
         ref={sectionRef}
-        className="relative z-10 transition-transform flex justify-center"
+        className="relative z-10 flex justify-center"
         style={{
-          marginTop: contentMarginTop, // överlapp—INTE stor positiv margin!
           willChange: "transform"
         }}
       >
@@ -100,10 +97,11 @@ const Corporate = () => {
             transition: 'box-shadow 0.4s, transform 0.3s cubic-bezier(.22,1.04,.79,1)',
             backdropFilter: 'blur(0.5px)',
             background: 'rgba(255,255,255,0.97)',
-            willChange: "transform"
+            willChange: 'transform',
+            transform: `translateY(-${boxOffset}px)`
           }}
         >
-          {/* Contentboxen överlappar bilden snyggt */}
+          {/* Contentboxen överlappar bilden och åker uppåt snabbare än bakgrunden */}
           <div className="text-left">
             <h2 className="text-xl font-bold text-gray-800 mb-2">Workshops & Events för er organisation</h2>
             <h3 className="text-theatre-secondary mb-4 font-medium text-base">
