@@ -39,58 +39,52 @@ const Corporate = () => {
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
   const boxOffset = Math.min(scrollY, parallaxHeight - 64);
 
-  // Parallaxen ligger nu bakom allt och bygger inte mer höjd än den syns
-  // Contentboxen bestämmer höjden på sidan
-  let overlap = -80;
-  if (parallaxHeight === PARALLAX_HEIGHT_MD) overlap = -100;
-  if (parallaxHeight === PARALLAX_HEIGHT_LG) overlap = -120;
-
+  // Låt contentboxen alltid ligga i toppen, och låt hero-bilden flyta bakom, ej bygga ut sidans höjd!
   return (
-    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden">
+    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative min-h-screen overflow-x-hidden">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      <div className="relative" style={{ minHeight: parallaxHeight }}>
-        {/* Parallax-bild absolut positionerad, bygger inte ut höjden */}
-        <div
-          className="absolute top-0 left-0 w-full z-0 pointer-events-none"
-          style={{
-            height: parallaxHeight,
-            overflow: 'hidden',
-          }}
-        >
-          <CorporateHero
-            parallaxHeight={parallaxHeight}
-            imageOffset={imageOffset}
-            maxImageOffset={maxImageOffset}
-          />
-        </div>
-        <section
-          className="relative z-10 flex justify-center"
-          style={{
-            willChange: "transform",
-            marginTop: parallaxHeight + overlap,
-            marginBottom: 0,
-            paddingBottom: 0,
-          }}
-        >
-          <CorporateContentBox boxOffset={boxOffset} />
-        </section>
+      {/* Parallax-bakgrund flyter bakom allt utan att skjuta ner innehållet */}
+      <div
+        className="pointer-events-none select-none absolute top-0 left-0 w-full z-0"
+        style={{
+          height: parallaxHeight,
+          minHeight: parallaxHeight,
+          maxHeight: parallaxHeight,
+          overflow: 'hidden',
+        }}
+        aria-hidden="true"
+      >
+        <CorporateHero
+          parallaxHeight={parallaxHeight}
+          imageOffset={imageOffset}
+          maxImageOffset={maxImageOffset}
+        />
       </div>
-      {/* Footer ska EJ visas på denna sida */}
+      {/* Innehållsrutan placeras direkt under header, ingen marginTop eller overlap! */}
+      <main className="relative z-10 flex justify-center pt-10 pb-0">
+        <CorporateContentBox boxOffset={boxOffset} />
+      </main>
+      {/* Inget Footer! */}
       <style>{`
+        html, body {
+          height: auto !important;
+          min-height: 0 !important;
+        }
+        /* Ingen onödig min-h på wrapper eller main */
         @media (min-width: 768px) {
-          .w-full.z-0.select-none.pointer-events-none.relative {
+          .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
             height: ${PARALLAX_HEIGHT_MD}px !important;
+            min-height: ${PARALLAX_HEIGHT_MD}px !important;
+            max-height: ${PARALLAX_HEIGHT_MD}px !important;
           }
         }
         @media (min-width: 1024px) {
-          .w-full.z-0.select-none.pointer-events-none.relative {
+          .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
             height: ${PARALLAX_HEIGHT_LG}px !important;
+            min-height: ${PARALLAX_HEIGHT_LG}px !important;
+            max-height: ${PARALLAX_HEIGHT_LG}px !important;
           }
-        }
-        body, html {
-          min-height: 0 !important;
-          height: auto !important;
         }
       `}</style>
     </div>
@@ -98,3 +92,4 @@ const Corporate = () => {
 };
 
 export default Corporate;
+
