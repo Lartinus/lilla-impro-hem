@@ -1,9 +1,12 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
 import { useEffect } from 'react';
 import { Loader } from 'lucide-react';
+
+const PARALLAX_HEIGHT_MOBILE = 400;
+const PARALLAX_HEIGHT_MD = 620;
+const PARALLAX_HEIGHT_LG = 750;
 
 const Corporate = () => {
   useEffect(() => {
@@ -15,27 +18,49 @@ const Corporate = () => {
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
 
-      {/* HERO-BILD: syns tydligt högst upp på sidan */}
-      <div className="w-full relative z-0">
+      {/* Parallax Hero Section */}
+      <div
+        className="fixed top-0 left-0 w-full z-0"
+        style={{
+          height: `calc(${PARALLAX_HEIGHT_MOBILE}px + 8vw)`, // För lite extra höjd
+        }}
+      >
         <img
           src="/lovable-uploads/9e2e2703-327c-416d-8e04-082ee11225ea.png"
           alt=""
-          className="w-full h-[320px] md:h-[450px] lg:h-[560px] object-cover object-center"
+          className="w-full h-full object-cover object-center"
           style={{
+            height: '100%',
+            width: '100%',
             display: 'block',
             margin: 0,
             padding: 0,
-            // Ökad höjd för hero-upplevelse, responsivt.
+            filter: 'brightness(0.98)', // Lite mörkare, valfritt
+            willChange: 'transform',
           }}
           draggable={false}
         />
+        {/* Transparent overlay för tydlig text ovanpå */}
+        <div className="absolute inset-0 bg-black/20 pointer-events-none" />
       </div>
 
       {/* Content */}
-      <section className="py-8 px-0.5 md:px-4 mt-0 relative z-10">
-        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto py-[23px] -mt-14 md:-mt-20 lg:-mt-24">
-          {/* Förskjut contentboxen lite upp i bilden för en snygg "overlap" som på Spinoff */}
-          {/* Main content */}
+      <section
+        className="relative z-10"
+        style={{
+          marginTop: `calc(${PARALLAX_HEIGHT_MOBILE}px + 8vw - 70px)`, // Skjuter ned contentboxen så “parallax” syns
+        }}
+      >
+        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto py-[23px] -mt-14 md:-mt-20 lg:-mt-24 shadow-xl"
+          style={{
+            // Lite fade/skugga nertill för flytande känsla
+            boxShadow: '0 10px 36px 4px rgba(50, 38, 22, 0.16)',
+            transition: 'box-shadow 0.4s, transform 0.3s cubic-bezier(.22,1.04,.79,1)',
+            backdropFilter: 'blur(0.5px)',
+            background: 'rgba(255,255,255,0.97)',
+          }}
+        >
+          {/* Contentboxen överlappar bilden snyggt */}
           <div className="text-left">
             <h2 className="text-xl font-bold text-gray-800 mb-2">Workshops & Events för er organisation</h2>
             <h3 className="text-theatre-secondary mb-4 font-medium text-base">
@@ -164,10 +189,30 @@ const Corporate = () => {
           </div>
         </div>
       </section>
-      {/* <Footer /> */}
+
+      {/* MOBILE/RESPONSIVE HEIGHTS */}
+      <style>
+        {`
+          @media (min-width: 768px) {
+            .fixed.top-0.left-0.w-full.z-0 {
+              height: ${PARALLAX_HEIGHT_MD}px !important;
+            }
+            section[style] {
+              margin-top: calc(${PARALLAX_HEIGHT_MD}px - 64px) !important;
+            }
+          }
+          @media (min-width: 1024px) {
+            .fixed.top-0.left-0.w-full.z-0 {
+              height: ${PARALLAX_HEIGHT_LG}px !important;
+            }
+            section[style] {
+              margin-top: calc(${PARALLAX_HEIGHT_LG}px - 64px) !important;
+            }
+          }
+        `}
+      </style>
     </div>
   );
 };
 
 export default Corporate;
-
