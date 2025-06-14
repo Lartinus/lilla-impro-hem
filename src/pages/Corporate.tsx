@@ -58,35 +58,45 @@ const Corporate = () => {
     return () => window.removeEventListener("resize", updateSectionHeight);
   }, []);
 
-  // 1. PARALLAX OFFSETS
-  // Vi låter bild åka uppåt men långsammare. När vi har scrollat x% av rutan (t.ex. 0.6), så slutar vi animera bakgrunden.
-  const maxImageOffset = parallaxHeight * 0.6; // efter ca 60% av hero är bilden borta
-  const maxBoxOffset = (contentHeight ?? 0) - parallaxHeight + 40; // box bör aldrig lämna sidan
+  // Minsta tillåtna höjd för bilden beroende på fönsterstorlek
+  const getMinParallaxHeight = () => {
+    if (window.innerWidth >= 1024) return PARALLAX_HEIGHT_LG;
+    if (window.innerWidth >= 768) return PARALLAX_HEIGHT_MD;
+    return PARALLAX_HEIGHT_MOBILE;
+  };
 
-  // Dynamisk clamping
+  // Håll minParallaxHeight separat så vi kan använda både min och max
+  const minParallaxHeight = parallaxHeight;
+  // Maximalt tillåten höjd för bilden = contentHeight (boxens höjd)
+  const maxParallaxHeight = contentHeight ? Math.max(minParallaxHeight, contentHeight) : minParallaxHeight;
+  // Bestäm aktuell hero-sektions-höjd:
+  const effectiveParallaxHeight = Math.min(maxParallaxHeight, contentHeight ?? minParallaxHeight);
+
+  // 1. PARALLAX OFFSETS
+  // maxImageOffset baseras på effektiva höjden nu
+  const maxImageOffset = effectiveParallaxHeight * 0.6;
+  // maxBoxOffset: boxen kan aldrig scrolla längre än så att den slutar precis där bilden slutar
+  const maxBoxOffset = (contentHeight ?? 0) - effectiveParallaxHeight + 40;
+
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
   const boxOffset = Math.min(scrollY * PARALLAX_BOX_FACTOR, maxBoxOffset);
 
-  // Content boxen ska aldrig gå under toppen av bilden
-  const minMarginTop = parallaxHeight - 70;
+  // marginTop för att boxen aldrig ska ligga ovanför/bakom bilden
+  const minMarginTop = effectiveParallaxHeight - 70;
   const marginTop = Math.max(minMarginTop - boxOffset, 40);
 
-  // 2. Begränsa sidans höjd så man bara kan scrolla till slutet av vita boxen
-  // (hero + content + lite extra)
+  // Effektiv "låslängd" — sidorullning max lika lång som boxen med innehåll + hero, aldrig mer
   useEffect(() => {
-    // Undvik scroll längre än till contentboxens slut
     if (contentHeight) {
-      const totalHeight = parallaxHeight + contentHeight + 50; // 50px margin för safety 
-      // sätt på body:
+      const totalHeight = effectiveParallaxHeight + contentHeight + 50;
       document.body.style.height = `${Math.max(windowHeight, totalHeight)}px`;
       document.body.style.overflowY = 'auto';
     }
     return () => {
-      // Återställ vid unmount
       document.body.style.height = '';
       document.body.style.overflowY = '';
     };
-  }, [contentHeight, parallaxHeight, windowHeight]);
+  }, [contentHeight, effectiveParallaxHeight, windowHeight]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-hidden">
@@ -97,11 +107,10 @@ const Corporate = () => {
       <div
         className="absolute top-0 left-0 w-full z-0 select-none pointer-events-none"
         style={{
-          height: parallaxHeight,
+          height: effectiveParallaxHeight,
           transform: `translateY(-${imageOffset}px)`,
           transition: "height 0.3s",
           overflow: 'hidden',
-          // För mobil: "tona ut" bilden i botten om imageOffset >= maxImageOffset
           maskImage: imageOffset >= maxImageOffset ? 'linear-gradient(to bottom, black 75%, transparent 100%)' : undefined
         }}
         aria-hidden="true"
@@ -282,12 +291,12 @@ const Corporate = () => {
         {`
           @media (min-width: 768px) {
             .absolute.top-0.left-0.w-full.z-0 {
-              height: ${PARALLAX_HEIGHT_MD}px !important;
+              height: ${Math.min(PARALLAX_HEIGHT_MD, contentHeight ?? PARALLAX_HEIGHT_MD)}px !important;
             }
           }
           @media (min-width: 1024px) {
             .absolute.top-0.left-0.w-full.z-0 {
-              height: ${PARALLAX_HEIGHT_LG}px !important;
+              height: ${Math.min(PARALLAX_HEIGHT_LG, contentHeight ?? PARALLAX_HEIGHT_LG)}px !important;
             }
           }
         `}
