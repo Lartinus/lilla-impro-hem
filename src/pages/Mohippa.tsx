@@ -1,4 +1,3 @@
-
 // Hårdkodad version av Möhippa-sidan (utan API-anrop)
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -96,7 +95,7 @@ const Mohippa = () => {
         </div>
       </section>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };
