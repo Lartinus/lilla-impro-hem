@@ -21,6 +21,7 @@ const Corporate = () => {
   const [scrollY, setScrollY] = useState(0);
   const [parallaxHeight, setParallaxHeight] = useState(PARALLAX_HEIGHT_MOBILE);
   const [contentHeight, setContentHeight] = useState<number | null>(null);
+  const [containerHeight, setContainerHeight] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   // UPD: Håll koll på window height för att räkna max scroll
@@ -71,14 +72,15 @@ const Corporate = () => {
   const minMarginTop = parallaxHeight - 70;
   const marginTop = Math.max(minMarginTop - boxOffset, 40);
 
-  // 2. Begränsa sidans höjd så man bara kan scrolla till slutet av vita boxen
+  // 2. Beräkna total höjd för hela sidan
   useEffect(() => {
     if (contentHeight) {
       // Beräkna exakt var innehållsboxen slutar
       const contentBoxTop = parallaxHeight - 70; // boxens startposition
       const totalRequiredHeight = contentBoxTop + contentHeight;
       
-      // Sätt body height till exakt det som behövs, inget mer
+      // Sätt både container och body height
+      setContainerHeight(totalRequiredHeight);
       document.body.style.height = `${totalRequiredHeight}px`;
       document.body.style.overflowY = 'auto';
       document.body.style.overflowX = 'hidden';
@@ -92,7 +94,12 @@ const Corporate = () => {
   }, [contentHeight, parallaxHeight]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-hidden">
+    <div 
+      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-hidden"
+      style={{ 
+        height: containerHeight ? `${containerHeight}px` : '100vh'
+      }}
+    >
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
 
