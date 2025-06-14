@@ -41,14 +41,13 @@ const Corporate = () => {
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
   const boxOffset = Math.min(scrollY, parallaxHeight - 64);
 
-  // Bestäm hur mycket den vita boxen ska överlappa bilden
-  // t.ex. -80px på små skärmar, -120px på större
   let overlap = -80;
   if (parallaxHeight === PARALLAX_HEIGHT_MD) overlap = -100;
   if (parallaxHeight === PARALLAX_HEIGHT_LG) overlap = -120;
 
   return (
-    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi min-h-screen relative">
+    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative">
+      {/* min-h-screen är borttaget från klasslistan ovan */}
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       <div className="relative">
