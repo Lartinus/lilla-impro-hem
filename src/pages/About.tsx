@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -40,7 +39,7 @@ const About = () => {
           </div>
 
           {/* Personerna bakom */}
-          <PerformersSection performers={performers} />
+          <PerformersSection performers={performers} title="Produktionsteam" />
         </div>
       </section>
 

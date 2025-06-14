@@ -1,4 +1,5 @@
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
+
 interface Performer {
   id: number;
   name: string;
@@ -7,14 +8,16 @@ interface Performer {
 }
 interface PerformersSectionProps {
   performers: Performer[];
+  title?: string;
 }
 const PerformersSection = ({
-  performers
+  performers,
+  title = "Medverkande"
 }: PerformersSectionProps) => {
   console.log('PerformersSection - performers:', performers);
   if (!performers || performers.length === 0) return null;
   return <div className="mb-6">
-      <h4 className="text-gray-800 font-bold mb-3">Produktionsteam</h4>
+      <h4 className="text-gray-800 font-bold mb-3">{title}</h4>
       <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
         <div className="space-y-6">
           {performers.map(performer => {
