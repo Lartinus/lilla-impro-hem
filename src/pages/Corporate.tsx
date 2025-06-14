@@ -1,16 +1,14 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Loader } from 'lucide-react';
 
 const PARALLAX_HEIGHT_MOBILE = 400;
 const PARALLAX_HEIGHT_MD = 620;
 const PARALLAX_HEIGHT_LG = 750;
 
-// Hur mycket långsammare bakgrundsbilden ska röra sig (lägre = långsammare bild)
-const PARALLAX_IMAGE_FACTOR = 0.4;
+const PARALLAX_IMAGE_FACTOR = 0.4; // långsammare, men följer med
 const PARALLAX_BOX_FACTOR = 1.0;
 
 const getParallaxHeights = () => {
@@ -22,11 +20,20 @@ const getParallaxHeights = () => {
 const Corporate = () => {
   const [scrollY, setScrollY] = useState(0);
   const [parallaxHeight, setParallaxHeight] = useState(PARALLAX_HEIGHT_MOBILE);
+  const [contentHeight, setContentHeight] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+
+  // UPD: Håll koll på window height för att räkna max scroll
+  const [windowHeight, setWindowHeight] = useState<number>(typeof window !== 'undefined' ? window.innerHeight : 0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
     // Update parallax height on resize
-    const handleResize = () => setParallaxHeight(getParallaxHeights());
+    const handleResize = () => {
+      setParallaxHeight(getParallaxHeights());
+      setWindowHeight(window.innerHeight);
+    };
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -39,13 +46,47 @@ const Corporate = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Beräkna förskjutning för bakgrundsbild och box
-  const imageOffset = scrollY * PARALLAX_IMAGE_FACTOR;
-  const boxOffset = scrollY * PARALLAX_BOX_FACTOR;
+  // Mät höjden på contentlådan + hero
+  useEffect(() => {
+    const updateSectionHeight = () => {
+      if (sectionRef.current) {
+        setContentHeight(sectionRef.current.offsetHeight);
+      }
+    };
+    updateSectionHeight();
+    window.addEventListener("resize", updateSectionHeight);
+    return () => window.removeEventListener("resize", updateSectionHeight);
+  }, []);
+
+  // 1. PARALLAX OFFSETS
+  // Vi låter bild åka uppåt men långsammare. När vi har scrollat x% av rutan (t.ex. 0.6), så slutar vi animera bakgrunden.
+  const maxImageOffset = parallaxHeight * 0.6; // efter ca 60% av hero är bilden borta
+  const maxBoxOffset = (contentHeight ?? 0) - parallaxHeight + 40; // box bör aldrig lämna sidan
+
+  // Dynamisk clamping
+  const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
+  const boxOffset = Math.min(scrollY * PARALLAX_BOX_FACTOR, maxBoxOffset);
 
   // Content boxen ska aldrig gå under toppen av bilden
   const minMarginTop = parallaxHeight - 70;
-  const marginTop = Math.max(minMarginTop - boxOffset, 40); // Lägsta marginTop så boxen inte försvinner
+  const marginTop = Math.max(minMarginTop - boxOffset, 40);
+
+  // 2. Begränsa sidans höjd så man bara kan scrolla till slutet av vita boxen
+  // (hero + content + lite extra)
+  useEffect(() => {
+    // Undvik scroll längre än till contentboxens slut
+    if (contentHeight) {
+      const totalHeight = parallaxHeight + contentHeight + 50; // 50px margin för safety 
+      // sätt på body:
+      document.body.style.height = `${Math.max(windowHeight, totalHeight)}px`;
+      document.body.style.overflowY = 'auto';
+    }
+    return () => {
+      // Återställ vid unmount
+      document.body.style.height = '';
+      document.body.style.overflowY = '';
+    };
+  }, [contentHeight, parallaxHeight, windowHeight]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-hidden">
@@ -54,11 +95,14 @@ const Corporate = () => {
 
       {/* Parallax Hero Section */}
       <div
-        className="fixed top-0 left-0 w-full z-0 select-none"
+        className="absolute top-0 left-0 w-full z-0 select-none pointer-events-none"
         style={{
           height: parallaxHeight,
           transform: `translateY(-${imageOffset}px)`,
           transition: "height 0.3s",
+          overflow: 'hidden',
+          // För mobil: "tona ut" bilden i botten om imageOffset >= maxImageOffset
+          maskImage: imageOffset >= maxImageOffset ? 'linear-gradient(to bottom, black 75%, transparent 100%)' : undefined
         }}
         aria-hidden="true"
       >
@@ -72,22 +116,24 @@ const Corporate = () => {
             display: 'block',
             margin: 0,
             padding: 0,
-            filter: 'brightness(0.99)', // Mindre mörk overlay
+            filter: 'brightness(0.99)', // lite mörk overlay men ljusare än innan
             willChange: 'transform',
             userSelect: 'none',
+            transition: 'filter 0.2s'
           }}
           draggable={false}
         />
-        {/* Transparent overlay – gör bilden liiite mörkare för att text ovanpå blir tydlig */}
+        {/* Transparent overlay över, mindre mörk */}
         <div className="absolute inset-0 pointer-events-none" style={{background: "rgba(0,0,0,0.10)" }} />
       </div>
 
       {/* Content */}
       <section
+        ref={sectionRef}
         className="relative z-10 transition-transform"
         style={{
           marginTop: marginTop,
-          willChange: "transform",
+          willChange: "transform"
         }}
       >
         <div
@@ -235,12 +281,12 @@ const Corporate = () => {
       <style>
         {`
           @media (min-width: 768px) {
-            .fixed.top-0.left-0.w-full.z-0 {
+            .absolute.top-0.left-0.w-full.z-0 {
               height: ${PARALLAX_HEIGHT_MD}px !important;
             }
           }
           @media (min-width: 1024px) {
-            .fixed.top-0.left-0.w-full.z-0 {
+            .absolute.top-0.left-0.w-full.z-0 {
               height: ${PARALLAX_HEIGHT_LG}px !important;
             }
           }
@@ -251,4 +297,3 @@ const Corporate = () => {
 };
 
 export default Corporate;
-
