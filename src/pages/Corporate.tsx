@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
@@ -153,8 +152,7 @@ const Corporate = () => {
           </div>
         </div>
       </section>
-
-      <Footer />
+      {/* <Footer /> */}
     </div>;
 };
 

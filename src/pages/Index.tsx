@@ -1,5 +1,3 @@
-
-// Hårdkodad version av startsidan ("Hem") – all text är direkt i koden.
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ServiceBoxes from '@/components/ServiceBoxes';
@@ -40,9 +38,8 @@ const Index = () => {
           </div>
         </div>
       </section>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };
-
 export default Index;

@@ -42,8 +42,6 @@ const About = () => {
           <PerformersSection performers={performers} title="Produktionsteam" />
         </div>
       </section>
-
-      <Footer />
     </div>;
 };
 export default About;

@@ -83,7 +83,7 @@ const Shows = () => {
         </div>
       </section>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>;
 };
 export default Shows;

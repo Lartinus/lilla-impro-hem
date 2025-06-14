@@ -130,10 +130,8 @@ const ShowDetails = () => {
           <OtherShowsSection shows={otherShows} />
         </div>
       </section>
-
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };
-
 export default ShowDetails;
