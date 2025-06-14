@@ -3,13 +3,13 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateHero from '@/components/CorporateHero';
 import CorporateContentBox from '@/components/CorporateContentBox';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 const PARALLAX_HEIGHT_MOBILE = 400;
 const PARALLAX_HEIGHT_MD = 620;
 const PARALLAX_HEIGHT_LG = 750;
 
-const PARALLAX_IMAGE_FACTOR = 0.4; // Bilden scrollar långsamt
+const PARALLAX_IMAGE_FACTOR = 0.4;
 
 const getParallaxHeights = () => {
   if (window.innerWidth >= 1024) return PARALLAX_HEIGHT_LG;
@@ -37,28 +37,37 @@ const Corporate = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Parallax offsets
   const maxImageOffset = parallaxHeight * 0.6;
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
-
   const boxOffset = Math.min(scrollY, parallaxHeight - 64);
+
+  // Bestäm hur mycket den vita boxen ska överlappa bilden
+  // t.ex. -80px på små skärmar, -120px på större
+  let overlap = -80;
+  if (parallaxHeight === PARALLAX_HEIGHT_MD) overlap = -100;
+  if (parallaxHeight === PARALLAX_HEIGHT_LG) overlap = -120;
 
   return (
     <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi min-h-screen relative">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-
-      <CorporateHero
-        parallaxHeight={parallaxHeight}
-        imageOffset={imageOffset}
-        maxImageOffset={maxImageOffset}
-      />
-
-      <section className="relative z-10 flex justify-center" style={{ willChange: "transform" }}>
-        <CorporateContentBox boxOffset={boxOffset} />
-      </section>
-
-      {/* Snygga höjder för hero för olika skärmar */}
+      <div className="relative">
+        <CorporateHero
+          parallaxHeight={parallaxHeight}
+          imageOffset={imageOffset}
+          maxImageOffset={maxImageOffset}
+        />
+        <section
+          className="relative z-10 flex justify-center"
+          style={{
+            willChange: "transform",
+            marginTop: overlap,
+          }}
+        >
+          <CorporateContentBox boxOffset={boxOffset} />
+        </section>
+      </div>
+      <Footer />
       <style>{`
         @media (min-width: 768px) {
           .w-full.z-0.select-none.pointer-events-none.relative {
@@ -76,3 +85,4 @@ const Corporate = () => {
 };
 
 export default Corporate;
+

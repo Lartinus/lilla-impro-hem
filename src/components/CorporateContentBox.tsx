@@ -1,4 +1,3 @@
-
 import CorporateInquiryForm from "@/components/CorporateInquiryForm";
 
 interface CorporateContentBoxProps {
@@ -14,7 +13,8 @@ const CorporateContentBox = ({ boxOffset }: CorporateContentBoxProps) => (
       backdropFilter: 'blur(0.5px)',
       background: 'rgba(255,255,255,0.97)',
       willChange: 'transform',
-      transform: `translateY(-${boxOffset}px)`
+      transform: `translateY(-${boxOffset}px)`,
+      marginBottom: 0 // Viktigt: ingen onödig marginal i botten!
     }}
   >
     {/* Contentboxen överlappar bilden och åker uppåt snabbare än bakgrunden */}
