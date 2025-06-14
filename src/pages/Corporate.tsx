@@ -72,23 +72,24 @@ const Corporate = () => {
   const marginTop = Math.max(minMarginTop - boxOffset, 40);
 
   // 2. Begränsa sidans höjd så man bara kan scrolla till slutet av vita boxen
-  // (hero + content + lite extra)
   useEffect(() => {
-    // Undvik scroll längre än till contentboxens slut
     if (contentHeight) {
-      // Sidans totala höjd ska vara toppen av innehållsboxen plus boxens höjd.
-      // Boxen börjar `parallaxHeight - 70` från toppen av sidan.
-      const totalHeight = (parallaxHeight - 70) + contentHeight;
-      // sätt på body:
-      document.body.style.height = `${Math.max(windowHeight, totalHeight)}px`;
+      // Beräkna exakt var innehållsboxen slutar
+      const contentBoxTop = parallaxHeight - 70; // boxens startposition
+      const totalRequiredHeight = contentBoxTop + contentHeight;
+      
+      // Sätt body height till exakt det som behövs, inget mer
+      document.body.style.height = `${totalRequiredHeight}px`;
       document.body.style.overflowY = 'auto';
+      document.body.style.overflowX = 'hidden';
     }
     return () => {
       // Återställ vid unmount
       document.body.style.height = '';
       document.body.style.overflowY = '';
+      document.body.style.overflowX = '';
     };
-  }, [contentHeight, parallaxHeight, windowHeight]);
+  }, [contentHeight, parallaxHeight]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-hidden">
