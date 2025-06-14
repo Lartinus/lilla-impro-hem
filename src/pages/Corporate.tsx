@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
@@ -9,12 +10,31 @@ const Corporate = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  return <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-hidden">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
 
+      {/* Hero-image över bakgrunden men under innerm content */}
+      <div
+        className="pointer-events-none select-none absolute inset-0 w-full h-full z-0 flex items-center justify-center"
+        aria-hidden="true"
+      >
+        <img
+          src="/lovable-uploads/9e2e2703-327c-416d-8e04-082ee11225ea.png"
+          alt=""
+          className="w-full h-full object-cover object-center opacity-40 blur-md"
+          style={{
+            maxHeight: '90vh',
+            marginTop: '60px',
+            // Om du vill ha mindre blur/opacity justera ovan
+          }}
+          draggable={false}
+        />
+      </div>
+
       {/* Content */}
-      <section className="py-8 px-0.5 md:px-4 mt-20">
+      <section className="py-8 px-0.5 md:px-4 mt-20 relative z-10">
         <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto py-[23px]">
           
           {/* Main content */}
@@ -153,7 +173,9 @@ const Corporate = () => {
         </div>
       </section>
       {/* <Footer /> */}
-    </div>;
+    </div>
+  );
 };
 
 export default Corporate;
+
