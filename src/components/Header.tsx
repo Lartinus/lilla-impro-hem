@@ -14,13 +14,13 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary backdrop-blur-md border-b border-theatre-light/20">
       <div className="container mx-auto px-6">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-14">
           <div className="flex items-center">
             <Link to="/" className="flex items-center min-w-0">
               <img 
                 src="/lovable-uploads/ac906279-978d-4e9c-b9a1-eb3a90b48aef.png" 
                 alt="Lilla Improteatern" 
-                className="h-16 w-auto max-w-none flex-shrink-0"
+                className="h-10 w-auto max-w-none flex-shrink-0"
               />
             </Link>
           </div>
