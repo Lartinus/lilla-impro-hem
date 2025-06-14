@@ -39,7 +39,9 @@ const Corporate = () => {
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
   const boxOffset = Math.min(scrollY, parallaxHeight - 64);
 
-  // Låt contentboxen alltid ligga i toppen, och låt hero-bilden flyta bakom, ej bygga ut sidans höjd!
+  // Nytt! Låt boxen börja t.ex. 60% ner i parallaxbilden (så bilden syns först)
+  const boxTopMargin = Math.round(parallaxHeight * 0.62);
+
   return (
     <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative min-h-screen overflow-x-hidden">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
@@ -61,8 +63,11 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* Innehållsrutan placeras direkt under header, ingen marginTop eller overlap! */}
-      <main className="relative z-10 flex justify-center pt-10 pb-0">
+      {/* Innehållsrutan placeras en bit ner, så bilden syns först */}
+      <main
+        className="relative z-10 flex justify-center pb-0"
+        style={{ marginTop: boxTopMargin }}
+      >
         <CorporateContentBox boxOffset={boxOffset} />
       </main>
       {/* Inget Footer! */}
@@ -71,7 +76,6 @@ const Corporate = () => {
           height: auto !important;
           min-height: 0 !important;
         }
-        /* Ingen onödig min-h på wrapper eller main */
         @media (min-width: 768px) {
           .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
             height: ${PARALLAX_HEIGHT_MD}px !important;
@@ -92,4 +96,3 @@ const Corporate = () => {
 };
 
 export default Corporate;
-
