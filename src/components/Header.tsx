@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -21,7 +20,7 @@ const Header = () => {
               <img 
                 src="/lovable-uploads/ac906279-978d-4e9c-b9a1-eb3a90b48aef.png" 
                 alt="Lilla Improteatern" 
-                className="h-16 w-40 max-w-none flex-shrink-0"
+                className="h-16 w-auto max-w-none flex-shrink-0"
               />
             </Link>
           </div>
@@ -127,4 +126,3 @@ const Header = () => {
 };
 
 export default Header;
-
