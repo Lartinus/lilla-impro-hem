@@ -17,16 +17,17 @@ const Header = () => {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex items-center min-w-0">
               <img 
                 src="/lovable-uploads/ac906279-978d-4e9c-b9a1-eb3a90b48aef.png" 
                 alt="Lilla Improteatern" 
-                className="h-16 w-auto"
+                className="h-16 w-40 max-w-none flex-shrink-0"
               />
             </Link>
           </div>
           
-          <nav className="hidden md:flex items-center space-x-12">
+          {/* Desktop navigation menu – hide on smaller screens, hide earlier if not enough space */}
+          <nav className="hidden xl:flex items-center space-x-12">
             <Link 
               to="/" 
               className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
@@ -83,18 +84,21 @@ const Header = () => {
             </Link>
           </nav>
 
+          {/* Hamburger menyn: syns alltid utom på xl (dvs visas från mobil till och med lg) */}
           <Button
             variant="ghost"
             size="sm"
-            className="md:hidden text-theatre-light hover:bg-theatre-light/20"
+            className="flex xl:hidden text-theatre-light hover:bg-theatre-light/20"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label={isMenuOpen ? "Stäng meny" : "Öppna meny"}
           >
             {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </Button>
         </div>
 
+        {/* Mobilmeny & ihop-fälld meny för mindre skärmar */}
         {isMenuOpen && (
-          <div className="md:hidden pb-6 animate-fade-in">
+          <div className="xl:hidden pb-6 animate-fade-in">
             <nav className="flex flex-col space-y-6">
               <Link to="/" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
                 Hem
@@ -123,3 +127,4 @@ const Header = () => {
 };
 
 export default Header;
+
