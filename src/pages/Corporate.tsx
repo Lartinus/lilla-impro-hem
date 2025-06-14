@@ -23,16 +23,10 @@ const Corporate = () => {
   const [contentHeight, setContentHeight] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
-  // UPD: Håll koll på window height för att räkna max scroll
-  const [windowHeight, setWindowHeight] = useState<number>(typeof window !== 'undefined' ? window.innerHeight : 0);
-
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    // Update parallax height on resize
     const handleResize = () => {
       setParallaxHeight(getParallaxHeights());
-      setWindowHeight(window.innerHeight);
     };
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -46,30 +40,23 @@ const Corporate = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Mät höjden på contentlådan + hero
   useEffect(() => {
+    // Mät höjden på contentlådan + hero
     const updateSectionHeight = () => {
-      if (sectionRef.current) {
-        setContentHeight(sectionRef.current.offsetHeight);
-      }
+      if (sectionRef.current) setContentHeight(sectionRef.current.offsetHeight);
     };
     updateSectionHeight();
     window.addEventListener("resize", updateSectionHeight);
     return () => window.removeEventListener("resize", updateSectionHeight);
   }, []);
 
-  // 1. PARALLAX OFFSETS
-  // Vi låter bild åka uppåt men långsammare. När vi har scrollat x% av rutan (t.ex. 0.6), så slutar vi animera bakgrunden.
-  const maxImageOffset = parallaxHeight * 0.6; // efter ca 60% av hero är bilden borta
-  const maxBoxOffset = (contentHeight ?? 0) - parallaxHeight + 40; // box bör aldrig lämna sidan
-
-  // Dynamisk clamping
+  // Parallax Offsets (bildens offset har kvar sin animering)
+  const maxImageOffset = parallaxHeight * 0.6;
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
-  const boxOffset = Math.min(scrollY * PARALLAX_BOX_FACTOR, maxBoxOffset);
 
-  // Content boxen ska aldrig gå under toppen av bilden
-  const minMarginTop = parallaxHeight - 70;
-  const marginTop = Math.max(minMarginTop - boxOffset, 40);
+  // Förenklad marginTop - se till att boxen hamnar snyggt just över hero-bildens slut
+  // Ingen dynamik: bara ett lagom snyggt overlap!
+  const marginTop = parallaxHeight - 70;
 
   return (
     <div 
@@ -86,7 +73,6 @@ const Corporate = () => {
           transform: `translateY(-${imageOffset}px)`,
           transition: "height 0.3s",
           overflow: 'hidden',
-          // För mobil: "tona ut" bilden i botten om imageOffset >= maxImageOffset
           maskImage: imageOffset >= maxImageOffset ? 'linear-gradient(to bottom, black 75%, transparent 100%)' : undefined
         }}
         aria-hidden="true"
@@ -101,14 +87,13 @@ const Corporate = () => {
             display: 'block',
             margin: 0,
             padding: 0,
-            filter: 'brightness(0.99)', // lite mörk overlay men ljusare än innan
+            filter: 'brightness(0.99)',
             willChange: 'transform',
             userSelect: 'none',
             transition: 'filter 0.2s'
           }}
           draggable={false}
         />
-        {/* Transparent overlay över, mindre mörk */}
         <div className="absolute inset-0 pointer-events-none" style={{background: "rgba(0,0,0,0.10)" }} />
       </div>
 
@@ -117,7 +102,7 @@ const Corporate = () => {
         ref={sectionRef}
         className="relative z-10 transition-transform"
         style={{
-          marginTop: marginTop,
+          marginTop,
           willChange: "transform"
         }}
       >
@@ -128,7 +113,7 @@ const Corporate = () => {
             transition: 'box-shadow 0.4s, transform 0.3s cubic-bezier(.22,1.04,.79,1)',
             backdropFilter: 'blur(0.5px)',
             background: 'rgba(255,255,255,0.97)',
-            transform: `translateY(-${boxOffset}px)`,
+            // Vi drar INTE ned boxen längre med transform: translateY(-boxOffset)
             willChange: "transform"
           }}
         >
