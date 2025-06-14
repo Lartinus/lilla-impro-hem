@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
@@ -19,12 +20,12 @@ const Corporate = () => {
         <img
           src="/lovable-uploads/9e2e2703-327c-416d-8e04-082ee11225ea.png"
           alt=""
-          className="w-full h-[220px] md:h-[350px] lg:h-[430px] object-cover object-center"
+          className="w-full h-[320px] md:h-[450px] lg:h-[560px] object-cover object-center"
           style={{
             display: 'block',
             margin: 0,
             padding: 0,
-            // Justera höjden för hero-upplevelse, responsivt.
+            // Ökad höjd för hero-upplevelse, responsivt.
           }}
           draggable={false}
         />
@@ -169,3 +170,4 @@ const Corporate = () => {
 };
 
 export default Corporate;
+
