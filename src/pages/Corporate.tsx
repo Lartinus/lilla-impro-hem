@@ -43,10 +43,10 @@ const Corporate = () => {
   const overlapStart = Math.round(parallaxHeight * 0.62);
 
   return (
-    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative min-h-screen overflow-x-hidden">
+    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      {/* Parallaxen ligger absolut, täcker toppen */}
+      {/* Parallaxen ligger absolut överst */}
       <div
         className="pointer-events-none select-none absolute top-0 left-0 w-full z-0"
         style={{
@@ -63,13 +63,13 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* Wrapper med padding-top – så börjar boxen längre ner på sidan */}
-      <div style={{ paddingTop: overlapStart }}>
-        <main className="relative z-10 flex justify-center pb-0">
+      {/* Flex-container: boxen placeras en bit ner, INTE padding på wrappern utan margin på själva boxen */}
+      <main className="relative z-10 flex justify-center pb-0" style={{ minHeight: `calc(100vh - 56px)` }}>
+        <div style={{ marginTop: overlapStart, width: '100%' }}>
           <CorporateContentBox boxOffset={boxOffset} />
-        </main>
-      </div>
-      {/* Inget Footer! */}
+        </div>
+      </main>
+      {/* Ingen Footer */}
       <style>{`
         html, body {
           height: auto !important;
@@ -95,3 +95,4 @@ const Corporate = () => {
 };
 
 export default Corporate;
+
