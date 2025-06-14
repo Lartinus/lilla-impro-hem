@@ -74,29 +74,22 @@ const Corporate = () => {
   // 2. Beräkna exakt höjd - endast baserat på vart innehållet faktiskt slutar
   const actualPageHeight = contentHeight ? marginTop + contentHeight : windowHeight;
 
-  // 3. Sätt body height för att matcha exakt
+  // 3. Ta bort body height kontroll som blockerar scrolling
   useEffect(() => {
-    if (contentHeight) {
-      const exactHeight = marginTop + contentHeight;
-      document.body.style.height = `${exactHeight}px`;
-      document.body.style.overflow = 'hidden';
-      console.log('Setting body height to:', exactHeight, 'marginTop:', marginTop, 'contentHeight:', contentHeight);
-    }
+    // Återställ body stil för att tillåta scrolling
+    document.body.style.height = '';
+    document.body.style.overflow = '';
+    
     return () => {
       // Återställ vid unmount
       document.body.style.height = '';
       document.body.style.overflow = '';
     };
-  }, [contentHeight, marginTop]);
+  }, []);
 
   return (
     <div 
-      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative"
-      style={{ 
-        height: `${actualPageHeight}px`,
-        overflow: 'hidden',
-        position: 'relative'
-      }}
+      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative min-h-screen"
     >
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
