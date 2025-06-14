@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getStrapiImageUrl } from '@/utils/strapiHelpers';
@@ -24,12 +23,10 @@ const OptimizedImage = ({
   // Memoize the image URL calculation
   const optimizedSrc = useCallback(() => {
     if (!src) return null;
-    
-    // If it's already a full URL, use it directly
-    if (src.startsWith('http')) {
+    // If it's already a full URL or a local absolute path, use it directly
+    if (src.startsWith('http') || src.startsWith('/')) {
       return src;
     }
-    
     // Otherwise, treat it as Strapi data and process it
     return getStrapiImageUrl(src, undefined, preferredSize);
   }, [src, preferredSize]);
