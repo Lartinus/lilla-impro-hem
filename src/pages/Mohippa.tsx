@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PrivateInquiryForm from '@/components/PrivateInquiryForm';
@@ -8,29 +7,25 @@ import { ArrowRight, Loader } from 'lucide-react';
 import { usePrivateParty } from '@/hooks/useStrapi';
 import { formatCourseMainInfo } from '@/utils/strapiHelpers';
 import { convertMarkdownToHtml, convertMarkdownToHtmlForRedBox } from '@/utils/markdownHelpers';
-
 const Mohippa = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const { data: privatePartyData, isLoading, error } = usePrivateParty();
+  const {
+    data: privatePartyData,
+    isLoading,
+    error
+  } = usePrivateParty();
   const mainInfo = formatCourseMainInfo(privatePartyData);
-
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex items-center justify-center">
+    return <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi flex items-center justify-center">
         <Loader className="w-8 h-8 animate-spin text-white" />
-      </div>
-    );
+      </div>;
   }
-
   if (error) {
     console.error('Error loading private party data:', error);
   }
-
-  return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+  return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
 
@@ -39,48 +34,33 @@ const Mohippa = () => {
         <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
           
           {/* Render Strapi content if available */}
-          {mainInfo ? (
-            <div className="space-y-6">
+          {mainInfo ? <div className="space-y-6">
               <div className="text-left space-y-6">
-                {mainInfo.info && (
-                  <div
-                    className="space-y-6 text-gray-700 leading-relaxed text-base"
-                    style={{ lineHeight: '1.8' }}
-                    dangerouslySetInnerHTML={{
-                      __html: convertMarkdownToHtml(mainInfo.info),
-                    }}
-                  />
-                )}
+                {mainInfo.info && <div className="space-y-6 text-gray-700 leading-relaxed text-base" style={{
+              lineHeight: '1.8'
+            }} dangerouslySetInnerHTML={{
+              __html: convertMarkdownToHtml(mainInfo.info)
+            }} />}
 
-                {mainInfo.redbox && (
-                  <div className="bg-red-700 p-6 rounded-none relative">
-                    <div
-                      className="text-base leading-relaxed font-light"
-                      style={{ lineHeight: '1.8' }}
-                      dangerouslySetInnerHTML={{
-                        __html: convertMarkdownToHtmlForRedBox(mainInfo.redbox),
-                      }}
-                    />
-                  </div>
-                )}
+                {mainInfo.redbox && <div className="bg-red-700 p-6 rounded-none relative">
+                    <div className="text-base leading-relaxed font-light" style={{
+                lineHeight: '1.8'
+              }} dangerouslySetInnerHTML={{
+                __html: convertMarkdownToHtmlForRedBox(mainInfo.redbox)
+              }} />
+                  </div>}
 
-                {mainInfo.infoAfterRedbox && (
-                  <div
-                    className="space-y-6 text-gray-700 leading-relaxed text-base"
-                    style={{ lineHeight: '1.8' }}
-                    dangerouslySetInnerHTML={{
-                      __html: convertMarkdownToHtml(mainInfo.infoAfterRedbox),
-                    }}
-                  />
-                )}
+                {mainInfo.infoAfterRedbox && <div className="space-y-6 text-gray-700 leading-relaxed text-base" style={{
+              lineHeight: '1.8'
+            }} dangerouslySetInnerHTML={{
+              __html: convertMarkdownToHtml(mainInfo.infoAfterRedbox)
+            }} />}
               </div>
-            </div>
-          ) : (
-            /* Fallback content */
-            <div>
+            </div> : (/* Fallback content */
+        <div>
               {/* Main heading */}
               <div className="mb-8">
-                <h3 className="text-theatre-secondary font-medium mb-6">
+                <h3 className="text-theatre-secondary mb-6 font-medium text-2xl">
                   Boka en improworkshop eller en skräddarsydd show till din fest, möhippa, svensexa, födelsedag eller annan tillställning.
                 </h3>
                 <p className="text-black text-base leading-relaxed">
@@ -142,8 +122,7 @@ const Mohippa = () => {
                   </li>
                 </ul>
               </div>
-            </div>
-          )}
+            </div>)}
 
           {/* Contact Form - always at the bottom within same white section */}
           <div className="mt-8 pt-6 border-t border-gray-200">
@@ -155,8 +134,6 @@ const Mohippa = () => {
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Mohippa;
