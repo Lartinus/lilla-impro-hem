@@ -1,26 +1,26 @@
-import { useEffect } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import PerformersSection from '@/components/PerformersSection';
+
+import { useEffect } from "react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const performers = [
   {
     id: 1,
-    name: "Emma Olofsson",
-    bio: "Improvisatör, pedagog och kreativ ledare med fokus på värme och inkludering. Har arbetat med impro i över 10 år.",
-    image: "/lovable-uploads/192352b9-7e67-447a-aa36-9b17372a4155.png",
+    name: "Hjalmar Hardestam",
+    bio: `Hjalmar har undervisat på flera improvisationsscener runtom i Sverige. Han är baserad i Stockholm men har tidigare undervisat på Improverket och Gbgimpro i Göteborg och på Dramakverket i Karlstad. Han driver även Göteborg Improv Comedy Club samt podcasten Impropodden. Hjalmar har spelat på flera europeiska festivaler — bland annat i Amsterdam, Edinburgh och Nottingham — och är utbildad vid Improv Olympic och The Annoyance i Chicago samt The Free Association i London.`,
+    image: "/lovable-uploads/7e10e177-5707-44b1-bbf3-e5f9507d3054.png"
   },
   {
     id: 2,
-    name: "Jonas Åkesson",
-    bio: "Flerfaldigt prisbelönt inom svensk improvisation och rutinerad kursledare. Alltid med glimten i ögat.",
-    image: "/lovable-uploads/4ab70355-63ab-4d68-bfd3-3a2659550888.png",
+    name: "Ellen Bobeck",
+    bio: `Ellen har arbetat med improvisationsteater sedan 2018, både som skådespelare och pedagog. Hon undervisar på flera olika skolor och teatrar i Stockholm, och har stått på scen på festivaler i bland annat Berlin, Oslo, Dublin och Edinburgh. Förutom Spinoff spelar hon även med teon Britta, och är konstnärlig ledare för musikensemblen Floden STHLM — där hon kombinerar musikalisk känsla med improviserat berättande.`,
+    image: "/lovable-uploads/8137df73-dcb4-4e44-9fb8-b0d0317e9bc4.png",
   },
   {
     id: 3,
-    name: "Fatima El Hajj",
-    bio: "Lyfter alltid gruppen och hittar nya vinklar i varje scen. Älskad av elever för sitt pedagogiska lugn.",
-    image: "/lovable-uploads/1287edaf-8412-4d2b-b6e4-b6fb8426185d.png",
+    name: "David Rosenqvist",
+    bio: `David började med improvisationsteater 2013 och har sedan dess varit en aktiv del av improscenerna i Karlstad, Örebro och Stockholm. Han var med och startade Dramakverket 2014 och senare Spinoff 2021. I dag spelar han både med Spinoff, Dramakverket och Floden STHLM. Han gästar 2025 även Stockholm Improvisationsteater och Push Play Theatre. Till vardags jobbar David som producent inom event och teater – med ett öga för struktur, sammanhang och att få saker att hända.`,
+    image: "/lovable-uploads/c4cb950f-fa49-4fc8-ad5e-96402ad423f2.png"
   }
 ];
 
@@ -33,30 +33,45 @@ const About = () => {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-
-      {/* Innehåll */}
       <section className="py-8 px-0.5 md:px-4 mt-20 flex-1">
-        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
-          
-          {/* Om oss-info */}
-          <div className="space-y-6 text-gray-700 leading-relaxed text-base" style={{ lineHeight: '1.3' }}>
-            <h2 className="text-2xl text-theatre-secondary font-bold mb-5">Om Lilla Improteatern</h2>
-            <p>
-              Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy. Vi bygger med kvalitet, värme och ett stort fokus på att göra improvisatörerna bättre och publiken gladare.
+        {/* Röd ram kring allt innehåll */}
+        <div className="space-y-10 border-4 border-[#802735] p-6 md:p-8 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
+          {/* Titel och introduktion */}
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+              Vi vill skapa ett hem för Improv Comedy i Stockholm<br />
+              <span className="font-normal text-lg md:text-xl text-gray-900">
+                där alla kan växa, lära och skratta tillsammans.
+              </span>
+            </h2>
+            <p className="text-black text-base md:text-lg mt-4 mb-3">
+              Lilla Improteatern grundades med en enkel idé: att Improv Comedy ska vara tillgängligt för alla som vill lära sig, oavsett bakgrund eller tidigare erfarenhet. Vi tror på att humor är något som går att träna och att de bästa komiska scenerna skapas när vi arbetar tillsammans.
             </p>
-            <p>
-              Vi tror att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. Här får du utvecklas som improvisatör i trygga miljöer och ta del av roliga, smarta och lekfulla föreställningar.
-            </p>
-            <p>
-              Våra ledare och medlemmar brinner för improvisationsteater och vill skapa en kultur där du som elev, improvisatör och publik blir en del av något större.
+            <p className="text-black text-base md:text-lg mb-0">
+              Genom våra kurser, föreställningar och workshops bygger vi en community där kreativitet, generositet och glädje står i centrum. Vi tar improvisationsteater på allvar — både som konstform och som verktyg för personlig utveckling.
             </p>
           </div>
-
-          {/* Personerna bakom */}
-          <PerformersSection performers={performers} />
+          {/* Medverkande */}
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 mb-6">Medverkande</h3>
+            <div className="space-y-8">
+              {performers.map(performer => (
+                <div key={performer.id} className="flex flex-col md:flex-row md:space-x-5 items-start border border-[#802735] p-3 md:p-4 rounded-lg bg-white">
+                  <img
+                    src={performer.image}
+                    alt={performer.name}
+                    className="w-28 h-28 md:w-32 md:h-32 object-cover rounded-md mb-3 md:mb-0 flex-shrink-0 border border-gray-300"
+                  />
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-1">{performer.name}</h4>
+                    <p className="text-black text-base">{performer.bio}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
-
       <Footer />
     </div>
   );
