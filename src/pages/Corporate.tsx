@@ -44,11 +44,11 @@ const Corporate = () => {
   if (parallaxHeight === PARALLAX_HEIGHT_LG) overlap = -120;
 
   return (
-    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative min-h-0">
-      {/* min-h-0 ser till att ingen onödig höjd reserveras */}
+    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-hidden pb-0">
+      {/* min-h-0 och min-h-screen BORTTAGET, overflow-hidden TILLAGT */}
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      <div className="relative">
+      <div className="relative overflow-hidden">
         <CorporateHero
           parallaxHeight={parallaxHeight}
           imageOffset={imageOffset}
@@ -60,6 +60,7 @@ const Corporate = () => {
             willChange: "transform",
             marginTop: overlap,
             marginBottom: 0,
+            paddingBottom: 0,
           }}
         >
           <CorporateContentBox boxOffset={boxOffset} />
@@ -83,3 +84,4 @@ const Corporate = () => {
 };
 
 export default Corporate;
+
