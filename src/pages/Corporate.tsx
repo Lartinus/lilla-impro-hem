@@ -72,24 +72,23 @@ const Corporate = () => {
   const minMarginTop = parallaxHeight - 70;
   const marginTop = Math.max(minMarginTop - boxOffset, 40);
 
-  // 2. Beräkna total höjd för hela sidan - exakt beräkning för att eliminera extra utrymme
+  // 2. Beräkna total höjd för hela sidan - precis efter innehållet
   useEffect(() => {
     if (contentHeight) {
-      // Beräkna exakt höjd baserat på innehållets faktiska position
+      // Beräkna exakt var innehållet slutar
       const contentBoxTop = parallaxHeight - 70; // boxens startposition
       const actualContentEnd = contentBoxTop + contentHeight - boxOffset; // exakt slut på innehåll
-      const totalRequiredHeight = Math.max(actualContentEnd, windowHeight); // ingen extra padding
+      const totalRequiredHeight = actualContentEnd + 20; // bara 20px margin för säkerhet
       
       setContainerHeight(totalRequiredHeight);
     }
-  }, [contentHeight, parallaxHeight, boxOffset, windowHeight]);
+  }, [contentHeight, parallaxHeight, boxOffset]);
 
   return (
     <div 
       className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative"
       style={{ 
-        height: containerHeight ? `${containerHeight}px` : 'auto',
-        minHeight: '100vh',
+        height: containerHeight ? `${containerHeight}px` : '100vh',
         overflow: 'hidden' // Förhindra extra scrollning
       }}
     >
