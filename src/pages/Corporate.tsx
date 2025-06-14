@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
@@ -95,9 +96,10 @@ const Corporate = () => {
 
   return (
     <div 
-      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-hidden"
+      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative"
       style={{ 
-        height: containerHeight ? `${containerHeight}px` : '100vh'
+        height: containerHeight ? `${containerHeight}px` : '100vh',
+        overflow: 'hidden'
       }}
     >
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
