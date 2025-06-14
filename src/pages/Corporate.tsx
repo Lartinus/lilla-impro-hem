@@ -1,6 +1,5 @@
 
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import CorporateHero from '@/components/CorporateHero';
 import CorporateContentBox from '@/components/CorporateContentBox';
 import { useEffect, useState } from 'react';
@@ -8,7 +7,6 @@ import { useEffect, useState } from 'react';
 const PARALLAX_HEIGHT_MOBILE = 400;
 const PARALLAX_HEIGHT_MD = 620;
 const PARALLAX_HEIGHT_LG = 750;
-
 const PARALLAX_IMAGE_FACTOR = 0.4;
 
 const getParallaxHeights = () => {
@@ -46,8 +44,8 @@ const Corporate = () => {
   if (parallaxHeight === PARALLAX_HEIGHT_LG) overlap = -120;
 
   return (
-    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative">
-      {/* min-h-screen är borttaget från klasslistan ovan */}
+    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative min-h-0">
+      {/* min-h-0 ser till att ingen onödig höjd reserveras */}
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       <div className="relative">
@@ -61,12 +59,13 @@ const Corporate = () => {
           style={{
             willChange: "transform",
             marginTop: overlap,
+            marginBottom: 0,
           }}
         >
           <CorporateContentBox boxOffset={boxOffset} />
         </section>
       </div>
-      <Footer />
+      {/* Footer tas bort på denna sida */}
       <style>{`
         @media (min-width: 768px) {
           .w-full.z-0.select-none.pointer-events-none.relative {
@@ -84,4 +83,3 @@ const Corporate = () => {
 };
 
 export default Corporate;
-
