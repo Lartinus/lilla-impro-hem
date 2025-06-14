@@ -72,17 +72,16 @@ const Corporate = () => {
   const minMarginTop = parallaxHeight - 70;
   const marginTop = Math.max(minMarginTop - boxOffset, 40);
 
-  // 2. Beräkna total höjd för hela sidan - precis efter innehållet
+  // 2. Beräkna total höjd för hela sidan - exakt beräkning
   useEffect(() => {
     if (contentHeight) {
-      // Beräkna exakt var innehållet slutar
-      const contentBoxTop = parallaxHeight - 70; // boxens startposition
-      const actualContentEnd = contentBoxTop + contentHeight - boxOffset; // exakt slut på innehåll
-      const totalRequiredHeight = actualContentEnd + 20; // bara 20px margin för säkerhet
+      // Beräkna exakt var innehållet slutar med alla transformationer
+      const contentBoxStartTop = marginTop; // var boxen faktiskt börjar
+      const totalContentHeight = contentBoxStartTop + contentHeight; // total höjd vi behöver
       
-      setContainerHeight(totalRequiredHeight);
+      setContainerHeight(totalContentHeight);
     }
-  }, [contentHeight, parallaxHeight, boxOffset]);
+  }, [contentHeight, marginTop]);
 
   return (
     <div 
