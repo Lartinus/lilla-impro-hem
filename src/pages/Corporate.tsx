@@ -21,6 +21,7 @@ const Corporate = () => {
   const [scrollY, setScrollY] = useState(0);
   const [parallaxHeight, setParallaxHeight] = useState(PARALLAX_HEIGHT_MOBILE);
   const [contentHeight, setContentHeight] = useState<number | null>(null);
+  const [containerHeight, setContainerHeight] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   // UPD: Håll koll på window height för att räkna max scroll
@@ -71,25 +72,33 @@ const Corporate = () => {
   const minMarginTop = parallaxHeight - 70;
   const marginTop = Math.max(minMarginTop - boxOffset, 40);
 
-  // 2. Beräkna exakt höjd - endast baserat på vart innehållet faktiskt slutar
-  const actualPageHeight = contentHeight ? marginTop + contentHeight : windowHeight;
-
-  // 3. Ta bort body height kontroll som blockerar scrolling
+  // 2. Beräkna total höjd för hela sidan
   useEffect(() => {
-    // Återställ body stil för att tillåta scrolling
-    document.body.style.height = '';
-    document.body.style.overflow = '';
-    
+    if (contentHeight) {
+      // Beräkna exakt var innehållsboxen slutar
+      const contentBoxTop = parallaxHeight - 70; // boxens startposition
+      const totalRequiredHeight = contentBoxTop + contentHeight;
+      
+      // Sätt både container och body height
+      setContainerHeight(totalRequiredHeight);
+      document.body.style.height = `${totalRequiredHeight}px`;
+      document.body.style.overflowY = 'auto';
+      document.body.style.overflowX = 'hidden';
+    }
     return () => {
       // Återställ vid unmount
       document.body.style.height = '';
-      document.body.style.overflow = '';
+      document.body.style.overflowY = '';
+      document.body.style.overflowX = '';
     };
-  }, []);
+  }, [contentHeight, parallaxHeight]);
 
   return (
     <div 
-      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative min-h-screen"
+      className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-hidden"
+      style={{ 
+        height: containerHeight ? `${containerHeight}px` : '100vh'
+      }}
     >
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
