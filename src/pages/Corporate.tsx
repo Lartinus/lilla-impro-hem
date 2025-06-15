@@ -2,6 +2,7 @@
 import Header from '@/components/Header';
 import CorporateHero from '@/components/CorporateHero';
 import CorporateContentBox from '@/components/CorporateContentBox';
+import Footer from '@/components/Footer';
 import { useEffect, useState } from 'react';
 
 const PARALLAX_HEIGHT_MOBILE = 400;
@@ -73,7 +74,7 @@ const Corporate = () => {
         />
       </div>
       <main
-        className="z-10 w-full relative overflow-x-hidden overflow-y-visible bg-transparent"
+        className="z-10 w-full relative overflow-x-hidden overflow-y-visible bg-transparent pb-16 md:pb-28"
         style={{
           boxSizing: "border-box",
           margin: 0,
@@ -83,6 +84,7 @@ const Corporate = () => {
       >
         <CorporateContentBox boxOffset={boxOffset} />
       </main>
+      <Footer />
       <style>{`
         html, body, #root {
           box-sizing: border-box !important;
