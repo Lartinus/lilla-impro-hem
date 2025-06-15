@@ -39,17 +39,19 @@ const Corporate = () => {
   const overlapStart = Math.round(parallaxHeight * 0.44);
 
   return (
-    <div 
-      className="font-satoshi relative overflow-x-hidden overflow-y-visible"
+    <div
+      className="font-satoshi relative overflow-x-hidden overflow-y-visible min-h-[100dvh] bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary"
       style={{
         boxSizing: "border-box",
         padding: 0,
         margin: 0,
+        width: '100vw',
+        minHeight: "100dvh",
       }}
     >
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      {/* Hero - absolut ovanför, påverkar inte sidans höjd */}
+      {/* Hero - absolut placerad, flex direkt under header */}
       <div
         className="pointer-events-none select-none absolute top-0 left-0 w-full z-0"
         style={{
@@ -67,9 +69,9 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* MAIN med min-h-screen */}
-      <main 
-        className="z-10 w-full relative bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary overflow-x-hidden overflow-y-visible min-h-screen"
+      {/* Main börjar precis efter hero, tar bort min-h-screen */}
+      <main
+        className="z-10 w-full relative overflow-x-hidden overflow-y-visible bg-transparent"
         style={{
           boxSizing: "border-box",
           margin: 0,
@@ -78,19 +80,17 @@ const Corporate = () => {
         }}
       >
         <CorporateContentBox boxOffset={boxOffset} />
-        {/* DEBUG: border längst ner för att se page-end */}
         {/* <div style={{borderTop: '3px dashed red'}} /> */}
       </main>
       <style>{`
         html, body, #root {
           box-sizing: border-box !important;
-          height: auto !important;
+          height: 100% !important;
           min-height: 0 !important;
           max-height: none !important;
           padding: 0 !important;
           margin: 0 !important;
           overflow-x: hidden !important;
-          overflow-y: auto !important;
           background: none !important;
         }
         .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
@@ -117,3 +117,4 @@ const Corporate = () => {
 };
 
 export default Corporate;
+
