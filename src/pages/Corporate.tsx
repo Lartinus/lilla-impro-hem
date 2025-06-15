@@ -39,21 +39,21 @@ const Corporate = () => {
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
   const boxOffset = Math.min(scrollY, parallaxHeight - 64);
 
-  // Content box start, e.g. 62% into the hero
   const overlapStart = Math.round(parallaxHeight * 0.62);
 
   return (
     <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      {/* Hero-bild ligger absolut och påverkar aldrig content */}
+      {/* Hero-bild absolut placerad */}
       <div
         className="pointer-events-none select-none absolute top-0 left-0 w-full z-0"
         style={{
           height: parallaxHeight,
-          overflow: 'hidden',
           minHeight: parallaxHeight,
-          maxHeight: parallaxHeight
+          maxHeight: parallaxHeight,
+          overflow: 'hidden',
+          pointerEvents: 'none'
         }}
         aria-hidden="true"
       >
@@ -63,33 +63,46 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* Boxen bestämmer sidans höjd */}
-      <main className="relative z-10 flex justify-center pb-0" style={{ paddingBottom: 0, margin: 0 }}>
+      {/* Endast EN wrapper - blocklayout! */}
+      <main className="relative z-10" style={{ padding: 0, margin: 0 }}>
         <div
           style={{
             marginTop: overlapStart,
             width: '100%',
-            paddingBottom: 0,
-            marginBottom: 0
-            // OBS! Ingen minHeight/maxHeight här!
+            padding: 0,
+            margin: 0
           }}
         >
           <CorporateContentBox boxOffset={boxOffset} />
         </div>
       </main>
-      {/* Dödar absolut all extra-minHeight på html/body från innan */}
+      {/* CSS-reset som tvingar bort ALL höjd från html, body, root, main */}
       <style>{`
         html, body {
-          height: unset !important;
-          min-height: unset !important;
+          overflow-x: hidden !important;
+          overflow-y: auto !important;
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: none !important;
           padding-bottom: 0 !important;
           margin-bottom: 0 !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          box-sizing: border-box !important;
         }
         #root, body > div, main {
           min-height: 0 !important;
-          height: unset !important;
-          padding-bottom: 0 !important;
-          margin-bottom: 0 !important;
+          height: auto !important;
+          max-height: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        /* Hero ska aldrig påverka höjd */
+        .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
+          position: absolute !important;
+          top: 0 !important; left: 0 !important;
+          z-index: 0 !important;
+          width: 100vw !important;
         }
         @media (min-width: 768px) {
           .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
