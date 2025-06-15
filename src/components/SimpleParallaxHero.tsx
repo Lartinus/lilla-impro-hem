@@ -10,7 +10,8 @@ interface SimpleParallaxHeroProps {
 const PARALLAX_HEIGHT_MOBILE = 300;
 const PARALLAX_HEIGHT_MD = 440;
 const PARALLAX_HEIGHT_LG = 620;
-const PARALLAX_IMAGE_FACTOR = 0.32; // how fast the bg moves
+// Justerat här ↓
+const PARALLAX_IMAGE_FACTOR = 0.16; // how fast the bg moves, was 0.32
 
 const getParallaxHeights = () => {
   if (window.innerWidth >= 1024) return PARALLAX_HEIGHT_LG;
