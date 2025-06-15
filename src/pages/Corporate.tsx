@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import CorporateHero from '@/components/CorporateHero';
 import CorporateContentBox from '@/components/CorporateContentBox';
@@ -34,12 +35,16 @@ const Corporate = () => {
 
   const maxImageOffset = parallaxHeight * 0.6;
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
-  const boxOffset = Math.max(0, Math.min(scrollY, parallaxHeight * 0.45));
-  const overlapStart = Math.round(parallaxHeight * 0.60);
+
+  // Contentboxen ska börja längre ner (men fortfarande röra sig uppåt vid scroll)
+  const overlapStart = Math.round(parallaxHeight * 0.60); // t.ex. 60% nedanför hero
+  // Parallax för boxen – behåller att boxen börjar längre ner men ändå rör sig med scroll
+  const boxParallaxMax = parallaxHeight * 0.45; // hur mycket boxen kan åka uppåt
+  const boxOffset = Math.max(0, Math.min(scrollY, boxParallaxMax));
 
   return (
     <div
-      className="font-satoshi relative overflow-x-hidden overflow-y-visible min-h-[100dvh] bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary"
+      className="font-satoshi relative overflow-x-hidden overflow-y-visible bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary"
       style={{
         boxSizing: "border-box",
         padding: 0,
@@ -50,7 +55,6 @@ const Corporate = () => {
     >
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      {/* Hero - absolut placerad, flex direkt under header */}
       <div
         className="pointer-events-none select-none absolute top-0 left-0 w-full z-0"
         style={{
@@ -68,7 +72,6 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* Main börjar precis efter hero, tar bort min-h-screen */}
       <main
         className="z-10 w-full relative overflow-x-hidden overflow-y-visible bg-transparent"
         style={{
@@ -79,7 +82,6 @@ const Corporate = () => {
         }}
       >
         <CorporateContentBox boxOffset={boxOffset} />
-        {/* <div style={{borderTop: '3px dashed red'}} /> */}
       </main>
       <style>{`
         html, body, #root {
@@ -116,3 +118,4 @@ const Corporate = () => {
 };
 
 export default Corporate;
+
