@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import CorporateHero from '@/components/CorporateHero';
 import CorporateContentBox from '@/components/CorporateContentBox';
@@ -36,7 +35,7 @@ const Corporate = () => {
   const maxImageOffset = parallaxHeight * 0.6;
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
   const boxOffset = Math.max(0, Math.min(scrollY, parallaxHeight * 0.45));
-  const overlapStart = Math.round(parallaxHeight * 0.44);
+  const overlapStart = Math.round(parallaxHeight * 0.60);
 
   return (
     <div
@@ -117,4 +116,3 @@ const Corporate = () => {
 };
 
 export default Corporate;
-
