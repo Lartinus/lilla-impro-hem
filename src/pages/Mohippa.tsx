@@ -5,27 +5,24 @@ import PrivateInquiryForm from '@/components/PrivateInquiryForm';
 import { ArrowRight } from 'lucide-react';
 import { useEffect } from 'react';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
-
 const Mohippa = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
+  return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       <SimpleParallaxHero imageSrc="/lovable-uploads/1287edaf-8412-4d2b-b6e4-b6fb8426185d.png" />
-      <section className="py-8 px-0.5 md:px-4 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
+      <section className="py-8 px-0.5 md:px-4 flex-1 relative z-10" style={{
+      paddingTop: "220px"
+    }}>
         <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
           
           {/* Huvudinnehåll */}
           <div>
             {/* Rubrik */}
             <div className="mb-8">
-              <h2 className="text-xl font-bold text-black mb-2">
-                Boka en improworkshop eller en skräddarsydd show till din fest, möhippa, svensexa, födelsedag eller annan tillställning.
-              </h2>
+              <h2 className="text-xl font-bold text-black mb-2">Impro för möhippa, svensexa eller festen.</h2>
               <p className="text-black text-base leading-relaxed">
                 Improv Comedy är en perfekt aktivitet för att skapa skratt, gemenskap och minnen. Vi tar med oss det vi älskar med improv comedy – värme, överraskning och lekfullhet – och skapar något som passar just er.
               </p>
@@ -95,7 +92,6 @@ const Mohippa = () => {
         </div>
       </section>
       {/* <Footer /> */}
-    </div>
-  );
+    </div>;
 };
 export default Mohippa;
