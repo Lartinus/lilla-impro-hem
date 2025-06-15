@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import CorporateHero from '@/components/CorporateHero';
 import CorporateContentBox from '@/components/CorporateContentBox';
@@ -38,17 +39,17 @@ const Corporate = () => {
   const overlapStart = Math.round(parallaxHeight * 0.44);
 
   return (
-    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden" 
+    <div 
+      className="font-satoshi relative overflow-x-hidden overflow-y-visible"
       style={{
-        minHeight: "0",
-        height: "auto",
+        boxSizing: "border-box",
         padding: 0,
         margin: 0,
-        boxSizing: "border-box"
-      }}>
+      }}
+    >
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      {/* Hero-bild absolut placerad */}
+      {/* Hero - alltid absolut ovanför, påverkar inte sidans "flow height" */}
       <div
         className="pointer-events-none select-none absolute top-0 left-0 w-full z-0"
         style={{
@@ -56,7 +57,7 @@ const Corporate = () => {
           minHeight: parallaxHeight,
           maxHeight: parallaxHeight,
           overflow: 'hidden',
-          pointerEvents: 'none'
+          pointerEvents: 'none',
         }}
         aria-hidden="true"
       >
@@ -66,20 +67,20 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* Main med paddingen istället för margin */}
+      {/* MAIN wrapper: bakgrund, paddingTop för hero, inget mer */}
       <main 
-        className="relative z-10 w-full"
+        className="z-10 w-full relative bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary overflow-x-hidden overflow-y-visible"
         style={{
+          boxSizing: "border-box",
           margin: 0,
+          padding: 0,
           paddingTop: overlapStart,
-          paddingBottom: 0,
-          minHeight: 0,
-          height: "auto",
         }}
       >
         <CorporateContentBox boxOffset={boxOffset} />
+        {/* DEBUG: liten border längst ner för att kunna se page-end */}
+        {/* <div style={{borderTop: '3px dashed red'}} /> */}
       </main>
-      {/* CSS-reset */}
       <style>{`
         html, body, #root {
           box-sizing: border-box !important;
@@ -90,20 +91,11 @@ const Corporate = () => {
           margin: 0 !important;
           overflow-x: hidden !important;
           overflow-y: auto !important;
+          background: none !important;
         }
-        /* Ensure no tailwind min-h-screen on wrappers */
-        main, #main, .main {
-          min-height: 0 !important;
-          height: auto !important;
-          padding-bottom: 0 !important;
-          margin-bottom: 0 !important;
-        }
-        /* Hero wrapper ska aldrig påverka sidans height */
         .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
           position: absolute !important;
-          top: 0 !important; left: 0 !important;
-          z-index: 0 !important;
-          width: 100vw !important;
+          top: 0 !important; left: 0 !important; z-index: 0 !important; width: 100vw !important;
         }
         @media (min-width: 768px) {
           .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
