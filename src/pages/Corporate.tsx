@@ -37,9 +37,12 @@ const Corporate = () => {
 
   const maxImageOffset = parallaxHeight * 0.6;
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
-  const boxOffset = Math.min(scrollY, parallaxHeight - 64);
 
-  const overlapStart = Math.round(parallaxHeight * 0.62);
+  // Låt boxOffset aldrig bli större än parallaxHeight*0.45, annars trycks den för långt upp.
+  const boxOffset = Math.max(0, Math.min(scrollY, parallaxHeight * 0.45));
+
+  // Justerat overlapStart längre ned för bättre hero-luft (hero syns)
+  const overlapStart = Math.round(parallaxHeight * 0.48);
 
   return (
     <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden">
@@ -63,20 +66,22 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* Endast EN wrapper - blocklayout! */}
+      {/* Wrapper med min-h-screen så "felet" i botten aldrig syns på stor skärm */}
       <main className="relative z-10" style={{ padding: 0, margin: 0 }}>
         <div
+          className="w-full"
           style={{
             marginTop: overlapStart,
             width: '100%',
             padding: 0,
-            margin: 0
+            margin: 0,
+            minHeight: '400px'
           }}
         >
           <CorporateContentBox boxOffset={boxOffset} />
         </div>
       </main>
-      {/* CSS-reset som tvingar bort ALL höjd från html, body, root, main */}
+      {/* CSS-reset, men låt main vara i fred */}
       <style>{`
         html, body {
           overflow-x: hidden !important;
@@ -90,7 +95,7 @@ const Corporate = () => {
           margin: 0 !important;
           box-sizing: border-box !important;
         }
-        #root, body > div, main {
+        #root, body > div {
           min-height: 0 !important;
           height: auto !important;
           max-height: none !important;
@@ -124,4 +129,3 @@ const Corporate = () => {
 };
 
 export default Corporate;
-
