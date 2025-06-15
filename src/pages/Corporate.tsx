@@ -41,8 +41,8 @@ const Corporate = () => {
   // Låt boxOffset aldrig bli större än parallaxHeight*0.45, annars trycks den för långt upp.
   const boxOffset = Math.max(0, Math.min(scrollY, parallaxHeight * 0.45));
 
-  // Justerat overlapStart längre ned för bättre hero-luft (hero syns)
-  const overlapStart = Math.round(parallaxHeight * 0.48);
+  // Placera content lower. 0.48 var för lågt, testa 0.44 för mer luft ovanför.
+  const overlapStart = Math.round(parallaxHeight * 0.44);
 
   return (
     <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden">
@@ -66,7 +66,7 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* Wrapper med min-h-screen så "felet" i botten aldrig syns på stor skärm */}
+      {/* Main wrapper – ingen minHeight eller min-h-screen längre! */}
       <main className="relative z-10" style={{ padding: 0, margin: 0 }}>
         <div
           className="w-full"
@@ -74,8 +74,8 @@ const Corporate = () => {
             marginTop: overlapStart,
             width: '100%',
             padding: 0,
-            margin: 0,
-            minHeight: '400px'
+            margin: 0
+            // Tog bort minHeight helt!
           }}
         >
           <CorporateContentBox boxOffset={boxOffset} />
