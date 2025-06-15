@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import CorporateHero from '@/components/CorporateHero';
 import CorporateContentBox from '@/components/CorporateContentBox';
@@ -39,7 +38,7 @@ const Corporate = () => {
 
   // Contentboxen ska börja längre ner (men fortfarande röra sig uppåt vid scroll)
   const overlapStart = Math.round(parallaxHeight * 0.60); // t.ex. 60% nedanför hero
-  // Parallax för boxen – behåller att boxen börjar längre ner men ändå rör sig med scroll
+  // Parallax för boxen – behåller att boxen börja längre ner men ändå rör sig med scroll
   const boxParallaxMax = parallaxHeight * 0.45; // hur mycket boxen kan åka uppåt
   const boxOffset = Math.max(0, Math.min(scrollY, boxParallaxMax));
 
@@ -84,7 +83,6 @@ const Corporate = () => {
       >
         <CorporateContentBox boxOffset={boxOffset} />
       </main>
-      <Footer />
       <style>{`
         html, body, #root {
           box-sizing: border-box !important;
@@ -120,4 +118,3 @@ const Corporate = () => {
 };
 
 export default Corporate;
-
