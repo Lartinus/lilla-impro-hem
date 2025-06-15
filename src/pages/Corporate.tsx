@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import CorporateHero from '@/components/CorporateHero';
 import CorporateContentBox from '@/components/CorporateContentBox';
@@ -21,9 +20,7 @@ const Corporate = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const handleResize = () => {
-      setParallaxHeight(getParallaxHeights());
-    };
+    const handleResize = () => setParallaxHeight(getParallaxHeights());
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -37,15 +34,18 @@ const Corporate = () => {
 
   const maxImageOffset = parallaxHeight * 0.6;
   const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
-
-  // Låt boxOffset aldrig bli större än parallaxHeight*0.45, annars trycks den för långt upp.
   const boxOffset = Math.max(0, Math.min(scrollY, parallaxHeight * 0.45));
-
-  // Placera content lower. 0.48 var för lågt, testa 0.44 för mer luft ovanför.
   const overlapStart = Math.round(parallaxHeight * 0.44);
 
   return (
-    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden">
+    <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden" 
+      style={{
+        minHeight: "0",
+        height: "auto",
+        padding: 0,
+        margin: 0,
+        boxSizing: "border-box"
+      }}>
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       {/* Hero-bild absolut placerad */}
@@ -66,43 +66,39 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* Main wrapper – ingen minHeight eller min-h-screen längre! */}
-      <main className="relative z-10" style={{ padding: 0, margin: 0 }}>
-        <div
-          className="w-full"
-          style={{
-            marginTop: overlapStart,
-            width: '100%',
-            padding: 0,
-            margin: 0
-            // Tog bort minHeight helt!
-          }}
-        >
-          <CorporateContentBox boxOffset={boxOffset} />
-        </div>
+      {/* Main med paddingen istället för margin */}
+      <main 
+        className="relative z-10 w-full"
+        style={{
+          margin: 0,
+          paddingTop: overlapStart,
+          paddingBottom: 0,
+          minHeight: 0,
+          height: "auto",
+        }}
+      >
+        <CorporateContentBox boxOffset={boxOffset} />
       </main>
-      {/* CSS-reset, men låt main vara i fred */}
+      {/* CSS-reset */}
       <style>{`
-        html, body {
+        html, body, #root {
+          box-sizing: border-box !important;
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          padding: 0 !important;
+          margin: 0 !important;
           overflow-x: hidden !important;
           overflow-y: auto !important;
-          height: auto !important;
+        }
+        /* Ensure no tailwind min-h-screen on wrappers */
+        main, #main, .main {
           min-height: 0 !important;
-          max-height: none !important;
+          height: auto !important;
           padding-bottom: 0 !important;
           margin-bottom: 0 !important;
-          padding: 0 !important;
-          margin: 0 !important;
-          box-sizing: border-box !important;
         }
-        #root, body > div {
-          min-height: 0 !important;
-          height: auto !important;
-          max-height: none !important;
-          padding: 0 !important;
-          margin: 0 !important;
-        }
-        /* Hero ska aldrig påverka höjd */
+        /* Hero wrapper ska aldrig påverka sidans height */
         .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
           position: absolute !important;
           top: 0 !important; left: 0 !important;
