@@ -6,6 +6,7 @@ import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 import { useEffect, useMemo } from 'react';
 import { useCoursesParallel } from '@/hooks/useStrapi';
 import { formatStrapiCourse, formatCourseMainInfo, sortCourses } from '@/utils/strapiHelpers';
+import SimpleParallaxHero from "@/components/SimpleParallaxHero";
 
 const Courses = () => {
   useEffect(() => {
@@ -70,11 +71,11 @@ const Courses = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-
-      <section className="py-8 px-0.5 md:px-4 pb-8 mt-20 flex-1">
+      <SimpleParallaxHero imageSrc="/lovable-uploads/7e10e177-5707-44b1-bbf3-e5f9507d3054.png" />
+      <section className="py-8 px-0.5 md:px-4 pb-8 mt-0 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
         <CourseGrid courses={courses} practicalInfo={practicalInfo} />
         <CourseInfoSection mainInfo={mainInfo} />
       </section>

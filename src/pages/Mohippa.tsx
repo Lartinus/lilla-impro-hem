@@ -4,6 +4,7 @@ import Footer from '@/components/Footer';
 import PrivateInquiryForm from '@/components/PrivateInquiryForm';
 import { ArrowRight } from 'lucide-react';
 import { useEffect } from 'react';
+import SimpleParallaxHero from "@/components/SimpleParallaxHero";
 
 const Mohippa = () => {
   useEffect(() => {
@@ -11,12 +12,11 @@ const Mohippa = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-
-      {/* Main Content - Allt i en vit sektion */}
-      <section className="py-8 px-0.5 md:px-4 mt-20 flex-1">
+      <SimpleParallaxHero imageSrc="/lovable-uploads/1287edaf-8412-4d2b-b6e4-b6fb8426185d.png" />
+      <section className="py-8 px-0.5 md:px-4 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
         <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
           
           {/* Huvudinnehåll */}
@@ -94,7 +94,6 @@ const Mohippa = () => {
           </div>
         </div>
       </section>
-
       {/* <Footer /> */}
     </div>
   );

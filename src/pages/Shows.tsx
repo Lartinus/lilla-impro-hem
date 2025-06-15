@@ -6,6 +6,7 @@ import { useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { formatStrapiShowSimple } from '@/utils/strapiHelpers';
+import SimpleParallaxHero from "@/components/SimpleParallaxHero";
 const Shows = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -41,7 +42,7 @@ const Shows = () => {
   }, [strapiData]);
   if (error) {
     console.error('Error loading shows from Strapi:', error);
-    return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+    return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
         
@@ -57,19 +58,18 @@ const Shows = () => {
         <Footer />
       </div>;
   }
-  return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+  return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      
+      <SimpleParallaxHero imageSrc="/lovable-uploads/f96ff1ae-f9cb-4df9-8aa9-846ef0297538.png" />
       {/* Hero */}
-      <section className="md:px-4 mt-24 md:mt-32 md:py-6 px-0 mx-0 my-0 py-px">
+      <section className="md:px-4 mt-0 md:py-6 px-0 mx-0 my-0 py-px relative z-10" style={{ paddingTop: "220px" }}>
         <div className="text-center">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
             Föreställningar
           </h1>
         </div>
       </section>
-
       {/* Shows Grid */}
       <section className="py-2 px-0.5 md:px-4 pb-8 flex-1">
         <div className="mx-[12px] md:mx-0 md:max-w-6xl md:mx-auto">
