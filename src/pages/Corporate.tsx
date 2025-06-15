@@ -49,7 +49,7 @@ const Corporate = () => {
     >
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      {/* Hero - alltid absolut ovanför, påverkar inte sidans "flow height" */}
+      {/* Hero - absolut ovanför, påverkar inte sidans höjd */}
       <div
         className="pointer-events-none select-none absolute top-0 left-0 w-full z-0"
         style={{
@@ -67,9 +67,9 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* MAIN wrapper: bakgrund, paddingTop för hero, inget mer */}
+      {/* MAIN med min-h-screen */}
       <main 
-        className="z-10 w-full relative bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary overflow-x-hidden overflow-y-visible"
+        className="z-10 w-full relative bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary overflow-x-hidden overflow-y-visible min-h-screen"
         style={{
           boxSizing: "border-box",
           margin: 0,
@@ -78,7 +78,7 @@ const Corporate = () => {
         }}
       >
         <CorporateContentBox boxOffset={boxOffset} />
-        {/* DEBUG: liten border längst ner för att kunna se page-end */}
+        {/* DEBUG: border längst ner för att se page-end */}
         {/* <div style={{borderTop: '3px dashed red'}} /> */}
       </main>
       <style>{`
