@@ -46,14 +46,14 @@ const Corporate = () => {
     <div className="bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      {/* Parallax-bild absolut - påverkar ej sidans höjd */}
+      {/* Hero-bild ligger absolut och påverkar aldrig content */}
       <div
         className="pointer-events-none select-none absolute top-0 left-0 w-full z-0"
         style={{
           height: parallaxHeight,
-          minHeight: parallaxHeight,
-          maxHeight: parallaxHeight,
           overflow: 'hidden',
+          minHeight: parallaxHeight,
+          maxHeight: parallaxHeight
         }}
         aria-hidden="true"
       >
@@ -63,22 +63,33 @@ const Corporate = () => {
           maxImageOffset={maxImageOffset}
         />
       </div>
-      {/* Innehållsboxen börjar en bit ner utan extra space i botten */}
-      <main className="relative z-10 flex justify-center pb-0">
+      {/* Boxen bestämmer sidans höjd */}
+      <main className="relative z-10 flex justify-center pb-0" style={{ paddingBottom: 0, margin: 0 }}>
         <div
           style={{
             marginTop: overlapStart,
             width: '100%',
-            // Ingen höjd eller minHeight, då boxen ska bestämma höjd.
+            paddingBottom: 0,
+            marginBottom: 0
+            // OBS! Ingen minHeight/maxHeight här!
           }}
         >
           <CorporateContentBox boxOffset={boxOffset} />
         </div>
       </main>
+      {/* Dödar absolut all extra-minHeight på html/body från innan */}
       <style>{`
         html, body {
-          height: auto !important;
+          height: unset !important;
+          min-height: unset !important;
+          padding-bottom: 0 !important;
+          margin-bottom: 0 !important;
+        }
+        #root, body > div, main {
           min-height: 0 !important;
+          height: unset !important;
+          padding-bottom: 0 !important;
+          margin-bottom: 0 !important;
         }
         @media (min-width: 768px) {
           .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
@@ -100,3 +111,4 @@ const Corporate = () => {
 };
 
 export default Corporate;
+
