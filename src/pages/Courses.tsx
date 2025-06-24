@@ -1,5 +1,5 @@
+
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import CourseGrid from '@/components/CourseGrid';
 import CourseInfoSection from '@/components/CourseInfoSection';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
@@ -53,7 +53,6 @@ const Courses = () => {
             ))}
           </div>
         </section>
-        {/* <Footer /> */}
       </div>
     );
   }
@@ -65,7 +64,6 @@ const Courses = () => {
         <div className="flex-1 flex items-center justify-center">
           <div className="text-white text-xl">Ett fel uppstod vid laddning av kurser. Testa igen!</div>
         </div>
-        {/* <Footer /> */}
       </div>
     );
   }
@@ -79,7 +77,6 @@ const Courses = () => {
         <CourseGrid courses={courses} practicalInfo={practicalInfo} />
         <CourseInfoSection mainInfo={mainInfo} />
       </section>
-      {/* <Footer /> */}
     </div>
   );
 };

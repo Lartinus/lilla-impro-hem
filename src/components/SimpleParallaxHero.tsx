@@ -10,8 +10,6 @@ interface SimpleParallaxHeroProps {
 const PARALLAX_HEIGHT_MOBILE = 300;
 const PARALLAX_HEIGHT_MD = 440;
 const PARALLAX_HEIGHT_LG = 620;
-// Justerat här ↓
-const PARALLAX_IMAGE_FACTOR = 0.16; // how fast the bg moves, was 0.32
 
 const getParallaxHeights = () => {
   if (window.innerWidth >= 1024) return PARALLAX_HEIGHT_LG;
@@ -24,7 +22,6 @@ const SimpleParallaxHero = ({
   parallaxHeight,
   gradientOverlay = true,
 }: SimpleParallaxHeroProps) => {
-  const [scrollY, setScrollY] = useState(0);
   const [height, setHeight] = useState(parallaxHeight || PARALLAX_HEIGHT_MOBILE);
 
   useEffect(() => {
@@ -33,15 +30,6 @@ const SimpleParallaxHero = ({
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [parallaxHeight]);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const maxImageOffset = height * 0.55;
-  const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
 
   return (
     <div
@@ -61,8 +49,6 @@ const SimpleParallaxHero = ({
         className="w-full z-0 select-none pointer-events-none relative"
         style={{
           height,
-          transform: `translateY(-${imageOffset}px)`,
-          transition: "height 0.3s, transform 0.36s cubic-bezier(.22,1.04,.79,1)",
           overflow: 'hidden',
         }}
       >
@@ -78,7 +64,6 @@ const SimpleParallaxHero = ({
             padding: 0,
             filter: 'brightness(0.97)',
             userSelect: 'none',
-            transition: 'filter 0.2s',
           }}
           draggable={false}
         />

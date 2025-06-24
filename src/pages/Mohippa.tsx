@@ -1,14 +1,16 @@
+
 // Hårdkodad version av Möhippa-sidan (utan API-anrop)
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import PrivateInquiryForm from '@/components/PrivateInquiryForm';
 import { ArrowRight } from 'lucide-react';
 import { useEffect } from 'react';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
+
 const Mohippa = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
@@ -91,7 +93,7 @@ const Mohippa = () => {
           </div>
         </div>
       </section>
-      {/* <Footer /> */}
     </div>;
 };
+
 export default Mohippa;

@@ -1,5 +1,5 @@
+
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import ServiceBoxes from '@/components/ServiceBoxes';
 
 const Index = () => {
@@ -38,8 +38,8 @@ const Index = () => {
           </div>
         </div>
       </section>
-      {/* <Footer /> */}
     </div>
   );
 };
+
 export default Index;

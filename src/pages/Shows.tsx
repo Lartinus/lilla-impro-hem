@@ -1,6 +1,5 @@
 
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import ShowCardSimple from '@/components/ShowCardSimple';
 import ShowCardSkeleton from '@/components/ShowCardSkeleton';
 import { useEffect, useMemo } from 'react';
@@ -57,8 +56,6 @@ const Shows = () => {
             <p className="text-theatre-light/80">Ett fel uppstod vid laddning av föreställningar. Försök igen! </p>
           </div>
         </section>
-
-        <Footer />
       </div>;
   }
 
@@ -89,8 +86,6 @@ const Shows = () => {
       </section>
 
       <SimpleParallaxHero imageSrc="/lovable-uploads/f96ff1ae-f9cb-4df9-8aa9-846ef0297538.png" />
-
-      {/* <Footer /> */}
     </div>;
 };
 

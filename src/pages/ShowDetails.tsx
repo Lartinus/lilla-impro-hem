@@ -1,5 +1,5 @@
+
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import ShowDetailsHeader from '@/components/ShowDetailsHeader';
 import ShowInfo from '@/components/ShowInfo';
 import PracticalInfo from '@/components/PracticalInfo';
@@ -52,7 +52,6 @@ const ShowDetails = () => {
         <div className="pt-32 text-center flex-1 flex items-center justify-center">
           <Loader className="w-8 h-8 animate-spin text-white" />
         </div>
-        <Footer />
       </div>
     );
   }
@@ -70,7 +69,6 @@ const ShowDetails = () => {
             </p>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -130,8 +128,8 @@ const ShowDetails = () => {
           <OtherShowsSection shows={otherShows} />
         </div>
       </section>
-      {/* <Footer /> */}
     </div>
   );
 };
+
 export default ShowDetails;

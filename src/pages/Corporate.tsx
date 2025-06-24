@@ -1,7 +1,7 @@
+
 import Header from '@/components/Header';
 import CorporateHero from '@/components/CorporateHero';
 import CorporateContentBox from '@/components/CorporateContentBox';
-import Footer from '@/components/Footer';
 import { useEffect, useState } from 'react';
 
 const PARALLAX_HEIGHT_MOBILE = 400;
@@ -38,7 +38,7 @@ const Corporate = () => {
 
   // Contentboxen ska börja längre ner (men fortfarande röra sig uppåt vid scroll)
   const overlapStart = Math.round(parallaxHeight * 0.60); // t.ex. 60% nedanför hero
-  // Parallax för boxen – behåller att boxen börja längre ner men ändå rör sig med scroll
+  // Parallax för boxen – behåller att boxen börja längre ner men ändå rör sig med scroll
   const boxParallaxMax = parallaxHeight * 0.45; // hur mycket boxen kan åka uppåt
   const boxOffset = Math.max(0, Math.min(scrollY, boxParallaxMax));
 
@@ -79,6 +79,7 @@ const Corporate = () => {
           margin: 0,
           padding: 0,
           paddingTop: overlapStart,
+          paddingBottom: "64px", // Added padding at the bottom
         }}
       >
         <CorporateContentBox boxOffset={boxOffset} />

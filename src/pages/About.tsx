@@ -1,9 +1,9 @@
 
 import { useEffect } from 'react';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import PerformersSection from '@/components/PerformersSection';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
+
 const performers = [{
   id: 1,
   name: "Hjalmar Hardestam",
@@ -20,10 +20,12 @@ const performers = [{
   bio: "David började med improvisationsteater 2013 och har sedan dess varit en aktiv del av improscenerna i Karlstad, Örebro och Stockholm. Han var med och startade Dramaverket 2014 och senare Spinoff 2021. I dag spelar han både med Dramaverket och Floden STHLM, och gästar under våren 2025 även Stockholm Improvisationsteater. Till vardags jobbar David som producent inom event och teater - med ett öga för struktur, sammanhang och att få saker att hända.",
   image: "/lovable-uploads/626ba92c-0c46-4de3-bedc-28806d7c7f68.png"
 }];
+
 const About = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
@@ -45,4 +47,5 @@ const About = () => {
       </section>
     </div>;
 };
+
 export default About;
