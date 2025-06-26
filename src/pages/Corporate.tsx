@@ -32,9 +32,12 @@ const Corporate = () => {
           margin: 0,
           padding: 0,
           paddingBottom: '64px',
+          marginTop: '-180px',        // justera höjd på mobil
         }}
       >
-        <CorporateContentBox />
+        <div className="md:-mt-[300px]"> {/* drar upp boxen på desktop */}
+          <CorporateContentBox />
+        </div>
       </main>
     </div>
   );
