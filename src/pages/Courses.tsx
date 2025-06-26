@@ -72,7 +72,7 @@ const Courses = () => {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      <SimpleParallaxHero imageSrc="/lovable-uploads/7e10e177-5707-44b1-bbf3-e5f9507d3054.png" />
+      <SimpleParallaxHero imageSrc="/lovable-uploads/e56190aa-46b0-4661-820d-915c2b5a4009.png" />
       <section className="py-8 px-0.5 md:px-4 pb-8 mt-0 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
         <CourseGrid courses={courses} practicalInfo={practicalInfo} />
         <CourseInfoSection mainInfo={mainInfo} />

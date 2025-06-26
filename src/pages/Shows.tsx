@@ -85,7 +85,7 @@ const Shows = () => {
         </div>
       </section>
 
-      <SimpleParallaxHero imageSrc="/lovable-uploads/f96ff1ae-f9cb-4df9-8aa9-846ef0297538.png" />
+      <SimpleParallaxHero imageSrc="/lovable-uploads/8a317688-a91b-4083-8840-22ca50335205.png" />
     </div>;
 };
 

@@ -29,7 +29,7 @@ const About = () => {
   return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
-      <SimpleParallaxHero imageSrc="/lovable-uploads/92056082-2a67-45f4-888c-9f6831a95637.png" />
+      <SimpleParallaxHero imageSrc="/lovable-uploads/0dab5207-02ae-4f61-96e5-de85a5a8d3ad.png" />
       <section className="py-8 px-0.5 md:px-4 mt-0 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
         <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
           

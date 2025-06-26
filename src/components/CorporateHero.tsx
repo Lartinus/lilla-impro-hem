@@ -15,7 +15,7 @@ const CorporateHero = ({ parallaxHeight }: CorporateHeroProps) => {
       }}
     >
       <img
-        src="/lovable-uploads/5cb42dd8-59bc-49e4-ae83-9bb0da74f658.png"
+        src="/lovable-uploads/87ee64a5-46e8-4910-9307-369d9a2071bb.png"
         alt=""
         className="w-full h-full object-cover object-center pointer-events-none"
         style={{
