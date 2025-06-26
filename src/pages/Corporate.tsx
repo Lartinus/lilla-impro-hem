@@ -1,105 +1,41 @@
-
 import Header from '@/components/Header';
 import CorporateHero from '@/components/CorporateHero';
 import CorporateContentBox from '@/components/CorporateContentBox';
-import { useEffect, useState } from 'react';
-
-const PARALLAX_HEIGHT_MOBILE = 400;
-const PARALLAX_HEIGHT_MD = 620;
-const PARALLAX_HEIGHT_LG = 750;
-
-const getParallaxHeights = () => {
-  if (window.innerWidth >= 1024) return PARALLAX_HEIGHT_LG;
-  if (window.innerWidth >= 768) return PARALLAX_HEIGHT_MD;
-  return PARALLAX_HEIGHT_MOBILE;
-};
+import { useEffect } from 'react';
 
 const Corporate = () => {
-  const [parallaxHeight, setParallaxHeight] = useState(PARALLAX_HEIGHT_MOBILE);
-
   useEffect(() => {
     window.scrollTo(0, 0);
-    const handleResize = () => setParallaxHeight(getParallaxHeights());
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  // Contentboxen ska börja längre ner (men fortfarande röra sig uppåt vid scroll)
-  const overlapStart = Math.round(parallaxHeight * 0.60); // t.ex. 60% nedanför hero
 
   return (
     <div
-      className="font-satoshi relative overflow-x-hidden overflow-y-visible bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary"
+      className="font-satoshi relative overflow-x-hidden bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary"
       style={{
-        boxSizing: "border-box",
+        boxSizing: 'border-box',
         padding: 0,
         margin: 0,
         width: '100vw',
-        minHeight: "100dvh",
+        minHeight: '100dvh',
       }}
     >
-      <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
+      <link
+        href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap"
+        rel="stylesheet"
+      />
       <Header />
-      <div
-        className="pointer-events-none select-none absolute top-0 left-0 w-full z-0"
-        style={{
-          height: parallaxHeight,
-          minHeight: parallaxHeight,
-          maxHeight: parallaxHeight,
-          overflow: 'hidden',
-          pointerEvents: 'none',
-        }}
-        aria-hidden="true"
-      >
-        <CorporateHero
-          parallaxHeight={parallaxHeight}
-          imageOffset={0}
-          maxImageOffset={0}
-        />
-      </div>
+      <CorporateHero />
       <main
-        className="z-10 w-full relative overflow-x-hidden overflow-y-visible bg-transparent pb-16 md:pb-28"
+        className="z-10 w-full relative overflow-x-hidden pb-16 md:pb-28"
         style={{
-          boxSizing: "border-box",
+          boxSizing: 'border-box',
           margin: 0,
           padding: 0,
-          paddingTop: overlapStart,
-          paddingBottom: "64px",
+          paddingBottom: '64px',
         }}
       >
-        <CorporateContentBox boxOffset={0} />
+        <CorporateContentBox />
       </main>
-      <style>{`
-        html, body, #root {
-          box-sizing: border-box !important;
-          height: 100% !important;
-          min-height: 0 !important;
-          max-height: none !important;
-          padding: 0 !important;
-          margin: 0 !important;
-          overflow-x: hidden !important;
-          background: none !important;
-        }
-        .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
-          position: absolute !important;
-          top: 0 !important; left: 0 !important; z-index: 0 !important; width: 100vw !important;
-        }
-        @media (min-width: 768px) {
-          .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
-            height: ${PARALLAX_HEIGHT_MD}px !important;
-            min-height: ${PARALLAX_HEIGHT_MD}px !important;
-            max-height: ${PARALLAX_HEIGHT_MD}px !important;
-          }
-        }
-        @media (min-width: 1024px) {
-          .pointer-events-none.select-none.absolute.top-0.left-0.w-full.z-0 {
-            height: ${PARALLAX_HEIGHT_LG}px !important;
-            min-height: ${PARALLAX_HEIGHT_LG}px !important;
-            max-height: ${PARALLAX_HEIGHT_LG}px !important;
-          }
-        }
-      `}</style>
     </div>
   );
 };
