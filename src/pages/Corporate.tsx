@@ -1,11 +1,28 @@
 import Header from '@/components/Header';
 import CorporateHero from '@/components/CorporateHero';
 import CorporateContentBox from '@/components/CorporateContentBox';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const Corporate = () => {
+  const [marginTop, setMarginTop] = useState('-150px');
+
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    const updateMarginTop = () => {
+      const width = window.innerWidth;
+      if (width >= 1024) {
+        setMarginTop('-300px'); // desktop
+      } else if (width >= 768) {
+        setMarginTop('-200px'); // tablet
+      } else {
+        setMarginTop('-120px'); // mobile
+      }
+    };
+
+    updateMarginTop();
+    window.addEventListener('resize', updateMarginTop);
+    return () => window.removeEventListener('resize', updateMarginTop);
   }, []);
 
   return (
@@ -32,12 +49,10 @@ const Corporate = () => {
           margin: 0,
           padding: 0,
           paddingBottom: '64px',
-          marginTop: '-180px',        // justera höjd på mobil
+          marginTop,
         }}
       >
-        <div className="md:-mt-[300px]"> {/* drar upp boxen på desktop */}
-          <CorporateContentBox />
-        </div>
+        <CorporateContentBox />
       </main>
     </div>
   );
