@@ -1,9 +1,10 @@
+
 import Header from '@/components/Header';
 import ServiceBoxes from '@/components/ServiceBoxes';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light">
+    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <Header />
       <section className="min-h-screen flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
         <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
@@ -12,27 +13,25 @@ const Index = () => {
             
             {/* Beskrivning */}
             <div className="max-w-4xl space-y-2 pb-1">
-              <h1>
+              <h1 className="sm:text-2xl md:text-3xl leading-tight text-gray-800 tracking-normal mb-4 text-left lg:text-3xl font-bold text-xl py-px mx-[2px] my-[10px]">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
-              <p>
+              <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
                 Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i trygga och inspirerande kursmiljöer, 
                 och ta del av roliga, smarta och lekfulla föreställningar.
               </p>
             </div>
-
             {/* Tjänster/Service-sektionen */}
             <div className="space-y-4">
               <ServiceBoxes />
             </div>
-
             {/* Mission statement */}
             <div className="max-w-4xl space-y-3 pt-4">
-              <p>
+              <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
                 Vi bygger med kvalitet, nyfikenhet och ett stort fokus på att göra improvisatörerna bättre och publiken gladare – och på att skapa ett community där du som elev, improvisatör och publik blir en del av något större.
               </p>
-              <p>
+              <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
                 Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
             </div>
