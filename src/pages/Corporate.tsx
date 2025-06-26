@@ -30,7 +30,7 @@ const Corporate = () => {
 
   return (
     <div
-      className="font-satoshi relative overflow-x-hidden overflow-y-visible bg-theatre-tertiary"
+      className="font-satoshi relative overflow-x-hidden overflow-y-visible bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary"
       style={{
         boxSizing: "border-box",
         padding: 0,

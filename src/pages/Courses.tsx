@@ -43,7 +43,7 @@ const Courses = () => {
   // Show loading state with skeletons
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-theatre-tertiary text-theatre-light font-satoshi">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
         <section className="py-8 px-0.5 md:px-4 pb-8 mt-20 flex-1">
@@ -60,7 +60,7 @@ const Courses = () => {
   if (error) {
     console.error('Error loading data:', error);
     return (
-      <div className="min-h-screen flex flex-col bg-theatre-tertiary text-theatre-light font-satoshi">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-white text-xl">Ett fel uppstod vid laddning av kurser. Testa igen!</div>
         </div>
@@ -69,7 +69,7 @@ const Courses = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       <SimpleParallaxHero imageSrc="/lovable-uploads/e56190aa-46b0-4661-820d-915c2b5a4009.png" />
