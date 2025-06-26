@@ -40,13 +40,6 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-    --body-line-height: 1.5;
-    --course-card-line-height: 1.3;
-    --heading-to-text-spacing: 0.3rem;
-    --course-card-heading-to-text-spacing: 0rem;
-    --name-to-bio-spacing: 0.5rem;
-    --arrow-size: 1rem;
-    --bullet-size: 0.5rem;
 
     --h1-light-color: #1A1A1A;
     --h2-light-color: #2A2A2A;
@@ -95,32 +88,21 @@
 
   body {
     font-family: "Satoshi", sans-serif;
+    @apply bg-background text-foreground;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: "RetroVoice", sans-serif;
     line-height: 1.2;
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
   }
 
-  h1 {
-    font-size: clamp(2rem, 6vw, 3.25rem);
-  }
-  h2 {
-    font-size: clamp(1.75rem, 5vw, 2.5rem);
-  }
-  h3 {
-    font-size: clamp(1.5rem, 4vw, 2rem);
-  }
-  h4 {
-    font-size: clamp(1.25rem, 3vw, 1.5rem);
-  }
-  h5 {
-    font-size: clamp(1.125rem, 2.5vw, 1.25rem);
-  }
-  h6 {
-    font-size: clamp(1rem, 2vw, 1.125rem);
+  h1 + p,
+  h2 + p,
+  h3 + p,
+  h4 + p,
+  h5 + p,
+  h6 + p {
+    margin-top: 0.75rem;
   }
 
   .bg-white h1,
@@ -155,153 +137,14 @@
   .bg-theatre-dark h6,
   .bg-black h6 { color: var(--h6-dark-color); }
 
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
+  h1 { font-size: clamp(2rem, 6vw, 3rem); }
+  h2 { font-size: clamp(1.75rem, 5vw, 2.5rem); }
+  h3 { font-size: clamp(1.5rem, 4vw, 2rem); }
+  h4 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
+  h5 { font-size: clamp(1.125rem, 2.5vw, 1.5rem); }
+  h6 { font-size: clamp(1rem, 2vw, 1.25rem); }
 
   p, .text-base, .leading-relaxed, .body-text {
-    line-height: var(--body-line-height) !important;
-  }
-
-  .course-card .body-text {
-    line-height: var(--course-card-line-height) !important;
-  }
-
-  h1 + p, h1 + div,
-  h2 + p, h2 + div,
-  h3 + p, h3 + div,
-  h4 + p, h4 + div,
-  h5 + p, h5 + div,
-  h6 + p, h6 + div {
-    margin-top: var(--heading-to-text-spacing) !important;
-  }
-
-  .course-card h1 + p, .course-card h1 + div,
-  .course-card h2 + p, .course-card h2 + div,
-  .course-card h3 + p, .course-card h3 + div,
-  .course-card h4 + p, .course-card h4 + div,
-  .course-card h5 + p, .course-card h5 + div,
-  .course-card h6 + p, .course-card h6 + div {
-    margin-top: var(--course-card-heading-to-text-spacing) !important;
-  }
-
-  h2 + h3 {
-    margin-top: 0.25rem;
-  }
-
-  .course-card h2 + .subtitle {
-    margin-top: 0.125rem;
-  }
-
-  .course-card .subtitle + div {
-    margin-top: var(--course-card-heading-to-text-spacing) !important;
-  }
-
-  .course-card .course-description {
-    margin-top: var(--course-card-heading-to-text-spacing) !important;
-  }
-
-  .teacher-name {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  .teacher-bio {
-    margin-top: var(--name-to-bio-spacing) !important;
-    padding-top: 0 !important;
-  }
-
-  .performer-name {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  .performer-bio {
-    margin-top: var(--name-to-bio-spacing) !important;
-    padding-top: 0 !important;
-  }
-
-  .teacher-name + *,
-  .performer-name + * {
-    margin-top: var(--name-to-bio-spacing) !important;
-    padding-top: 0 !important;
-  }
-
-  [style*="margin-top: var(--name-to-bio-spacing)"] {
-    margin-top: var(--name-to-bio-spacing) !important;
-    padding-top: 0 !important;
-  }
-
-  .teacher-bio > *:first-child,
-  .performer-bio > *:first-child {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-  }
-
-  .arrow, [class*="arrow"] {
-    width: var(--arrow-size) !important;
-    height: var(--arrow-size) !important;
-  }
-
-  .bullet-point {
-    width: var(--bullet-size) !important;
-    height: var(--bullet-size) !important;
-  }
-
-  .w-2.h-2 {
-    width: var(--bullet-size) !important;
-    height: var(--bullet-size) !important;
-  }
-
-  ul li::marker {
-    font-size: var(--bullet-size);
-  }
-
-  h1, h2, h3 {
-    text-wrap: balance;
-  }
-
-  @media (max-width: 767px) {
-    .text-xl {
-      font-size: clamp(1.125rem, 4vw, 1.25rem);
-    }
-
-    .text-2xl {
-      font-size: clamp(1.25rem, 5vw, 1.5rem);
-    }
-
-    .text-3xl {
-      font-size: clamp(1.5rem, 6vw, 1.875rem);
-    }
-
-    .course-card h2 {
-      font-size: clamp(1rem, 4.5vw, 1.25rem);
-      hyphens: auto;
-      word-break: break-word;
-    }
-
-    p, h1, h2, h3, h4, h5, h6 {
-      orphans: 2;
-      widows: 2;
-    }
-  }
-
-  .show-card h2,
-  .show-card .date-time {
-    line-height: 1.2 !important;
-  }
-
-  .course-card h2 {
-    line-height: 1.2 !important;
-  }
-
-  @media (max-width: 767px) {
-    .course-card .subtitle {
-      font-size: 0.875rem !important;
-    }
+    line-height: 1.5 !important;
   }
 }
