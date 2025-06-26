@@ -46,7 +46,7 @@ const ShowDetails = () => {
 
   if (showLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+      <div className="min-h-screen flex flex-col bg-theatre-tertiary text-theatre-light font-satoshi">
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
         <div className="pt-32 text-center flex-1 flex items-center justify-center">
@@ -58,7 +58,7 @@ const ShowDetails = () => {
 
   if (error || !showDataFromStrapi) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+      <div className="min-h-screen flex flex-col bg-theatre-tertiary text-theatre-light font-satoshi">
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
         <div className="pt-32 text-center flex-1 flex items-center justify-center">
@@ -83,7 +83,7 @@ const ShowDetails = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+    <div className="min-h-screen flex flex-col bg-theatre-tertiary text-theatre-light font-satoshi">
       <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       
