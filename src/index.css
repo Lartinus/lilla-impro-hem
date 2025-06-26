@@ -17,34 +17,109 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: "RetroVoice", sans-serif;
-  }
-
-@layer base {
-  h1 {
-    font-size: 6rem;
     line-height: 1.2;
   }
 
-  h2 {
-    font-size: 2rem;     /* 32px */
-    line-height: 1.3;
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  h4 { font-size: 1.125rem; }
+  h5 { font-size: 1rem; }
+  h6 { font-size: 0.875rem; }
+
+  @media (min-width: 640px) {
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.5rem; }
+    h4 { font-size: 1.25rem; }
+    h5 { font-size: 1.125rem; }
+    h6 { font-size: 1rem; }
   }
 
-  h3 {
-    font-size: 1.75rem;  /* 28px */
-    line-height: 1.3;
+  @media (min-width: 768px) {
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.75rem; }
+    h4 { font-size: 1.5rem; }
+    h5 { font-size: 1.25rem; }
+    h6 { font-size: 1.125rem; }
   }
 
-  h4 {
-    font-size: 1.5rem;   /* 24px */
+  @media (min-width: 1024px) {
+    h1 { font-size: 3rem; }
+    h2 { font-size: 2.5rem; }
+    h3 { font-size: 2rem; }
+    h4 { font-size: 1.75rem; }
+    h5 { font-size: 1.5rem; }
+    h6 { font-size: 1.25rem; }
   }
 
-  h5 {
-    font-size: 1.25rem;  /* 20px */
+  /* Rubrikfärger på ljus bakgrund */
+  .bg-white h1,
+  .bg-theatre-light h1 {
+    color: #1A1A1A;
   }
 
-  h6 {
-    font-size: 1rem;     /* 16px */
+  .bg-white h2,
+  .bg-theatre-light h2 {
+    color: #2A2A2A;
+  }
+
+  .bg-white h3,
+  .bg-theatre-light h3 {
+    color: #2A2A2A;
+  }
+
+  .bg-white h4,
+  .bg-theatre-light h4 {
+    color: #3a1212;
+  }
+
+  .bg-white h5,
+  .bg-theatre-light h5 {
+    color: #555555;
+  }
+
+  .bg-white h6,
+  .bg-theatre-light h6 {
+    color: #71717A;
+  }
+
+  /* Rubrikfärger på mörk bakgrund */
+  .bg-theatre-primary h1,
+  .bg-theatre-dark h1,
+  .bg-black h1 {
+    color: #FFFFFF;
+  }
+
+  .bg-theatre-primary h2,
+  .bg-theatre-dark h2,
+  .bg-black h2 {
+    color: #F5F5F5;
+  }
+
+  .bg-theatre-primary h3,
+  .bg-theatre-dark h3,
+  .bg-black h3 {
+    color: #E5E5E5;
+  }
+
+  .bg-theatre-primary h4,
+  .bg-theatre-dark h4,
+  .bg-black h4 {
+    color: #D4D4D4;
+  }
+
+  .bg-theatre-primary h5,
+  .bg-theatre-dark h5,
+  .bg-black h5 {
+    color: #BBBBBB;
+  }
+
+  .bg-theatre-primary h6,
+  .bg-theatre-dark h6,
+  .bg-black h6 {
+    color: #A1A1AA;
   }
 }
 
