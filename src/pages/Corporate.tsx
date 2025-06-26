@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 const PARALLAX_HEIGHT_MOBILE = 400;
 const PARALLAX_HEIGHT_MD = 620;
 const PARALLAX_HEIGHT_LG = 750;
-const PARALLAX_IMAGE_FACTOR = 0.4;
 
 const getParallaxHeights = () => {
   if (window.innerWidth >= 1024) return PARALLAX_HEIGHT_LG;
@@ -16,7 +15,6 @@ const getParallaxHeights = () => {
 };
 
 const Corporate = () => {
-  const [scrollY, setScrollY] = useState(0);
   const [parallaxHeight, setParallaxHeight] = useState(PARALLAX_HEIGHT_MOBILE);
 
   useEffect(() => {
@@ -27,20 +25,8 @@ const Corporate = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const maxImageOffset = parallaxHeight * 0.6;
-  const imageOffset = Math.min(scrollY * PARALLAX_IMAGE_FACTOR, maxImageOffset);
-
   // Contentboxen ska börja längre ner (men fortfarande röra sig uppåt vid scroll)
   const overlapStart = Math.round(parallaxHeight * 0.60); // t.ex. 60% nedanför hero
-  // Parallax för boxen – behåller att boxen börja längre ner men ändå rör sig med scroll
-  const boxParallaxMax = parallaxHeight * 0.45; // hur mycket boxen kan åka uppåt
-  const boxOffset = Math.max(0, Math.min(scrollY, boxParallaxMax));
 
   return (
     <div
@@ -68,8 +54,8 @@ const Corporate = () => {
       >
         <CorporateHero
           parallaxHeight={parallaxHeight}
-          imageOffset={imageOffset}
-          maxImageOffset={maxImageOffset}
+          imageOffset={0}
+          maxImageOffset={0}
         />
       </div>
       <main
@@ -79,10 +65,10 @@ const Corporate = () => {
           margin: 0,
           padding: 0,
           paddingTop: overlapStart,
-          paddingBottom: "64px", // Added padding at the bottom
+          paddingBottom: "64px",
         }}
       >
-        <CorporateContentBox boxOffset={boxOffset} />
+        <CorporateContentBox boxOffset={0} />
       </main>
       <style>{`
         html, body, #root {
