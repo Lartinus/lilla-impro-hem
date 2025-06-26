@@ -102,6 +102,26 @@
     line-height: 1.2;
   }
 
+  /* Responsiv rubrikstorlek */
+  h1 {
+    font-size: clamp(1.875rem, 5vw, 3rem);
+  }
+  h2 {
+    font-size: clamp(1.5rem, 4.5vw, 2.25rem);
+  }
+  h3 {
+    font-size: clamp(1.25rem, 4vw, 1.875rem);
+  }
+  h4 {
+    font-size: clamp(1.125rem, 3.5vw, 1.5rem);
+  }
+  h5 {
+    font-size: clamp(1rem, 3vw, 1.25rem);
+  }
+  h6 {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+  }
+
   .bg-white h1,
   .bg-theatre-light h1 { color: var(--h1-light-color); }
   .bg-white h2,
