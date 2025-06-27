@@ -6,20 +6,18 @@ const Index = () => {
       <section className="min-h-screen flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
         <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
           {/* Mobil: mt-12, desktop: mt-20 för luft till header */}
-          <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
+          <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
             
             {/* Beskrivning */}
             <div className="max-w-4xl space-y-2 pb-1">
               <h1 className="my-[5px]">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
-              <div className="pt-6 border-t border-gray-200">
-                <p className="text-base md:text-lg font-light leading-tight py-[10px]">
+              <p className="text-base md:text-lg font-light leading-tight py-[10px]">
                 Vi tror på att humor går att träna och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i inspirerande kursmiljöer 
                 och ta del av roliga, smarta och lekfulla föreställningar.
-                </p>
-              </div>
+              </p>
             </div>
             {/* Tjänster/Service-sektionen */}
             <div className="space-y-4">
