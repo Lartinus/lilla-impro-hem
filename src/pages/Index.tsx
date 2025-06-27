@@ -10,7 +10,7 @@ const Index = () => {
             
             {/* Beskrivning */}
             <div className="max-w-4xl space-y-2 pb-1">
-              <h1 className="my-[15px]">
+              <h1 className="my-[15px] mb-[15px]">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
               <div className="pt-6 border-t border-gray-200 my-4">
