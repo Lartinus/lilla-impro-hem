@@ -26,7 +26,7 @@ const Mohippa = () => {
 
           </p>
 
-            <h2>Vad kan ni boka?</h2>
+            <h3>Vad kan ni boka?</h3>
             <ul>
               <li className="flex items-start">
                 <ArrowRight className="text-red-800 mr-2 mt-1 flex-shrink-0" size={16} />
@@ -44,7 +44,7 @@ const Mohippa = () => {
 
             <p>Vi kommer gärna till er – eller hjälper till att ordna plats i samarbete med lokaler i Stockholm.</p>
 
-            <h2>Exempel på tillfällen vi passar för:</h2>
+            <h3>Exempel på tillfällen vi passar för:</h3>
             <ul>
               <li className="flex items-center">
                 <ArrowRight className="text-red-800 mr-2 flex-shrink-0" size={16} />
@@ -67,7 +67,7 @@ const Mohippa = () => {
 
           {/* Kontaktformulär */}
           <div className="pt-6 border-t border-gray-200">
-            <h2>Hör av dig</h2>
+            <h3  className="mb-4">Hör av dig</h3>
             <PrivateInquiryForm />
           </div>
 
