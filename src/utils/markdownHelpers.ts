@@ -102,15 +102,20 @@ function createCustomRenderer(isRedBox = false): any {
 //
 export const convertMarkdownToHtml = (markdown: string): string => {
   if (!markdown) return '';
-
+  
   try {
+    console.log('Converting markdown:', markdown);
     const preprocessed = preprocess(markdown);
-    const renderer = createCustomRenderer(false);
-
-    // Viktigt! Registrera renderer innan du anropar parse
-    marked.use({ renderer });
-
-    const html = marked.parse(preprocessed); // ← inga options här längre
+    console.log('Preprocessed:', preprocessed);
+    
+    // Configure marked to properly parse markdown tokens including bold, italic, strikethrough
+    const html = marked.parse(preprocessed, {
+      gfm: true,
+      breaks: false, // Don't treat single line breaks as <br>
+      renderer: createCustomRenderer(false)
+    });
+    
+    console.log('Result HTML:', html);
     return html as string;
   } catch (err) {
     console.error('Markdown conversion failed:', err);
@@ -120,14 +125,18 @@ export const convertMarkdownToHtml = (markdown: string): string => {
 
 export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
   if (!markdown) return '';
-
+  
   try {
+    console.log('Converting markdown for red box:', markdown);
     const preprocessed = preprocess(markdown);
-    const renderer = createCustomRenderer(true);
-
-    marked.use({ renderer });
-
-    const html = marked.parse(preprocessed);
+    
+    // Configure marked to properly parse markdown tokens including bold, italic, strikethrough
+    const html = marked.parse(preprocessed, {
+      gfm: true,
+      breaks: true,
+      renderer: createCustomRenderer(true)
+    });
+    
     return html as string;
   } catch (err) {
     console.error('Markdown (red box) conversion failed:', err);
