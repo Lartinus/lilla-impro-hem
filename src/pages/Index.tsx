@@ -1,10 +1,7 @@
-
 import Header from '@/components/Header';
 import ServiceBoxes from '@/components/ServiceBoxes';
-
 const Index = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+  return <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
       <Header />
       <section className="min-h-screen flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
         <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
@@ -13,10 +10,10 @@ const Index = () => {
             
             {/* Beskrivning */}
             <div className="max-w-4xl space-y-2 pb-1">
-              <h1>
+              <h1 className="my-[5px]">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
-              <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
+              <p className="text-base md:text-lg text-gray-700 font-light leading-tight py-[10px]">
                 Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i trygga och inspirerande kursmiljöer, 
                 och ta del av roliga, smarta och lekfulla föreställningar.
@@ -38,8 +35,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
