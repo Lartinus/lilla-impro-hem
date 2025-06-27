@@ -16,7 +16,11 @@ interface CourseInfoSectionProps {
 const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
   if (!mainInfo) return null;
 
-  const { info = '', redbox = '', infoAfterRedbox = '' } = mainInfo;
+  const {
+    info = '',
+    redbox = '',
+    infoAfterRedbox = '',
+  } = mainInfo;
 
   const htmlInfo  = convertMarkdownToHtml(info);
   const htmlRed   = convertMarkdownToHtmlForRedBox(redbox);
@@ -35,7 +39,13 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
 
         {htmlRed && (
           <div
-            className="callout"
+            className="
+              prose
+              prose-invert         /* inverterar allt till vitt */
+              bg-theatre-secondary /* din röda bakgrund */
+              p-6                  /* inre padding */
+              rounded-none         /* inga rundade hörn */
+            "
             dangerouslySetInnerHTML={{ __html: htmlRed }}
           />
         )}
@@ -48,7 +58,7 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
         )}
       </div>
     </section>
-  );
-};
+  )
+}
 
 export default CourseInfoSection;
