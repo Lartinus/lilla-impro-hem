@@ -44,7 +44,7 @@ const Mohippa = () => {
 
             <p>Vi kommer gärna till er – eller hjälper till att ordna plats i samarbete med lokaler i Stockholm.</p>
 
-            <h3>Exempel på tillfällen vi passar för:</h3>
+            <h3>Exempel på tillfällen vi passar för</h3>
             <ul>
               <li className="flex items-center">
                 <ArrowRight className="text-red-800 mr-2 flex-shrink-0" size={16} />
