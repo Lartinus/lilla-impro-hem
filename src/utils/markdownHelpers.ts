@@ -10,7 +10,7 @@ function preprocess(md: string): string {
   let s = md.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
 
   // Sätt in mellanslag efter rubriker som saknar det (##Rubrik -> ## Rubrik)
-  s = s.replace(/^([#]{1,6})([^\s])/gm, '$1 $2');
+  s = s.replace(/^([#]{1,6})([^\s#])/gm, '$1 $2'); // <- fixad regex!
 
   // Konvertera pil-listor till markdown-listor
   s = s.replace(/^→\s*/gm, '- ');
