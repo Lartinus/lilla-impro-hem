@@ -1,3 +1,4 @@
+
 // src/components/CourseInfoSection.tsx
 import React from 'react'
 import {
@@ -42,7 +43,7 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
         {/* Röd callout med vit text */}
         {htmlRed && (
           <div
-            className="prose prose-invert bg-theatre-secondary p-6 rounded-none"
+            className="bg-theatre-secondary p-6 rounded-none text-white [&>*]:text-white [&>p]:text-white [&>h1]:text-white [&>h2]:text-white [&>h3]:text-white [&>h4]:text-white [&>h5]:text-white [&>h6]:text-white"
             dangerouslySetInnerHTML={{ __html: htmlRed }}
           />
         )}
