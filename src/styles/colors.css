@@ -77,4 +77,14 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+@layer components {
+  .callout {
+    background-color: hsl(var(--theatre-secondary));
+    color:            hsl(var(--p-dark-color));
+    padding:          1.5rem;
+  }
+  .callout * {
+    color: inherit;
+  }
 }
