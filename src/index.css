@@ -41,19 +41,19 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    --h1-light-color: #1A1A1A;
+    --h1-light-color: #2A2A2A;
     --h2-light-color: #2A2A2A;
     --h3-light-color: #2A2A2A;
-    --h4-light-color: #3a1212;
+    --h4-light-color: #2A2A2A;
     --h5-light-color: #555555;
     --h6-light-color: #71717A;
 
-    --h1-dark-color: #FFFFFF;
+    --h1-dark-color: #F5F5F5;
     --h2-dark-color: #F5F5F5;
-    --h3-dark-color: #E5E5E5;
-    --h4-dark-color: #D4D4D4;
-    --h5-dark-color: #BBBBBB;
-    --h6-dark-color: #A1A1AA;
+    --h3-dark-color: #F5F5F5;
+    --h4-dark-color: #F5F5F54;
+    --h5-dark-color: #F5F5F5;
+    --h6-dark-color: #F5F5F5;
   }
 
   .dark {
