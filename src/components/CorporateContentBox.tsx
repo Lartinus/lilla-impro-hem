@@ -31,7 +31,7 @@ const CorporateContentBox = () => (
         ["Ledarskapsträning", "Utveckla förmågan att ta initiativ, stötta teammedlemmar och hantera osäkerhet med självförtroende och anpassningsförmåga."]
       ].map(([title, body], i) => (
         <div key={i}>
-          <h4>{title}</h4>
+          <h5>{title}</h5>
           <p>{body}</p>
         </div>
       ))}
