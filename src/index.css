@@ -46,7 +46,7 @@
     --h3-light-color: #2A2A2A;
     --h4-light-color: #2A2A2A;
     --h5-light-color: #772424;
-    --h6-light-color: #71717A;
+    --h6-light-color: #2A2A2A;
 
     --h1-dark-color: #F5F5F5;
     --h2-dark-color: #F5F5F5;
@@ -152,7 +152,7 @@
   h3 { font-size: clamp(1.15rem, 4vw, 1.4rem); }
   h4 { font-size: clamp(1.15rem, 3vw, 1.6rem); }
   h5 { font-size: clamp(1.125rem, 2.5vw, 1.25rem); }
-  h6 { font-size: clamp(1rem, 2vw, 1.25rem); }
+  h6 { font-size: clamp(1.125rem, 2.5vw, 1.25rem); }
 
   p, .text-base, .leading-relaxed, .body-text {
     line-height: 1.5 !important;

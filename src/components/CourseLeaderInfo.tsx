@@ -18,7 +18,7 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
 
   return (
     <div className="mb-6">
-      <h4 className="text-gray-800 font-bold mb-3">Kursledare</h4>
+      <h4>Kursledare</h4>
       <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
         {/* Byt md:flex-row -> lg:flex-row för att stacka på md */}
         <div className="flex flex-col lg:flex-row items-start space-y-4 lg:space-y-0 lg:space-x-4">
@@ -31,9 +31,9 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
           />
           
           <div className="flex-1 min-w-0">
-            <h5 className="font-bold text-gray-800 teacher-name md:text-left mb-0">
+            <h6 className="teacher-name md:text-left mb-0">
               {courseLeader.name}
-            </h5>
+            </h6>
             <div 
               className="text-gray-700 text-sm break-words body-text teacher-bio [&>p]:mb-1 [&>p]:mt-0 [&>h1]:mb-0.5 [&>h2]:mb-0.5 [&>h3]:mb-0.5 [&>h4]:mb-0.5 [&>h5]:mb-0.5 [&>h6]:mb-0.5 [&>*:first-child]:mt-0"
               style={{ 
