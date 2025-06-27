@@ -8,7 +8,7 @@ const CorporateContentBox = () => (
       <h2>Workshops & Events för er organisation</h2>
       <h5>
         Utveckla kreativitet, samarbete och kommunikation genom improvisationsteater.
-      </h3>
+      </h5>
       <p>
         Improvisationsteater är ett kraftfullt verktyg för teambuilding, kreativ problemlösning och 
         kommunikationsutveckling. Våra skräddarsydda workshops hjälper era medarbetare att utveckla 
