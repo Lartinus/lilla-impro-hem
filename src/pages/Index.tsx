@@ -14,8 +14,8 @@ const Index = () => {
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
               <p className="text-base md:text-lg font-light leading-tight py-[10px]">
-                Vi tror på att humor går att träna – och att den blir allra bäst när vi skapar den tillsammans. 
-                På vår teater får du utvecklas som improvisatör i trygga och inspirerande kursmiljöer, 
+                Vi tror på att humor går att träna och att den blir allra bäst när vi skapar den tillsammans. 
+                På vår teater får du utvecklas som improvisatör i inspirerande kursmiljöer 
                 och ta del av roliga, smarta och lekfulla föreställningar.
               </p>
             </div>
