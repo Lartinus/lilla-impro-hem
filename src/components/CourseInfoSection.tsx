@@ -22,6 +22,8 @@ function ensureString(input: string | object): string {
 const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
   if (!mainInfo) return null;
 
+  console.log('mainInfo:', mainInfo);
+  
   const rawInfo = ensureString(mainInfo.info);
   const rawRedbox = ensureString(mainInfo.redbox);
   const rawAfter = ensureString(mainInfo.infoAfterRedbox);
