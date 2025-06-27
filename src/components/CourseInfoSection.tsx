@@ -28,7 +28,7 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
           */}
           {mainInfo.info && (
             <div
-              className="space-y-6 text-base"
+              className="space-y-6 text-base bg-white"
               dangerouslySetInnerHTML={{
                 __html: convertMarkdownToHtml(mainInfo.info),
               }}
