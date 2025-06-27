@@ -107,8 +107,8 @@ export const convertMarkdownToHtml = (markdown: string): string => {
     const preprocessed = preprocess(markdown);
     const renderer = createCustomRenderer(false);
 
-    marked.use({ renderer }); // Registrera renderern först
-    const html = marked.parse(preprocessed);
+    const tokens = marked.lexer(preprocessed);
+    const html = marked.parser(tokens, { renderer });
 
     return html;
   } catch (err) {
