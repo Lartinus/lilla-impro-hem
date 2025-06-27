@@ -162,7 +162,13 @@
   h5 { font-size: clamp(1.125rem, 2.5vw, 1.25rem); }
   h6 { font-size: clamp(1.125rem, 2.5vw, 1.25rem); }
 
-  p, .text-base, .leading-relaxed, .body-text {
-    line-height: 1.5 !important;
-  }
+  p, .text-base, .leading-relaxed, .body-text { line-height: 1.5 !important; 
+
+  .rich-text p { color: inherit; } /* Ärver rätt färg från t.ex. bg-white */
+  .rich-text h1,
+  .rich-text h2,
+  .rich-text h3,
+  .rich-text h4,
+  .rich-text h5,
+  .rich-text h6 { color: inherit;}
 }
