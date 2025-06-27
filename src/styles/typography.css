@@ -1,0 +1,107 @@
+
+@layer base {
+  body {
+    font-family: "Satoshi", sans-serif;
+    @apply bg-background text-foreground;
+  }
+
+  h1 {
+    font-family: "RetroVoice", sans-serif;
+    line-height: 1.0;
+    font-size: clamp(1.8rem, 6vw, 3rem);
+  }
+
+  h2, h3, h4, h5, h6 {
+    font-family: "RetroVoice", sans-serif;
+    line-height: 1.2;
+  }
+
+  h2 { font-size: clamp(1.5rem, 5vw, 1.75rem); }
+  h3 { font-size: clamp(1.15rem, 4vw, 1.4rem); }
+  h4 { font-size: clamp(1.15rem, 3vw, 1.6rem); }
+  h5 { font-size: clamp(1.125rem, 2.5vw, 1.25rem); }
+  h6 { font-size: clamp(1.125rem, 2.5vw, 1.25rem); }
+
+  h1 + p,
+  h2 + p,
+  h3 + p,
+  h4 + p,
+  h5 + p,
+  h6 + p {
+    margin-top: 0.75rem;
+  }
+
+  p,
+  .text-base,
+  .leading-relaxed,
+  .body-text {
+    line-height: 1.5 !important;
+  }
+
+  .bg-white p,
+  .bg-theatre-light p {
+    color: var(--h1-light-color);
+  }
+
+  .bg-black p,
+  .bg-theatre-primary p,
+  .bg-theatre-dark p {
+    color: var(--h1-dark-color);
+  }
+
+  .bg-white h1, .bg-theatre-light h1 { color: var(--h1-light-color); }
+  .bg-white h2, .bg-theatre-light h2 { color: var(--h2-light-color); }
+  .bg-white h3, .bg-theatre-light h3 { color: var(--h3-light-color); }
+  .bg-white h4, .bg-theatre-light h4 { color: var(--h4-light-color); }
+  .bg-white h5, .bg-theatre-light h5 { color: var(--h5-light-color); }
+  .bg-white h6, .bg-theatre-light h6 { color: var(--h6-light-color); }
+
+  .bg-theatre-primary h1,
+  .bg-theatre-dark h1,
+  .bg-black h1 {
+    color: var(--h1-dark-color);
+  }
+
+  .bg-theatre-primary h2,
+  .bg-theatre-dark h2,
+  .bg-black h2 {
+    color: var(--h2-dark-color);
+  }
+
+  .bg-theatre-primary h3,
+  .bg-theatre-dark h3,
+  .bg-black h3 {
+    color: var(--h3-dark-color);
+  }
+
+  .bg-theatre-primary h4,
+  .bg-theatre-dark h4,
+  .bg-black h4 {
+    color: var(--h4-dark-color);
+  }
+
+  .bg-theatre-primary h5,
+  .bg-theatre-dark h5,
+  .bg-black h5 {
+    color: var(--h5-dark-color);
+  }
+
+  .bg-theatre-primary h6,
+  .bg-theatre-dark h6,
+  .bg-black h6 {
+    color: var(--h6-dark-color);
+  }
+
+  .rich-text p {
+    color: inherit;
+  }
+
+  .rich-text h1,
+  .rich-text h2,
+  .rich-text h3,
+  .rich-text h4,
+  .rich-text h5,
+  .rich-text h6 {
+    color: inherit;
+  }
+}
