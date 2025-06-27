@@ -1,7 +1,5 @@
 import CorporateInquiryForm from "@/components/CorporateInquiryForm";
-
-const CorporateContentBox = () => (
-  <div className="space-y-10 bg-white/90 backdrop-blur-sm p-6 md:p-8 lg:p-12 mx-3 md:mx-auto md:max-w-4xl shadow-xl">
+const CorporateContentBox = () => <div className="space-y-10 bg-white/90 backdrop-blur-sm p-6 md:p-8 lg:p-12 mx-3 md:mx-auto md:max-w-4xl shadow-xl">
     <div className="text-left">
       <h2>Workshops & Events för er organisation</h2>
       <h3 className="text-theatre-secondary">Utveckla kreativitet, samarbete och kommunikation genom improvisationsteater.</h3>
@@ -53,26 +51,19 @@ const CorporateContentBox = () => (
     </div>
 
     <div className="text-left">
-      <h2>Så här går det till</h2>
+      <h2 className="py-0 my-[24px]">Så här går det till</h2>
       <div className="space-y-4">
-        {["Första samtalet", "Skräddarsytt förslag", "Genomförande", "Uppföljning"].map((step, i) => (
-          <div key={i} className="flex items-start space-x-4">
+        {["Första samtalet", "Skräddarsytt förslag", "Genomförande", "Uppföljning"].map((step, i) => <div key={i} className="flex items-start space-x-4">
             <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
               {i + 1}
             </div>
             <div>
               <h3 className="text-theatre-secondary">{step}</h3>
               <p>
-                {[
-                  "Vi träffas (digitalt eller fysiskt) för att förstå era mål, utmaningar och vilken typ av workshop som skulle passa bäst.",
-                  "Vi utformar en workshop som är anpassad efter er grupp, era mål och tillgänglig tid.",
-                  "Vi kommer till er (eller annan plats) och genomför workshopen.",
-                  "Vi följer upp för att höra hur ni upplevde workshopen och diskuterar eventuella fortsättningsaktiviteter."
-                ][i]}
+                {["Vi träffas (digitalt eller fysiskt) för att förstå era mål, utmaningar och vilken typ av workshop som skulle passa bäst.", "Vi utformar en workshop som är anpassad efter er grupp, era mål och tillgänglig tid.", "Vi kommer till er (eller annan plats) och genomför workshopen.", "Vi följer upp för att höra hur ni upplevde workshopen och diskuterar eventuella fortsättningsaktiviteter."][i]}
               </p>
             </div>
-          </div>
-        ))}
+          </div>)}
       </div>
     </div>
 
@@ -83,7 +74,5 @@ const CorporateContentBox = () => (
       </p>
       <CorporateInquiryForm />
     </div>
-  </div>
-);
-
+  </div>;
 export default CorporateContentBox;
