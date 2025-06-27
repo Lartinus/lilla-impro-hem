@@ -36,14 +36,11 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
       {/* DEN VITA RUTAN */}
       <div
         className="
-          bg-white               /* Vit bakgrund */
-          dark:bg-gray-900       /* Mörk variant om dark mode */
-          text-gray-900          /* Text‐färg i ljust läge */
-          dark:text-gray-100     /* Text‐färg i mörkt läge */
-          max-w-5xl w-full        /* Max‐bredd + full bredd på små skärmar */
-          p-8                    /* Padding runt allt innehåll */
-          shadow-lg              /* Mjuk skugga för djup */
-          space-y-12             /* Avstånd mellan blocken */
+          bg-white
+          max-w-5xl w-full
+          p-8
+          shadow-lg
+          space-y-12
         "
       >
         {htmlInfo && (
