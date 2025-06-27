@@ -5,33 +5,26 @@ import PrivateInquiryForm from '@/components/PrivateInquiryForm';
 import { ArrowRight } from 'lucide-react';
 import { useEffect } from 'react';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
-
 const Mohippa = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
-      <link
-        href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap"
-        rel="stylesheet"
-      />
+  return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
+      <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       <SimpleParallaxHero imageSrc="/lovable-uploads/1287edaf-8412-4d2b-b6e4-b6fb8426185d.png" />
 
-      <section
-        className="py-8 px-0.5 md:px-4 flex-1 relative z-10"
-        style={{ paddingTop: '220px' }}
-      >
+      <section className="py-8 px-0.5 md:px-4 flex-1 relative z-10" style={{
+      paddingTop: '220px'
+    }}>
         <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
 
           {/* Huvudinnehåll */}
           <div>
             <h2>Impro för möhippa, svensexa eller festen.</h2>
-            <p>
-              Improv Comedy är en perfekt aktivitet för att skapa skratt, gemenskap och minnen. Vi tar med oss det vi älskar med improv comedy – värme, överraskning och lekfullhet – och skapar något som passar just er.
-            </p>
+            <p>Improv Comedy är en perfekt aktivitet för att skapa skratt, gemenskap och minnen. Vi tar med oss det vi älskar med improv comedy – värme, överraskning och lekfullhet – och skapar något som passar just er.
+
+          </p>
 
             <h2>Vad kan ni boka?</h2>
             <ul>
@@ -49,9 +42,7 @@ const Mohippa = () => {
               </li>
             </ul>
 
-            <p>
-              Vi kommer gärna till er – eller hjälper till att ordna plats i samarbete med lokaler i Stockholm.
-            </p>
+            <p>Vi kommer gärna till er – eller hjälper till att ordna plats i samarbete med lokaler i Stockholm.</p>
 
             <h2>Exempel på tillfällen vi passar för:</h2>
             <ul>
@@ -82,8 +73,6 @@ const Mohippa = () => {
 
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Mohippa;
