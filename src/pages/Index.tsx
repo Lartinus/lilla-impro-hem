@@ -24,7 +24,7 @@ const Index = () => {
               <ServiceBoxes />
             </div>
             <div className="bg-white">
-            <p>
+            <p  className="text-base md:text-lg font-light leading-tight py-[10px]">
                 Vi bygger med kvalitet, nyfikenhet och ett stort fokus på att göra improvisatörerna bättre och publiken gladare – och på att skapa ett community där du som elev, improvisatör och publik blir en del av något större. Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
             </div>
