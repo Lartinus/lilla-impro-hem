@@ -1,35 +1,37 @@
 // src/components/CourseInfoSection.tsx
-import React from 'react';
+import React from 'react'
 import {
   convertMarkdownToHtml,
   convertMarkdownToHtmlForRedBox,
-} from '@/utils/markdownHelpers';
+} from '@/utils/markdownHelpers'
 
 interface CourseInfoSectionProps {
-  mainInfo: {
-    info?: string;
-    redbox?: string;
-    infoAfterRedbox?: string;
-  } | null;
+  mainInfo:
+    | {
+        info?: string
+        redbox?: string
+        infoAfterRedbox?: string
+      }
+    | null
 }
 
 const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
-  if (!mainInfo) return null;
+  if (!mainInfo) return null
 
   const {
     info = '',
     redbox = '',
     infoAfterRedbox = '',
-  } = mainInfo;
+  } = mainInfo
 
-  const htmlInfo  = convertMarkdownToHtml(info);
-  const htmlRed   = convertMarkdownToHtmlForRedBox(redbox);
-  const htmlAfter = convertMarkdownToHtml(infoAfterRedbox);
+  const htmlInfo = convertMarkdownToHtml(info)
+  const htmlRed = convertMarkdownToHtmlForRedBox(redbox)
+  const htmlAfter = convertMarkdownToHtml(infoAfterRedbox)
 
   return (
     <section className="flex justify-center px-4 md:px-0 mt-12">
-      {/* den vita yttre boxen */}
       <div className="bg-white max-w-5xl w-full p-8 shadow-lg rounded-none space-y-12">
+        {/* Första textblocket */}
         {htmlInfo && (
           <div
             className="prose"
@@ -37,19 +39,15 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
           />
         )}
 
+        {/* Röd callout med vit text */}
         {htmlRed && (
           <div
-            className="
-              prose
-              prose-invert         /* inverterar allt till vitt */
-              bg-theatre-secondary /* din röda bakgrund */
-              p-6                  /* inre padding */
-              rounded-none         /* inga rundade hörn */
-            "
+            className="prose prose-invert bg-theatre-secondary p-6 rounded-none"
             dangerouslySetInnerHTML={{ __html: htmlRed }}
           />
         )}
 
+        {/* Avslutande textblock */}
         {htmlAfter && (
           <div
             className="prose"
@@ -61,4 +59,4 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
   )
 }
 
-export default CourseInfoSection;
+export default CourseInfoSection
