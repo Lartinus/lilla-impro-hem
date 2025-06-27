@@ -6,7 +6,7 @@ const CorporateContentBox = () => (
     {/* Intro */}
     <div className="space-y-6">
       <h2>Workshops & Events för er organisation</h2>
-      <h3 className="text-theatre-secondary">
+      <h5>
         Utveckla kreativitet, samarbete och kommunikation genom improvisationsteater.
       </h3>
       <p>
@@ -31,7 +31,7 @@ const CorporateContentBox = () => (
         ["Ledarskapsträning", "Utveckla förmågan att ta initiativ, stötta teammedlemmar och hantera osäkerhet med självförtroende och anpassningsförmåga."]
       ].map(([title, body], i) => (
         <div key={i}>
-          <h3 className="text-theatre-secondary">{title}</h3>
+          <h4>{title}</h4>
           <p>{body}</p>
         </div>
       ))}
