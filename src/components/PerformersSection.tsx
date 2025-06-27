@@ -17,7 +17,7 @@ const PerformersSection = ({
   console.log('PerformersSection - performers:', performers);
   if (!performers || performers.length === 0) return null;
   return <div className="mb-6">
-      <h3 className="mb-3">{title}</h3>
+      <h2 className="mb-3">{title}</h2>
       <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
         <div className="space-y-6">
           {performers.map(performer => {
