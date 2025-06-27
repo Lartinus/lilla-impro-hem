@@ -21,10 +21,10 @@ function preprocess(md: string): string {
   // Ta bort BOM och normalisera radslut
   let s = md.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
 
-  // Sätt in mellanslag efter rubriker som saknar det (##Rubrik -> ## Rubrik)
-  s = s.replace(/^([#]{1,6})([^\s])/gm, '$1 $2');
+  // Sätt in blanksteg efter rubriker som saknar det
+  s = s.replace(/(^|\n)(#{1,6})(?=\S)/g, '$1$2 ');
 
-  // Konvertera pil-listor till markdown-listor
+  // Konvertera pil-listor till markdown-listor för korrekt hantering
   s = s.replace(/^→\s*/gm, '- ');
 
   return s;
