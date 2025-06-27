@@ -1,4 +1,3 @@
-
 // src/components/CourseInfoSection.tsx
 
 import React from 'react';
@@ -13,36 +12,28 @@ interface CourseInfoSectionProps {
 }
 
 const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
-  // Om mainInfo inte finns (null/undefined), returnera ingenting
-  if (!mainInfo) {
-    return null;
-  }
+  if (!mainInfo) return null;
 
   return (
     <div className="mx-[12px] md:mx-0 md:max-w-3xl md:mx-auto mt-4">
       <div className="space-y-6 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none">
         <div className="text-left space-y-6">
-          {/*
-            1) RENDERA FÖRSTA TEXTBLOKKEN (info)
-               Vi skickar in exakt den *råa* markdown‐strängen till convertMarkdownToHtml
-          */}
+
+          {/* 1. FÖRSTA TEXTBLOKKEN */}
           {mainInfo.info && (
             <div
-              className="space-y-6 text-base bg-white"
+              className="rich-text"
               dangerouslySetInnerHTML={{
                 __html: convertMarkdownToHtml(mainInfo.info),
               }}
             />
           )}
 
-          {/*
-            2) RENDERA DEN RÖDA BOXEN (redbox)
-               Här anropar vi convertMarkdownToHtmlForRedBox för att få vit text
-          */}
+          {/* 2. DEN RÖDA BOXEN */}
           {mainInfo.redbox && (
             <div className="bg-red-700 p-6 rounded-none relative">
               <div
-                className="text-base font-light body-text"
+                className="rich-text text-white"
                 dangerouslySetInnerHTML={{
                   __html: convertMarkdownToHtmlForRedBox(mainInfo.redbox),
                 }}
@@ -50,18 +41,16 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
             </div>
           )}
 
-          {/*
-            3) RENDERA ALLA EFTERFÖLJANDE TEXTBLOCK (infoAfterRedbox)
-               Samma som första, vi återanvänder convertMarkdownToHtml
-          */}
+          {/* 3. TEXT EFTER RÖDA BOXEN */}
           {mainInfo.infoAfterRedbox && (
             <div
-              className="space-y-6 text-gray-700 text-base body-text"
+              className="rich-text"
               dangerouslySetInnerHTML={{
                 __html: convertMarkdownToHtml(mainInfo.infoAfterRedbox),
               }}
             />
           )}
+          
         </div>
       </div>
     </div>
