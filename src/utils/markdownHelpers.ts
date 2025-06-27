@@ -1,85 +1,71 @@
 import { marked } from 'marked';
 
-//
-// PREPROCESS: Normalisera markdown-input och hantera pil-listor
-//
 function preprocess(md: string): string {
   if (!md) return '';
-
-  // Ta bort BOM och normalisera radslut
   let s = md.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
-
-  // Sätt in mellanslag efter rubriker som saknar det (##Rubrik -> ## Rubrik)
-  s = s.replace(/^([#]{1,6})([^\s#])/gm, '$1 $2'); // <- fixad regex!
-
-  // Konvertera pil-listor till markdown-listor
+  s = s.replace(/^([#]{1,6})([^\s])/gm, '$1 $2');
   s = s.replace(/^→\s*/gm, '- ');
-
   return s;
 }
 
-//
-// CUSTOM RENDERER (kompatibel med marked@5+)
-//
-function createCustomRenderer(isRedBox = false) {
-  const wrapperTextClass = isRedBox ? 'rich-text rich-text-redbox' : 'rich-text';
+function createCustomRenderer(isRedBox = false): marked.Renderer {
+  const renderer = new marked.Renderer();
 
-  return {
-    extensions: [
-      {
-        name: 'custom-renderer',
-        renderer: {
-          heading(text: string, level: number) {
-            return `<h${level}>${text}</h${level}>`;
-          },
-          paragraph(text: string) {
-            return `<p>${text}</p>`;
-          },
-          list(body: string, ordered: boolean) {
-            return `<${ordered ? 'ol' : 'ul'}>${body}</${ordered ? 'ol' : 'ul'}>`;
-          },
-          listitem(text: string) {
-            return `<li>${text}</li>`;
-          },
-          link(href: string, title: string | null, text: string) {
-            const titleAttr = title ? ` title="${title}"` : '';
-            return `<a href="${href}"${titleAttr} class="underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
-          },
-          strong(text: string) {
-            return `<strong>${text}</strong>`;
-          },
-          em(text: string) {
-            return `<em>${text}</em>`;
-          },
-          del(text: string) {
-            return `<del>${text}</del>`;
-          },
-          codespan(text: string) {
-            return `<code>${text}</code>`;
-          },
-          code(code: string) {
-            return `<pre><code>${code}</code></pre>`;
-          },
-          html(html: string) {
-            return html.replace(/<u>(.*?)<\/u>/g, '<u class="underline">$1</u>');
-          }
-        }
-      }
-    ]
+  renderer.heading = function (text, level) {
+    return `<h${level}>${text}</h${level}>`;
   };
+
+  renderer.paragraph = function (text) {
+    return `<p>${text}</p>`;
+  };
+
+  renderer.list = function (body, ordered) {
+    const tag = ordered ? 'ol' : 'ul';
+    return `<${tag}>${body}</${tag}>`;
+  };
+
+  renderer.listitem = function (text) {
+    return `<li>${text}</li>`;
+  };
+
+  renderer.link = function (href, title, text) {
+    const titleAttr = title ? ` title="${title}"` : '';
+    return `<a href="${href}"${titleAttr} class="underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+  };
+
+  renderer.strong = function (text) {
+    return `<strong>${text}</strong>`;
+  };
+
+  renderer.em = function (text) {
+    return `<em>${text}</em>`;
+  };
+
+  renderer.del = function (text) {
+    return `<del>${text}</del>`;
+  };
+
+  renderer.codespan = function (text) {
+    return `<code>${text}</code>`;
+  };
+
+  renderer.code = function (code) {
+    return `<pre><code>${code}</code></pre>`;
+  };
+
+  renderer.html = function (html) {
+    return html.replace(/<u>(.*?)<\/u>/g, '<u class="underline">$1</u>');
+  };
+
+  return renderer;
 }
 
-//
-// EXPORTERA FUNKTIONER
-//
 export const convertMarkdownToHtml = (markdown: string): string => {
   if (!markdown) return '';
-
   try {
     const preprocessed = preprocess(markdown);
-    const localMarked = new marked.Marked(); // ← Isolerad instans
-    localMarked.use(createCustomRenderer(false));
-    return localMarked.parse(preprocessed);
+    const html = marked(preprocessed, { renderer: createCustomRenderer(false) });
+    return html;
   } catch (err) {
     console.error('Markdown conversion failed:', err);
     return markdown;
@@ -88,12 +74,10 @@ export const convertMarkdownToHtml = (markdown: string): string => {
 
 export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
   if (!markdown) return '';
-
   try {
     const preprocessed = preprocess(markdown);
-    const localMarked = new marked.Marked(); // ← Isolerad instans
-    localMarked.use(createCustomRenderer(true));
-    return localMarked.parse(preprocessed);
+    const html = marked(preprocessed, { renderer: createCustomRenderer(true) });
+    return html;
   } catch (err) {
     console.error('Markdown (red box) conversion failed:', err);
     return markdown;
