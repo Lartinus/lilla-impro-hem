@@ -77,8 +77,9 @@ export const convertMarkdownToHtml = (markdown: string): string => {
 
   try {
     const preprocessed = preprocess(markdown);
-    marked.use(createCustomRenderer(false));
-    return marked.parse(preprocessed);
+    const localMarked = new marked.Marked(); // ← Isolerad instans
+    localMarked.use(createCustomRenderer(false));
+    return localMarked.parse(preprocessed);
   } catch (err) {
     console.error('Markdown conversion failed:', err);
     return markdown;
@@ -90,8 +91,9 @@ export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
 
   try {
     const preprocessed = preprocess(markdown);
-    marked.use(createCustomRenderer(true));
-    return marked.parse(preprocessed);
+    const localMarked = new marked.Marked(); // ← Isolerad instans
+    localMarked.use(createCustomRenderer(true));
+    return localMarked.parse(preprocessed);
   } catch (err) {
     console.error('Markdown (red box) conversion failed:', err);
     return markdown;
