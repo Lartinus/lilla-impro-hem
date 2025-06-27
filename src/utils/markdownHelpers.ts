@@ -1,80 +1,82 @@
+// src/utils/markdownHelpers.ts
 import { marked } from 'marked';
 
 //
-// PREPROCESS: Normalisera markdown-input och hantera pil-listor
+// PREPROCESS: normalisera input och pilar till riktiga markdown-listor
 //
 function preprocess(md: string): string {
   if (!md) return '';
-
   // Ta bort BOM och normalisera radslut
   let s = md.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
-
-  // Sätt in mellanslag efter rubriker som saknar det (##Rubrik -> ## Rubrik)
+  // Sätt in mellanslag efter rubrik-tecken (##Rubrik → ## Rubrik)
   s = s.replace(/^([#]{1,6})([^\s])/gm, '$1 $2');
-
-  // Konvertera pil-listor till markdown-listor
+  // Pil-listor → riktiga markdown-listor
   s = s.replace(/^→\s*/gm, '- ');
-
   return s;
 }
 
 //
-// CUSTOM RENDERER (kompatibel med marked@5+)
+// Skapa en egen renderer för marked@5+
 //
-function createCustomRenderer(isRedBox = false): marked.Renderer {
+function createCustomRenderer(isRedBox = false): marked.MarkedOptions {
   const renderer = new marked.Renderer();
 
-  renderer.paragraph = (text: string) => `<p>${text}</p>`;
-
-  renderer.heading = (text: string, level: number) => {
+  // Rubriker
+  renderer.heading = (text, level) => {
     return `<h${level}>${text}</h${level}>`;
   };
 
-  renderer.list = (body: string, ordered: boolean) => {
-    return `<${ordered ? 'ol' : 'ul'}>${body}</${ordered ? 'ol' : 'ul'}>`;
+  // Paragrafer
+  renderer.paragraph = (text) => {
+    return `<p>${text}</p>`;
   };
 
-  renderer.listitem = (text: string) => `<li>${text}</li>`;
+  // Listor
+  renderer.list = (body, ordered) => {
+    const tag = ordered ? 'ol' : 'ul';
+    return `<${tag}>${body}</${tag}>`;
+  };
+  renderer.listitem = (text) => {
+    return `<li>${text}</li>`;
+  };
 
-  renderer.link = (href: string, title: string | null, text: string) => {
+  // Länkar
+  renderer.link = (href, title, text) => {
     const titleAttr = title ? ` title="${title}"` : '';
-    return `<a href="${href}"${titleAttr} class="underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    return `<a href="${href}"${titleAttr} target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
-  renderer.strong = (text: string) => `<strong>${text}</strong>`;
-  renderer.em = (text: string) => `<em>${text}</em>`;
-  renderer.del = (text: string) => `<del>${text}</del>`;
-  renderer.codespan = (text: string) => `<code>${text}</code>`;
-  renderer.code = (code: string) => `<pre><code>${code}</code></pre>`;
-  renderer.html = (html: string) =>
-    html.replace(/<u>(.*?)<\/u>/g, '<u class="underline">$1</u>');
+  // Fet, kursiv, strike
+  renderer.strong = (text) => `<strong>${text}</strong>`;
+  renderer.em = (text) => `<em>${text}</em>`;
+  renderer.del = (text) => `<del>${text}</del>`;
 
-  return renderer;
+  // Kod inline & block
+  renderer.codespan = (code) => `<code>${code}</code>`;
+  renderer.code = (code, infostring, escaped) => `<pre><code>${code}</code></pre>`;
+
+  // Rå HTML
+  renderer.html = (html) => html.replace(/<u>(.*?)<\/u>/g, '<u class="underline">$1</u>');
+
+  return { renderer };
 }
 
 //
-// EXPORTERA FUNKTIONER
+// EXPORTERA två funktioner för vanlig text respektive “red box”
 //
-export const convertMarkdownToHtml = (markdown: string): string => {
+export function convertMarkdownToHtml(markdown: string): string {
   if (!markdown) return '';
+  // 1) normalisera
+  const pre = preprocess(markdown);
+  // 2) registrera renderer
+  marked.use(createCustomRenderer(false));
+  // 3) parse
+  return marked.parse(pre);
+}
 
-  try {
-    const preprocessed = preprocess(markdown);
-    return marked.parse(preprocessed, { renderer: createCustomRenderer(false) });
-  } catch (err) {
-    console.error('Markdown conversion failed:', err);
-    return markdown;
-  }
-};
-
-export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
+export function convertMarkdownToHtmlForRedBox(markdown: string): string {
   if (!markdown) return '';
-
-  try {
-    const preprocessed = preprocess(markdown);
-    return marked.parse(preprocessed, { renderer: createCustomRenderer(true) });
-  } catch (err) {
-    console.error('Markdown (red box) conversion failed:', err);
-    return markdown;
-  }
-};
+  const pre = preprocess(markdown);
+  marked.use(createCustomRenderer(true));
+  return marked.parse(pre);
+}
