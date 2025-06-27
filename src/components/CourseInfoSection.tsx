@@ -53,7 +53,7 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
         {htmlRed && (
           <div
             className="
-              prose
+              prose prose-invert
               bg-theatre-secondary  /* Din röda bakgrund */
               text-white            /* Vit text i röd box */
               p-6                   /* Padding i callouten */
