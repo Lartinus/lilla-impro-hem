@@ -1,4 +1,5 @@
 import React from 'react';
+import { convertMarkdownToHtml, convertMarkdownToHtmlForRedBox } from '@/utils/markdownHelpers';
 
 interface CourseInfoSectionProps {
   mainInfo: {
@@ -11,30 +12,23 @@ interface CourseInfoSectionProps {
 const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
   if (!mainInfo) return null;
 
+  // ⬇️ Konvertera markdown till HTML
+  const htmlInfo = convertMarkdownToHtml(mainInfo.info);
+  const htmlRedbox = convertMarkdownToHtmlForRedBox(mainInfo.redbox);
+  const htmlAfter = convertMarkdownToHtml(mainInfo.infoAfterRedbox);
+
   return (
     <section className="px-4 md:px-0 max-w-5xl mx-auto space-y-12 mt-12">
-      {/* Vanlig info */}
-      {mainInfo.info && (
-        <div
-          className="rich-text"
-          dangerouslySetInnerHTML={{ __html: mainInfo.info }}
-        />
+      {htmlInfo && (
+        <div className="rich-text" dangerouslySetInnerHTML={{ __html: htmlInfo }} />
       )}
 
-      {/* Redbox */}
-      {mainInfo.redbox && (
-        <div
-          className="rich-text rich-text-redbox"
-          dangerouslySetInnerHTML={{ __html: mainInfo.redbox }}
-        />
+      {htmlRedbox && (
+        <div className="rich-text rich-text-redbox" dangerouslySetInnerHTML={{ __html: htmlRedbox }} />
       )}
 
-      {/* Info efter redbox */}
-      {mainInfo.infoAfterRedbox && (
-        <div
-          className="rich-text"
-          dangerouslySetInnerHTML={{ __html: mainInfo.infoAfterRedbox }}
-        />
+      {htmlAfter && (
+        <div className="rich-text" dangerouslySetInnerHTML={{ __html: htmlAfter }} />
       )}
     </section>
   );
