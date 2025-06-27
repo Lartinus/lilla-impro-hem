@@ -12,10 +12,13 @@ export function convertMarkdownToHtml(markdown: string): string {
   // Ta bort eventuell BOM och normalisera radslut
   const cleaned = markdown.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
   // Standard parse utan avancerade extensions
-  return marked.parseInline(cleaned, {
+  const result = marked.parse(cleaned, {
     gfm: true,
     breaks: false,
   });
+  
+  // Hantera både synkron och asynkron marked.parse
+  return typeof result === 'string' ? result : '';
 }
 
 /**
@@ -24,8 +27,11 @@ export function convertMarkdownToHtml(markdown: string): string {
 export function convertMarkdownToHtmlForRedBox(markdown: string): string {
   if (!markdown) return '';
   const cleaned = markdown.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
-  return marked.parseInline(cleaned, {
+  const result = marked.parse(cleaned, {
     gfm: true,
     breaks: true,
   });
+  
+  // Hantera både synkron och asynkron marked.parse
+  return typeof result === 'string' ? result : '';
 }
