@@ -117,6 +117,10 @@
     margin-top: 0.75rem;
   }
 
+  .bg-white p,
+  .bg-theatre-light p { color: var(--h1-light-color);  }
+  .bg-black p,
+  .bg-theatre-primary p,.bg-theatre-dark p { color: var(--h1-dark-color); }
   .bg-white h1,
   .bg-theatre-light h1 { color: var(--h1-light-color); }
   .bg-white h2,
