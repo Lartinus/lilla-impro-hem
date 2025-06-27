@@ -1,7 +1,8 @@
-// src/components/CourseInfoSection.tsx
-
 import React from 'react';
-import { convertMarkdownToHtml, convertMarkdownToHtmlForRedBox } from '@/utils/markdownHelpers';
+import {
+  convertMarkdownToHtml,
+  convertMarkdownToHtmlForRedBox
+} from '@/utils/markdownHelpers';
 
 interface CourseInfoSectionProps {
   mainInfo: {
@@ -22,7 +23,6 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
           {/* 1. FÖRSTA TEXTBLOKKEN */}
           {mainInfo.info && (
             <div
-              className="rich-text"
               dangerouslySetInnerHTML={{
                 __html: convertMarkdownToHtml(mainInfo.info),
               }}
@@ -33,7 +33,6 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
           {mainInfo.redbox && (
             <div className="bg-red-700 p-6 rounded-none relative">
               <div
-                className="rich-text text-white"
                 dangerouslySetInnerHTML={{
                   __html: convertMarkdownToHtmlForRedBox(mainInfo.redbox),
                 }}
@@ -44,13 +43,12 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
           {/* 3. TEXT EFTER RÖDA BOXEN */}
           {mainInfo.infoAfterRedbox && (
             <div
-              className="rich-text"
               dangerouslySetInnerHTML={{
                 __html: convertMarkdownToHtml(mainInfo.infoAfterRedbox),
               }}
             />
           )}
-          
+
         </div>
       </div>
     </div>

@@ -33,92 +33,69 @@ function preprocess(md: string): string {
 // Custom renderer för att hantera specifika markdown-element
 function createCustomRenderer(isRedBox = false): any {
   const renderer = new marked.Renderer();
-  
-  const textColor = isRedBox ? 'text-white' : 'text-gray-800';
-  const linkColor = isRedBox ? 'text-ljusbla hover:text-ljusbla' : 'text-blue-500 hover:text-blue-700';
 
-  renderer.heading = function(token: any) {
+  // Endast justera färg om det är RedBox – annars låt allt ärva
+  const wrapperTextClass = isRedBox ? 'rich-text rich-text-redbox' : 'rich-text';
+
+  renderer.heading = function (token: any) {
     const text = getTextFromTokens(token.tokens);
     const depth = token.depth;
-    const headingColor = isRedBox ? 'text-white' : 'text-gray-800';
-    const classes: Record<number, string> = {
-      1: `text-xl md:text-2xl lg:text-3xl font-bold leading-tight ${headingColor} tracking-normal mb-2`,
-      2: `text-xl font-bold ${headingColor} mb-2`,
-      3: `text-lg font-medium ${isRedBox ? 'text-white' : 'text-theatre-secondary'} mb-1 mt-1`,
-      4: `text-base font-bold ${headingColor} mb-1`,
-      5: `text-base font-semibold ${headingColor} mb-1`,
-      6: `text-base font-medium ${headingColor} mb-1`,
-    };
-    const cls = classes[depth] || classes[4];
-    return `<h${depth} class="${cls}">${text}</h${depth}>`;
+    return `<h${depth}>${text}</h${depth}>`;
   };
 
-  renderer.paragraph = function(token: any) {
+  renderer.paragraph = function (token: any) {
     const text = getTextFromTokens(token.tokens);
-    return `<p class="${textColor} my-5" style="line-height: 2.0;">${text}</p>`;
+    return `<p>${text}</p>`;
   };
 
-  renderer.list = function(token: any) {
-    const body = token.items.map((item: any) => {
-      const text = getTextFromTokens(item.tokens);
-      return `<li class="flex items-start space-x-3 my-1">
-                <div class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" style="margin-top: 8px;"></div>
-                <span class="flex-1 ${textColor}">${text}</span>
-              </li>`;
-    }).join('');
-    return `<ul class="space-y-2 my-4">${body}</ul>`;
+  renderer.list = function (token: any) {
+    const body = token.items.map((item: any) => renderer.listitem(item)).join('');
+    return `<ul>${body}</ul>`;
   };
-  
-  renderer.listitem = function(item: any) {
+
+  renderer.listitem = function (item: any) {
     const text = getTextFromTokens(item.tokens);
-    return `<li class="flex items-start space-x-3 my-1">
-              <div class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" style="margin-top: 8px;"></div>
-              <span class="flex-1 ${textColor}">${text}</span>
-            </li>`;
+    return `<li>${text}</li>`;
   };
 
-  renderer.link = function(token: any) {
+  renderer.link = function (token: any) {
     const text = getTextFromTokens(token.tokens);
     const href = token.href;
     const title = token.title;
     const titleAttr = title ? ` title="${title}"` : '';
-    return `<a href="${href}"${titleAttr} class="${linkColor} underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    return `<a href="${href}"${titleAttr} class="underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
-  renderer.strong = function(token: any) {
+  renderer.strong = function (token: any) {
     const text = getTextFromTokens(token.tokens);
-    return `<strong class="font-bold">${text}</strong>`;
+    return `<strong>${text}</strong>`;
   };
 
-  renderer.em = function(token: any) {
+  renderer.em = function (token: any) {
     const text = getTextFromTokens(token.tokens);
-    return `<em class="italic">${text}</em>`;
+    return `<em>${text}</em>`;
   };
 
-  renderer.del = function(token: any) {
+  renderer.del = function (token: any) {
     const text = getTextFromTokens(token.tokens);
-    return `<del class="line-through">${text}</del>`;
+    return `<del>${text}</del>`;
   };
 
-  renderer.codespan = function(token: any) {
-    const bgColor = isRedBox ? 'bg-gray-700' : 'bg-gray-100';
-    return `<code class="${bgColor} px-1 py-0.5 rounded text-sm">${token.text}</code>`;
+  renderer.codespan = function (token: any) {
+    return `<code>${token.text}</code>`;
   };
 
-  renderer.code = function(token: any) {
-    const bgColor = isRedBox ? 'bg-gray-700' : 'bg-gray-100';
-    return `<pre class="${bgColor} p-4 rounded overflow-x-auto my-5"><code class="text-sm">${token.text}</code></pre>`;
+  renderer.code = function (token: any) {
+    return `<pre><code>${token.text}</code></pre>`;
   };
 
-  // Hantera HTML-element direkt (för understrukning)
-  renderer.html = function(token: any) {
-    // Hantera <u> tags för understrukning
-    const processedText = token.text.replace(/<u>(.*?)<\/u>/g, '<u class="underline">$1</u>');
-    return processedText;
+  renderer.html = function (token: any) {
+    return token.text.replace(/<u>(.*?)<\/u>/g, '<u class="underline">$1</u>');
   };
 
   return renderer;
 }
+
 
 //
 // EXPORTERA funktioner
