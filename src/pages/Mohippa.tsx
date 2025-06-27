@@ -21,8 +21,8 @@ const Mohippa = () => {
 
           {/* Huvudinnehåll */}
           <div>
-            <h2 className="mt-8 mb-8">Impro för möhippa, svensexa eller festen.</h2>
-            <p>Improv Comedy är en perfekt aktivitet för att skapa skratt, gemenskap och minnen. Vi tar med oss det vi älskar med improv comedy – värme, överraskning och lekfullhet – och skapar något som passar just er.
+            <h2>Impro för möhippa, svensexa eller festen.</h2>
+            <p className="mt-4 mb-4">Improv Comedy är en perfekt aktivitet för att skapa skratt, gemenskap och minnen. Vi tar med oss det vi älskar med improv comedy – värme, överraskning och lekfullhet – och skapar något som passar just er.
 
           </p>
 
