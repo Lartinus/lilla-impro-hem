@@ -91,10 +91,6 @@
     @apply bg-background text-foreground;
   }
 
-p {
-    @apply text-base md:text-lg font-light leading-tight py-[10px];
-  }
-
   h1, h2, h3, h4, h5, h6 {
     font-family: "RetroVoice", sans-serif;
     line-height: 1.0;
