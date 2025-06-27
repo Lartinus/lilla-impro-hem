@@ -23,10 +23,11 @@ const Index = () => {
             <div className="space-y-4">
               <ServiceBoxes />
             </div>
-            {/* Mission statement */}
-              <p className="bg-white">
+            <div className="bg-white">
+            <p>
                 Vi bygger med kvalitet, nyfikenhet och ett stort fokus på att göra improvisatörerna bättre och publiken gladare – och på att skapa ett community där du som elev, improvisatör och publik blir en del av något större. Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
+            </div>
           </div>
         </div>
       </section>
