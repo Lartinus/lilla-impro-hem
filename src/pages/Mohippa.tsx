@@ -24,7 +24,7 @@ const Mohippa = () => {
         className="py-8 px-0.5 md:px-4 flex-1 relative z-10"
         style={{ paddingTop: '220px' }}
       >
-        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto rich-text">
+        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
 
           {/* Huvudinnehåll */}
           <div>
