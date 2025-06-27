@@ -17,7 +17,7 @@ const PerformersSection = ({
   console.log('PerformersSection - performers:', performers);
   if (!performers || performers.length === 0) return null;
   return <div className="mb-6">
-      <h4 className="text-gray-800 font-bold mb-3">{title}</h4>
+      <h2 className="text-gray-800 font-bold mb-3">{title}</h2>
       <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
         <div className="space-y-6">
           {performers.map(performer => {
@@ -46,9 +46,9 @@ const PerformersSection = ({
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <h5 className="font-bold text-gray-800 performer-name mb-0">
+                  <h4 className="font-bold text-gray-800 performer-name mb-0">
                     {performer.name}
-                  </h5>
+                  </h4>
                   <div className="text-gray-700 text-sm break-words performer-bio [&>p]:mb-1 [&>p]:mt-0 [&>h1]:mb-0.5 [&>h2]:mb-0.5 [&>h3]:mb-0.5 [&>h4]:mb-0.5 [&>h5]:mb-0.5 [&>h6]:mb-0.5 [&>*:first-child]:mt-0" style={{
                 marginTop: 'var(--name-to-bio-spacing)',
                 paddingTop: '0',
