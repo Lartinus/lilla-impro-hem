@@ -53,8 +53,9 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
         {htmlRed && (
           <div
             className="
-              prose prose-invert
+              rich-text
               bg-theatre-secondary
+              text-white
               [&_*]:text-white
               p-6
             "
