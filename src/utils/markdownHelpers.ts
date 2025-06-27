@@ -1,17 +1,5 @@
 import { marked } from 'marked';
 
-// Helper function to extract text from tokens
-function getTextFromTokens(tokens: any[]): string {
-  if (!tokens || !Array.isArray(tokens)) return '';
-  
-  return tokens.map(token => {
-    if (typeof token === 'string') return token;
-    if (token.text) return token.text;
-    if (token.tokens) return getTextFromTokens(token.tokens);
-    return '';
-  }).join('');
-}
-
 //
 // PREPROCESS: Normalisera markdown-input och hantera pil-listor
 //
@@ -30,87 +18,67 @@ function preprocess(md: string): string {
   return s;
 }
 
-// Custom renderer för att hantera specifika markdown-element
-function createCustomRenderer(isRedBox = false): any {
-  const renderer = new marked.Renderer();
-
-  // Endast justera färg om det är RedBox – annars låt allt ärva
+//
+// CUSTOM RENDERER (kompatibel med marked@5+)
+//
+function createCustomRenderer(isRedBox = false) {
   const wrapperTextClass = isRedBox ? 'rich-text rich-text-redbox' : 'rich-text';
 
-  renderer.heading = function (token: any) {
-    const text = getTextFromTokens(token.tokens);
-    const depth = token.depth;
-    return `<h${depth}>${text}</h${depth}>`;
+  return {
+    extensions: [
+      {
+        name: 'custom-renderer',
+        renderer: {
+          heading(text: string, level: number) {
+            return `<h${level}>${text}</h${level}>`;
+          },
+          paragraph(text: string) {
+            return `<p>${text}</p>`;
+          },
+          list(body: string, ordered: boolean) {
+            return `<${ordered ? 'ol' : 'ul'}>${body}</${ordered ? 'ol' : 'ul'}>`;
+          },
+          listitem(text: string) {
+            return `<li>${text}</li>`;
+          },
+          link(href: string, title: string | null, text: string) {
+            const titleAttr = title ? ` title="${title}"` : '';
+            return `<a href="${href}"${titleAttr} class="underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+          },
+          strong(text: string) {
+            return `<strong>${text}</strong>`;
+          },
+          em(text: string) {
+            return `<em>${text}</em>`;
+          },
+          del(text: string) {
+            return `<del>${text}</del>`;
+          },
+          codespan(text: string) {
+            return `<code>${text}</code>`;
+          },
+          code(code: string) {
+            return `<pre><code>${code}</code></pre>`;
+          },
+          html(html: string) {
+            return html.replace(/<u>(.*?)<\/u>/g, '<u class="underline">$1</u>');
+          }
+        }
+      }
+    ]
   };
-
-  renderer.paragraph = function (token: any) {
-    const text = getTextFromTokens(token.tokens);
-    return `<p>${text}</p>`;
-  };
-
-  renderer.list = function (token: any) {
-    const body = token.items.map((item: any) => renderer.listitem(item)).join('');
-    return `<ul>${body}</ul>`;
-  };
-
-  renderer.listitem = function (item: any) {
-    const text = getTextFromTokens(item.tokens);
-    return `<li>${text}</li>`;
-  };
-
-  renderer.link = function (token: any) {
-    const text = getTextFromTokens(token.tokens);
-    const href = token.href;
-    const title = token.title;
-    const titleAttr = title ? ` title="${title}"` : '';
-    return `<a href="${href}"${titleAttr} class="underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
-  };
-
-  renderer.strong = function (token: any) {
-    const text = getTextFromTokens(token.tokens);
-    return `<strong>${text}</strong>`;
-  };
-
-  renderer.em = function (token: any) {
-    const text = getTextFromTokens(token.tokens);
-    return `<em>${text}</em>`;
-  };
-
-  renderer.del = function (token: any) {
-    const text = getTextFromTokens(token.tokens);
-    return `<del>${text}</del>`;
-  };
-
-  renderer.codespan = function (token: any) {
-    return `<code>${token.text}</code>`;
-  };
-
-  renderer.code = function (token: any) {
-    return `<pre><code>${token.text}</code></pre>`;
-  };
-
-  renderer.html = function (token: any) {
-    return token.text.replace(/<u>(.*?)<\/u>/g, '<u class="underline">$1</u>');
-  };
-
-  return renderer;
 }
 
-
 //
-// EXPORTERA funktioner
+// EXPORTERA FUNKTIONER
 //
 export const convertMarkdownToHtml = (markdown: string): string => {
   if (!markdown) return '';
 
   try {
     const preprocessed = preprocess(markdown);
-    const renderer = createCustomRenderer(false);
-
-    marked.use({ renderer }); // Registrera renderern först
-    const html = marked.parse(preprocessed);
-
-    return html;
+    marked.use(createCustomRenderer(false));
+    return marked.parse(preprocessed);
   } catch (err) {
     console.error('Markdown conversion failed:', err);
     return markdown;
@@ -122,12 +90,8 @@ export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
 
   try {
     const preprocessed = preprocess(markdown);
-    const renderer = createCustomRenderer(true);
-
-    const tokens = marked.lexer(preprocessed);
-    const html = marked.parser(tokens, { renderer });
-
-    return html;
+    marked.use(createCustomRenderer(true));
+    return marked.parse(preprocessed);
   } catch (err) {
     console.error('Markdown (red box) conversion failed:', err);
     return markdown;
