@@ -27,32 +27,51 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
   } = mainInfo;
 
   // Konvertera markdown → HTML-strängar
-  const htmlInfo = convertMarkdownToHtml(info);
-  const htmlRed  = convertMarkdownToHtmlForRedBox(redbox);
-  const htmlAfter= convertMarkdownToHtml(infoAfterRedbox);
+  const htmlInfo  = convertMarkdownToHtml(info);
+  const htmlRed   = convertMarkdownToHtmlForRedBox(redbox);
+  const htmlAfter = convertMarkdownToHtml(infoAfterRedbox);
 
   return (
-    <section className="px-4 md:px-0 max-w-5xl mx-auto space-y-12 mt-12">
-      {htmlInfo && (
-        <div
-          className="prose prose-invert"
-          dangerouslySetInnerHTML={{ __html: htmlInfo }}
-        />
-      )}
+    <section className="flex justify-center px-4 md:px-0 mt-12">
+      {/* DEN VITA RUTAN */}
+      <div
+        className="
+          bg-white               /* Vit bakgrund */
+          dark:bg-gray-900       /* Mörk variant om dark mode */
+          text-gray-900          /* Text‐färg i ljust läge */
+          dark:text-gray-100     /* Text‐färg i mörkt läge */
+          max-w-5xl w-full        /* Max‐bredd + full bredd på små skärmar */
+          p-8                    /* Padding runt allt innehåll */
+          shadow-lg              /* Mjuk skugga för djup */
+          space-y-12             /* Avstånd mellan blocken */
+        "
+      >
+        {htmlInfo && (
+          <div
+            className="prose"
+            dangerouslySetInnerHTML={{ __html: htmlInfo }}
+          />
+        )}
 
-      {htmlRed && (
-        <div
-          className="prose prose-invert bg-theatre-secondary text-white p-6 rounded-lg"
-          dangerouslySetInnerHTML={{ __html: htmlRed }}
-        />
-      )}
+        {htmlRed && (
+          <div
+            className="
+              prose
+              bg-theatre-secondary  /* Din röda bakgrund */
+              text-white            /* Vit text i röd box */
+              p-6                   /* Padding i callouten */
+            "
+            dangerouslySetInnerHTML={{ __html: htmlRed }}
+          />
+        )}
 
-      {htmlAfter && (
-        <div
-          className="prose prose-invert"
-          dangerouslySetInnerHTML={{ __html: htmlAfter }}
-        />
-      )}
+        {htmlAfter && (
+          <div
+            className="prose"
+            dangerouslySetInnerHTML={{ __html: htmlAfter }}
+          />
+        )}
+      </div>
     </section>
   );
 };
