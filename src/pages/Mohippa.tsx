@@ -20,7 +20,7 @@ const Mohippa = () => {
         <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
 
           {/* Huvudinnehåll */}
-          <div>
+          <div className="mt-8 mb-8">
             <h2>Impro för möhippa, svensexa eller festen.</h2>
             <p>Improv Comedy är en perfekt aktivitet för att skapa skratt, gemenskap och minnen. Vi tar med oss det vi älskar med improv comedy – värme, överraskning och lekfullhet – och skapar något som passar just er.
 
