@@ -42,6 +42,7 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
     --bullet-size: 0.5rem;
 
+    --p-light-color: #2A2A2A;
     --h1-light-color: #2A2A2A;
     --h2-light-color: #2A2A2A;
     --h3-light-color: #2A2A2A;
@@ -49,6 +50,7 @@
     --h5-light-color: #772424;
     --h6-light-color: #2A2A2A;
 
+    --p-dark-color: #F5F5F5;
     --h1-dark-color: #F5F5F5;
     --h2-dark-color: #F5F5F5;
     --h3-dark-color: #F5F5F5;
@@ -152,10 +154,6 @@
   .bg-theatre-primary h6,
   .bg-theatre-dark h6,
   .bg-black h6 { color: var(--h6-dark-color); }
-
-  .bg-white p,
-  .bg-theatre-light p { color: var(--foreground); }
-
 
   h1 { font-size: clamp(1.8rem, 6vw, 3rem); }
   h2 { font-size: clamp(1.5rem, 5vw, 1.75rem); }
