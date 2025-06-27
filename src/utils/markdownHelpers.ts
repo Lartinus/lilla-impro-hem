@@ -1,5 +1,17 @@
 import { marked } from 'marked';
 
+// Helper function to extract text from tokens
+function getTextFromTokens(tokens: any[]): string {
+  if (!tokens || !Array.isArray(tokens)) return '';
+  
+  return tokens.map(token => {
+    if (typeof token === 'string') return token;
+    if (token.text) return token.text;
+    if (token.tokens) return getTextFromTokens(token.tokens);
+    return '';
+  }).join('');
+}
+
 //
 // PREPROCESS: Normalisera markdown-input och hantera pil-listor
 //
@@ -18,49 +30,87 @@ function preprocess(md: string): string {
   return s;
 }
 
-//
-// CUSTOM RENDERER (kompatibel med marked@5+)
-//
-function createCustomRenderer(isRedBox = false): marked.Renderer {
+// Custom renderer för att hantera specifika markdown-element
+function createCustomRenderer(isRedBox = false): any {
   const renderer = new marked.Renderer();
 
-  renderer.paragraph = (text: string) => `<p>${text}</p>`;
+  // Endast justera färg om det är RedBox – annars låt allt ärva
+  const wrapperTextClass = isRedBox ? 'rich-text rich-text-redbox' : 'rich-text';
 
-  renderer.heading = (text: string, level: number) => {
-    return `<h${level}>${text}</h${level}>`;
+  renderer.heading = function (token: any) {
+    const text = getTextFromTokens(token.tokens);
+    const depth = token.depth;
+    return `<h${depth}>${text}</h${depth}>`;
   };
 
-  renderer.list = (body: string, ordered: boolean) => {
-    return `<${ordered ? 'ol' : 'ul'}>${body}</${ordered ? 'ol' : 'ul'}>`;
+  renderer.paragraph = function (token: any) {
+    const text = getTextFromTokens(token.tokens);
+    return `<p>${text}</p>`;
   };
 
-  renderer.listitem = (text: string) => `<li>${text}</li>`;
+  renderer.list = function (token: any) {
+    const body = token.items.map((item: any) => renderer.listitem(item)).join('');
+    return `<ul>${body}</ul>`;
+  };
 
-  renderer.link = (href: string, title: string | null, text: string) => {
+  renderer.listitem = function (item: any) {
+    const text = getTextFromTokens(item.tokens);
+    return `<li>${text}</li>`;
+  };
+
+  renderer.link = function (token: any) {
+    const text = getTextFromTokens(token.tokens);
+    const href = token.href;
+    const title = token.title;
     const titleAttr = title ? ` title="${title}"` : '';
     return `<a href="${href}"${titleAttr} class="underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
   };
 
-  renderer.strong = (text: string) => `<strong>${text}</strong>`;
-  renderer.em = (text: string) => `<em>${text}</em>`;
-  renderer.del = (text: string) => `<del>${text}</del>`;
-  renderer.codespan = (text: string) => `<code>${text}</code>`;
-  renderer.code = (code: string) => `<pre><code>${code}</code></pre>`;
-  renderer.html = (html: string) =>
-    html.replace(/<u>(.*?)<\/u>/g, '<u class="underline">$1</u>');
+  renderer.strong = function (token: any) {
+    const text = getTextFromTokens(token.tokens);
+    return `<strong>${text}</strong>`;
+  };
+
+  renderer.em = function (token: any) {
+    const text = getTextFromTokens(token.tokens);
+    return `<em>${text}</em>`;
+  };
+
+  renderer.del = function (token: any) {
+    const text = getTextFromTokens(token.tokens);
+    return `<del>${text}</del>`;
+  };
+
+  renderer.codespan = function (token: any) {
+    return `<code>${token.text}</code>`;
+  };
+
+  renderer.code = function (token: any) {
+    return `<pre><code>${token.text}</code></pre>`;
+  };
+
+  renderer.html = function (token: any) {
+    return token.text.replace(/<u>(.*?)<\/u>/g, '<u class="underline">$1</u>');
+  };
 
   return renderer;
 }
 
+
 //
-// EXPORTERA FUNKTIONER
+// EXPORTERA funktioner
 //
 export const convertMarkdownToHtml = (markdown: string): string => {
   if (!markdown) return '';
 
   try {
     const preprocessed = preprocess(markdown);
-    return marked.parse(preprocessed, { renderer: createCustomRenderer(false) });
+    const renderer = createCustomRenderer(false);
+
+    marked.use({ renderer }); // Registrera renderern först
+    const html = marked.parse(preprocessed);
+
+    return html;
   } catch (err) {
     console.error('Markdown conversion failed:', err);
     return markdown;
@@ -72,7 +122,12 @@ export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
 
   try {
     const preprocessed = preprocess(markdown);
-    return marked.parse(preprocessed, { renderer: createCustomRenderer(true) });
+    const renderer = createCustomRenderer(true);
+
+    const tokens = marked.lexer(preprocessed);
+    const html = marked.parser(tokens, { renderer });
+
+    return html;
   } catch (err) {
     console.error('Markdown (red box) conversion failed:', err);
     return markdown;
