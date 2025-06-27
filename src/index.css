@@ -1,9 +1,8 @@
-/* src/index.css */
-@tailwind base;
+
 @import './styles/fonts.css';
 @import './styles/colors.css';
 @import './styles/typography.css';
 
-
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
