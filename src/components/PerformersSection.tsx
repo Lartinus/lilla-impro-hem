@@ -46,9 +46,9 @@ const PerformersSection = ({
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-bold text-gray-800 performer-name mb-0">
+                  <h6 className="font-bold text-gray-800 performer-name mb-0">
                     {performer.name}
-                  </h4>
+                  </h6>
                   <div className="text-gray-700 text-sm break-words performer-bio [&>p]:mb-1 [&>p]:mt-0 [&>h1]:mb-0.5 [&>h2]:mb-0.5 [&>h3]:mb-0.5 [&>h4]:mb-0.5 [&>h5]:mb-0.5 [&>h6]:mb-0.5 [&>*:first-child]:mt-0" style={{
                 marginTop: 'var(--name-to-bio-spacing)',
                 paddingTop: '0',
