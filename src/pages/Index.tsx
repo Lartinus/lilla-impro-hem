@@ -25,11 +25,11 @@ const Index = () => {
             </div>
             {/* Mission statement */}
             <div className="max-w-4xl space-y-3 pt-4">
-              <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
-                Vi bygger med kvalitet, nyfikenhet och ett stort fokus på att göra improvisatörerna bättre och publiken gladare – och på att skapa ett community där du som elev, improvisatör och publik blir en del av något större.
+              <p>
+                Vi bygger med kvalitet, nyfikenhet och ett stort fokus på att göra improvisatörerna bättre och publiken gladare – och på att skapa ett community där du som elev, improvisatör och publik blir en del av något större. Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
               <p className="text-base md:text-lg text-gray-700 font-light leading-tight">
-                Välkommen till ett nytt hem för Improv Comedy i Stockholm.
+                
               </p>
             </div>
           </div>
