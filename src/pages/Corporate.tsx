@@ -27,7 +27,7 @@ const Corporate = () => {
 
   return (
     <div
-      className="relative overflow-x-hidden bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary"
+      className="font-satoshi relative overflow-x-hidden bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary"
       style={{
         boxSizing: 'border-box',
         padding: 0,
@@ -36,6 +36,10 @@ const Corporate = () => {
         minHeight: '100dvh',
       }}
     >
+      <link
+        href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap"
+        rel="stylesheet"
+      />
       <Header />
       <CorporateHero />
       <main

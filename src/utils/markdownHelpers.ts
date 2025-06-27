@@ -107,10 +107,11 @@ export const convertMarkdownToHtml = (markdown: string): string => {
     const preprocessed = preprocess(markdown);
     const renderer = createCustomRenderer(false);
 
-    const tokens = marked.lexer(preprocessed);
-    const html = marked.parser(tokens, { renderer });
+    // Viktigt! Registrera renderer innan du anropar parse
+    marked.use({ renderer });
 
-    return html;
+    const html = marked.parse(preprocessed); // ← inga options här längre
+    return html as string;
   } catch (err) {
     console.error('Markdown conversion failed:', err);
     return markdown;
@@ -124,10 +125,10 @@ export const convertMarkdownToHtmlForRedBox = (markdown: string): string => {
     const preprocessed = preprocess(markdown);
     const renderer = createCustomRenderer(true);
 
-    const tokens = marked.lexer(preprocessed);
-    const html = marked.parser(tokens, { renderer });
+    marked.use({ renderer });
 
-    return html;
+    const html = marked.parse(preprocessed);
+    return html as string;
   } catch (err) {
     console.error('Markdown (red box) conversion failed:', err);
     return markdown;
