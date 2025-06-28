@@ -18,7 +18,7 @@ const Header = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center min-w-0">
               <img 
-                src="/lovable-uploads/ac906279-978d-4e9c-b9a1-eb3a90b48aef.png" 
+                src="/lovable-uploads/LIT_WoB_small.png" 
                 alt="Lilla Improteatern" 
                 className="h-10 w-auto max-w-none flex-shrink-0"
               />
