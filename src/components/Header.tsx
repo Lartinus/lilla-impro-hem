@@ -20,7 +20,7 @@ const Header = () => {
               <img 
                 src="/lovable-uploads/LIT_WoB_small.png" 
                 alt="Lilla Improteatern" 
-                className="h-[100px] w-auto max-w-none flex-shrink-0 realtive top-5"
+                className="h-[100px] w-auto max-w-none flex-shrink-0 mt-[20px]"
               />
             </Link>
           </div>
