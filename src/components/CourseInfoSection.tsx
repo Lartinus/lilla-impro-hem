@@ -31,7 +31,7 @@ const CourseInfoSection: React.FC<CourseInfoSectionProps> = ({ mainInfo }) => {
 
   return (
     <section className="flex justify-center px-4 md:px-0 mt-12">
-      <div className="bg-white max-w-5xl w-full p-8 shadow-lg rounded-none space-y-12">
+      <div className="bg-white max-w-3xl w-full p-8 shadow-lg rounded-none space-y-12">
         {/* Första textblocket */}
         {htmlInfo && (
           <div
