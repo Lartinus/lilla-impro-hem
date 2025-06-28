@@ -38,7 +38,7 @@ const ShowCardSimple = ({
         {show.image && <OptimizedImage src={show.image} alt={show.title} className="w-full h-48 md:h-56 object-cover" preferredSize="medium" />}
 
         <div className="p-4">
-          <h2 className="text-lg font-bold text-blue-500 mb-2 show-card my-0 py-0">
+          <h2 className="mb-2 show-card my-0 py-0">
             {show.title}
           </h2>
           
