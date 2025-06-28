@@ -1,92 +1,85 @@
-
+// src/pages/Shows.tsx
 import Header from '@/components/Header';
-import ShowCardSimple from '@/components/ShowCardSimple';
-import ShowCardSkeleton from '@/components/ShowCardSkeleton';
+import ShowCard, { Show } from '@/components/ShowCard';
 import { useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { formatStrapiShowSimple } from '@/utils/strapiHelpers';
-import SimpleParallaxHero from "@/components/SimpleParallaxHero";
+import SimpleParallaxHero from '@/components/SimpleParallaxHero';
 
 const Shows = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Single query for shows data
-  const {
-    data: strapiData,
-    isLoading,
-    error
-  } = useQuery({
+  const { data: strapiData, isLoading, error } = useQuery({
     queryKey: ['shows'],
     queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.functions.invoke('strapi-shows');
+      const { data, error } = await supabase.functions.invoke('strapi-shows');
       if (error) throw error;
-      return data;
+      return data as any[];
     },
-    staleTime: 10 * 60 * 1000,
-    // 10 minutes - longer cache for shows
-    gcTime: 30 * 60 * 1000,
-    // 30 minutes
+    staleTime: 10 * 60_000,
+    gcTime:    30 * 60_000,
     retry: 2,
-    // Only retry twice
-    refetchOnWindowFocus: false // Don't refetch on window focus
+    refetchOnWindowFocus: false,
   });
 
-  // Memoize the formatted shows to avoid recalculating on every render
-  const shows = useMemo(() => {
-    return strapiData?.data ? strapiData.data.map(formatStrapiShowSimple).filter(Boolean) : [];
+  const shows: Show[] = useMemo(() => {
+    return strapiData
+      ? strapiData.map(formatStrapiShowSimple).filter((s): s is Show => !!s)
+      : [];
   }, [strapiData]);
 
   if (error) {
-    console.error('Error loading shows from Strapi:', error);
-    return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
-        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
+    return (
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi overflow-x-hidden">
         <Header />
-        
-        <section className="px-0.5 md:px-4 mt-16 py-6 flex-1 flex items-center justify-center">
+        <section className="mt-16 py-6 flex-1 flex items-center justify-center px-4">
           <div className="text-center">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
-              Föreställningar
-            </h1>
-            <p className="text-theatre-light/80">Ett fel uppstod vid laddning av föreställningar. Försök igen! </p>
+            <h1 className="text-3xl font-bold mb-4">Föreställningar</h1>
+            <p className="text-theatre-light/80">Ett fel uppstod vid laddning. Försök igen!</p>
           </div>
         </section>
-      </div>;
+      </div>
+    );
   }
 
-  return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
-      <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
+  return (
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi overflow-x-hidden">
       <Header />
-      
+
       {/* Hero */}
-      <section className="md:px-4 mt-16 md:py-6 px-0 mx-0 my-0 py-px relative z-10">
-        <div className="text-center">
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-theatre-light tracking-normal mb-4">
-            Föreställningar
-          </h1>
-        </div>
+      <section className="mt-16 text-center px-4">
+        <h1 className="text-3xl font-bold mb-4">Föreställningar</h1>
       </section>
 
       {/* Shows Grid */}
-      <section className="py-2 px-0.5 md:px-4 pb-8 flex-1 relative z-10">
-        <div className="mx-[12px] md:mx-0 md:max-w-6xl md:mx-auto">
-          {isLoading ? <div className="grid gap-6 mb-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-              {[...Array(6)].map((_, index) => <ShowCardSkeleton key={index} />)}
-            </div> : shows.length > 0 ? <div className="grid gap-6 mb-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-              {shows.map(show => <ShowCardSimple key={`show-${show.id}-${show.slug}`} show={show} />)}
-            </div> : <div className="text-center text-theatre-light/80">
-              <p>Vi har inga föreställningar ute just nu. Kom gärna tillbaka senare!</p>
-            </div>}
+      <section className="flex-1 py-8 px-4">
+        <div className="mx-auto max-w-6xl">
+          {isLoading ? (
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+              {[...Array(6)].map((_, i) => (
+                <ShowCard key={`skeleton-${i}`} show={null} variant="simple" />
+              ))}
+            </div>
+          ) : shows.length > 0 ? (
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+              {shows.map(show => (
+                <ShowCard key={show.id} show={show} variant="simple" />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-theatre-light/80">
+              <p>Inga föreställningar just nu. Kom tillbaka snart!</p>
+            </div>
+          )}
         </div>
       </section>
 
       <SimpleParallaxHero imageSrc="/lovable-uploads/8a317688-a91b-4083-8840-22ca50335205.png" />
-    </div>;
+    </div>
+  );
 };
 
 export default Shows;
