@@ -39,7 +39,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
       <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
-        <div className="mb-4">
+        <div className="rich-text mb-4">
           <h2 className="mb-2">
             {show.title}
           </h2>
