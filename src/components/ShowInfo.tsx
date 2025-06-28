@@ -37,7 +37,7 @@ const ShowInfo = ({ title, date, location, mapLink, description }: ShowInfoProps
       <div className="mb-4">
         <div className="flex items-center mb-1">
           <MapPin size={16} className="text-red-800 mr-2" />
-          <h3 className="text-red-800 font-medium">
+          <h3>
             <a 
               href={mapLink} 
               target="_blank" 
