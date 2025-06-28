@@ -1,37 +1,133 @@
-// src/pages/ShowDetails.tsx
+
 import Header from '@/components/Header';
 import ShowDetailsHeader from '@/components/ShowDetailsHeader';
-import ShowDetailsContent from '@/components/ShowDetailsContent';
+import ShowInfo from '@/components/ShowInfo';
+import PracticalInfo from '@/components/PracticalInfo';
+import TicketPurchase from '@/components/TicketPurchase';
+import PurchaseForm from '@/components/PurchaseForm';
+import PerformersSection from '@/components/PerformersSection';
+import OtherShowsSection from '@/components/OtherShowsSection';
 import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useShow, useShows } from '@/hooks/useStrapi';
 import { formatStrapiShow } from '@/utils/strapiHelpers';
+import { Loader } from 'lucide-react';
 
 const ShowDetails = () => {
-  const { slug } = useParams<{ slug: string }>();
-  useEffect(() => { window.scrollTo(0,0); }, []);
+  const { slug } = useParams();
+  const [showPurchaseForm, setShowPurchaseForm] = useState(false);
+  const [purchaseTickets, setPurchaseTickets] = useState({ regular: 0, discount: 0, code: '' });
 
-  const { data: showData, isLoading, error } = useShow(slug || '');
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const { data: showData, isLoading: showLoading, error } = useShow(slug || '');
   const { data: allShowsData } = useShows();
 
-  const show = showData?.data?.[0] ? formatStrapiShow(showData.data[0]) : null;
-  const allShows = allShowsData?.data?.map(formatStrapiShow).filter(Boolean) || [];
-  const otherShows = show ? allShows.filter(s => s.slug !== slug) : [];
+  const showDataFromStrapi = showData?.data?.[0] ? formatStrapiShow(showData.data[0]) : null;
+  
+  // Use Strapi data if available, otherwise show error
+  const show = showDataFromStrapi || {
+    title: "Föreställning hittades inte",
+    date: "",
+    location: "",
+    description: "Denna föreställning kunde inte hittas.",
+    performers: [],
+    practicalInfo: [],
+    mapLink: "",
+    ticketPrice: 150,
+    discountPrice: 120,
+    availableTickets: 50
+  };
 
-  if (isLoading || !show) {
-    return <div className="…">…Loading/Snackbar…</div>;
+  const allShows = allShowsData?.data?.map(formatStrapiShow).filter(Boolean) || [];
+  const otherShows = allShows.filter(s => s.slug !== slug);
+
+  if (showLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
+        <Header />
+        <div className="pt-32 text-center flex-1 flex items-center justify-center">
+          <Loader className="w-8 h-8 animate-spin text-white" />
+        </div>
+      </div>
+    );
   }
-  if (error) {
-    return <div className="…">…Error…</div>;
+
+  if (error || !showDataFromStrapi) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
+        <Header />
+        <div className="pt-32 text-center flex-1 flex items-center justify-center">
+          <div>
+            <h1 className="text-2xl">Föreställning hittades inte</h1>
+            <p className="mt-4 text-theatre-light/80">
+              {error ? 'Ett fel uppstod vid laddning av föreställningen.' : 'Denna föreställning existerar inte.'}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
+
+  const handlePurchase = (data: { regularTickets: number; discountTickets: number; discountCode: string }) => {
+    setPurchaseTickets({ regular: data.regularTickets, discount: data.discountTickets, code: data.discountCode });
+    setShowPurchaseForm(true);
+  };
+
+  const handleCompletePurchase = () => {
+    setShowPurchaseForm(false);
+  };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br …">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi">
+      <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
+      
       <ShowDetailsHeader showsUrl="/shows" />
-      <main className="px-4 md:px-0 max-w-4xl mx-auto space-y-8">
-        <ShowDetailsContent show={show} otherShows={otherShows} />
-      </main>
+
+      <section className="py-2 px-0.5 md:px-4 pb-8 flex-1">
+        <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
+          <div className="border-4 border-white shadow-lg bg-white rounded-none p-6 md:p-8">
+            <ShowInfo 
+              title={show.title}
+              date={show.date}
+              location={show.location}
+              mapLink={show.mapLink}
+              description={show.description}
+            />
+            
+            <PracticalInfo practicalInfo={show.practicalInfo} />
+            
+            {!showPurchaseForm ? (
+              <TicketPurchase 
+                onPurchase={handlePurchase}
+                ticketPrice={show.ticketPrice}
+                discountPrice={show.discountPrice}
+                availableTickets={show.availableTickets}
+              />
+            ) : (
+              <PurchaseForm 
+                ticketCount={purchaseTickets.regular}
+                discountTickets={purchaseTickets.discount}
+                discountCode={purchaseTickets.code}
+                showTitle={show.title}
+                onBack={() => setShowPurchaseForm(false)}
+                onComplete={handleCompletePurchase}
+              />
+            )}
+            
+            {show.performers && show.performers.length > 0 && (
+              <PerformersSection performers={show.performers} />
+            )}
+          </div>
+          
+          <OtherShowsSection shows={otherShows} />
+        </div>
+      </section>
     </div>
   );
 };
