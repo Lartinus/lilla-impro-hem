@@ -50,6 +50,13 @@
     color: var(--h1-dark-color);
   }
 
+  /* ServiceBoxes specifika regler för att säkerställa vit text */
+  .bg-red-700 p,
+  .bg-red-700 button,
+  .bg-red-700 .text-white {
+    color: white !important;
+  }
+
   .bg-white h1, .bg-theatre-light h1 { color: var(--h1-light-color); }
   .bg-white h2, .bg-theatre-light h2 { color: var(--h2-light-color); }
   .bg-white h3, .bg-theatre-light h3 { color: var(--h3-light-color); }
