@@ -1,103 +1,143 @@
-// src/components/ShowCard.tsx
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Link } from 'react-router-dom';
-import OptimizedImage from './OptimizedImage';
-import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
-import React, { useState } from 'react';
+import { useState } from 'react';
+
+export interface Performer {
+  id: number;
+  name: string;
+  image: string;
+  bio: string;
+}
 
 export interface Show {
-  id: number;
   title: string;
-  date?: string;
-  location?: string;
-  mapLink?: string;
-  slug?: string;
-  image?: any;
-  description?: string;
-  practicalInfo?: string[];
-  ticketPrice?: number;
-  discountPrice?: number;
-  availableTickets?: number;
+  location: string;
+  mapLink: string;
+  description: string;
+  performers: Performer[];
+  practicalInfo: string[];
+  ticketPrice: number;
+  discountPrice: number;
+  availableTickets: number;
 }
 
 interface ShowCardProps {
   show: Show;
-  variant?: 'simple' | 'detailed';
 }
 
-export default function ShowCard({ show, variant = 'simple' }: ShowCardProps) {
-  const [qty, setQty] = useState(1);
-  const [code, setCode] = useState('');
+const ShowCard = ({ show }: ShowCardProps) => {
+  const [ticketCount, setTicketCount] = useState(1);
+  const [discountTickets, setDiscountTickets] = useState(0);
+  const [discountCode, setDiscountCode] = useState('');
+
+  const handleBuyTickets = () => {
+    console.log(`Köper ${ticketCount} ordinarie och ${discountTickets} rabatterade biljetter till ${show.title}`);
+    if (discountCode) console.log(`Rabattkod: ${discountCode}`);
+  };
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white bg-white rounded-none flex flex-col">
-      <CardContent className="p-0 flex flex-col flex-1">
-        {show.image && (
-          <OptimizedImage
-            src={show.image}
-            alt={show.title}
-            className="w-full h-48 object-cover"
-            preferredSize={variant === 'simple' ? 'medium' : 'large'}
-          />
+    <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
+      <CardContent className="p-6 lg:p-8 flex flex-col flex-1">
+        {/* Titel & plats */}
+        <div className="rich-text mb-4">
+          <h2 className="mb-2">{show.title}</h2>
+          <h3 className="text-secondary font-medium mb-1">
+            <a href={show.mapLink}
+               target="_blank"
+               rel="noopener noreferrer"
+               className="hover:underline">
+              {show.location}
+            </a>
+          </h3>
+        </div>
+
+        {/* Beskrivning */}
+        <div className="text-foreground mb-6 text-base leading-[1.4]">
+          {show.description.split('\n').map((p,i) => (
+            <p key={i} className="mb-4 last:mb-0">{p}</p>
+          ))}
+        </div>
+
+        {/* Medverkande */}
+        {show.performers.length > 0 && (
+          <div className="mb-6">
+            <h4 className="text-foreground font-bold mb-3">Medverkande</h4>
+            <div className="bg-theatre-light/10 border-3 border-red-800 p-4 rounded-none">
+              <div className="space-y-6">
+                {show.performers.map(person => (
+                  <div key={person.id} className="flex flex-col md:flex-row items-start md:space-x-4">
+                    <img 
+                      src={person.image} 
+                      alt={person.name}
+                      className="w-32 h-32 rounded-none object-cover flex-shrink-0" 
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h5 className="font-bold text-foreground mb-2">{person.name}</h5>
+                      <p className="text-foreground text-sm leading-relaxed">{person.bio}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         )}
 
-        <div className="p-4 flex-1 flex flex-col">
-          {show.slug ? (
-            <Link to={`/shows/${show.slug}`} className="text-xl font-bold mb-2 hover:underline">
-              {show.title}
-            </Link>
-          ) : (
-            <h2 className="text-xl font-bold mb-2">{show.title}</h2>
-          )}
+        {/* Praktisk info */}
+        <div className="mb-6">
+          <h4 className="text-foreground font-bold mb-3">Praktisk information</h4>
+          <ul className="list-disc pl-5 space-y-2">
+            {show.practicalInfo.map((item, i) => (
+              <li key={i} className="text-foreground text-base">{item}</li>
+            ))}
+          </ul>
+        </div>
 
-          {show.location && show.mapLink && (
-            <h3 className="text-theatre-secondary mb-4">
-              <a href={show.mapLink} target="_blank" rel="noopener noreferrer">
-                {show.location}
-              </a>
-            </h3>
-          )}
+        {/* Köp-biljetter */}
+        <div className="mt-auto">
+          <h4 className="text-foreground font-bold mb-4">Köp biljetter</h4>
 
-          {show.description && (
-            <div
-              className="rich-text mb-6 flex-1"
-              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(show.description) }}
-            />
-          )}
-
-          {show.practicalInfo?.length && (
-            <div className="mb-6">
-              <h4 className="font-bold mb-2">Praktisk information</h4>
-              <ul className="rich-text list-disc pl-5">
-                {show.practicalInfo.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {variant === 'detailed' && show.ticketPrice != null && (
-            <div className="mt-auto space-y-4">
-              <div className="flex items-center justify-between">
-                <span>Pris {show.ticketPrice} kr</span>
-                <div className="flex items-center space-x-2">
-                  <button onClick={() => setQty(q => Math.max(1, q - 1))}>–</button>
-                  <span>{qty}</span>
-                  <button onClick={() => setQty(q => q + 1)}>+</button>
-                </div>
+          {/* Ordinära */}
+          <div className="bg-gray-50 p-4 border border-gray-200 rounded-none mb-4">
+            <div className="flex justify-between mb-2">
+              <span className="font-medium">Pris {show.ticketPrice} kr</span>
+              <div className="flex items-center space-x-2">
+                <button onClick={() => setTicketCount(Math.max(0, ticketCount-1))}
+                        className="w-8 h-8 border border-gray-300 rounded-none hover:bg-gray-100">–</button>
+                <span className="w-8 text-center">{ticketCount}</span>
+                <button onClick={() => setTicketCount(ticketCount+1)}
+                        className="w-8 h-8 border border-gray-300 rounded-none hover:bg-gray-100">+</button>
               </div>
-              <Input
-                placeholder="Rabattkod"
-                value={code}
-                onChange={e => setCode(e.target.value)}
-              />
-              <Button onClick={() => console.log('Köper', qty, 'med kod', code)}>Köp</Button>
             </div>
-          )}
+            <Input placeholder="Ev. rabattkod"
+                   value={discountCode}
+                   onChange={e => setDiscountCode(e.target.value)}
+                   className="rounded-none border-gray-300" />
+          </div>
+
+          {/* Rabatterade */}
+          <div className="bg-gray-50 p-4 border border-gray-200 rounded-none mb-4">
+            <div className="flex justify-between">
+              <span className="font-medium">Student/pensionär {show.discountPrice} kr</span>
+              <div className="flex items-center space-x-2">
+                <button onClick={() => setDiscountTickets(Math.max(0, discountTickets-1))}
+                        className="w-8 h-8 border border-gray-300 rounded-none hover:bg-gray-100">–</button>
+                <span className="w-8 text-center">{discountTickets}</span>
+                <button onClick={() => setDiscountTickets(discountTickets+1)}
+                        className="w-8 h-8 border border-gray-300 rounded-none hover:bg-gray-100">+</button>
+              </div>
+            </div>
+          </div>
+
+          <Button onClick={handleBuyTickets}
+                  disabled={ticketCount+discountTickets===0}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-none text-sm">
+            Fortsätt →
+          </Button>
         </div>
       </CardContent>
     </Card>
   );
-}
+};
+
+export default ShowCard;
