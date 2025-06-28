@@ -1,13 +1,14 @@
 // src/pages/Shows.tsx
-import Header from '@/components/Header';
-import ShowCard, { Show } from '@/components/ShowCard';
-import { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import Header from '@/components/Header';
+import ShowCard from '@/components/ShowCard';
+import ShowCardSkeleton from '@/components/ShowCardSkeleton';
+import SimpleParallaxHero from '@/components/SimpleParallaxHero';
 import { supabase } from '@/integrations/supabase/client';
 import { formatStrapiShowSimple } from '@/utils/strapiHelpers';
-import SimpleParallaxHero from '@/components/SimpleParallaxHero';
 
-const Shows = () => {
+const Shows: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -17,28 +18,38 @@ const Shows = () => {
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke('strapi-shows');
       if (error) throw error;
-      return data as any[];
+      return data;
     },
-    staleTime: 10 * 60_000,
-    gcTime:    30 * 60_000,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
     retry: 2,
     refetchOnWindowFocus: false,
   });
 
-  const shows: Show[] = useMemo(() => {
-    return strapiData
-      ? strapiData.map(formatStrapiShowSimple).filter((s): s is Show => !!s)
-      : [];
-  }, [strapiData]);
+  const shows = useMemo(
+    () =>
+      strapiData?.data
+        ? (strapiData.data as any[]).map(formatStrapiShowSimple).filter(Boolean)
+        : [],
+    [strapiData]
+  );
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi overflow-x-hidden">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi overflow-x-hidden overflow-y-visible">
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap"
+          rel="stylesheet"
+        />
         <Header />
-        <section className="mt-16 py-6 flex-1 flex items-center justify-center px-4">
+        <section className="px-0.5 md:px-4 mt-16 py-6 flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-3xl font-bold mb-4">Föreställningar</h1>
-            <p className="text-theatre-light/80">Ett fel uppstod vid laddning. Försök igen!</p>
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4">
+              Föreställningar
+            </h1>
+            <p className="text-theatre-light/80">
+              Ett fel uppstod vid laddning av föreställningar. Försök igen!
+            </p>
           </div>
         </section>
       </div>
@@ -46,32 +57,38 @@ const Shows = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi overflow-x-hidden overflow-y-visible">
+      <link
+        href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap"
+        rel="stylesheet"
+      />
       <Header />
 
       {/* Hero */}
-      <section className="mt-16 text-center px-4">
-        <h1 className="text-3xl font-bold mb-4">Föreställningar</h1>
+      <section className="text-center mt-16 md:py-6 md:px-4 px-0 py-px relative z-10">
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4">
+          Föreställningar
+        </h1>
       </section>
 
-      {/* Shows Grid */}
-      <section className="flex-1 py-8 px-4">
-        <div className="mx-auto max-w-6xl">
+      {/* Grid */}
+      <section className="flex-1 py-2 px-0.5 md:px-4 pb-8 relative z-10">
+        <div className="mx-[12px] md:mx-0 md:max-w-6xl md:mx-auto">
           {isLoading ? (
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-              {[...Array(6)].map((_, i) => (
-                <ShowCard key={`skeleton-${i}`} show={null} variant="simple" />
+            <div className="grid gap-6 mb-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <ShowCardSkeleton key={i} />
               ))}
             </div>
           ) : shows.length > 0 ? (
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+            <div className="grid gap-6 mb-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
               {shows.map(show => (
-                <ShowCard key={show.id} show={show} variant="simple" />
+                <ShowCard key={show.id} show={show} />
               ))}
             </div>
           ) : (
             <div className="text-center text-theatre-light/80">
-              <p>Inga föreställningar just nu. Kom tillbaka snart!</p>
+              <p>Vi har inga föreställningar ute just nu. Kom gärna tillbaka senare!</p>
             </div>
           )}
         </div>
