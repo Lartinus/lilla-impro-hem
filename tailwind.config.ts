@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -70,7 +71,7 @@ export default {
 				},
 				theatre: {
 					'primary': '#772424',
-					'secondary': '#b64b46', 
+					'secondary': '#772424', 
 					'tertiary': '#3a1212',
 					'light': '#fbf9f6',
 					'dark': '#0A0A0A',
