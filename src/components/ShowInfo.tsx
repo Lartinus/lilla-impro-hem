@@ -32,7 +32,6 @@ const ShowInfo = ({ title, date, location, mapLink, description }: ShowInfoProps
         <span className="block md:hidden">{title}</span>
         <span className="hidden md:block">{title} {formatDateTime(date)}</span>
       </h2>
-      <div className="block md:hidden text-blue-500 font-bold text-lg mb-4">{formatDateTime(date)}</div>
       
       <div className="mb-4">
         <div className="flex items-center mb-1">
