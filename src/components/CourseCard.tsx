@@ -76,8 +76,8 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         
         {shouldShowPracticalInfo && (
           <div className="mb-4">
-            <h4 className="text-gray-800 font-bold mb-1">Praktisk information</h4>
-            <div className="space-y-3">
+            <h4 className="text-gray-800 font-bold mb-2">Praktisk information</h4>
+            <div className="space-y-2">
               {course.practicalInfo!.map((item, index) => (
                 <div key={index} className="flex items-start space-x-3">
                   <div 
