@@ -105,7 +105,7 @@ export default function CourseInfoSection() {
           <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4 space-y-4">
             {faqs.map(({ question, answer }) => (
               <div key={question}>
-                <h6 className="mb-1">{question}</h5>
+                <h6 className="mb-1">{question}</h6>
                 <p className="mb-0">{answer}</p>
               </div>
             ))}
