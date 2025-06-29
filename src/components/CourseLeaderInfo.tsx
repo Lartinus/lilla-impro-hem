@@ -33,7 +33,7 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
             <div
               className={`
                 body-text teacher-bio break-words 
-                text-base lg:text-[12px]
+                text-base md:text-[10px]
                 [&>p]:mb-1 [&>p]:mt-0 
                 [&>h1]:mb-0.5 [&>h2]:mb-0.5 [&>h3]:mb-0.5 
                 [&>h4]:mb-0.5 [&>h5]:mb-0.5 [&>h6]:mb-0.5 
