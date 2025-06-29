@@ -60,15 +60,6 @@ const Hero = () => {
               Välkommen till ett nytt hem för Improv Comedy i Stockholm.
             </p>
           </div>
-
-          {/* Video‐rubriker - centrerad på desktop, vänster på mobil */}
-          
-
-          {/* Video‐innehåll - laddas efter bilder */}
-          <div className="mt-8">
-            
-          </div>
-          
         </div>
       </div>
     </section>;
