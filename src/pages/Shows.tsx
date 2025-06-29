@@ -44,7 +44,7 @@ const Shows = () => {
         <Header />
         <section className="px-0.5 md:px-4 mt-16 py-6 flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 shadow">
               Föreställningar
             </h1>
             <p className="text-theatre-light/80">
