@@ -38,16 +38,16 @@ const ShowCardSimple = ({
         {show.image && <OptimizedImage src={show.image} alt={show.title} className="w-full h-48 md:h-56 object-cover" preferredSize="medium" />}
 
         <div className="p-4">
-          <h2 className="text-lg font-bold text-blue-500 mb-2 show-card my-0 py-0">
+          <h2 className="show-card my-0 py-0">
             {show.title}
           </h2>
           
           <div className="space-y-1 mb-4">
-            <p className="text-blue-500 font-medium show-card date-time">
+            <p className="show-card date-time">
               {formatDateTime(show.date)}
             </p>
-            <p className="text-red-600 text-sm flex items-center">
-              <MapPin size={16} className="mr-1" />
+            <p className="0 text-sm flex items-center">
+              <MapPin size={16} className="mr-1 text-red-500" />
               {show.location}
             </p>
           </div>
