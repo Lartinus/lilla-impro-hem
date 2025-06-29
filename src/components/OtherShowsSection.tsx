@@ -48,12 +48,12 @@ const OtherShowsSection = ({ shows }: OtherShowsSectionProps) => {
                 />
               </div>
               <div className="flex-1 p-6 flex flex-col">
-                <h4 className="text-blue-500 font-bold text-lg mb-1">
+                <h4>
                   {show.title} {formatDateTime(show.date)}
                 </h4>
                 <div className="flex items-center mb-3">
                   <MapPin size={16} className="text-red-800 mr-2" />
-                  <p className="text-red-800">{show.location}</p>
+                  <p>{show.location}</p>
                 </div>
                 <div className="text-blue-500 group-hover:text-blue-700 transition-colors mt-auto">
                   <span className="text-sm">Läs mer →</span>
