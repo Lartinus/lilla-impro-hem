@@ -18,7 +18,7 @@ const CourseLeaderInfo = ({ courseLeader }: CourseLeaderInfoProps) => {
 
   return (
     <div className="mb-6">
-      <h4>Kursledare</h4>
+      <h4 className="mb-2">Kursledare</h4>
       <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
         {/* Byt md:flex-row -> lg:flex-row för att stacka på md */}
         <div className="flex flex-col lg:flex-row items-start space-y-4 lg:space-y-0 lg:space-x-4">
