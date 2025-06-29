@@ -23,7 +23,7 @@ export default {
         retro: ['RetroVoice', 'sans-serif'],
       },
       fontSize: {
-        'base-mobile': '14px',
+        'base-mobile': '18px',
       },
       borderWidth: {
         '3': '3px',
