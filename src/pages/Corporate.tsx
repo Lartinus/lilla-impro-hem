@@ -79,10 +79,9 @@ const Corporate = () => {
             </p>
           </div>
 
+          <h2>Vad vi erbjuder</h2>
           {/* Vad vi erbjuder */}
           <div className="space-y-4 border-3 border-red-800 p-4">
-            <h2>Vad vi erbjuder</h2>
-
             {[
               ["Teambuilding-workshops", "Stärk sammanhållningen och förtroendet i teamet genom övningar som fokuserar på samarbete, lyssnarförmåga och att bygga vidare på varandras idéer."],
               ["Kommunikationsträning", "Utveckla färdigheter inom presentation, aktiv lyssning och att hantera oväntade situationer med trygghet och kreativitet."],
