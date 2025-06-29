@@ -27,7 +27,6 @@ const About = () => {
   }, []);
 
   return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
-      <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       <SimpleParallaxHero imageSrc="/lovable-uploads/0dab5207-02ae-4f61-96e5-de85a5a8d3ad.png" />
       <section className="py-8 px-0.5 md:px-4 mt-0 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
