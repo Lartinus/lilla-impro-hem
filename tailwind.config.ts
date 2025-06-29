@@ -73,7 +73,7 @@ export default {
 					'primary': '#772424',
 					'secondary': '#772424', 
 					'tertiary': '#3a1212',
-					'light': '#fbf9f6',
+					'light': '#f9f9f9',
 					'dark': '#0A0A0A',
 					'dark-secondary': '#111111', 
 					'gray-light': '#1A1A1A',
