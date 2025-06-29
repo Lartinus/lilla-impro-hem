@@ -1,7 +1,7 @@
 import Header from '@/components/Header';
 import ServiceBoxes from '@/components/ServiceBoxes';
 const Index = () => {
-  return <div className="min-h-screen bg-gradient-to-br from-theatre-tertiary to-theatre-secondary">
+  return <div className="min-h-screen bg-theatre-secondary">
       <Header />
       <section className="min-h-screen flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
         <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
