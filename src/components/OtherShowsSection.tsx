@@ -51,7 +51,7 @@ const OtherShowsSection = ({ shows }: OtherShowsSectionProps) => {
                 <h4>
                   {show.title} {formatDateTime(show.date)}
                 </h4>
-                <div className="flex items-center mb-3">
+                <div className="flex items-center my-3">
                   <MapPin size={16} className="text-red-800 mr-2" />
                   <p>{show.location}</p>
                 </div>
