@@ -192,6 +192,18 @@
     margin-top: 0.75rem;
   }
 
+  p { widows: 2; orphans: 2; 
+    
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+  /* Minst 2 rader ihop före och efter sid-/kolumnbrytning */
+  widows: 2;
+  orphans: 2;
+}
+
+
+
   p,
   .text-base,
   .leading-relaxed,
