@@ -151,7 +151,7 @@
   }
   h2, h3, h4, h5, h6 {
     font-family: "RetroVoice", sans-serif;
-    line-height: 1.2;
+    line-height: 1.0;
     color: inherit;
   }
   h2 { font-size: clamp(1.5rem, 5vw, 1.75rem); }
