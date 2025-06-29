@@ -80,7 +80,7 @@ const Corporate = () => {
           </div>
 
           {/* Vad vi erbjuder */}
-          <div className="space-y-4">
+          <div className="space-y-4 border-3 border-red-800 p-4">
             <h2>Vad vi erbjuder</h2>
 
             {[
