@@ -63,7 +63,7 @@ const Corporate = () => {
         <div className="space-y-10 bg-white backdrop-blur-sm p-6 md:p-8 lg:p-12 mx-3 md:mx-auto md:max-w-4xl shadow-xl text-left">
           
           {/* Intro */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             <h2>Workshops & Events för er organisation</h2>
             <h5>
               Utveckla kreativitet, samarbete och kommunikation genom improvisationsteater.
