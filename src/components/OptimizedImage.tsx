@@ -23,12 +23,14 @@ const OptimizedImage = ({
   // Memoize the image URL calculation
   const optimizedSrc = useCallback(() => {
     if (!src) return null;
-    // If it's already a full URL or a local absolute path, use it directly
+
+    // Om det redan är en full URL eller lokal sökväg
     if (src.startsWith('http') || src.startsWith('/')) {
       return src;
     }
-    // Otherwise, treat it as Strapi data and process it
-    return getStrapiImageUrl(src, undefined, preferredSize);
+
+    // Anropa nya signaturen: ett options‐objekt istället för 3 argument
+    return getStrapiImageUrl(src, { size: preferredSize });
   }, [src, preferredSize]);
 
   const imageUrl = optimizedSrc();
