@@ -34,7 +34,7 @@ const About = () => {
         <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
           
           {/* Om oss-info */}
-          <div className="space-y-6 text-gray-700 leading-relaxed text-base" style={{
+          <div className="space-y-6 bg-white" style={{
           lineHeight: '1.3'
         }}>
             <h2 className="mb-2">Om Lilla Improteatern</h2>
