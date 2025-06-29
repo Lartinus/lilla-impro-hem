@@ -60,7 +60,7 @@ const Corporate = () => {
           marginTop,
         }}
       >
-        <div className="space-y-10 bg-white backdrop-blur-sm p-6 md:p-8 lg:p-12 mx-3 md:mx-auto md:max-w-4xl shadow-xl text-left">
+<div className="bg-white backdrop-blur-sm shadow-xl text-left px-3 py-6 md:px-8 lg:px-12 space-y-10 mx-auto max-w-4xl">
           
           {/* Intro */}
           <div className="space-y-6">
