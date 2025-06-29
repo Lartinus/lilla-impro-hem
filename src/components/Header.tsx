@@ -14,7 +14,7 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary backdrop-blur-md border-b border-theatre-light/20">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-2 lg:px-6">
         <div className="flex items-center justify-between h-14">
           <div className="flex items-center overflow-visible">
             <Link to="/" className="flex items-center min-w-0">
