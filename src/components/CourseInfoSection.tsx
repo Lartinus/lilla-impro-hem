@@ -104,12 +104,74 @@ Vi försöker alltid hjälpa dig att ta igen missade tillfällen om det finns pl
           />
         )}
 
-        {/* Avslutande textblock */}
+        {/* Avslutande textblock - dela upp i två delar */}
         {htmlAfter && (
-          <div
-            className="prose"
-            dangerouslySetInnerHTML={{ __html: htmlAfter }}
-          />
+          <div className="space-y-8">
+            {/* Första delen - fram till "Vanliga frågor" */}
+            <div className="prose">
+              <h2>Vem kan komma till Lilla Improteatern?</h2>
+              <h5>Du är varmt välkommen oavsett om du:</h5>
+              <ul>
+                <li>Aldrig har testat Improv Comedy förut</li>
+                <li>Vill utvecklas som komisk scenperson</li>
+                <li>Är rutinerad och vill vässa ditt hantverk</li>
+                <li>Söker en trygg, tydlig och inspirerande plats att växa på</li>
+              </ul>
+              <p>Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi hjälper dig med att:</p>
+              <ul>
+                <li>Få konkreta verktyg för att skapa humoristiska scener</li>
+                <li>Utveckla ditt scenspråk, lyssnande och komiska timing</li>
+                <li>Bli modigare, säkrare och mer initiativtagande</li>
+                <li>Och få scentid. Massor.</li>
+              </ul>
+            </div>
+
+            {/* Vanliga frågor med röd ram */}
+            <div>
+              <h2 className="mb-4">Vanliga frågor</h2>
+              <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4 space-y-3">
+                <div>
+                  <h5 className="mb-1">Kan jag börja utan tidigare erfarenhet?</h5>
+                  <p className="mb-0">Absolut! Det viktiga är att du vill lära dig Improv Comedy och vill stå på scen och improvisera komiska scener.</p>
+                </div>
+
+                <div>
+                  <h5 className="mb-1">Får jag feedback?</h5>
+                  <p className="mb-0">Ja. Alla våra kurser innehåller personlig återkoppling och individuell utveckling.</p>
+                </div>
+
+                <div>
+                  <h5 className="mb-1">Varför har ni krav på att klara av nivå 1 innan man går nivå 2?</h5>
+                  <p className="mb-0">Vi vill att både du och gruppen ska ha grunden för att kunna jobba vidare med längre shower. Du får gå om nivå 1 med rabatterat pris.</p>
+                </div>
+
+                <div>
+                  <h5 className="mb-1">Behöver jag vara rolig?</h5>
+                  <p className="mb-0">Nej. Humor kommer ur samspelet, vi lär dig teknikerna.</p>
+                </div>
+
+                <div>
+                  <h5 className="mb-1">Kommer jag stå på scen?</h5>
+                  <p className="mb-0">Ja. Alla kurser avslutas med ett valfritt uppspel inför publik.</p>
+                </div>
+
+                <div>
+                  <h5 className="mb-1">Hur stora är grupperna?</h5>
+                  <p className="mb-0">Max 12 deltagare, så att alla får mycket scen- och lärartid.</p>
+                </div>
+
+                <div>
+                  <h5 className="mb-1">Kan jag gå flera gånger?</h5>
+                  <p className="mb-0">Ja. Många går om nivåkurser med nya verktyg och scener varje gång.</p>
+                </div>
+
+                <div>
+                  <h5 className="mb-1">Kan jag ta igen missade tillfällen?</h5>
+                  <p className="mb-0">Vi försöker alltid hjälpa dig att ta igen missade tillfällen om det finns plats i andra grupper. Hör av dig så ser vi vad som går att ordna.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </section>
