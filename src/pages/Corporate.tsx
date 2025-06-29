@@ -8,18 +8,7 @@ const Corporate = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    const updateMarginTop = () => {
-      const width = window.innerWidth;
-      if (width >= 1024) {
-        setMarginTop('-200px'); // desktop
-      } else if (width >= 768) {
-        setMarginTop('-150px'); // tablet
-      } else {
-        setMarginTop('-120px'); // mobile
-      }
-    };
-
+    
     updateMarginTop();
     window.addEventListener('resize', updateMarginTop);
     return () => window.removeEventListener('resize', updateMarginTop);
@@ -60,7 +49,7 @@ const Corporate = () => {
           marginTop,
         }}
       >
-        <div className="space-y-10 bg-white/90 backdrop-blur-sm p-6 md:p-8 lg:p-12 mx-3 md:mx-auto md:max-w-4xl shadow-xl text-left">
+        <div className="space-y-10 bg-white backdrop-blur-sm p-6 md:p-8 lg:p-12 mx-3 md:mx-auto md:max-w-4xl shadow-xl text-left">
           
           {/* Intro */}
           <div className="space-y-6">
