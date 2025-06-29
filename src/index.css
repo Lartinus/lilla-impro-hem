@@ -155,8 +155,8 @@
     color: inherit;
   }
   h2 { font-size: clamp(1.5rem, 5vw, 1.75rem); }
-  h3 { font-size: clamp(1.15rem, 4vw, 1.4rem); }
-  h4 { font-size: clamp(1.15rem, 3vw, 1.6rem); }
+  h3 { font-size: clamp(1.4rem, 4vw, 1.6rem); }
+  h4 { font-size: clamp(1.25rem, 3vw, 1.5rem); }
   h5 { font-size: clamp(1.125rem, 2.5vw, 1.25rem); }
   h6 { font-size: clamp(1.125rem, 2.5vw, 1.25rem); }
 
