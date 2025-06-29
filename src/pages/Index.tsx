@@ -6,8 +6,7 @@ const Index = () => {
       <section className="min-h-screen flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
         <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
           {/* Mobil: mt-12, desktop: mt-20 för luft till header */}
-          <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
-            
+<div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
             {/* Beskrivning */}
             <div className="max-w-4xl space-y-2 pb-1">
               <h1 className="my-[10px] mb-[30px]">
@@ -25,7 +24,7 @@ const Index = () => {
             <div className="space-y-4">
               <ServiceBoxes />
             </div>
-            <div className="bg-white">
+            <div className="bg-white text-left md:text-center">
             <p  className="text-base md:text-lg font-light leading-tight py-[10px] pt-4">
                 Vi bygger med kvalitet, nyfikenhet och ett stort fokus på att göra improvisatörerna bättre och publiken gladare – och på att skapa ett community där du som elev, improvisatör och publik blir en del av något större. Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
