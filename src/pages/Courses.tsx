@@ -2,11 +2,11 @@
 import Header from '@/components/Header';
 import CourseGrid from '@/components/CourseGrid';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
+import CourseInfoSection from '@/components/CourseInfoSection';
 import { useEffect, useMemo } from 'react';
 import { useCourses } from '@/hooks/useStrapi';
 import { formatStrapiCourse, sortCourses } from '@/utils/strapiHelpers';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
-import { convertMarkdownToHtml, convertMarkdownToHtmlForRedBox } from '@/utils/markdownHelpers';
 
 const Courses = () => {
   useEffect(() => {
@@ -29,21 +29,6 @@ const Courses = () => {
   }, [data]);
 
   console.log('Formatted courses:', courses);
-
-  // Hardcoded course main info (previously fetched from API)
-  const hardcodedMainInfo = {
-    info: `Vi erbjuder kurser inom Improv Comedy för alla nivåer – från nybörjare till erfarna improvisatörer. Våra kurser fokuserar på att utveckla din kreativitet, spontanitet och förmåga att samarbeta på scen.
-
-Alla kurser leds av erfarna improvisatörer och pedagoger som brinner för att dela med sig av sina kunskaper. Vi tror på learning by doing och att humor utvecklas bäst i en trygg och stödjande miljö.`,
-
-    redbox: `**Observera:** Kurserna är populära och platser fyller på snabbt. Vi rekommenderar att du anmäler dig i god tid för att säkra din plats.
-
-**Kursmaterial:** Allt material ingår i kursavgiften. Du behöver bara ta med dig nyfikenhet och lust att lära!`,
-
-    infoAfterRedbox: `Efter avslutad kurs får du möjlighet att fortsätta utvecklas inom vårt community. Vi erbjuder även fortsättningskurser och workshops för dig som vill fördjupa dina kunskaper ytterligare.
-
-Har du frågor om våra kurser? Kontakta oss så hjälper vi dig att hitta rätt kurs för din nivå och dina mål.`
-  };
 
   // Fallback practical info if course doesn't have its own
   const practicalInfo = [
@@ -77,11 +62,6 @@ Har du frågor om våra kurser? Kontakta oss så hjälper vi dig att hitta rätt
     );
   }
 
-  // Convert markdown to HTML for the hardcoded content
-  const htmlInfo = convertMarkdownToHtml(hardcodedMainInfo.info);
-  const htmlRed = convertMarkdownToHtmlForRedBox(hardcodedMainInfo.redbox);
-  const htmlAfter = convertMarkdownToHtml(hardcodedMainInfo.infoAfterRedbox);
-
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
       <Header />
@@ -89,34 +69,8 @@ Har du frågor om våra kurser? Kontakta oss så hjälper vi dig att hitta rätt
       <section className="py-8 px-0.5 md:px-4 pb-8 mt-0 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
         <CourseGrid courses={courses} practicalInfo={practicalInfo} />
         
-        {/* Hardcoded course info section (previously CourseInfoSection component) */}
-        <section className="flex justify-center px-4 md:px-0 mt-12">
-          <div className="bg-white max-w-3xl w-full p-8 shadow-lg rounded-none space-y-12">
-            {/* Första textblocket */}
-            {htmlInfo && (
-              <div
-                className="prose"
-                dangerouslySetInnerHTML={{ __html: htmlInfo }}
-              />
-            )}
-
-            {/* Röd callout med vit text */}
-            {htmlRed && (
-              <div
-                className="bg-[#772424] p-6 rounded-none text-white [&>*]:text-white [&>p]:text-white [&>h1]:text-white [&>h2]:text-white [&>h3]:text-white [&>h4]:text-white [&>h5]:text-white [&>h6]:text-white"
-                dangerouslySetInnerHTML={{ __html: htmlRed }}
-              />
-            )}
-
-            {/* Avslutande textblock */}
-            {htmlAfter && (
-              <div
-                className="prose"
-                dangerouslySetInnerHTML={{ __html: htmlAfter }}
-              />
-            )}
-          </div>
-        </section>
+        {/* Använd CourseInfoSection komponenten */}
+        <CourseInfoSection />
       </section>
     </div>
   );
