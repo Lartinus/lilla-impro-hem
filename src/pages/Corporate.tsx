@@ -41,7 +41,7 @@ const Corporate = () => {
       {/* Hero Section */}
       <div className="w-full relative overflow-hidden select-none pointer-events-none h-[400px] md:h-[620px] lg:h-[750px]">
         <img
-          src="/lovable-uploads/87ee64a5-46e8-4910-9307-369d9a2071bb.png"
+          src="/uploads/corporate_LIT_2024.jpg"
           alt=""
           className="w-full h-full object-cover object-center brightness-[0.97] select-none pointer-events-none"
           draggable={false}
