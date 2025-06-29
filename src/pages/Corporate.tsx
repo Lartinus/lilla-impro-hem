@@ -121,7 +121,7 @@ const Corporate = () => {
           </div>
 
           {/* Formulär */}
-          <div className="space-y-4">
+          <div className="space-y-2">
             <p>
               Berätta om er organisation och vad ni är ute efter, så hör vi av oss för att diskutera möjligheterna.
             </p>
