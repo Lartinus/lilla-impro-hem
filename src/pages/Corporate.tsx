@@ -116,14 +116,15 @@ const Corporate = () => {
                     ][i]}
                   </p>
                 </div>
-                <p>Berätta om er organisation och vad ni är ute efter, så hör vi av oss för att diskutera möjligheterna.</p>
               </div>
             ))}
           </div>
 
           {/* Formulär */}
           <div className="space-y-4">
-            
+            <p>
+              Berätta om er organisation och vad ni är ute efter, så hör vi av oss för att diskutera möjligheterna.
+            </p>
             <CorporateInquiryForm />
           </div>
         </div>
