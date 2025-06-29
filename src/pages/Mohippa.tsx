@@ -10,7 +10,6 @@ const Mohippa = () => {
     window.scrollTo(0, 0);
   }, []);
   return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
-      <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
       <Header />
       <SimpleParallaxHero imageSrc="/lovable-uploads/1287edaf-8412-4d2b-b6e4-b6fb8426185d.png" />
 

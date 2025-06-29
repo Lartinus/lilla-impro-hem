@@ -38,16 +38,7 @@ const Corporate = () => {
     >
       <Header />
       <CorporateHero />
-      <main
-        className="z-10 w-full relative overflow-x-hidden pb-16 md:pb-28"
-        style={{
-          boxSizing: 'border-box',
-          margin: 0,
-          padding: 0,
-          paddingBottom: '64px',
-          marginTop,
-        }}
-      >
+      <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
         <CorporateContentBox />
       </main>
     </div>
