@@ -19,7 +19,6 @@ export default function CourseLeaderInfo({ courseLeader }: CourseLeaderInfoProps
       <h4 className="mb-2">Kursledare</h4>
       <div className="rounded-none border-3 border-red-800 p-4">
         <div className="flex flex-col lg:flex-row items-start space-y-4 lg:space-y-0 lg:space-x-4">
-          
           <OptimizedImage
             src={courseLeader.image}
             alt={courseLeader.name}
@@ -27,11 +26,10 @@ export default function CourseLeaderInfo({ courseLeader }: CourseLeaderInfoProps
             fallbackText="Ingen bild"
             preferredSize="small"
           />
-
           <div className="flex-1 min-w-0">
             <h6 className="teacher-name mb-2">{courseLeader.name}</h6>
             <div
-              className="text-base md:text-[12px] leading-relaxed break-words"
+              className="leading-relaxed break-words [&>p]:text-base md:[&>p]:text-[12px]"
               dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(courseLeader.bio) }}
             />
           </div>
