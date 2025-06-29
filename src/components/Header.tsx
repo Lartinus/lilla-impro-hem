@@ -26,14 +26,14 @@ const Header = () => {
             </Link>
           </div>
           
-          {/* Desktop navigation menu – hide on smaller screens, hide earlier if not enough space */}
-          <nav className="hidden xl:flex items-center space-x-12">
+          {/* Desktop navigation menu – hide on smaller screens */}
+          <nav className="hidden lg:flex items-center space-x-12">
             <Link 
               to="/" 
               className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
                 isActivePage('/') ? 'text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light' : ''
               }`} 
-              style={{ fontSize: '16px' }}
+              style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
             >
               Hem
             </Link>
@@ -42,7 +42,7 @@ const Header = () => {
               className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
                 isActivePage('/kurser') ? 'text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light' : ''
               }`} 
-              style={{ fontSize: '16px' }}
+              style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
             >
               Kurser
             </Link>
@@ -51,7 +51,7 @@ const Header = () => {
               className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
                 isActivePage('/foretag') ? 'text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light' : ''
               }`} 
-              style={{ fontSize: '16px' }}
+              style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
             >
               Företag
             </Link>
@@ -60,7 +60,7 @@ const Header = () => {
               className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
                 isActivePage('/mohippa') ? 'text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light' : ''
               }`} 
-              style={{ fontSize: '16px' }}
+              style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
             >
               Möhippa
             </Link>
@@ -69,7 +69,7 @@ const Header = () => {
               className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
                 isActivePage('/om-oss') ? 'text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light' : ''
               }`} 
-              style={{ fontSize: '16px' }}
+              style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
             >
               Om oss
             </Link>
@@ -78,17 +78,17 @@ const Header = () => {
               className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
                 isActivePage('/shows') ? 'text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light' : ''
               }`} 
-              style={{ fontSize: '16px' }}
+              style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
             >
               Föreställningar
             </Link>
           </nav>
 
-          {/* Hamburger menyn: syns alltid utom på xl (dvs visas från mobil till och med lg) */}
+          {/* Hamburger menu button - visible on smaller screens */}
           <Button
             variant="ghost"
             size="sm"
-            className="flex xl:hidden text-theatre-light hover:bg-theatre-light/20"
+            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? "Stäng meny" : "Öppna meny"}
           >
@@ -96,26 +96,56 @@ const Header = () => {
           </Button>
         </div>
 
-        {/* Mobilmeny & ihop-fälld meny för mindre skärmar */}
+        {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="xl:hidden pb-6 pt-4 animate-fade-in">
+          <div className="lg:hidden pb-6 pt-8 animate-fade-in">
             <nav className="flex flex-col space-y-6">
-              <Link to="/" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
+              <Link 
+                to="/" 
+                className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" 
+                style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Hem
               </Link>
-              <Link to="/kurser" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
+              <Link 
+                to="/kurser" 
+                className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" 
+                style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Kurser
               </Link>
-              <Link to="/foretag" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
+              <Link 
+                to="/foretag" 
+                className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" 
+                style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Företag
               </Link>
-              <Link to="/mohippa" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
+              <Link 
+                to="/mohippa" 
+                className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" 
+                style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Möhippa
               </Link>
-              <Link to="/om-oss" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
+              <Link 
+                to="/om-oss" 
+                className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" 
+                style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Om oss
               </Link>
-              <Link to="/shows" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
+              <Link 
+                to="/shows" 
+                className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" 
+                style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Föreställningar
               </Link>
             </nav>
