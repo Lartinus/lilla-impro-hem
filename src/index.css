@@ -215,6 +215,21 @@
   .rich-text li {
     margin-bottom: 0.25rem;
   }
+
+/* Ta bort punkter för alla ul inuti prose */
+  .prose ul {
+    list-style: none;
+    padding-left: 1.25rem; /* gör plats för pilen */
+  }
+
+  /* Byt ut marker för alla li inuti prose */
+  .prose ul li::marker {
+    content: '→ ';
+    /* Tailwind blue-500 */
+    color: #3b82f6;
+    font-size: 1em;
+  }
+
 }
 
 @tailwind base;
