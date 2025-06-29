@@ -59,7 +59,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           )}
         </div>
         <div 
-          className="text-gray-700 mb-4 text-base body-text mt-0 [&>p]:mb-0.5 [&>p]:mt-0 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0 [&>*:first-child]:mt-0"
+          className="mb-4 text-base body-text mt-0 [&>p]:mb-0.5 [&>p]:mt-0 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0 [&>*:first-child]:mt-0"
           dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
         />
         

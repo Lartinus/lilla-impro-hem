@@ -140,6 +140,10 @@
     @apply bg-background text-foreground;
   }
 
+  p {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+  }
+
   h1 {
     font-family: "RetroVoice", sans-serif;
     line-height: 1.0;
