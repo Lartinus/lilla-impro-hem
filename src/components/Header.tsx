@@ -46,7 +46,7 @@ const Header = () => {
 
         {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="lg:hidden pb-6 pt-8 animate-fade-in">
+          <div className="lg:hidden pb-6 pt-8 px-4 animate-fade-in">
             <nav className="flex flex-col space-y-6">
               <NavLink to="/">Hem</NavLink>
               <NavLink to="/kurser">Kurser</NavLink>
