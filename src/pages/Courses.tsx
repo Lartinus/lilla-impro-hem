@@ -70,7 +70,7 @@ const Courses = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
       <Header />
-      <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024" />
+      <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
       <section className="py-8 px-0.5 md:px-4 pb-8 mt-0 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
         <CourseGrid courses={courses} practicalInfo={practicalInfo} />
         <CourseInfoSection mainInfo={mainInfo} />
