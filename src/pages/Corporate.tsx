@@ -78,8 +78,9 @@ const Corporate = () => {
               myndigheter och ideella organisationer. Varje workshop anpassas efter era specifika mål och behov.
             </p>
           </div>
-
-          <h2>Vad vi erbjuder</h2>
+          <div className="space-y-2">
+            <h2>Vad vi erbjuder</h2>
+          </div>
           {/* Vad vi erbjuder */}
           <div className="space-y-4 border-3 border-red-800 p-4">
             {[
