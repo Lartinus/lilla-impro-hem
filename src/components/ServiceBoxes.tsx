@@ -1,9 +1,6 @@
 
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-// Vi hoppar över useHeroImages och Strapi
-// import { useHeroImages } from '@/hooks/useHeroImages';
-// import { getStrapiImageUrl } from '@/utils/strapiHelpers';
 import OptimizedImage from './OptimizedImage';
 
 const ServiceBoxes = () => {
@@ -13,19 +10,19 @@ const ServiceBoxes = () => {
       title: "Kurser i Improv Comedy - från nybörjare till ensemble.",
       cta: "Utforska våra kurser",
       link: "/kurser",
-      image: "/lovable-uploads/92056082-2a67-45f4-888c-9f6831a95637.png"
+      image: "/uploads/images/kurser_LIT_2024.jpg"
     },
     {
       title: "Föreställningar med hög variation och fokus på humor.",
       cta: "Se kommande föreställningar",
       link: "/shows",
-      image: "/lovable-uploads/a058285b-42ba-4479-bf93-e1f02146b2ff.png"
+      image: "/uploads/images/Improvision2024.jpg"
     },
     {
       title: "Workshops och events för företag, myndigheter och organisationer.",
       cta: "Läs mer",
       link: "/foretag",
-      image: "/lovable-uploads/fe40da63-55b3-4531-8b00-721bb4cb1ed0.png"
+      image: "/uploads/images/corporate_LIT_2024.jpg"
     }
   ];
 

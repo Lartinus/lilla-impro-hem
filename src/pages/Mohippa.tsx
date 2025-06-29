@@ -11,7 +11,7 @@ const Mohippa = () => {
   }, []);
   return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
       <Header />
-      <SimpleParallaxHero imageSrc="/lovable-uploads/1287edaf-8412-4d2b-b6e4-b6fb8426185d.png" />
+      <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024" />
 
       <section className="py-8 px-0.5 md:px-4 flex-1 relative z-10" style={{
       paddingTop: '220px'

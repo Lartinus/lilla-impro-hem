@@ -44,7 +44,6 @@ const Courses = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
-        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
         <Header />
         <section className="py-8 px-0.5 md:px-4 pb-8 mt-20 flex-1">
           <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
@@ -71,7 +70,7 @@ const Courses = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
       <Header />
-      <SimpleParallaxHero imageSrc="/lovable-uploads/e56190aa-46b0-4661-820d-915c2b5a4009.png" />
+      <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024" />
       <section className="py-8 px-0.5 md:px-4 pb-8 mt-0 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
         <CourseGrid courses={courses} practicalInfo={practicalInfo} />
         <CourseInfoSection mainInfo={mainInfo} />
