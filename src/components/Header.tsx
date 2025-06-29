@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -97,7 +98,7 @@ const Header = () => {
 
         {/* Mobilmeny & ihop-fälld meny för mindre skärmar */}
         {isMenuOpen && (
-          <div className="xl:hidden pb-6 animate-fade-in">
+          <div className="xl:hidden pb-6 pt-4 animate-fade-in">
             <nav className="flex flex-col space-y-6">
               <Link to="/" className="text-theatre-light/80 hover:text-theatre-light transition-colors font-light" style={{ fontSize: '16px' }}>
                 Hem
