@@ -31,9 +31,8 @@ export default function CourseLeaderInfo({ courseLeader }: CourseLeaderInfoProps
           <div className="flex-1 min-w-0">
             <h6 className="teacher-name mb-2">{courseLeader.name}</h6>
             <div
-              className="text-base md:text-[14px] leading-relaxed break-words"
+              className="text-base md:text-[12px] leading-relaxed break-words"
               dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(courseLeader.bio) }}
-            />
             />
           </div>
         </div>
