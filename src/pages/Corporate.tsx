@@ -8,7 +8,18 @@ const Corporate = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    
+
+    const updateMarginTop = () => {
+      const width = window.innerWidth;
+      if (width >= 1024) {
+        setMarginTop('-200px'); // desktop
+      } else if (width >= 768) {
+        setMarginTop('-150px'); // tablet
+      } else {
+        setMarginTop('-120px'); // mobile
+      }
+    };
+
     updateMarginTop();
     window.addEventListener('resize', updateMarginTop);
     return () => window.removeEventListener('resize', updateMarginTop);
