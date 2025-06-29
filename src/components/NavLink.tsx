@@ -5,9 +5,14 @@ import clsx from 'clsx';
 interface NavLinkProps {
   to: string;
   children: React.ReactNode;
+  disableUnderline?: boolean;
 }
 
-export default function NavLink({ to, children }: NavLinkProps) {
+export default function NavLink({
+  to,
+  children,
+  disableUnderline = false,
+}: NavLinkProps) {
   const { pathname } = useLocation();
   const isActive = pathname === to;
 
@@ -18,8 +23,9 @@ export default function NavLink({ to, children }: NavLinkProps) {
         "font-retro text-base-mobile font-light transition-colors duration-300",
         "text-theatre-light/90 hover:text-theatre-light",
         {
-          "text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light":
-            isActive,
+          // Lägg bara på understrykningen om länken är aktiv **och** disableUnderline = false
+          "text-theatre-light lg:relative lg:after:absolute lg:after:bottom-[-8px] lg:after:left-0 lg:after:w-full lg:after:h-0.5 lg:after:bg-theatre-light":
+            isActive && !disableUnderline,
         }
       )}
     >

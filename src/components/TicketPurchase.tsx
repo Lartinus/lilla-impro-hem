@@ -92,7 +92,7 @@ const TicketPurchase = ({
         </div>
       </div>
 
-      {availableTickets <= 10 && (
+      {availableTickets <= 20 && (
         <div className="mb-4 text-red-600 text-sm">
           Endast {availableTickets} biljetter kvar!
         </div>
