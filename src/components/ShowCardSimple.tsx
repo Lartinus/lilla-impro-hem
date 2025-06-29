@@ -42,7 +42,7 @@ const ShowCardSimple = ({
             {show.title}
           </h2>
           
-          <div className="space-y-1 mb-4">
+          <div className="space-y-1 my-4">
             <p className="show-card date-time">
               {formatDateTime(show.date)}
             </p>
