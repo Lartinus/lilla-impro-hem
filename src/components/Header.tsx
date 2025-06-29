@@ -19,7 +19,7 @@ const Header = () => {
           <div className="flex items-center overflow-visible">
             <Link to="/" className="flex items-center min-w-0">
               <img 
-                src="/lovable-uploads/LIT_WoB_small.png" 
+                src="/uploads/images/LIT_white_tiny.png" 
                 alt="Lilla Improteatern" 
                 className="h-[90px] w-auto max-w-none flex-shrink-0 mt-[10px]"
               />
