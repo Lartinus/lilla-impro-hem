@@ -47,7 +47,7 @@ const ShowCardSimple = ({
               {formatDateTime(show.date)}
             </p>
             <p className="0 text-sm flex items-center">
-              <MapPin size={16} className="mr-1 text-red-500" />
+              <MapPin size={16} className="mr-1 text-red-50" />
               {show.location}
             </p>
           </div>
