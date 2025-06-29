@@ -307,7 +307,7 @@
   }
 
   .rich-text ol {
-    list-style-type: decimal;
+    list-style-type: arrow;
   }
 
   .rich-text li {
