@@ -1,3 +1,4 @@
+// src/components/Header.tsx
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,7 +9,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-  <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary backdrop-blur-md">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary backdrop-blur-md border-b border-theatre-light/20">
       <div className="container mx-auto px-1 lg:px-5">
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
@@ -22,7 +23,7 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Desktop nav */}
+          {/* Desktopnav*/}
           <nav className="hidden lg:flex items-center space-x-12">
             <NavLink to="/">Hem</NavLink>
             <NavLink to="/kurser">Kurser</NavLink>
@@ -32,7 +33,7 @@ const Header = () => {
             <NavLink to="/shows">Föreställningar</NavLink>
           </nav>
 
-          {/* Mobile menu button */}
+          {/* Mobilmeny‐knapp */}
           <Button
             variant="ghost"
             size="sm"
@@ -44,16 +45,15 @@ const Header = () => {
           </Button>
         </div>
 
-        {/* Menu open */}
         {isMenuOpen && (
           <div className="lg:hidden pb-6 pt-2 px-4 animate-fade-in">
             <nav className="flex flex-col space-y-6">
-              <NavLink to="/">Hem</NavLink>
-              <NavLink to="/kurser">Kurser</NavLink>
-              <NavLink to="/foretag">Företag</NavLink>
-              <NavLink to="/mohippa">Möhippa</NavLink>
-              <NavLink to="/om-oss">Om oss</NavLink>
-              <NavLink to="/shows">Föreställningar</NavLink>
+              <NavLink to="/"    disableUnderline>Hem</NavLink>
+              <NavLink to="/kurser" disableUnderline>Kurser</NavLink>
+              <NavLink to="/foretag" disableUnderline>Företag</NavLink>
+              <NavLink to="/mohippa" disableUnderline>Möhippa</NavLink>
+              <NavLink to="/om-oss"  disableUnderline>Om oss</NavLink>
+              <NavLink to="/shows"  disableUnderline>Föreställningar</NavLink>
             </nav>
           </div>
         )}
