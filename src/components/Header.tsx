@@ -30,7 +30,7 @@ const Header = () => {
           <nav className="hidden lg:flex items-center space-x-12">
             <Link 
               to="/" 
-              className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
+              className={`text-theatre-light/90 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
                 isActivePage('/') ? 'text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light' : ''
               }`} 
               style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
@@ -39,7 +39,7 @@ const Header = () => {
             </Link>
             <Link 
               to="/kurser" 
-              className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
+              className={`text-theatre-light/90 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
                 isActivePage('/kurser') ? 'text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light' : ''
               }`} 
               style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
@@ -48,7 +48,7 @@ const Header = () => {
             </Link>
             <Link 
               to="/foretag" 
-              className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
+              className={`text-theatre-light/90 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
                 isActivePage('/foretag') ? 'text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light' : ''
               }`} 
               style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
@@ -57,7 +57,7 @@ const Header = () => {
             </Link>
             <Link 
               to="/mohippa" 
-              className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
+              className={`text-theatre-light/90 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
                 isActivePage('/mohippa') ? 'text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light' : ''
               }`} 
               style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
@@ -66,7 +66,7 @@ const Header = () => {
             </Link>
             <Link 
               to="/om-oss" 
-              className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
+              className={`text-theatre-light/90 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
                 isActivePage('/om-oss') ? 'text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light' : ''
               }`} 
               style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
@@ -75,7 +75,7 @@ const Header = () => {
             </Link>
             <Link 
               to="/shows" 
-              className={`text-theatre-light/80 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
+              className={`text-theatre-light/90 hover:text-theatre-light transition-colors duration-300 text-base font-light relative ${
                 isActivePage('/shows') ? 'text-theatre-light after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-0.5 after:bg-theatre-light' : ''
               }`} 
               style={{ fontSize: '16px', fontFamily: 'RetroVoice, sans-serif' }}
