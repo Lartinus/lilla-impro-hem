@@ -8,7 +8,7 @@ const Index = () => {
           {/* Mobil: mt-12, desktop: mt-20 för luft till header */}
 <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
             {/* Beskrivning */}
-            <div className="max-w-4xl space-y-2 pb-1">
+            <div className="max-w-4xl md:space-y-2 pb-1">
               <h1 className="mt-[10px] mb-2 md:mb-[30px]">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
               </h1>
