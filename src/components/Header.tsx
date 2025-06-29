@@ -44,7 +44,7 @@ const Header = () => {
           </Button>
         </div>
 
-        {/* Mobile menu */}
+        {/* Menu open */}
         {isMenuOpen && (
           <div className="lg:hidden pb-6 pt-8 px-4 animate-fade-in">
             <nav className="flex flex-col space-y-6">
