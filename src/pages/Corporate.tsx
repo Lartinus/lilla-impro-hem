@@ -38,7 +38,7 @@ const Corporate = () => {
     >
       <Header />
       <CorporateHero />
-      <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
+      <main className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
         <CorporateContentBox />
       </main>
     </div>
