@@ -13,7 +13,7 @@ const Index = () => {
                 Lilla improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv&nbsp;Comedy.
               </h1>
                <div className="border-t border-gray-200 pt-[10px]">
-                <p className="text-base md:text-lg font-light leading-tight md:my-8">
+                <p className="text-base md:text-lg md:my-8">
                 Vi tror på att humor går att träna och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i inspirerande kursmiljöer 
                 och ta del av roliga, smarta och lekfulla föreställningar.
@@ -25,7 +25,7 @@ const Index = () => {
               <ServiceBoxes />
             </div>
             <div className="bg-white text-left md:text-center">
-            <p  className="text-base md:text-lg font-light leading-tight py-[10px] pt-4">
+            <p  className="text-base md:text-lg py-[10px] pt-4">
                 Vi bygger med kvalitet, nyfikenhet och ett stort fokus på att göra improvisatörerna bättre och publiken gladare – och på att skapa ett community där du som elev, improvisatör och publik blir en del av något större. Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
             </div>
