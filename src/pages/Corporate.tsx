@@ -50,17 +50,17 @@ const Corporate = () => {
       </div>
 
       {/* Content Section */}
-      {/* Content Section */}
-<main
-  className={`
-    z-10 w-full relative overflow-x-hidden
-    pt-6 md:pt-8 lg:pt-12
-    pb-16 md:pb-28
-    mx-3 md:mx-auto md:max-w-4xl
-    ${marginTop ? `mt-[${marginTop}]` : ''}
-  `}
->
-        <div className="space-y-10 bg-white backdrop-blur-sm shadow-xl text-left">
+      <main
+        className="z-10 w-full relative overflow-x-hidden pb-16 md:pb-28"
+        style={{
+          boxSizing: 'border-box',
+          margin: 0,
+          padding: 0,
+          paddingBottom: '64px',
+          marginTop,
+        }}
+      >
+        <div className="space-y-10 bg-white backdrop-blur-sm p-6 md:p-8 lg:p-12 mx-3 md:mx-auto md:max-w-4xl shadow-xl text-left">
           
           {/* Intro */}
           <div className="space-y-4">
@@ -78,7 +78,7 @@ const Corporate = () => {
               myndigheter och ideella organisationer. Varje workshop anpassas efter era specifika mål och behov.
             </p>
           </div>
-          <div>
+          <div className="space-y-2">
             <h2>Vad vi erbjuder</h2>
           </div>
           {/* Vad vi erbjuder */}
@@ -106,7 +106,7 @@ const Corporate = () => {
                   {i + 1}
                 </div>
                 <div>
-                  <h4 className="text-black">{step}</h4>
+                  <h3 className="text-black">{step}</h3>
                   <p>
                     {[
                       "Vi träffas (digitalt eller fysiskt) för att förstå era mål, utmaningar och vilken typ av workshop som skulle passa bäst.",
