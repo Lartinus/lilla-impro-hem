@@ -4,51 +4,17 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { usePrefetch } from "@/hooks/usePrefetch";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import Index from "./pages/Index";
+import Courses from "./pages/Courses";
+import Corporate from "./pages/Corporate";
+import About from "./pages/About";
 import Shows from "./pages/Shows";
 import ShowDetails from "./pages/ShowDetails";
-import Courses from "./pages/Courses";
-import About from "./pages/About";
-import Corporate from "./pages/Corporate";
 import Mohippa from "./pages/Mohippa";
 import NotFound from "./pages/NotFound";
-import AuthProvider from "./components/auth/AuthProvider";
 
-// Optimized QueryClient with better defaults
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 15 * 60 * 1000, // 15 minutes default
-      gcTime: 30 * 60 * 1000, // 30 minutes default
-      retry: 2,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: true,
-      refetchInterval: false,
-    },
-  },
-});
-
-const AppContent = () => {
-  // Use optimized prefetch strategy
-  usePrefetch();
-
-  return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/shows" element={<Shows />} />
-      <Route path="/shows/:slug" element={<ShowDetails />} />
-      <Route path="/courses" element={<Courses />} />
-      <Route path="/kurser" element={<Courses />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/om-oss" element={<About />} />
-      <Route path="/corporate" element={<Corporate />} />
-      <Route path="/foretag" element={<Corporate />} />
-      <Route path="/mohippa" element={<Mohippa />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
-};
+const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -57,9 +23,16 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="min-h-screen bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
-            <AppContent />
-          </div>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/kurser" element={<Courses />} />
+            <Route path="/foretag" element={<Corporate />} />
+            <Route path="/mohippa" element={<Mohippa />} />
+            <Route path="/om-oss" element={<About />} />
+            <Route path="/shows" element={<Shows />} />
+            <Route path="/shows/:slug" element={<ShowDetails />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>

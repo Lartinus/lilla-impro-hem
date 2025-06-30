@@ -7,10 +7,7 @@ export const usePrefetch = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    // Only prefetch critical data immediately
-    console.log('Prefetching only critical data...');
-    
-    // Prefetch shows list (essential for /shows page)
+    // Prefetch shows (list)
     queryClient.prefetchQuery({
       queryKey: ['shows'],
       queryFn: async () => {
@@ -18,11 +15,11 @@ export const usePrefetch = () => {
         if (error) throw error;
         return data;
       },
-      staleTime: 30 * 60 * 1000, // 30 minutes - increased
-      gcTime: 60 * 60 * 1000, // 1 hour - increased
+      staleTime: 15 * 60 * 1000, // 15 minutes
+      gcTime: 45 * 60 * 1000, // 45 minutes
     });
 
-    // Prefetch courses in parallel (essential for /courses page)
+    // Prefetch courses (parallel)
     queryClient.prefetchQuery({
       queryKey: ['courses-parallel'],
       queryFn: async () => {
@@ -40,12 +37,40 @@ export const usePrefetch = () => {
           mainInfoData: mainInfoResponse.data
         };
       },
-      staleTime: 60 * 60 * 1000, // 1 hour - increased
-      gcTime: 2 * 60 * 60 * 1000, // 2 hours - increased
+      staleTime: 20 * 60 * 1000, // 20 minutes
+      gcTime: 60 * 60 * 1000, // 60 minutes
     });
 
-    // Remove aggressive prefetching of all show details
-    // This was causing massive performance issues
-    console.log('Prefetching strategy optimized - removed aggressive show details prefetching');
+    // Fetch all shows immediately, then prefetch details for each show (by slug)
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('strapi-shows');
+        if (error) return;
+        // In Strapi v4, array is at data.data
+        const showList = data?.data || [];
+        const showSlugs = showList.map((show: any) => show.attributes?.slug).filter(Boolean);
+
+        await Promise.all(
+          showSlugs.map((slug: string) =>
+            queryClient.prefetchQuery({
+              queryKey: ['show', slug],
+              queryFn: async () => {
+                const { data, error } = await supabase.functions.invoke('strapi-shows', {
+                  body: { slug },
+                });
+                if (error) throw error;
+                return data;
+              },
+              staleTime: 30 * 60 * 1000, // 30 minutes
+              gcTime: 90 * 60 * 1000, // 90 minutes
+            })
+          )
+        );
+      } catch (err) {
+        // Safe to ignore errors in background prefetch
+      }
+    })();
+
+    console.log('Prefetching critical data (shows/courses and show details) in background...');
   }, [queryClient]);
 };

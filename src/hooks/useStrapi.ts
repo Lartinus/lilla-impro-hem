@@ -5,16 +5,12 @@ export const useShows = () => {
   return useQuery({
     queryKey: ['shows'],
     queryFn: async () => {
-      console.log('useShows: Fetching shows...');
-      const startTime = performance.now();
       const { data, error } = await supabase.functions.invoke('strapi-shows');
-      const endTime = performance.now();
-      console.log(`useShows: API call took ${endTime - startTime} milliseconds`);
       if (error) throw error;
       return data;
     },
-    staleTime: 30 * 60 * 1000, // 30 minutes - increased
-    gcTime: 60 * 60 * 1000, // 1 hour - increased
+    staleTime: 20 * 60 * 1000, // 20 minutes - increased from 15
+    gcTime: 60 * 60 * 1000, // 60 minutes - increased from 45
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -24,41 +20,31 @@ export const useShow = (slug: string) => {
   return useQuery({
     queryKey: ['show', slug],
     queryFn: async () => {
-      console.log(`useShow: Fetching show details for slug: ${slug}`);
-      const startTime = performance.now();
       const { data, error } = await supabase.functions.invoke('strapi-shows', {
         body: { slug }
       });
-      const endTime = performance.now();
-      console.log(`useShow: API call took ${endTime - startTime} milliseconds`);
       if (error) throw error;
       return data;
     },
     enabled: !!slug,
-    staleTime: 60 * 60 * 1000, // 1 hour - increased
-    gcTime: 2 * 60 * 60 * 1000, // 2 hours - increased
+    staleTime: 30 * 60 * 1000, // 30 minutes - increased from 20
+    gcTime: 90 * 60 * 1000, // 90 minutes - increased from 60
     retry: 2,
     refetchOnWindowFocus: false,
   });
 };
 
-// Ultra-optimized parallel courses query
+// Optimized parallel courses query with better caching
 export const useCoursesParallel = () => {
   return useQuery({
     queryKey: ['courses-parallel'],
     queryFn: async () => {
-      console.log('useCoursesParallel: Starting parallel fetch...');
-      const startTime = performance.now();
-      
       const [coursesResponse, mainInfoResponse] = await Promise.all([
         supabase.functions.invoke('strapi-courses'),
         supabase.functions.invoke('strapi-site-content', {
           body: { type: 'course-main-info' }
         })
       ]);
-
-      const endTime = performance.now();
-      console.log(`useCoursesParallel: Parallel API calls took ${endTime - startTime} milliseconds`);
 
       if (coursesResponse.error) throw coursesResponse.error;
       if (mainInfoResponse.error) throw mainInfoResponse.error;
@@ -68,8 +54,8 @@ export const useCoursesParallel = () => {
         mainInfoData: mainInfoResponse.data
       };
     },
-    staleTime: 60 * 60 * 1000, // 1 hour - increased
-    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased
+    staleTime: 60 * 60 * 1000, // 1 hour - increased from 30 minutes
+    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -80,16 +66,12 @@ export const useCourses = () => {
   return useQuery({
     queryKey: ['courses'],
     queryFn: async () => {
-      console.log('useCourses: Fetching courses...');
-      const startTime = performance.now();
       const { data, error } = await supabase.functions.invoke('strapi-courses');
-      const endTime = performance.now();
-      console.log(`useCourses: API call took ${endTime - startTime} milliseconds`);
       if (error) throw error;
       return data;
     },
-    staleTime: 60 * 60 * 1000, // 1 hour - increased
-    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased
+    staleTime: 60 * 60 * 1000, // 1 hour - increased from 30 minutes
+    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -99,18 +81,14 @@ export const useCourseMainInfo = () => {
   return useQuery({
     queryKey: ['course-main-info'],
     queryFn: async () => {
-      console.log('useCourseMainInfo: Fetching course main info...');
-      const startTime = performance.now();
       const { data, error } = await supabase.functions.invoke('strapi-site-content', {
         body: { type: 'course-main-info' }
       });
-      const endTime = performance.now();
-      console.log(`useCourseMainInfo: API call took ${endTime - startTime} milliseconds`);
       if (error) throw error;
       return data;
     },
-    staleTime: 4 * 60 * 60 * 1000, // 4 hours - increased
-    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased
+    staleTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
+    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 4 hours
     retry: 1,
     refetchOnWindowFocus: false,
   });
@@ -120,21 +98,19 @@ export const usePrivateParty = () => {
   return useQuery({
     queryKey: ['private-party'],
     queryFn: async () => {
-      console.log('usePrivateParty: Fetching private party content...');
-      const startTime = performance.now();
+      console.log('=== STARTING PRIVATE PARTY QUERY ===');
       const { data, error } = await supabase.functions.invoke('strapi-site-content', {
         body: { type: 'private-party' }
       });
-      const endTime = performance.now();
-      console.log(`usePrivateParty: API call took ${endTime - startTime} milliseconds`);
+      console.log('Private party response:', { data, error });
       if (error) {
         console.error('Private party error:', error);
         throw error;
       }
       return data;
     },
-    staleTime: 2 * 60 * 60 * 1000, // 2 hours - increased
-    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased
+    staleTime: 2 * 60 * 60 * 1000, // 2 hours - increased from 1 hour
+    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -144,18 +120,14 @@ export const useAboutPageContent = () => {
   return useQuery({
     queryKey: ['about-page-content'],
     queryFn: async () => {
-      console.log('useAboutPageContent: Fetching about page content...');
-      const startTime = performance.now();
       const { data, error } = await supabase.functions.invoke('strapi-site-content', {
         body: { type: 'about' }
       });
-      const endTime = performance.now();
-      console.log(`useAboutPageContent: API call took ${endTime - startTime} milliseconds`);
       if (error) throw error;
       return data;
     },
-    staleTime: 2 * 60 * 60 * 1000, // 2 hours - increased
-    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased
+    staleTime: 2 * 60 * 60 * 1000, // 2 hours - increased from 1 hour
+    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
     refetchOnWindowFocus: false,
   });
 };
@@ -164,18 +136,14 @@ export const useSiteContent = (contentType: string = 'site-settings') => {
   return useQuery({
     queryKey: ['site-content', contentType],
     queryFn: async () => {
-      console.log(`useSiteContent: Fetching ${contentType} content...`);
-      const startTime = performance.now();
       const { data, error } = await supabase.functions.invoke('strapi-site-content', {
         body: { type: contentType }
       });
-      const endTime = performance.now();
-      console.log(`useSiteContent: API call took ${endTime - startTime} milliseconds`);
       if (error) throw error;
       return data;
     },
-    staleTime: 2 * 60 * 60 * 1000, // 2 hours - increased
-    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased
+    staleTime: 2 * 60 * 60 * 1000, // 2 hours - increased from 1 hour
+    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
     refetchOnWindowFocus: false,
   });
 };

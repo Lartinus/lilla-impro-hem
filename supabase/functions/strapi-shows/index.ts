@@ -40,15 +40,15 @@ serve(async (req) => {
       }
     }
     
-    // Ultra-optimized endpoint - only essential fields
+    // Optimized endpoint - only fetch the fields we actually use
     let endpoint;
     if (targetSlug) {
-      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&fields[0]=titel&fields[1]=slug&fields[2]=datum&fields[3]=beskrivning&fields[4]=praktisk_info&fields[5]=ticket_price&fields[6]=discount_price&populate[performers][fields][0]=name&populate[performers][fields][1]=bio&populate[location][fields][0]=name&populate[location][fields][1]=google_maps_link&populate[bild][fields][0]=url&populate[bild][fields][1]=formats`;
+      endpoint = `/api/shows?filters[slug][$eq]=${targetSlug}&fields[0]=titel&fields[1]=slug&fields[2]=datum&fields[3]=beskrivning&fields[4]=praktisk_info&fields[5]=ticket_price&fields[6]=discount_price&fields[7]=available_tickets&populate[performers][fields][0]=name&populate[performers][fields][1]=bio&populate[performers][populate][bild][fields][0]=url&populate[performers][populate][bild][fields][1]=alternativeText&populate[performers][populate][bild][fields][2]=formats&populate[location][fields][0]=name&populate[location][fields][1]=google_maps_link&populate[bild][fields][0]=url&populate[bild][fields][1]=alternativeText&populate[bild][fields][2]=formats`;
     } else {
-      endpoint = '/api/shows?fields[0]=titel&fields[1]=slug&fields[2]=datum&fields[3]=beskrivning&fields[4]=ticket_price&populate[location][fields][0]=name&populate[bild][fields][0]=url&populate[bild][fields][1]=formats';
+      endpoint = '/api/shows?fields[0]=titel&fields[1]=slug&fields[2]=datum&fields[3]=beskrivning&fields[4]=ticket_price&fields[5]=discount_price&fields[6]=available_tickets&populate[performers][fields][0]=name&populate[performers][fields][1]=bio&populate[performers][populate][bild][fields][0]=url&populate[performers][populate][bild][fields][1]=alternativeText&populate[performers][populate][bild][fields][2]=formats&populate[location][fields][0]=name&populate[location][fields][1]=google_maps_link&populate[bild][fields][0]=url&populate[bild][fields][1]=alternativeText&populate[bild][fields][2]=formats';
     }
 
-    console.log(`Fetching ultra-optimized shows from: ${strapiUrl}${endpoint}`);
+    console.log(`Fetching optimized shows from: ${strapiUrl}${endpoint}`);
 
     const response = await fetch(`${strapiUrl}${endpoint}`, {
       headers: {
@@ -68,21 +68,14 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('Successfully fetched ultra-optimized shows data');
+    console.log('Successfully fetched optimized shows data');
     console.log(`Fetched ${data?.data?.length || 0} shows with minimal fields`);
-    
-    // Aggressive caching headers
-    const cacheControl = targetSlug 
-      ? 'public, max-age=3600, s-maxage=7200' // 1 hour client, 2 hours CDN for details
-      : 'public, max-age=1800, s-maxage=3600'; // 30 min client, 1 hour CDN for list
     
     return new Response(JSON.stringify(data), {
       headers: { 
         ...corsHeaders, 
         'Content-Type': 'application/json',
-        'Cache-Control': cacheControl,
-        'ETag': `"${Date.now()}"`,
-        'Vary': 'Accept-Encoding',
+        'Cache-Control': 'public, max-age=900', // 15 minutes cache
       },
     });
   } catch (error) {
