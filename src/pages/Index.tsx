@@ -31,13 +31,13 @@ const Index = () => {
 
             {/* Avslutande text */}
             <div className="bg-white text-left md:text-center">
-              <p className="text-base md:text-lg md:my-8">
+              <p className="text-base md:text-lg py-[10px] pt-4 w-full lg:w-[90%] lg:mx-auto">
                 Vi bygger med kvalitet, nyfikenhet och ett stort fokus på att göra improvisatörerna bättre och publiken gladare – och på att skapa ett community där du som elev, improvisatör och publik blir en del av något större. Välkommen till ett nytt hem för Improv Comedy i Stockholm.
               </p>
             </div>
 
             {/* Mobil-only logotyp längst ner */}
-            <div className="block md:hidden mt-6">
+            <div className="block md:hidden mt-6 ml[-15px]">
               <img
                 src="/uploads/LIT_BoW_large.png"
                 alt="Lilla Improteatern logotyp"
