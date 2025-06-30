@@ -42,7 +42,6 @@ export const usePrefetch = () => {
       staleTime: 20 * 60 * 1000, // 20 minutes
       gcTime: 40 * 60 * 1000, // 40 minutes
       retry: 2,
-      refetchOnWindowFocus: false,
     });
 
     // Prefetch courses med den redan optimerade parallel-strategin
@@ -73,7 +72,6 @@ export const usePrefetch = () => {
       staleTime: 90 * 60 * 1000, // 1.5 hours
       gcTime: 6 * 60 * 60 * 1000, // 6 hours
       retry: 2,
-      refetchOnWindowFocus: false,
     });
 
     // Prefetch kritiska content-typer med förbättrad felhantering
@@ -103,7 +101,6 @@ export const usePrefetch = () => {
         staleTime: 4 * 60 * 60 * 1000, // 4 hours
         gcTime: 8 * 60 * 60 * 1000, // 8 hours
         retry: 1, // Minska retry för prefetch
-        refetchOnWindowFocus: false,
       });
     });
 

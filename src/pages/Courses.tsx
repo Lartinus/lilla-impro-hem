@@ -5,7 +5,6 @@ import CourseHero from '@/components/CourseHero';
 import CourseGrid from '@/components/CourseGrid';
 import CourseInfoSection from '@/components/CourseInfoSection';
 import SimpleParallaxHero from '@/components/SimpleParallaxHero';
-import { useBatchedPageContent } from '@/hooks/useBatchedQueries';
 import { useCoursesParallel } from '@/hooks/useStrapi';
 
 const Courses = () => {
@@ -15,12 +14,6 @@ const Courses = () => {
 
   // Använd paralleliserad courses-query som redan är optimerad
   const { data: coursesData, isLoading: coursesLoading, error: coursesError } = useCoursesParallel();
-  
-  // Alternativ batching för extra content om behövs
-  const { data: batchedContent, isLoading: batchedLoading } = useBatchedPageContent(['course-main-info']);
-  const mainInfoData = batchedContent?.['course-main-info'] || coursesData?.mainInfoData;
-
-  const isLoading = coursesLoading || batchedLoading;
 
   if (coursesError) {
     console.error('Courses error:', coursesError);
@@ -47,12 +40,16 @@ const Courses = () => {
     );
   }
 
+  // Extract the courses data and practical info from the response
+  const courses = coursesData?.coursesData?.data || [];
+  const practicalInfo = coursesData?.mainInfoData?.data?.practical_info || [];
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible">
       <Header />
       <CourseHero />
-      <CourseGrid coursesData={coursesData?.coursesData} isLoading={isLoading} />
-      <CourseInfoSection mainInfoData={mainInfoData} isLoading={isLoading} />
+      <CourseGrid courses={courses} practicalInfo={practicalInfo} />
+      <CourseInfoSection />
       <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
     </div>
   );
