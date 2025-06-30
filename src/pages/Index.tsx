@@ -39,7 +39,7 @@ const Index = () => {
             </div>
 
             {/* Mobil-only logotyp längst ner, men nu *inne* i den vita boxen */}
-            <div className="block md:hidden absolute left-4 bottom-[-100px]">
+            <div className="block md:hidden absolute left-4 bottom-[-50px]">
               <a href="/om-oss">
                 <img
                   src="/uploads/LIT_BoW_large.png"
