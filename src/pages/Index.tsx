@@ -9,19 +9,20 @@ const Index = () => {
 
       <section className="min-h-screen flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
         <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
-          {/* Mobil-only logotyp UTANFÖR den vita rutan */}
-          <div className="block md:hidden absolute top-4 left-4 z-10">
-            <a href="/om-oss">
-              <img
-                src="/uploads/LIT_BoW_large.png"
-                alt="Lilla Improteatern logotyp"
-                className="h-[150px] cursor-pointer"
-                />
-            </a>
-          </div>
 
           <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
             
+            {/* Mobil-only logotyp inom den vita rutan - längst upp */}
+            <div className="block md:hidden mb-6">
+              <a href="/om-oss">
+                <img
+                  src="/uploads/LIT_BoW_large.png"
+                  alt="Lilla Improteatern logotyp"
+                  className="h-[120px] cursor-pointer"
+                  />
+              </a>
+            </div>
+
             {/* Inledning */}
             <div className="mx-3 md:mx-0 md:max-w-6xl lg:max-w-7xl pb-1">
               <h1 className="mt-[10px] mb-[25px] md:mb-[30px]">
