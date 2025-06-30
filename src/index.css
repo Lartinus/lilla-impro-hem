@@ -56,11 +56,6 @@
   .bg-theatre-light p {
     color: var(--p-color);
   }
-  [class^="bg-black"] p,
-  .bg-theatre-primary p,
-  .bg-theatre-dark p {
-    color: #F5F5F5;
-  }
 
   /* Heading colors on light backgrounds */
   [class^="bg-white"] h1,
@@ -75,26 +70,6 @@
   .bg-theatre-light h5 { color: var(--h5-color); }
   [class^="bg-white"] h6,
   .bg-theatre-light h6 { color: var(--h6-color); }
-
-  /* Heading colors on dark backgrounds */
-  .bg-theatre-primary h1,
-  .bg-theatre-dark h1,
-  [class^="bg-black"] h1 { color: #F5F5F5; }
-  .bg-theatre-primary h2,
-  .bg-theatre-dark h2,
-  [class^="bg-black"] h2 { color: #F5F5F5; }
-  .bg-theatre-primary h3,
-  .bg-theatre-dark h3,
-  [class^="bg-black"] h3 { color: #F5F5F5; }
-  .bg-theatre-primary h4,
-  .bg-theatre-dark h4,
-  [class^="bg-black"] h4 { color: #F5F5F5; }
-  .bg-theatre-primary h5,
-  .bg-theatre-dark h5,
-  [class^="bg-black"] h5 { color: #F5F5F5; }
-  .bg-theatre-primary h6,
-  .bg-theatre-dark h6,
-  [class^="bg-black"] h6 { color: #F5F5F5; }
 
   /* Typography */
   body {
