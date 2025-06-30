@@ -52,10 +52,13 @@ const PerformersSection = ({
                 )}
 
                 <div className="flex-1 min-w-0">
-                  <h5 className="font-bold text-content-primary mb-1">{perf.name}</h5>
+                  <h5 className="font-bold text-content-primary mb-0.5">{perf.name}</h5>
                   <div
-                    className="text-content-secondary break-words mt-2 text-[14px] md:text-[13px] lg:text-[6px] [&>p]:mb-1 [&>p]:mt-0"
-                    style={{ lineHeight: 'var(--body-line-height)' }}
+                    className="text-content-secondary break-words mt-1 performer-bio"
+                    style={{ 
+                      lineHeight: 'var(--body-line-height)',
+                      fontSize: 'clamp(0.875rem, 2vw, 0.75rem)'
+                    }}
                     dangerouslySetInnerHTML={{
                       __html: convertMarkdownToHtml(perf.bio)
                     }}

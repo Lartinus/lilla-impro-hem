@@ -1,3 +1,4 @@
+
 /* ==========================================================================  
    FONTS
    ========================================================================== */
@@ -228,6 +229,12 @@
   .text-theatre-text-primary   { color: var(--theatre-text-primary); }
   .text-theatre-text-secondary { color: var(--theatre-text-secondary); }
   .text-theatre-text-muted     { color: var(--theatre-text-muted); }
+
+  /* Performer bio specific styling */
+  .performer-bio p {
+    font-size: inherit !important;
+    margin: 0.25rem 0 !important;
+  }
 }
 
 
