@@ -28,7 +28,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
     console.log(
       `Köper ${ticketCount} ordinarie och ${discountTickets} rabatterade biljetter till ${show.title}`
     );
-    if discountCode) console.log(`Rabattkod: ${discountCode}`);
+    if (discountCode) console.log(`Rabattkod: ${discountCode}`);
   };
 
   return (
@@ -37,13 +37,17 @@ const ShowCard = ({ show }: ShowCardProps) => {
         {/* Titel & Plats */}
         <div className="mb-4">
           <h2 className="mb-2">{show.title}</h2>
-          <div className="mb-1 text-sm text-content-secondary font-normal">
+          <div className="mb-1">
             <a
               href={show.mapLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:underline text-sm font-normal"
-              style={{ fontSize: '0.875rem', fontFamily: 'Satoshi, sans-serif' }}
+              className="text-sm text-content-secondary hover:underline"
+              style={{ 
+                fontSize: '14px !important', 
+                fontFamily: 'Satoshi, sans-serif !important',
+                fontWeight: 'normal !important'
+              }}
             >
               {show.location}
             </a>
