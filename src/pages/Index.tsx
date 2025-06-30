@@ -40,7 +40,7 @@ const Index = () => {
             </div>
 
             {/* Mobil-only logotyp inom den vita rutan */}
-            <div className="block md:hidden flex justify-start pt-2 pl-6">
+            <div className="block md:hidden flex justify-start -mt-2 pl-1">
               <a href="/om-oss">
                 <img
                   src="/uploads/LIT_BoW_large.png"
