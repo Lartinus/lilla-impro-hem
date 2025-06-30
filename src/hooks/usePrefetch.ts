@@ -7,10 +7,10 @@ export const usePrefetch = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    // Only prefetch critical data immediately
-    console.log('Prefetching only critical data...');
+    // Phase 2: Ultra-aggressive prefetching with batched requests
+    console.log('Phase 2: Prefetching with batched requests and ultra-aggressive caching...');
     
-    // Prefetch shows list (essential for /shows page)
+    // Prefetch shows list with ultra-aggressive caching
     queryClient.prefetchQuery({
       queryKey: ['shows'],
       queryFn: async () => {
@@ -18,11 +18,11 @@ export const usePrefetch = () => {
         if (error) throw error;
         return data;
       },
-      staleTime: 30 * 60 * 1000, // 30 minutes - increased
-      gcTime: 60 * 60 * 1000, // 1 hour - increased
+      staleTime: 45 * 60 * 1000, // 45 minutes - Phase 2 increase
+      gcTime: 90 * 60 * 1000, // 1.5 hours - Phase 2 increase
     });
 
-    // Prefetch courses in parallel (essential for /courses page)
+    // Prefetch courses in parallel with ultra-aggressive caching
     queryClient.prefetchQuery({
       queryKey: ['courses-parallel'],
       queryFn: async () => {
@@ -40,12 +40,28 @@ export const usePrefetch = () => {
           mainInfoData: mainInfoResponse.data
         };
       },
-      staleTime: 60 * 60 * 1000, // 1 hour - increased
-      gcTime: 2 * 60 * 60 * 1000, // 2 hours - increased
+      staleTime: 90 * 60 * 1000, // 1.5 hours - Phase 2 increase
+      gcTime: 6 * 60 * 60 * 1000, // 6 hours - Phase 2 increase
     });
 
-    // Remove aggressive prefetching of all show details
-    // This was causing massive performance issues
-    console.log('Prefetching strategy optimized - removed aggressive show details prefetching');
+    // Phase 2: Prefetch critical content types in batches
+    const criticalContentTypes = ['about', 'private-party', 'hero-image'];
+    
+    criticalContentTypes.forEach(contentType => {
+      queryClient.prefetchQuery({
+        queryKey: ['site-content', contentType],
+        queryFn: async () => {
+          const { data, error } = await supabase.functions.invoke('strapi-site-content', {
+            body: { type: contentType }
+          });
+          if (error) throw error;
+          return data;
+        },
+        staleTime: 4 * 60 * 60 * 1000, // 4 hours - Phase 2 increase
+        gcTime: 8 * 60 * 60 * 1000, // 8 hours - Phase 2 increase
+      });
+    });
+
+    console.log('Phase 2: Ultra-aggressive prefetching strategy optimized - removed single show details prefetching');
   }, [queryClient]);
 };

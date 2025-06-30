@@ -9,10 +9,11 @@ export const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Phase 2: More aggressive caching
 export const CACHE_HEADERS = {
-  PRIVATE_PARTY: 'public, max-age=7200', // 2 hours - increased from 1 hour
-  ABOUT: 'public, max-age=7200', // 2 hours - increased from 1 hour
-  COURSE_MAIN_INFO: 'public, max-age=14400', // 4 hours - increased from 2 hours
-  HERO_IMAGE: 'public, max-age=7200', // 2 hours - increased from 1 hour
-  DEFAULT: 'public, max-age=3600', // 1 hour - increased from 30 minutes
+  PRIVATE_PARTY: 'public, max-age=14400, s-maxage=28800', // 4 hours client, 8 hours CDN
+  ABOUT: 'public, max-age=14400, s-maxage=28800', // 4 hours client, 8 hours CDN  
+  COURSE_MAIN_INFO: 'public, max-age=21600, s-maxage=43200', // 6 hours client, 12 hours CDN
+  HERO_IMAGE: 'public, max-age=14400, s-maxage=28800', // 4 hours client, 8 hours CDN
+  DEFAULT: 'public, max-age=7200, s-maxage=14400', // 2 hours client, 4 hours CDN
 };
