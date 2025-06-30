@@ -38,7 +38,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
         <div className="mb-4">
           <h2 className="mb-2">{show.title}</h2>
           <div className="mb-1">
-            <span 
+            <div 
               onClick={() => window.open(show.mapLink, '_blank')}
               className="cursor-pointer hover:underline"
               style={{ 
@@ -47,11 +47,12 @@ const ShowCard = ({ show }: ShowCardProps) => {
                 fontWeight: '400',
                 lineHeight: '1.2',
                 color: 'var(--content-secondary)',
-                display: 'inline-block'
+                display: 'inline-block',
+                textDecoration: 'none'
               }}
             >
               {show.location}
-            </span>
+            </div>
           </div>
         </div>
 
