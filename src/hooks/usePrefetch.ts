@@ -7,31 +7,61 @@ export const usePrefetch = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    // Phase 2: Ultra-aggressive prefetching with batched requests
-    console.log('Phase 2: Prefetching with batched requests and ultra-aggressive caching...');
+    console.log('Phase 3A: Implementing batch-optimized prefetching...');
     
-    // Prefetch shows list with ultra-aggressive caching
+    // Prefetch batched homepage data - denna kombinerar flera anrop
     queryClient.prefetchQuery({
-      queryKey: ['shows'],
+      queryKey: ['batched-homepage-data'],
       queryFn: async () => {
-        const { data, error } = await supabase.functions.invoke('strapi-shows');
-        if (error) throw error;
-        return data;
+        console.log('Prefetching batched homepage data...');
+        const startTime = performance.now();
+        
+        const [showsResponse, heroImageResponse, siteSettingsResponse] = await Promise.all([
+          supabase.functions.invoke('strapi-shows'),
+          supabase.functions.invoke('strapi-site-content', {
+            body: { type: 'hero-image' }
+          }),
+          supabase.functions.invoke('strapi-site-content', {
+            body: { type: 'site-settings' }
+          })
+        ]);
+
+        const endTime = performance.now();
+        console.log(`Batched homepage prefetch took ${endTime - startTime} milliseconds`);
+
+        if (showsResponse.error) throw showsResponse.error;
+        if (heroImageResponse.error) throw heroImageResponse.error;
+        if (siteSettingsResponse.error) throw siteSettingsResponse.error;
+
+        return {
+          showsData: showsResponse.data,
+          heroImageData: heroImageResponse.data,
+          siteSettingsData: siteSettingsResponse.data
+        };
       },
-      staleTime: 45 * 60 * 1000, // 45 minutes - Phase 2 increase
-      gcTime: 90 * 60 * 1000, // 1.5 hours - Phase 2 increase
+      staleTime: 20 * 60 * 1000, // 20 minutes
+      gcTime: 40 * 60 * 1000, // 40 minutes
+      retry: 2,
+      refetchOnWindowFocus: false,
     });
 
-    // Prefetch courses in parallel with ultra-aggressive caching
+    // Prefetch courses med den redan optimerade parallel-strategin
     queryClient.prefetchQuery({
       queryKey: ['courses-parallel'],
       queryFn: async () => {
+        console.log('Prefetching parallel courses data...');
+        const startTime = performance.now();
+        
         const [coursesResponse, mainInfoResponse] = await Promise.all([
           supabase.functions.invoke('strapi-courses'),
           supabase.functions.invoke('strapi-site-content', {
             body: { type: 'course-main-info' }
           })
         ]);
+
+        const endTime = performance.now();
+        console.log(`Parallel courses prefetch took ${endTime - startTime} milliseconds`);
+
         if (coursesResponse.error) throw coursesResponse.error;
         if (mainInfoResponse.error) throw mainInfoResponse.error;
 
@@ -40,28 +70,43 @@ export const usePrefetch = () => {
           mainInfoData: mainInfoResponse.data
         };
       },
-      staleTime: 90 * 60 * 1000, // 1.5 hours - Phase 2 increase
-      gcTime: 6 * 60 * 60 * 1000, // 6 hours - Phase 2 increase
+      staleTime: 90 * 60 * 1000, // 1.5 hours
+      gcTime: 6 * 60 * 60 * 1000, // 6 hours
+      retry: 2,
+      refetchOnWindowFocus: false,
     });
 
-    // Phase 2: Prefetch critical content types in batches
-    const criticalContentTypes = ['about', 'private-party', 'hero-image'];
+    // Prefetch kritiska content-typer med förbättrad felhantering
+    const criticalContentTypes = ['about', 'private-party'];
     
     criticalContentTypes.forEach(contentType => {
       queryClient.prefetchQuery({
         queryKey: ['site-content', contentType],
         queryFn: async () => {
+          console.log(`Prefetching ${contentType} content...`);
+          const startTime = performance.now();
+          
           const { data, error } = await supabase.functions.invoke('strapi-site-content', {
             body: { type: contentType }
           });
-          if (error) throw error;
+          
+          const endTime = performance.now();
+          console.log(`${contentType} prefetch took ${endTime - startTime} milliseconds`);
+          
+          if (error) {
+            console.warn(`Prefetch error for ${contentType}:`, error);
+            // Returnera fallback data istället för att throwa
+            return { data: null };
+          }
           return data;
         },
-        staleTime: 4 * 60 * 60 * 1000, // 4 hours - Phase 2 increase
-        gcTime: 8 * 60 * 60 * 1000, // 8 hours - Phase 2 increase
+        staleTime: 4 * 60 * 60 * 1000, // 4 hours
+        gcTime: 8 * 60 * 60 * 1000, // 8 hours
+        retry: 1, // Minska retry för prefetch
+        refetchOnWindowFocus: false,
       });
     });
 
-    console.log('Phase 2: Ultra-aggressive prefetching strategy optimized - removed single show details prefetching');
+    console.log('Phase 3A: Batch-optimized prefetching strategy implemented');
   }, [queryClient]);
 };
