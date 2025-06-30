@@ -7,9 +7,9 @@ interface SimpleParallaxHeroProps {
   gradientOverlay?: boolean;
 }
 
-const PARALLAX_HEIGHT_MOBILE = 300;
-const PARALLAX_HEIGHT_MD = 440;
-const PARALLAX_HEIGHT_LG = 620;
+const PARALLAX_HEIGHT_MOBILE = 400;
+const PARALLAX_HEIGHT_MD = 620;
+const PARALLAX_HEIGHT_LG = 750;
 
 const getParallaxHeights = () => {
   if (window.innerWidth >= 1024) return PARALLAX_HEIGHT_LG;

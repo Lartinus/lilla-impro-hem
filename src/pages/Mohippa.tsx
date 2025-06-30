@@ -1,30 +1,12 @@
 // src/pages/Mohippa.tsx
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Header from '@/components/Header';
 import PrivateInquiryForm from '@/components/PrivateInquiryForm';
 import { ArrowRight } from 'lucide-react';
-import SimpleParallaxHero from '@/components/SimpleParallaxHero';
 
 const Mohippa: React.FC = () => {
-  const [marginTop, setMarginTop] = useState('-150px');
-
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    const updateMarginTop = () => {
-      const w = window.innerWidth;
-      if (w >= 1024) {
-        setMarginTop('-200px');  // desktop
-      } else if (w >= 768) {
-        setMarginTop('-150px');  // tablet
-      } else {
-        setMarginTop('-120px');  // mobile
-      }
-    };
-
-    updateMarginTop();
-    window.addEventListener('resize', updateMarginTop);
-    return () => window.removeEventListener('resize', updateMarginTop);
   }, []);
 
   return (
@@ -39,13 +21,9 @@ const Mohippa: React.FC = () => {
       }}
     >
       <Header />
-      <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
 
       {/* Content Section */}
-      <main
-        className="z-10 w-full relative overflow-x-hidden pb-16 md:pb-28"
-        style={{ marginTop }}
-      >
+      <main className="z-10 w-full relative overflow-x-hidden pt-16 md:pt-24 lg:pt-32 pb-16 md:pb-28">
         <div className="space-y-10 bg-white backdrop-blur-sm p-6 md:p-8 lg:p-12 mx-3 md:mx-auto md:max-w-4xl shadow-xl text-left">
           
           {/* Huvudinnehåll */}
@@ -62,7 +40,7 @@ const Mohippa: React.FC = () => {
               {[
                 ["Improshow", "En specialutformad improföreställning där vi inkluderar detaljer om t.ex. födelsedagsbarnet eller brudparet"],
                 ["Workshop", "En lekfull och inkluderande introduktion i Improv Comedy, inga förkunskaper krävs"],
-                ["Workshop + Show", "Börja med en workshop tillsammans, avsluta med att vi uppträder för er"]
+                ["Workshop + Show", "Börja med en workshop tillsammans, avsluta med att vi uppträder för er"],
               ].map(([title, body], i) => (
                 <li key={i} className="flex items-start space-x-2">
                   <ArrowRight className="text-red-800 mt-1 flex-shrink-0" size={16} />
@@ -82,7 +60,7 @@ const Mohippa: React.FC = () => {
                 "Möhippor & svensexor",
                 "Födelsedagsfester",
                 "After work",
-                "Kompisgäng som vill göra något kul tillsammans"
+                "Kompisgäng som vill göra något kul tillsammans",
               ].map((item, i) => (
                 <li key={i} className="flex items-center space-x-2">
                   <ArrowRight className="text-red-800 flex-shrink-0" size={16} />
@@ -95,12 +73,4 @@ const Mohippa: React.FC = () => {
           {/* Kontaktformulär */}
           <div className="pt-6 border-t border-gray-200">
             <h3 className="mb-4">Hör av dig</h3>
-            <PrivateInquiryForm />
-          </div>
-        </div>
-      </main>
-    </div>
-  );
-};
-
-export default Mohippa;
+            <PrivateIn
