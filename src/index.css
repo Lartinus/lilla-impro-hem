@@ -18,13 +18,94 @@
     /* Base colors */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-    /* … övriga variabler … */
+
+    /* Surface cards / popovers */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    /* Theme accents */
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Borders, inputs, rings, radii */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+
+    /* Sidebar specific */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Theatre brand colors */
+    --theatre-primary: #772424;
+    --theatre-secondary: #772424;
+    --theatre-tertiary: #3a1212;
+    --theatre-light: #f9f9f9;
+    --theatre-dark: #0A0A0A;
+    --theatre-dark-secondary: #111111;
+    --theatre-gray-light: #1A1A1A;
+    --theatre-gray-medium: #2A2A2A;
+    --theatre-accent: #3B82F6;
+    --theatre-accent-light: #60A5FA;
     --theatre-text-primary: #FFFFFF;
     --theatre-text-secondary: #A1A1AA;
-    --theatre-gray-light: #1A1A1A;
+    --theatre-text-muted: #71717A;
+
+    /* Bullet & typography overrides */
+    --bullet-size: 0.5rem;
+
+    /* Semantic colors */
     --content-primary: #2A2A2A;
+    --content-secondary: #4A4A4A;
     --content-muted: #6B7280;
-    /* … etc … */
+    --surface-primary: #FFFFFF;
+    --surface-secondary: #F9FAFB;
+    --surface-muted: #F3F4F6;
+    --border-primary: #E5E7EB;
+    --border-secondary: #D1D5DB;
+    --accent-primary: #3B82F6;
+    --accent-hover: #2563EB;
+    --accent-text: #1D4ED8;
+
+    /* Form colors */
+    --form-background: #F3F4F6;
+    --form-background-secondary: #E5E7EB;
+    --form-border: #D1D5DB;
+    --form-border-focus: #3B82F6;
+    --form-text: #374151;
+    --form-text-muted: #6B7280;
+    --form-placeholder: #9CA3AF;
+
+    /* Button colors */
+    --button-primary: #3B82F6;
+    --button-primary-hover: #2563EB;
+    --button-secondary: #F3F4F6;
+    --button-secondary-hover: #E5E7EB;
+    --button-outline: #D1D5DB;
+    --button-outline-hover: #E5E7EB;
+
+    /* Red accent colors */
+    --red-primary: #B91C1C;
+    --red-secondary: #DC2626;
+    --red-700: #B91C1C;
+    --red-800: #991B1B;
   }
 }
 
@@ -39,11 +120,13 @@
     @apply bg-background text-foreground;
   }
 
-  /* Automatiska textbalansering + orphans/widows */
+  /* Paragraph & Heading widows/orphans */
   p, h1, h2, h3, h4, h5, h6 {
     widows: 2;
     orphans: 2;
   }
+
+  /* Automatic text balancing */
   h1, h2, h3, h4, h5, h6 {
     -webkit-text-wrap: balance;
     text-wrap: balance;
@@ -53,59 +136,55 @@
 
   /* Paragrafer */
   p {
-    @apply text-[var(--content-primary)]  /* huvudsaklig textfärg */
-           text-base                     /* default 1rem */
-           leading-relaxed;              /* räknas upp av Tailwind */
+    color: var(--content-primary);
+    font-size: clamp(0.95rem, 2.5vw, 1rem);
+    line-height: 1.5;
   }
 
   /* Huvudrubrik */
   h1 {
-    @apply font-retrovoice              /* RetroVoice-font */
-           font-bold                    /* fetstil */
-           text-[clamp(1.8rem,6vw,3.25rem)] /* responsiv storlek */
-           text-theatre-text-primary    /* alltid vit */
-           leading-tight;               /* line-height 1 */
+    font-family: "RetroVoice", sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 6vw, 3.25rem);
+    color: var(--theatre-text-primary);
+    line-height: 1;
   }
 
   /* Sekundära rubriker */
   h2 {
-    @apply font-retrovoice
-           font-semibold
-           text-[clamp(1.5rem,5vw,1.75rem)]
-           text-theatre-text-primary
-           leading-tight;
+    font-family: "RetroVoice", sans-serif;
+    font-weight: 600;
+    font-size: clamp(1.5rem, 5vw, 1.75rem);
+    color: var(--theatre-text-primary);
+    line-height: 1;
   }
-
   h3 {
-    @apply font-retrovoice
-           font-medium
-           text-[clamp(1.4rem,4vw,1.6rem)]
-           text-theatre-text-secondary
-           leading-tight;
+    font-family: "RetroVoice", sans-serif;
+    font-weight: 500;
+    font-size: clamp(1.4rem, 4vw, 1.6rem);
+    color: var(--theatre-text-secondary);
+    line-height: 1;
   }
-
   h4 {
-    @apply font-retrovoice
-           font-medium
-           text-[clamp(1.4rem,3vw,1.5rem)]
-           text-theatre-text-secondary
-           leading-tight;
+    font-family: "RetroVoice", sans-serif;
+    font-weight: 500;
+    font-size: clamp(1.4rem, 3vw, 1.5rem);
+    color: var(--theatre-text-secondary);
+    line-height: 1;
   }
-
   h5 {
-    @apply font-retrovoice
-           font-medium
-           text-[clamp(1.125rem,2.5vw,1.25rem)]
-           text-theatre-text-secondary
-           leading-tight;
+    font-family: "RetroVoice", sans-serif;
+    font-weight: 500;
+    font-size: clamp(1.125rem, 2.5vw, 1.25rem);
+    color: var(--theatre-text-secondary);
+    line-height: 1;
   }
-
   h6 {
-    @apply font-retrovoice
-           font-medium
-           text-[clamp(1.125rem,2.5vw,1.25rem)]
-           text-theatre-gray-light
-           leading-tight;
+    font-family: "RetroVoice", sans-serif;
+    font-weight: 500;
+    font-size: clamp(1.125rem, 2.5vw, 1.25rem);
+    color: var(--theatre-gray-light);
+    line-height: 1;
   }
 
   /* Spacing efter rubrik + första paragraf */
@@ -125,15 +204,30 @@
    ========================================================================== */
 @layer components {
   .text-content-primary   { color: var(--content-primary); }
+  .text-content-secondary { color: var(--content-secondary); }
   .text-content-muted     { color: var(--content-muted); }
   .text-accent-primary    { color: var(--accent-primary); }
+  .text-accent-text       { color: var(--accent-text); }
+
+  .bg-surface-primary     { background-color: var(--surface-primary); }
+  .bg-surface-secondary   { background-color: var(--surface-secondary); }
+  .bg-surface-muted       { background-color: var(--surface-muted); }
+
+  .border-primary         { border-color: var(--border-primary); }
+  .border-secondary       { border-color: var(--border-secondary); }
+
+  /* Theatre brand colors */
+  .bg-theatre-primary     { background-color: var(--theatre-primary); }
+  .bg-theatre-secondary   { background-color: var(--theatre-secondary); }
+  .bg-theatre-tertiary    { background-color: var(--theatre-tertiary); }
+  .bg-theatre-light       { background-color: var(--theatre-light); }
+  .bg-theatre-dark        { background-color: var(--theatre-dark); }
   .text-theatre-primary   { color: var(--theatre-primary); }
   .text-theatre-secondary { color: var(--theatre-secondary); }
   .text-theatre-light     { color: var(--theatre-light); }
-  .text-theatre-gray-light{ color: var(--theatre-gray-light); }
   .text-theatre-text-primary   { color: var(--theatre-text-primary); }
   .text-theatre-text-secondary { color: var(--theatre-text-secondary); }
-  /* … övriga semanticaste klasser … */
+  .text-theatre-text-muted     { color: var(--theatre-text-muted); }
 }
 
 
@@ -175,7 +269,6 @@
     font-size: 1em;
   }
 }
-
 
 /* ==========================================================================  
    TAILWIND DIREKTIV  
