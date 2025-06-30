@@ -102,7 +102,7 @@ const Corporate = () => {
 
             {["Första samtalet", "Skräddarsytt förslag", "Genomförande", "Uppföljning"].map((step, i) => (
               <div key={i} className="flex items-start space-x-4">
-                <div className="w-8 h-8 bg-theatre-secondary rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
+                <div className="w-8 h-8 bg-theatre-secondary rounded-full flex items-center justify-center flex-shrink-0">
                   {i + 1}
                 </div>
                 <div>
