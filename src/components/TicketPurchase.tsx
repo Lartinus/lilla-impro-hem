@@ -32,13 +32,13 @@ const TicketPurchase = ({
 
   return (
     <div className="mb-6">
-      <h4 className="text-gray-800 font-bold mb-4">Köp biljetter</h4>
+      <h4 className="text-content-primary font-bold mb-4">Köp biljetter</h4>
       
       <div className="mb-4">
-        <div className="font-medium text-gray-800 mb-3">Pris {ticketPrice}kr</div>
+        <div className="font-medium text-content-primary mb-3">Pris {ticketPrice}kr</div>
         <div className="flex items-center space-x-4">
           <div className="relative w-24 border border-red-800 bg-white">
-            <div className="h-8 flex items-center justify-center text-center text-gray-600 pr-8">
+            <div className="h-8 flex items-center justify-center text-center text-form-text pr-8">
               {ticketCount}
             </div>
             <div className="absolute right-0 top-0 h-full w-6 flex flex-col">
@@ -47,13 +47,13 @@ const TicketPurchase = ({
                 className="h-4 flex items-center justify-center hover:bg-gray-100 border-b border-red-800"
                 disabled={ticketCount + discountTickets >= availableTickets}
               >
-                <ChevronUp size={10} className="text-gray-600" />
+                <ChevronUp size={10} className="text-form-text-muted" />
               </button>
               <button
                 onClick={() => setTicketCount(Math.max(0, ticketCount - 1))}
                 className="h-4 flex items-center justify-center hover:bg-gray-100"
               >
-                <ChevronDown size={10} className="text-gray-600" />
+                <ChevronDown size={10} className="text-form-text-muted" />
               </button>
             </div>
           </div>
@@ -62,16 +62,16 @@ const TicketPurchase = ({
               placeholder="Ev. rabattkod"
               value={discountCode}
               onChange={(e) => setDiscountCode(e.target.value)}
-              className="rounded-none border-0 text-gray-600 text-sm h-8 focus:border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+              className="rounded-none border-0 text-form-text text-sm h-8 focus:border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder-form-placeholder"
             />
           </div>
         </div>
       </div>
 
       <div className="mb-4">
-        <div className="font-medium text-gray-800 mb-3">Student/pensionär/kursare {discountPrice}kr</div>
+        <div className="font-medium text-content-primary mb-3">Student/pensionär/kursare {discountPrice}kr</div>
         <div className="relative w-24 border border-red-800 bg-white">
-          <div className="h-8 flex items-center justify-center text-center text-gray-600 pr-8">
+          <div className="h-8 flex items-center justify-center text-center text-form-text pr-8">
             {discountTickets}
           </div>
           <div className="absolute right-0 top-0 h-full w-6 flex flex-col">
@@ -80,20 +80,20 @@ const TicketPurchase = ({
               className="h-4 flex items-center justify-center hover:bg-gray-100 border-b border-red-800"
               disabled={ticketCount + discountTickets >= availableTickets}
             >
-              <ChevronUp size={10} className="text-gray-600" />
+              <ChevronUp size={10} className="text-form-text-muted" />
             </button>
             <button
               onClick={() => setDiscountTickets(Math.max(0, discountTickets - 1))}
               className="h-4 flex items-center justify-center hover:bg-gray-100"
             >
-              <ChevronDown size={10} className="text-gray-600" />
+              <ChevronDown size={10} className="text-form-text-muted" />
             </button>
           </div>
         </div>
       </div>
 
       {availableTickets <= 20 && (
-        <div className="mb-4 text-red-600 text-sm">
+        <div className="mb-4 text-accent-text text-sm">
           Endast {availableTickets} biljetter kvar!
         </div>
       )}
