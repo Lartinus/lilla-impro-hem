@@ -9,7 +9,7 @@ const Index = () => {
 
       <section className="min-h-screen flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
         <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
-          <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto mb-32 md:mb-0">
+          <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
             
             {/* Inledning */}
             <div className="mx-3 md:mx-0 md:max-w-6xl lg:max-w-7xl pb-1">
@@ -38,19 +38,17 @@ const Index = () => {
                 </p>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Mobil-only logotyp utanför den vita boxen */}
-        <div className="block md:hidden flex justify-center pb-8">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <a href="/om-oss">
-              <img
-                src="/uploads/LIT_BoW_large.png"
-                alt="Lilla Improteatern logotyp"
-                className="h-[180px] cursor-pointer"
-                />
-            </a>
+            {/* Mobil-only logotyp inom den vita rutan */}
+            <div className="block md:hidden flex justify-center pt-8">
+              <a href="/om-oss">
+                <img
+                  src="/uploads/LIT_BoW_large.png"
+                  alt="Lilla Improteatern logotyp"
+                  className="h-[180px] cursor-pointer"
+                  />
+              </a>
+            </div>
           </div>
         </div>
       </section>
