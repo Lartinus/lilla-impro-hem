@@ -81,7 +81,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
               {course.practicalInfo!.map((item, index) => (
                 <div key={index} className="flex items-start space-x-3">
                   <div 
-                    className="bullet-point bg-blue-500 rounded-full flex-shrink-0 mt-2"
+                    className="bullet-point bg-accent-color-primary rounded-full flex-shrink-0 mt-2"
                     style={{ width: 'var(--bullet-size)', height: 'var(--bullet-size)' }}
                   ></div>
                   <p className="[&>p]:text-[14px] md:[&>p]:text-[16px]">{item}</p>

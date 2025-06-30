@@ -63,7 +63,7 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
 
         <div className="mb-4">
           <Link to={`/shows/${show.slug}`}>
-            <h2 className="text-xl font-bold text-blue-500 mb-2 hover:text-blue-700 transition-colors">
+            <h2 className="text-xl font-bold text-accent-color-text mb-2 hover:text-accent-color-hover transition-colors">
               {show.title} {show.date}
             </h2>
           </Link>
@@ -80,7 +80,7 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
         </div>
         
         <div 
-          className="text-gray-700 leading-relaxed mb-6 text-base" 
+          className="text-content-secondary leading-relaxed mb-6 text-base" 
           style={{ lineHeight: '1.4' }}
           dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(show.description) }}
         />
@@ -93,12 +93,12 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
         {/* Only render practical info if it exists */}
         {show.practicalInfo && show.practicalInfo.length > 0 && (
           <div className="mb-6">
-            <h4 className="text-gray-800 font-bold mb-3">Praktisk information</h4>
+            <h4 className="text-content-primary font-bold mb-3">Praktisk information</h4>
             <div className="space-y-2">
               {show.practicalInfo.map((item, index) => (
                 <div key={index} className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2 bullet-point"></div>
-                  <p className="text-gray-700 text-base" style={{ lineHeight: '1.4' }}>{item}</p>
+                  <div className="w-2 h-2 bg-accent-color-primary rounded-full flex-shrink-0 mt-2 bullet-point"></div>
+                  <p className="text-content-secondary text-base" style={{ lineHeight: '1.4' }}>{item}</p>
                 </div>
               ))}
             </div>
@@ -106,16 +106,16 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
         )}
         
         <div className="mt-auto">
-          <h4 className="text-gray-800 font-bold mb-4">Köp biljetter</h4>
+          <h4 className="text-content-primary font-bold mb-4">Köp biljetter</h4>
           
           {/* Regular tickets */}
-          <div className="bg-gray-50 p-4 rounded-none border border-gray-200 mb-4">
+          <div className="bg-surface-secondary p-4 rounded-none border border-color-primary mb-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-800 font-medium">Pris {show.ticketPrice}kr</span>
+              <span className="text-content-primary font-medium">Pris {show.ticketPrice}kr</span>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setTicketCount(Math.max(0, ticketCount - 1))}
-                  className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
+                  className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
                   aria-label="Minska antal biljetter"
                 >
                   -
@@ -123,7 +123,7 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
                 <span className="w-8 text-center">{ticketCount}</span>
                 <button
                   onClick={() => setTicketCount(ticketCount + 1)}
-                  className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
+                  className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
                   aria-label="Öka antal biljetter"
                 >
                   +
@@ -137,19 +137,19 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
                 placeholder="Ev. rabattkod"
                 value={discountCode}
                 onChange={(e) => setDiscountCode(e.target.value)}
-                className="rounded-none border-gray-300"
+                className="rounded-none border-color-primary"
               />
             </div>
           </div>
 
           {/* Discount tickets */}
-          <div className="bg-gray-50 p-4 rounded-none border border-gray-200 mb-4">
+          <div className="bg-surface-secondary p-4 rounded-none border border-color-primary mb-4">
             <div className="flex items-center justify-between">
-              <span className="text-gray-800 font-medium">Student/pensionär {show.discountPrice}kr</span>
+              <span className="text-content-primary font-medium">Student/pensionär {show.discountPrice}kr</span>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setDiscountTickets(Math.max(0, discountTickets - 1))}
-                  className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
+                  className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
                   aria-label="Minska antal rabattbiljetter"
                 >
                   -
@@ -157,7 +157,7 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
                 <span className="w-8 text-center">{discountTickets}</span>
                 <button
                   onClick={() => setDiscountTickets(discountTickets + 1)}
-                  className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
+                  className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
                   aria-label="Öka antal rabattbiljetter"
                 >
                   +
@@ -168,7 +168,7 @@ const ShowCardFromStrapi = ({ show }: ShowCardFromStrapiProps) => {
           
           <Button 
             onClick={handleBuyTickets}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-none text-sm"
+            className="bg-accent-color-primary hover:bg-accent-color-hover text-white px-4 py-2 rounded-none text-sm"
             disabled={ticketCount === 0 && discountTickets === 0}
           >
             Fortsätt →

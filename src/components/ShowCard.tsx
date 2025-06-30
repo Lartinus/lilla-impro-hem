@@ -1,3 +1,4 @@
+
 // src/components/ShowCard.tsx
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,7 +36,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
       <CardContent className="p-6 lg:p-8 flex flex-col flex-1">
         {/* Titel & Plats */}
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-blue-500 mb-2">{show.title}</h2>
+          <h2 className="text-xl font-bold text-accent-color-text mb-2">{show.title}</h2>
           <h3 className="text-theatre-secondary font-medium mb-1">
             <a
               href={show.mapLink}
@@ -49,7 +50,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
         </div>
 
         {/* Beskrivning */}
-        <div className="text-gray-700 leading-relaxed mb-6 text-base" style={{ lineHeight: '1.4' }}>
+        <div className="text-content-secondary leading-relaxed mb-6 text-base" style={{ lineHeight: '1.4' }}>
           {show.description.split('\n').map((para, idx) => (
             <p key={idx} className="mb-4 last:mb-0">
               {para}
@@ -62,12 +63,12 @@ const ShowCard = ({ show }: ShowCardProps) => {
 
         {/* Praktisk info */}
         <div className="mb-6">
-          <h4 className="text-gray-800 font-bold mb-3">Praktisk information</h4>
+          <h4 className="text-content-primary font-bold mb-3">Praktisk information</h4>
           <div className="space-y-2">
             {show.practicalInfo.map((item, idx) => (
               <div key={idx} className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2" />
-                <p className="text-gray-700 text-base" style={{ lineHeight: '1.4' }}>
+                <div className="w-2 h-2 bg-accent-color-primary rounded-full flex-shrink-0 mt-2" />
+                <p className="text-content-secondary text-base" style={{ lineHeight: '1.4' }}>
                   {item}
                 </p>
               </div>
@@ -77,22 +78,22 @@ const ShowCard = ({ show }: ShowCardProps) => {
 
         {/* Köp biljetter */}
         <div className="mt-auto">
-          <h4 className="text-gray-800 font-bold mb-4">Köp biljetter</h4>
+          <h4 className="text-content-primary font-bold mb-4">Köp biljetter</h4>
           {/* Ordinarie */}
-          <div className="bg-gray-50 p-4 rounded-none border border-gray-200 mb-4">
+          <div className="bg-surface-secondary p-4 rounded-none border border-color-primary mb-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-800 font-medium">Pris 175kr</span>
+              <span className="text-content-primary font-medium">Pris 175kr</span>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setTicketCount(Math.max(0, ticketCount - 1))}
-                  className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
+                  className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
                 >
                   –
                 </button>
                 <span className="w-8 text-center">{ticketCount}</span>
                 <button
                   onClick={() => setTicketCount(ticketCount + 1)}
-                  className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
+                  className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
                 >
                   +
                 </button>
@@ -103,26 +104,26 @@ const ShowCard = ({ show }: ShowCardProps) => {
                 placeholder="Ev. rabattkod"
                 value={discountCode}
                 onChange={(e) => setDiscountCode(e.target.value)}
-                className="rounded-none border-gray-300"
+                className="rounded-none border-color-primary"
               />
             </div>
           </div>
 
           {/* Rabatterade */}
-          <div className="bg-gray-50 p-4 rounded-none border border-gray-200 mb-4">
+          <div className="bg-surface-secondary p-4 rounded-none border border-color-primary mb-4">
             <div className="flex items-center justify-between">
-              <span className="text-gray-800 font-medium">Student/pensionär 145kr</span>
+              <span className="text-content-primary font-medium">Student/pensionär 145kr</span>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setDiscountTickets(Math.max(0, discountTickets - 1))}
-                  className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
+                  className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
                 >
                   –
                 </button>
                 <span className="w-8 text-center">{discountTickets}</span>
                 <button
                   onClick={() => setDiscountTickets(discountTickets + 1)}
-                  className="w-8 h-8 border border-gray-300 rounded-none flex items-center justify-center hover:bg-gray-100"
+                  className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
                 >
                   +
                 </button>
@@ -132,7 +133,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
 
           <Button
             onClick={handleBuyTickets}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-none text-sm"
+            className="bg-accent-color-primary hover:bg-accent-color-hover text-white px-4 py-2 rounded-none text-sm"
             disabled={ticketCount === 0 && discountTickets === 0}
           >
             Fortsätt →

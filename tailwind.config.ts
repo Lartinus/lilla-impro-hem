@@ -87,6 +87,26 @@ export default {
           'text-secondary': '#A1A1AA',
           'text-muted': '#71717A',
         },
+        // Semantic colors mapped to CSS variables
+        content: {
+          primary: 'var(--content-primary)',
+          secondary: 'var(--content-secondary)',
+          muted: 'var(--content-muted)',
+        },
+        surface: {
+          primary: 'var(--surface-primary)',
+          secondary: 'var(--surface-secondary)',
+          muted: 'var(--surface-muted)',
+        },
+        'border-color': {
+          primary: 'var(--border-primary)',
+          secondary: 'var(--border-secondary)',
+        },
+        'accent-color': {
+          primary: 'var(--accent-primary)',
+          hover: 'var(--accent-hover)',
+          text: 'var(--accent-text)',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',

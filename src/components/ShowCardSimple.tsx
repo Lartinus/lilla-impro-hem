@@ -1,7 +1,9 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
 import OptimizedImage from './OptimizedImage';
+
 interface SimpleShow {
   id: number;
   title: string;
@@ -11,9 +13,11 @@ interface SimpleShow {
   slug: string;
   image?: string | null;
 }
+
 interface ShowCardSimpleProps {
   show: SimpleShow;
 }
+
 const ShowCardSimple = ({
   show
 }: ShowCardSimpleProps) => {
@@ -32,10 +36,19 @@ const ShowCardSimple = ({
       return dateString;
     }
   };
-  return <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none overflow-hidden">
+
+  return (
+    <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none overflow-hidden">
       <CardContent className="p-0">
         {/* Optimized Show Image */}
-        {show.image && <OptimizedImage src={show.image} alt={show.title} className="w-full h-48 md:h-56 object-cover" preferredSize="medium" />}
+        {show.image && (
+          <OptimizedImage 
+            src={show.image} 
+            alt={show.title} 
+            className="w-full h-48 md:h-56 object-cover" 
+            preferredSize="medium" 
+          />
+        )}
 
         <div className="p-4">
           <h2 className="show-card my-0 py-0">
@@ -46,17 +59,22 @@ const ShowCardSimple = ({
             <p className="show-card date-time">
               {formatDateTime(show.date)}
             </p>
-            <p className="0 text-sm flex items-center">
+            <p className="text-sm flex items-center">
               <MapPin size={16} className="mr-1 text-red-700" />
               {show.location}
             </p>
           </div>
           
-          <Link to={`/shows/${show.slug}`} className="inline-flex items-center text-blue-500 hover:text-blue-700 font-medium transition-colors text-sm">
+          <Link 
+            to={`/shows/${show.slug}`} 
+            className="inline-flex items-center text-accent-color-text hover:text-accent-color-hover font-medium transition-colors text-sm"
+          >
             Läs mer →
           </Link>
         </div>
       </CardContent>
-    </Card>;
+    </Card>
+  );
 };
+
 export default ShowCardSimple;

@@ -1,3 +1,4 @@
+
 /* ==========================================================================  
    FONTS
    ========================================================================== */
@@ -73,6 +74,19 @@
     --h4-dark-color: #F5F5F5;
     --h5-dark-color: #F5F5F5;
     --h6-dark-color: #F5F5F5;
+
+    /* Semantic colors */
+    --content-primary: #2A2A2A;
+    --content-secondary: #4A4A4A;
+    --content-muted: #6B7280;
+    --surface-primary: #FFFFFF;
+    --surface-secondary: #F9FAFB;
+    --surface-muted: #F3F4F6;
+    --border-primary: #E5E7EB;
+    --border-secondary: #D1D5DB;
+    --accent-primary: #3B82F6;
+    --accent-hover: #2563EB;
+    --accent-text: #1D4ED8;
   }
 
   /* ────────────────────────────────────────────────────────────────────────
@@ -110,6 +124,19 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Dark mode semantic colors */
+    --content-primary: #F5F5F5;
+    --content-secondary: #E5E5E5;
+    --content-muted: #9CA3AF;
+    --surface-primary: #1F2937;
+    --surface-secondary: #374151;
+    --surface-muted: #4B5563;
+    --border-primary: #6B7280;
+    --border-secondary: #9CA3AF;
+    --accent-primary: #60A5FA;
+    --accent-hover: #3B82F6;
+    --accent-text: #2563EB;
   }
 }
 
@@ -172,6 +199,33 @@
 
 
 /* ==========================================================================  
+   SEMANTIC COLOR CLASSES
+   ========================================================================== */
+@layer components {
+  /* Text colors */
+  .text-content-primary { color: var(--content-primary); }
+  .text-content-secondary { color: var(--content-secondary); }
+  .text-content-muted { color: var(--content-muted); }
+  .text-accent-primary { color: var(--accent-primary); }
+  .text-accent-text { color: var(--accent-text); }
+
+  /* Background colors */
+  .bg-surface-primary { background-color: var(--surface-primary); }
+  .bg-surface-secondary { background-color: var(--surface-secondary); }
+  .bg-surface-muted { background-color: var(--surface-muted); }
+  
+  /* Border colors */
+  .border-primary { border-color: var(--border-primary); }
+  .border-secondary { border-color: var(--border-secondary); }
+  
+  /* Interactive states */
+  .hover\:bg-accent-hover:hover { background-color: var(--accent-hover); }
+  .hover\:text-accent-hover:hover { color: var(--accent-hover); }
+  .focus\:ring-accent-primary:focus { --tw-ring-color: var(--accent-primary); }
+}
+
+
+/* ==========================================================================  
    COLOR OVERRIDES FÖR BAKGRUNDSKLASSER  
    ========================================================================== */
 @layer base {
@@ -179,11 +233,6 @@
   [class^="bg-white"] p,
   .bg-theatre-light p {
     color: var(--p-light-color);
-  }
-  [class^="bg-black"] p,
-  .bg-theatre-primary p,
-  .bg-theatre-dark p {
-    color: var(--p-dark-color);
   }
 
   /* Headings on light bg */
@@ -193,14 +242,6 @@
   [class^="bg-white"] h4, .bg-theatre-light h4 { color: var(--h4-light-color); }
   [class^="bg-white"] h5, .bg-theatre-light h5 { color: var(--h5-light-color); }
   [class^="bg-white"] h6, .bg-theatre-light h6 { color: var(--h6-light-color); }
-
-  /* Headings on dark bg */
-  .bg-theatre-primary h1, .bg-theatre-dark h1, [class^="bg-black"] h1 { color: var(--h1-dark-color); }
-  .bg-theatre-primary h2, .bg-theatre-dark h2, [class^="bg-black"] h2 { color: var(--h2-dark-color); }
-  .bg-theatre-primary h3, .bg-theatre-dark h3, [class^="bg-black"] h3 { color: var(--h3-dark-color); }
-  .bg-theatre-primary h4, .bg-theatre-dark h4, [class^="bg-black"] h4 { color: var(--h4-dark-color); }
-  .bg-theatre-primary h5, .bg-theatre-dark h5, [class^="bg-black"] h5 { color: var(--h5-dark-color); }
-  .bg-theatre-primary h6, .bg-theatre-dark h6, [class^="bg-black"] h6 { color: var(--h6-dark-color); }
 }
 
 

@@ -1,3 +1,4 @@
+
 // src/components/PerformersSection.tsx
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 
@@ -21,7 +22,7 @@ const PerformersSection = ({
 
   return (
     <div className="mb-6">
-      <h4 className="text-gray-800 font-bold mb-3">{title}</h4>
+      <h4 className="text-content-primary font-bold mb-3">{title}</h4>
       <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
         <div className="space-y-6">
           {performers.map((perf) => {
@@ -46,15 +47,15 @@ const PerformersSection = ({
                     }}
                   />
                 ) : (
-                  <div className="w-32 h-32 bg-gray-300 flex items-center justify-center flex-shrink-0">
-                    <span className="text-gray-600 text-sm">Ingen bild</span>
+                  <div className="w-32 h-32 bg-surface-muted flex items-center justify-center flex-shrink-0">
+                    <span className="text-content-muted text-sm">Ingen bild</span>
                   </div>
                 )}
 
                 <div className="flex-1 min-w-0">
-                  <h5 className="font-bold text-gray-800 mb-2">{perf.name}</h5>
+                  <h5 className="font-bold text-content-primary mb-2">{perf.name}</h5>
                   <div
-                    className="text-gray-700 break-words mt-4 text-[16px] md:text-[14px] [&>p]:mb-1 [&>p]:mt-0"
+                    className="text-content-secondary break-words mt-4 text-[16px] md:text-[14px] [&>p]:mb-1 [&>p]:mt-0"
                     style={{ lineHeight: 'var(--body-line-height)' }}
                     dangerouslySetInnerHTML={{
                       __html: convertMarkdownToHtml(perf.bio)
