@@ -21,7 +21,7 @@ export default function NavLink({
     <Link
       to={to}
       className={clsx(
-        "font-satoshi text-base-mobile font-light transition-colors duration-300",
+        "font-satoshi text-sm font-light transition-colors duration-300",
         "text-theatre-light/90 hover:text-theatre-light",
         {
           // Lägg bara på understrykningen om länken är aktiv **och** disableUnderline = false
