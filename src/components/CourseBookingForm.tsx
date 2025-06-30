@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -75,18 +76,49 @@ const CourseBookingForm = ({
   const effectiveMaxParticipants = activeInstance?.max_participants || maxParticipants;
   const isFull = effectiveMaxParticipants && currentBookings !== null && currentBookings >= effectiveMaxParticipants;
 
-  // Enhanced dialog open handler with better error handling
+  // Enhanced dialog open handler with automatic course sync
   const handleDialogOpen = async (open: boolean) => {
     if (open) {
       setIsCheckingAvailability(true);
       try {
-        // If no active instance exists, create one using the utility
+        // If no active instance exists, try to sync courses first
         if (!activeInstance && !isLoadingInstances) {
-          console.log('No active instance found, creating new one...');
-          const { ensureCourseTableExists } = await import('@/utils/courseTableUtils');
-          const newInstance = await ensureCourseTableExists(courseTitle);
-          setActiveInstance(newInstance);
-          setCurrentBookings(0);
+          console.log('No active instance found, attempting to sync courses...');
+          
+          // Call sync-courses function to ensure course tables exist
+          try {
+            const { error: syncError } = await supabase.functions.invoke('sync-courses');
+            if (syncError) {
+              console.error('Error syncing courses:', syncError);
+            } else {
+              console.log('Course sync completed, refetching instances...');
+              // Wait a moment for the sync to complete
+              await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+          } catch (syncError) {
+            console.error('Error calling sync-courses function:', syncError);
+          }
+
+          // Re-fetch course instances after sync
+          const { data: refreshedInstances } = await supabase
+            .from('course_instances')
+            .select('*')
+            .eq('course_title', courseTitle)
+            .eq('is_active', true)
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+          if (refreshedInstances && refreshedInstances.length > 0) {
+            setActiveInstance(refreshedInstances[0]);
+            const count = await getCurrentCourseBookings(refreshedInstances[0].table_name);
+            setCurrentBookings(count);
+          } else {
+            // If still no instance after sync, fall back to the utility function
+            const { ensureCourseTableExists } = await import('@/utils/courseTableUtils');
+            const newInstance = await ensureCourseTableExists(courseTitle);
+            setActiveInstance(newInstance);
+            setCurrentBookings(0);
+          }
         } else if (activeInstance) {
           // Check current bookings for the active instance
           const count = await getCurrentCourseBookings(activeInstance.table_name);
@@ -96,7 +128,7 @@ const CourseBookingForm = ({
         console.error('Error handling course instance:', error);
         toast({
           title: "Problem med kursbokning",
-          description: "Det gick inte att förbereda bokningen. Kursen kanske inte är tillgänglig för bokning än. Kontakta oss via info@littimprov.se om problemet kvarstår.",
+          description: "Det gick inte att förbereda bokningen. Kursen kanske inte är tillgänglig för bokning än. Kontakta oss via info@improteatern.se om problemet kvarstår.",
           variant: "destructive",
         });
       } finally {
@@ -227,7 +259,7 @@ const CourseBookingForm = ({
       console.error('Error submitting booking:', error);
       toast({
         title: "Fel vid bokning",
-        description: "Det gick inte att skicka din bokning. Kontakta oss direkt via info@littimprov.se eller försök igen senare.",
+        description: "Det gick inte att skicka din bokning. Kontakta oss direkt via info@improteatern.se eller försök igen senare.",
         variant: "destructive",
       });
     } finally {

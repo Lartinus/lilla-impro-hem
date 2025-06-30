@@ -5,6 +5,7 @@ import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 import CourseInfoSection from '@/components/CourseInfoSection';
 import { useEffect, useMemo, useState } from 'react';
 import { useCourses } from '@/hooks/useStrapi';
+import { useCourseSync } from '@/hooks/useCourseSync';
 import { formatStrapiCourse, sortCourses } from '@/utils/strapiHelpers';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
 import { useToast } from '@/hooks/use-toast';
@@ -12,12 +13,25 @@ import { useToast } from '@/hooks/use-toast';
 const Courses = () => {
   const [retryCount, setRetryCount] = useState(0);
   const { toast } = useToast();
+  const { syncCourses } = useCourseSync();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const { data, isLoading, error, refetch } = useCourses();
+
+  // Automatically sync courses when data loads successfully
+  useEffect(() => {
+    if (data && data.data && data.data.length > 0) {
+      console.log('Courses loaded, triggering automatic sync...');
+      // Trigger sync in background without blocking UI
+      syncCourses().catch(error => {
+        console.error('Background course sync failed:', error);
+        // Don't show error toast for background sync failures
+      });
+    }
+  }, [data, syncCourses]);
 
   // Handle retry logic
   const handleRetry = async () => {
@@ -96,7 +110,7 @@ const Courses = () => {
                 Försök igen {retryCount > 0 && `(${retryCount + 1})`}
               </button>
               <p className="text-sm opacity-75">
-                Om problemet kvarstår, kontakta oss via info@littimprov.se
+                Om problemet kvarstår, kontakta oss via info@improteatern.se
               </p>
             </div>
           </div>
