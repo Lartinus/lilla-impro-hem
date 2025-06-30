@@ -79,8 +79,9 @@ const PerformersSection = ({
                   <div
                     className="
                       performer-bio
-                      break-words
-                      mt-1
+                      mt-1 break-words
+                      text-sm
+                      md:text-xs
                     "
                     style={{ lineHeight: 'var(--body-line-height)' }}
                     dangerouslySetInnerHTML={{
