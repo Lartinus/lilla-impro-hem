@@ -42,11 +42,12 @@ const ShowCard = ({ show }: ShowCardProps) => {
               href={show.mapLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-content-secondary hover:underline"
+              className="text-xs text-content-secondary hover:underline font-normal"
               style={{ 
-                fontSize: '14px !important', 
-                fontFamily: 'Satoshi, sans-serif !important',
-                fontWeight: 'normal !important'
+                fontSize: '12px !important', 
+                fontFamily: 'inherit !important',
+                fontWeight: '400 !important',
+                lineHeight: '1.2 !important'
               }}
             >
               {show.location}
