@@ -42,16 +42,25 @@ const ShowCard = ({ show }: ShowCardProps) => {
               onClick={() => window.open(show.mapLink, '_blank')}
               className="cursor-pointer hover:underline"
               style={{ 
-                fontSize: '11px',
-                fontFamily: '"Satoshi", sans-serif',
-                fontWeight: '400',
-                lineHeight: '1.2',
-                color: 'var(--content-secondary)',
+                fontSize: '10px !important',
+                fontFamily: '"Satoshi", sans-serif !important',
+                fontWeight: '400 !important',
+                lineHeight: '1.2 !important',
+                color: 'var(--content-secondary) !important',
                 display: 'inline-block',
-                textDecoration: 'none'
+                textDecoration: 'none',
+                textTransform: 'none !important',
+                letterSpacing: 'normal !important'
               }}
             >
-              {show.location}
+              <span style={{ 
+                fontSize: '10px !important',
+                fontFamily: 'inherit !important',
+                all: 'unset',
+                fontSize: '10px !important'
+              }}>
+                {show.location}
+              </span>
             </div>
           </div>
         </div>
