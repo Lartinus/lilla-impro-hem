@@ -33,47 +33,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
   };
 
   return (
-    <>
-      <style>
-        {`
-          .show-location-override {
-            font-size: 10px !important;
-            font-family: 'Satoshi', sans-serif !important;
-            font-weight: 400 !important;
-            line-height: 1.2 !important;
-            color: var(--content-secondary) !important;
-            display: inline-block !important;
-            text-decoration: none !important;
-            text-transform: none !important;
-            letter-spacing: normal !important;
-            max-width: 100% !important;
-            word-break: break-word !important;
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          
-          .show-location-override * {
-            font-size: 10px !important;
-            font-family: 'Satoshi', sans-serif !important;
-            font-weight: 400 !important;
-            line-height: 1.2 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          
-          .show-location-override:hover {
-            text-decoration: underline !important;
-          }
-          
-          /* Override any global clamp rules */
-          .show-location-override,
-          .show-location-override * {
-            font-size: 10px !important;
-            min-height: auto !important;
-            max-height: auto !important;
-          }
-        `}
-      </style>
+
       <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
         <CardContent className="p-6 lg:p-8 flex flex-col flex-1">
           {/* Titel & Plats */}
