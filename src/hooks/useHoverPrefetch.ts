@@ -13,11 +13,22 @@ export const useHoverPrefetch = () => {
         if (error) throw error;
         return data;
       },
-      staleTime: 4 * 60 * 60 * 1000, // 4 hours
+      staleTime: 6 * 60 * 60 * 1000, // 6 hours - increased from 4
     });
   };
 
   const prefetchCourses = () => {
+    // Prefetch both individual courses and parallel data
+    queryClient.prefetchQuery({
+      queryKey: ['courses'],
+      queryFn: async () => {
+        const { data, error } = await supabase.functions.invoke('strapi-courses');
+        if (error) throw error;
+        return data;
+      },
+      staleTime: 6 * 60 * 60 * 1000, // 6 hours - increased from 4
+    });
+
     queryClient.prefetchQuery({
       queryKey: ['courses-parallel'],
       queryFn: async () => {
@@ -36,7 +47,7 @@ export const useHoverPrefetch = () => {
           mainInfoData: mainInfoResponse.data
         };
       },
-      staleTime: 4 * 60 * 60 * 1000, // 4 hours
+      staleTime: 6 * 60 * 60 * 1000, // 6 hours - increased from 4
     });
   };
 
@@ -50,7 +61,7 @@ export const useHoverPrefetch = () => {
         if (error) throw error;
         return data;
       },
-      staleTime: 4 * 60 * 60 * 1000, // 4 hours
+      staleTime: 6 * 60 * 60 * 1000, // 6 hours - increased from 4
     });
   };
 

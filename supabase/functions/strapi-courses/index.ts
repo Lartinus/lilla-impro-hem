@@ -26,17 +26,21 @@ serve(async (req) => {
       });
     }
 
-    // ULTRA-OPTIMIZED endpoint - only absolute essential fields
-    const endpoint = '/api/courses?fields[0]=titel&fields[1]=undertitel&fields[2]=description&fields[3]=praktisk_info&fields[4]=prioritet&populate[teacher][fields][0]=name&populate[teacher][fields][1]=bio&populate[teacher][populate][bild][fields][0]=url&populate[teacher][populate][bild][fields][1]=formats';
+    // HYPER-OPTIMIZED endpoint - absolute minimum fields only
+    const endpoint = '/api/courses?fields[0]=titel&fields[1]=undertitel&fields[2]=description&fields[3]=praktisk_info&fields[4]=prioritet&populate[teacher][fields][0]=name&populate[teacher][fields][1]=bio&populate[teacher][populate][bild][fields][0]=url';
     
-    console.log(`Fetching ultra-optimized courses from Strapi: ${strapiUrl}${endpoint}`);
+    console.log(`Fetching hyper-optimized courses from Strapi: ${strapiUrl}${endpoint}`);
 
     const response = await fetch(`${strapiUrl}${endpoint}`, {
       headers: {
         'Authorization': `Bearer ${strapiToken}`,
         'Content-Type': 'application/json',
         'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Cache-Control': 'max-age=14400',
       },
+      // Add timeout and retry logic
+      signal: AbortSignal.timeout(10000), // 10 second timeout
     });
 
     console.log(`Response status: ${response.status}`);
@@ -49,17 +53,19 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('Successfully fetched ultra-optimized courses data');
+    console.log('Successfully fetched hyper-optimized courses data');
     console.log(`Fetched ${data?.data?.length || 0} courses with minimal fields`);
     
     return new Response(JSON.stringify(data), {
       headers: { 
         ...corsHeaders, 
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=14400, s-maxage=21600', // 4 hours client, 6 hours CDN
-        'ETag': `"courses-${Date.now()}"`,
+        'Cache-Control': 'public, max-age=21600, s-maxage=28800', // 6 hours client, 8 hours CDN
+        'ETag': `"courses-v2-${Date.now()}"`,
         'Last-Modified': new Date().toUTCString(),
         'Vary': 'Accept-Encoding',
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
       },
     });
   } catch (error) {

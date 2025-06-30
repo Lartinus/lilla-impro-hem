@@ -9,10 +9,12 @@ export const useShows = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 4 * 60 * 60 * 1000, // 4 hours - drastically increased
-    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 1 hour
-    retry: 2,
+    staleTime: 6 * 60 * 60 * 1000, // 6 hours - increased further
+    gcTime: 12 * 60 * 60 * 1000, // 12 hours - increased from 8 hours
+    retry: 1, // Reduced retries for faster failures
+    retryDelay: 1000, // Faster retry delay
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch on mount if data exists
   });
 };
 
@@ -27,10 +29,12 @@ export const useShow = (slug: string) => {
       return data;
     },
     enabled: !!slug,
-    staleTime: 6 * 60 * 60 * 1000, // 6 hours - drastically increased
-    gcTime: 12 * 60 * 60 * 1000, // 12 hours - increased from 1.5 hours
-    retry: 2,
+    staleTime: 8 * 60 * 60 * 1000, // 8 hours - increased further
+    gcTime: 16 * 60 * 60 * 1000, // 16 hours - increased from 12 hours
+    retry: 1, // Reduced retries
+    retryDelay: 1000, // Faster retry delay
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch on mount if data exists
   });
 };
 
@@ -54,14 +58,16 @@ export const useCoursesParallel = () => {
         mainInfoData: mainInfoResponse.data
       };
     },
-    staleTime: 4 * 60 * 60 * 1000, // 4 hours - drastically increased
-    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 4 hours
-    retry: 2,
+    staleTime: 6 * 60 * 60 * 1000, // 6 hours - increased further
+    gcTime: 12 * 60 * 60 * 1000, // 12 hours - increased from 8 hours
+    retry: 1, // Reduced retries
+    retryDelay: 1000, // Faster retry delay
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch on mount if data exists
   });
 };
 
-// Keep for backward compatibility
+// Keep for backward compatibility - HYPER OPTIMIZED
 export const useCourses = () => {
   return useQuery({
     queryKey: ['courses'],
@@ -70,10 +76,12 @@ export const useCourses = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 4 * 60 * 60 * 1000, // 4 hours - drastically increased
-    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 4 hours
-    retry: 2,
+    staleTime: 6 * 60 * 60 * 1000, // 6 hours - increased further
+    gcTime: 12 * 60 * 60 * 1000, // 12 hours - increased from 8 hours
+    retry: 1, // Reduced retries for faster failures
+    retryDelay: 1000, // Faster retry delay
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch on mount if data exists
   });
 };
 
@@ -87,10 +95,12 @@ export const useCourseMainInfo = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 8 * 60 * 60 * 1000, // 8 hours - drastically increased
-    gcTime: 16 * 60 * 60 * 1000, // 16 hours - increased from 8 hours
+    staleTime: 12 * 60 * 60 * 1000, // 12 hours - increased dramatically
+    gcTime: 24 * 60 * 60 * 1000, // 24 hours - increased from 16 hours
     retry: 1,
+    retryDelay: 1000,
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch on mount if data exists
   });
 };
 
@@ -109,10 +119,12 @@ export const usePrivateParty = () => {
       }
       return data;
     },
-    staleTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
-    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 4 hours
-    retry: 2,
+    staleTime: 6 * 60 * 60 * 1000, // 6 hours - increased from 4 hours
+    gcTime: 12 * 60 * 60 * 1000, // 12 hours - increased from 8 hours
+    retry: 1,
+    retryDelay: 1000,
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch on mount if data exists
   });
 };
 
@@ -126,9 +138,10 @@ export const useAboutPageContent = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
-    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 4 hours
+    staleTime: 6 * 60 * 60 * 1000, // 6 hours - increased from 4 hours
+    gcTime: 12 * 60 * 60 * 1000, // 12 hours - increased from 8 hours
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch on mount if data exists
   });
 };
 
@@ -142,8 +155,9 @@ export const useSiteContent = (contentType: string = 'site-settings') => {
       if (error) throw error;
       return data;
     },
-    staleTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
-    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 4 hours
+    staleTime: 6 * 60 * 60 * 1000, // 6 hours - increased from 4 hours
+    gcTime: 12 * 60 * 60 * 1000, // 12 hours - increased from 8 hours
     refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch on mount if data exists
   });
 };

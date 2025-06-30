@@ -7,7 +7,7 @@ export const usePrefetch = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    // Prefetch shows (list)
+    // Prefetch shows (list) - more aggressive
     queryClient.prefetchQuery({
       queryKey: ['shows'],
       queryFn: async () => {
@@ -15,11 +15,11 @@ export const usePrefetch = () => {
         if (error) throw error;
         return data;
       },
-      staleTime: 15 * 60 * 1000, // 15 minutes
-      gcTime: 45 * 60 * 1000, // 45 minutes
+      staleTime: 30 * 60 * 1000, // 30 minutes - increased from 15
+      gcTime: 90 * 60 * 1000, // 90 minutes - increased from 45
     });
 
-    // Prefetch courses (parallel)
+    // Prefetch courses (parallel) - more aggressive
     queryClient.prefetchQuery({
       queryKey: ['courses-parallel'],
       queryFn: async () => {
@@ -37,8 +37,20 @@ export const usePrefetch = () => {
           mainInfoData: mainInfoResponse.data
         };
       },
-      staleTime: 20 * 60 * 1000, // 20 minutes
-      gcTime: 60 * 60 * 1000, // 60 minutes
+      staleTime: 45 * 60 * 1000, // 45 minutes - increased from 20
+      gcTime: 120 * 60 * 1000, // 120 minutes - increased from 60
+    });
+
+    // Prefetch individual course data immediately
+    queryClient.prefetchQuery({
+      queryKey: ['courses'],
+      queryFn: async () => {
+        const { data, error } = await supabase.functions.invoke('strapi-courses');
+        if (error) throw error;
+        return data;
+      },
+      staleTime: 45 * 60 * 1000, // 45 minutes
+      gcTime: 120 * 60 * 1000, // 120 minutes
     });
 
     // Fetch all shows immediately, then prefetch details for each show (by slug)
@@ -50,8 +62,11 @@ export const usePrefetch = () => {
         const showList = data?.data || [];
         const showSlugs = showList.map((show: any) => show.attributes?.slug).filter(Boolean);
 
+        // Limit to first 5 shows to avoid too many requests
+        const limitedSlugs = showSlugs.slice(0, 5);
+
         await Promise.all(
-          showSlugs.map((slug: string) =>
+          limitedSlugs.map((slug: string) =>
             queryClient.prefetchQuery({
               queryKey: ['show', slug],
               queryFn: async () => {
@@ -61,8 +76,8 @@ export const usePrefetch = () => {
                 if (error) throw error;
                 return data;
               },
-              staleTime: 30 * 60 * 1000, // 30 minutes
-              gcTime: 90 * 60 * 1000, // 90 minutes
+              staleTime: 60 * 60 * 1000, // 60 minutes - increased from 30
+              gcTime: 180 * 60 * 1000, // 180 minutes - increased from 90
             })
           )
         );
@@ -71,6 +86,6 @@ export const usePrefetch = () => {
       }
     })();
 
-    console.log('Prefetching critical data (shows/courses and show details) in background...');
+    console.log('Prefetching critical data with hyper-aggressive caching...');
   }, [queryClient]);
 };
