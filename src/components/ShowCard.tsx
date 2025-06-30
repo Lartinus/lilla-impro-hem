@@ -32,7 +32,13 @@ const ShowCard = ({ show }: ShowCardProps) => {
   };
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
+    <Card className="
+      group hover:shadow-xl 
+      transition-all duration-300 
+      border-4 border-white shadow-lg bg-white 
+      rounded-none flex flex-col
+      -mx-4 px-4
+      md:mx-0 md:px-0">
       <CardContent className="p-0 md:p-6 lg:p-8 flex flex-col flex-1">
         {/* Titel & Plats */}
         <div className="mb-4">
