@@ -53,7 +53,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             {course.title}
           </h2>
           {course.subtitle && (
-            <h5 className="mt-2">
+            <h5 className="mt-1">
               {course.subtitle}
             </h5>
           )}
