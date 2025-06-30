@@ -37,7 +37,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
         {/* Titel & Plats */}
         <div className="mb-4">
           <h2 className="mb-2">{show.title}</h2>
-          <h6 className="mb-1">
+          <h6 className="mb-1 text-sm">
             <a
               href={show.mapLink}
               target="_blank"
