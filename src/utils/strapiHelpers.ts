@@ -1,3 +1,4 @@
+
 // strapiHelpers.ts
 
 export type Size = 'small' | 'medium' | 'large';
@@ -201,3 +202,19 @@ export const sortCourses = (courses: any[]) =>
       return a.isLevel1 ? -1 : 1;
     return 0;
   });
+
+/**
+ * Sort shows by date (upcoming shows first)
+ */
+export const sortShows = (shows: any[]) => {
+  return shows.sort((a, b) => {
+    if (!a.date && !b.date) return 0;
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    
+    return dateA.getTime() - dateB.getTime();
+  });
+};
