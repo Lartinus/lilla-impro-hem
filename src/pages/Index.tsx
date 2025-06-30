@@ -40,12 +40,12 @@ const Index = () => {
             </div>
 
             {/* Mobil-only logotyp inom den vita rutan */}
-            <div className="block md:hidden flex justify-start pt-4 pl-3">
+            <div className="block md:hidden flex justify-start pt-2 pl-6">
               <a href="/om-oss">
                 <img
                   src="/uploads/LIT_BoW_large.png"
                   alt="Lilla Improteatern logotyp"
-                  className="h-[120px] cursor-pointer"
+                  className="h-[150px] cursor-pointer"
                   />
               </a>
             </div>
