@@ -81,7 +81,7 @@ const PerformersSection = ({
                       performer-bio
                       mt-1 break-words
                       text-[14px]
-                      md:text-[14px]
+                      md:text-[12px]
                     "
                     style={{ lineHeight: 'var(--body-line-height)' }}
                     dangerouslySetInnerHTML={{
