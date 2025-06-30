@@ -12,7 +12,7 @@ const Index = () => {
             
             {/* Inledning */}
             <div className="mx-3 md:mx-0 md:max-w-6xl lg:max-w-7xl pb-1">
-              <h1 className="mt-[10px] mb-[15px] md:mb-[30px]">
+              <h1 className="mt-[10px] mb-[25px] md:mb-[30px]">
                 Lilla improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv&nbsp;Comedy.
               </h1>
               <div className="border-t border-gray-400 pt-[10px] w-full lg:w-[90%] lg:mx-auto">
