@@ -12,12 +12,9 @@
 
 
 /* ==========================================================================  
-   CSS-VARIABLER (Light & Dark Mode)
+   CSS-VARIABLER (Light Mode)
    ========================================================================== */
 @layer base {
-  /* ────────────────────────────────────────────────────────────────────────
-     Light-mode color variables
-     ───────────────────────────────────────────────────────────────────── */
   :root {
     /* Base colors */
     --background: 0 0% 100%;
@@ -57,23 +54,23 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
+    /* Theatre brand colors */
+    --theatre-primary: #772424;
+    --theatre-secondary: #772424;
+    --theatre-tertiary: #3a1212;
+    --theatre-light: #f9f9f9;
+    --theatre-dark: #0A0A0A;
+    --theatre-dark-secondary: #111111;
+    --theatre-gray-light: #1A1A1A;
+    --theatre-gray-medium: #2A2A2A;
+    --theatre-accent: #3B82F6;
+    --theatre-accent-light: #60A5FA;
+    --theatre-text-primary: #FFFFFF;
+    --theatre-text-secondary: #A1A1AA;
+    --theatre-text-muted: #71717A;
+
     /* Bullet & typography overrides */
     --bullet-size: 0.5rem;
-    --p-light-color: #2A2A2A;
-    --h1-light-color: #2A2A2A;
-    --h2-light-color: #2A2A2A;
-    --h3-light-color: #2A2A2A;
-    --h4-light-color: #2A2A2A;
-    --h5-light-color: #772424;
-    --h6-light-color: #2A2A2A;
-
-    --p-dark-color: #F5F5F5;
-    --h1-dark-color: #F5F5F5;
-    --h2-dark-color: #F5F5F5;
-    --h3-dark-color: #F5F5F5;
-    --h4-dark-color: #F5F5F5;
-    --h5-dark-color: #F5F5F5;
-    --h6-dark-color: #F5F5F5;
 
     /* Semantic colors */
     --content-primary: #2A2A2A;
@@ -87,56 +84,29 @@
     --accent-primary: #3B82F6;
     --accent-hover: #2563EB;
     --accent-text: #1D4ED8;
-  }
 
-  /* ────────────────────────────────────────────────────────────────────────
-     Dark-mode overrides
-     ───────────────────────────────────────────────────────────────────── */
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Form colors */
+    --form-background: #F3F4F6;
+    --form-background-secondary: #E5E7EB;
+    --form-border: #D1D5DB;
+    --form-border-focus: #3B82F6;
+    --form-text: #374151;
+    --form-text-muted: #6B7280;
+    --form-placeholder: #9CA3AF;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    /* Button colors */
+    --button-primary: #3B82F6;
+    --button-primary-hover: #2563EB;
+    --button-secondary: #F3F4F6;
+    --button-secondary-hover: #E5E7EB;
+    --button-outline: #D1D5DB;
+    --button-outline-hover: #E5E7EB;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-
-    /* Dark mode semantic colors */
-    --content-primary: #F5F5F5;
-    --content-secondary: #E5E5E5;
-    --content-muted: #9CA3AF;
-    --surface-primary: #1F2937;
-    --surface-secondary: #374151;
-    --surface-muted: #4B5563;
-    --border-primary: #6B7280;
-    --border-secondary: #9CA3AF;
-    --accent-primary: #60A5FA;
-    --accent-hover: #3B82F6;
-    --accent-text: #2563EB;
+    /* Red accent colors */
+    --red-primary: #B91C1C;
+    --red-secondary: #DC2626;
+    --red-700: #B91C1C;
+    --red-800: #991B1B;
   }
 }
 
@@ -222,26 +192,51 @@
   .hover\:bg-accent-hover:hover { background-color: var(--accent-hover); }
   .hover\:text-accent-hover:hover { color: var(--accent-hover); }
   .focus\:ring-accent-primary:focus { --tw-ring-color: var(--accent-primary); }
-}
 
+  /* Theatre brand colors */
+  .bg-theatre-primary { background-color: var(--theatre-primary); }
+  .bg-theatre-secondary { background-color: var(--theatre-secondary); }
+  .bg-theatre-tertiary { background-color: var(--theatre-tertiary); }
+  .bg-theatre-light { background-color: var(--theatre-light); }
+  .bg-theatre-dark { background-color: var(--theatre-dark); }
+  .text-theatre-primary { color: var(--theatre-primary); }
+  .text-theatre-secondary { color: var(--theatre-secondary); }
+  .text-theatre-light { color: var(--theatre-light); }
+  .text-theatre-text-primary { color: var(--theatre-text-primary); }
+  .text-theatre-text-secondary { color: var(--theatre-text-secondary); }
+  .text-theatre-text-muted { color: var(--theatre-text-muted); }
 
-/* ==========================================================================  
-   COLOR OVERRIDES FÖR BAKGRUNDSKLASSER  
-   ========================================================================== */
-@layer base {
-  /* Paragraph text color */
-  [class^="bg-white"] p,
-  .bg-theatre-light p {
-    color: var(--p-light-color);
-  }
+  /* Form colors */
+  .bg-form-background { background-color: var(--form-background); }
+  .bg-form-background-secondary { background-color: var(--form-background-secondary); }
+  .border-form-border { border-color: var(--form-border); }
+  .border-form-border-focus { border-color: var(--form-border-focus); }
+  .text-form-text { color: var(--form-text); }
+  .text-form-text-muted { color: var(--form-text-muted); }
+  .placeholder-form-placeholder::placeholder { color: var(--form-placeholder); }
 
-  /* Headings on light bg */
-  [class^="bg-white"] h1, .bg-theatre-light h1 { color: var(--h1-light-color); }
-  [class^="bg-white"] h2, .bg-theatre-light h2 { color: var(--h2-light-color); }
-  [class^="bg-white"] h3, .bg-theatre-light h3 { color: var(--h3-light-color); }
-  [class^="bg-white"] h4, .bg-theatre-light h4 { color: var(--h4-light-color); }
-  [class^="bg-white"] h5, .bg-theatre-light h5 { color: var(--h5-light-color); }
-  [class^="bg-white"] h6, .bg-theatre-light h6 { color: var(--h6-light-color); }
+  /* Button colors */
+  .bg-button-primary { background-color: var(--button-primary); }
+  .bg-button-primary-hover { background-color: var(--button-primary-hover); }
+  .bg-button-secondary { background-color: var(--button-secondary); }
+  .bg-button-secondary-hover { background-color: var(--button-secondary-hover); }
+  .border-button-outline { border-color: var(--button-outline); }
+  .hover\:bg-button-outline-hover:hover { background-color: var(--button-outline-hover); }
+
+  /* Red accent colors */
+  .bg-red-primary { background-color: var(--red-primary); }
+  .bg-red-secondary { background-color: var(--red-secondary); }
+  .bg-red-700 { background-color: var(--red-700); }
+  .bg-red-800 { background-color: var(--red-800); }
+  .text-red-primary { color: var(--red-primary); }
+  .text-red-secondary { color: var(--red-secondary); }
+  .text-red-700 { color: var(--red-700); }
+  .text-red-800 { color: var(--red-800); }
+  .border-red-primary { border-color: var(--red-primary); }
+  .border-red-secondary { border-color: var(--red-secondary); }
+  .border-red-700 { border-color: var(--red-700); }
+  .border-red-800 { border-color: var(--red-800); }
+  .hover\:bg-red-800:hover { background-color: var(--red-800); }
 }
 
 

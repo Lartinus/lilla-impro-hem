@@ -34,7 +34,7 @@ const CorporateInquiryForm = () => {
     return (
       <Button 
         onClick={() => setIsFormOpen(true)}
-        className="px-8 py-3 text-sm font-medium bg-accent-color-primary hover:bg-accent-color-hover text-white"
+        className="px-8 py-3 text-sm font-medium bg-accent-color-primary hover:bg-accent-color-hover text-theatre-text-primary"
       >
         Gör en förfrågan
       </Button>
@@ -135,7 +135,7 @@ const CorporateInquiryForm = () => {
         </div>
         
         <div className="flex space-x-3">
-          <Button type="submit" className="px-6 py-2 bg-accent-color-primary hover:bg-accent-color-hover text-white">
+          <Button type="submit" className="px-6 py-2 bg-accent-color-primary hover:bg-accent-color-hover text-theatre-text-primary">
             Skicka förfrågan
           </Button>
           <Button 

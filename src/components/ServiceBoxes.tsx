@@ -45,19 +45,19 @@ const ServiceBoxes = () => {
             <div className="bg-red-700 p-4 md:p-8 flex-1 flex flex-col justify-between text-left">
               <div className="space-y-6">
                 <div className="w-full h-px bg-white/30"></div>
-                <p className="text-white leading-relaxed font-light text-base">
+                <p className="text-theatre-text-primary leading-relaxed font-light text-base">
                   {service.title}
                 </p>
               </div>
               <div className="pt-6">
                 {service.link.startsWith('/') ? (
                   <Link to={service.link} className="inline-block w-full">
-                    <Button variant="default" className="bg-red-700 text-white hover:bg-red-800 px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all w-full text-left justify-start h-auto whitespace-normal">
+                    <Button variant="default" className="bg-red-700 text-theatre-text-primary hover:bg-red-800 px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all w-full text-left justify-start h-auto whitespace-normal">
                       {service.cta} →
                     </Button>
                   </Link>
                 ) : (
-                  <Button variant="default" className="bg-red-700 text-white hover:bg-red-800 px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all w-full text-left justify-start h-auto whitespace-normal">
+                  <Button variant="default" className="bg-red-700 text-theatre-text-primary hover:bg-red-800 px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all w-full text-left justify-start h-auto whitespace-normal">
                     {service.cta} →
                   </Button>
                 )}
