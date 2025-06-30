@@ -37,7 +37,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
         {/* Titel & Plats */}
         <div className="mb-4">
           <h2 className="mb-2">{show.title}</h2>
-          <h6 className="mb-1 text-sm">
+          <h6 className="mb-1">
             <a
               href={show.mapLink}
               target="_blank"
@@ -50,7 +50,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
         </div>
 
         {/* Beskrivning */}
-        <div className="text-content-secondary leading-relaxed mb-6 text-base" style={{ lineHeight: '1.4' }}>
+        <div className="text-content-secondary leading-relaxed mb-6 text-base">
           {show.description.split('\n').map((para, idx) => (
             <p key={idx} className="mb-4 last:mb-0">
               {para}
@@ -68,7 +68,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
             {show.practicalInfo.map((item, idx) => (
               <div key={idx} className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-accent-color-primary rounded-full flex-shrink-0 mt-2" />
-                <p className="text-content-secondary text-base" style={{ lineHeight: '1.4' }}>
+                <p className="text-content-secondary text-base">
                   {item}
                 </p>
               </div>
