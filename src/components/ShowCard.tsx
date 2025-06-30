@@ -1,4 +1,5 @@
 
+
 // src/components/ShowCard.tsx
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -161,7 +162,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
                   </button>
                   <span className="w-8 text-center">{discountTickets}</span>
                   <button
-                    onClick={() => setDiscountTickets(discountTickets + 1))}
+                    onClick={() => setDiscountTickets(discountTickets + 1)}
                     className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
                   >
                     +
@@ -185,3 +186,4 @@ const ShowCard = ({ show }: ShowCardProps) => {
 };
 
 export default ShowCard;
+
