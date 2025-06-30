@@ -1,3 +1,4 @@
+
 // src/components/ShowCard.tsx
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,7 +35,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
     <>
       <style>
         {`
-          .force-small-location-text {
+          .show-location-override {
             font-size: 10px !important;
             font-family: 'Satoshi', sans-serif !important;
             font-weight: 400 !important;
@@ -46,12 +47,29 @@ const ShowCard = ({ show }: ShowCardProps) => {
             letter-spacing: normal !important;
             max-width: 100% !important;
             word-break: break-word !important;
+            margin: 0 !important;
+            padding: 0 !important;
           }
-          .force-small-location-text * {
+          
+          .show-location-override * {
             font-size: 10px !important;
             font-family: 'Satoshi', sans-serif !important;
             font-weight: 400 !important;
             line-height: 1.2 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          
+          .show-location-override:hover {
+            text-decoration: underline !important;
+          }
+          
+          /* Override any global clamp rules */
+          .show-location-override,
+          .show-location-override * {
+            font-size: 10px !important;
+            min-height: auto !important;
+            max-height: auto !important;
           }
         `}
       </style>
@@ -61,12 +79,12 @@ const ShowCard = ({ show }: ShowCardProps) => {
           <div className="mb-4">
             <h2 className="mb-2">{show.title}</h2>
             <div className="mb-1">
-              <div 
+              <span 
                 onClick={() => window.open(show.mapLink, '_blank')}
-                className="cursor-pointer hover:underline force-small-location-text"
+                className="cursor-pointer show-location-override"
               >
                 {show.location}
-              </div>
+              </span>
             </div>
           </div>
 
@@ -143,7 +161,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
                   </button>
                   <span className="w-8 text-center">{discountTickets}</span>
                   <button
-                    onClick={() => setDiscountTickets(discountTickets + 1)}
+                    onClick={() => setDiscountTickets(discountTickets + 1))}
                     className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
                   >
                     +
