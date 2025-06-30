@@ -41,7 +41,7 @@ const Index = () => {
               <img
                 src="/uploads/LIT_BoW_large.png"
                 alt="Lilla Improteatern logotyp"
-                className="h-12"
+                className="h-[250px]"
               />
             </div>
             
