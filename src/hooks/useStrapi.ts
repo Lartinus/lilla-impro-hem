@@ -9,8 +9,8 @@ export const useShows = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 20 * 60 * 1000, // 20 minutes - increased from 15
-    gcTime: 60 * 60 * 1000, // 60 minutes - increased from 45
+    staleTime: 4 * 60 * 60 * 1000, // 4 hours - drastically increased
+    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 1 hour
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -27,8 +27,8 @@ export const useShow = (slug: string) => {
       return data;
     },
     enabled: !!slug,
-    staleTime: 30 * 60 * 1000, // 30 minutes - increased from 20
-    gcTime: 90 * 60 * 1000, // 90 minutes - increased from 60
+    staleTime: 6 * 60 * 60 * 1000, // 6 hours - drastically increased
+    gcTime: 12 * 60 * 60 * 1000, // 12 hours - increased from 1.5 hours
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -54,8 +54,8 @@ export const useCoursesParallel = () => {
         mainInfoData: mainInfoResponse.data
       };
     },
-    staleTime: 60 * 60 * 1000, // 1 hour - increased from 30 minutes
-    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
+    staleTime: 4 * 60 * 60 * 1000, // 4 hours - drastically increased
+    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 4 hours
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -70,8 +70,8 @@ export const useCourses = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 60 * 60 * 1000, // 1 hour - increased from 30 minutes
-    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
+    staleTime: 4 * 60 * 60 * 1000, // 4 hours - drastically increased
+    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 4 hours
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -87,8 +87,8 @@ export const useCourseMainInfo = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
-    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 4 hours
+    staleTime: 8 * 60 * 60 * 1000, // 8 hours - drastically increased
+    gcTime: 16 * 60 * 60 * 1000, // 16 hours - increased from 8 hours
     retry: 1,
     refetchOnWindowFocus: false,
   });
@@ -109,8 +109,8 @@ export const usePrivateParty = () => {
       }
       return data;
     },
-    staleTime: 2 * 60 * 60 * 1000, // 2 hours - increased from 1 hour
-    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
+    staleTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
+    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 4 hours
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -126,8 +126,8 @@ export const useAboutPageContent = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 2 * 60 * 60 * 1000, // 2 hours - increased from 1 hour
-    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
+    staleTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
+    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 4 hours
     refetchOnWindowFocus: false,
   });
 };
@@ -142,8 +142,8 @@ export const useSiteContent = (contentType: string = 'site-settings') => {
       if (error) throw error;
       return data;
     },
-    staleTime: 2 * 60 * 60 * 1000, // 2 hours - increased from 1 hour
-    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
+    staleTime: 4 * 60 * 60 * 1000, // 4 hours - increased from 2 hours
+    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased from 4 hours
     refetchOnWindowFocus: false,
   });
 };

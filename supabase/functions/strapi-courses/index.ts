@@ -26,10 +26,10 @@ serve(async (req) => {
       });
     }
 
-    // Optimized endpoint - only fetch the fields we actually use in the UI
-    const endpoint = '/api/courses?fields[0]=titel&fields[1]=undertitel&fields[2]=description&fields[3]=praktisk_info&fields[4]=prioritet&populate[teacher][fields][0]=name&populate[teacher][fields][1]=bio&populate[teacher][populate][bild][fields][0]=url&populate[teacher][populate][bild][fields][1]=alternativeText&populate[teacher][populate][bild][fields][2]=formats';
+    // ULTRA-OPTIMIZED endpoint - only absolute essential fields
+    const endpoint = '/api/courses?fields[0]=titel&fields[1]=undertitel&fields[2]=description&fields[3]=praktisk_info&fields[4]=prioritet&populate[teacher][fields][0]=name&populate[teacher][fields][1]=bio&populate[teacher][populate][bild][fields][0]=url&populate[teacher][populate][bild][fields][1]=formats';
     
-    console.log(`Fetching optimized courses from Strapi: ${strapiUrl}${endpoint}`);
+    console.log(`Fetching ultra-optimized courses from Strapi: ${strapiUrl}${endpoint}`);
 
     const response = await fetch(`${strapiUrl}${endpoint}`, {
       headers: {
@@ -49,14 +49,17 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('Successfully fetched optimized courses data');
+    console.log('Successfully fetched ultra-optimized courses data');
     console.log(`Fetched ${data?.data?.length || 0} courses with minimal fields`);
     
     return new Response(JSON.stringify(data), {
       headers: { 
         ...corsHeaders, 
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=1800', // 30 minutes cache
+        'Cache-Control': 'public, max-age=14400, s-maxage=21600', // 4 hours client, 6 hours CDN
+        'ETag': `"courses-${Date.now()}"`,
+        'Last-Modified': new Date().toUTCString(),
+        'Vary': 'Accept-Encoding',
       },
     });
   } catch (error) {
