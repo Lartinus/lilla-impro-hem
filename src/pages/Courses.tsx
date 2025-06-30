@@ -4,8 +4,8 @@ import CourseGrid from '@/components/CourseGrid';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 import CourseInfoSection from '@/components/CourseInfoSection';
 import { useEffect, useMemo, useState } from 'react';
-import { useCourses } from '@/hooks/useStrapi';
-import { useCourseSync } from '@/hooks/useCourseSync';
+import { useOptimizedCourses } from '@/hooks/useOptimizedStrapi';
+import { useSmartCourseSync } from '@/hooks/useSmartCourseSync';
 import { formatStrapiCourse, sortCourses } from '@/utils/strapiHelpers';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
 import { useToast } from '@/hooks/use-toast';
@@ -13,25 +13,24 @@ import { useToast } from '@/hooks/use-toast';
 const Courses = () => {
   const [retryCount, setRetryCount] = useState(0);
   const { toast } = useToast();
-  const { syncCourses } = useCourseSync();
+  const { runSmartSync } = useSmartCourseSync();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data, isLoading, error, refetch } = useCourses();
+  const { data, isLoading, error, refetch } = useOptimizedCourses();
 
-  // Automatically sync courses when data loads successfully
+  // Run smart background sync only when data loads successfully
   useEffect(() => {
     if (data && data.data && data.data.length > 0) {
-      console.log('Courses loaded, triggering automatic sync...');
-      // Trigger sync in background without blocking UI
-      syncCourses().catch(error => {
-        console.error('Background course sync failed:', error);
-        // Don't show error toast for background sync failures
+      console.log('Courses loaded, triggering smart background sync...');
+      // Run in background without blocking UI
+      runSmartSync().catch(error => {
+        console.error('Background smart sync failed (silent):', error);
       });
     }
-  }, [data, syncCourses]);
+  }, [data, runSmartSync]);
 
   // Handle retry logic
   const handleRetry = async () => {

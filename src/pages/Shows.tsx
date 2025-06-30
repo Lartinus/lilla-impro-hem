@@ -1,93 +1,122 @@
-import React, { useEffect, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import Header from '@/components/Header';
-import ShowCardSimple from '@/components/ShowCardSimple';
-import ShowCardSkeleton from '@/components/ShowCardSkeleton';
-import SimpleParallaxHero from '@/components/SimpleParallaxHero';
-import { supabase } from '@/integrations/supabase/client';
-import { formatStrapiShowSimple } from '@/utils/strapiHelpers';
 
-const containerClasses =
-  'min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary text-theatre-light font-satoshi relative overflow-x-hidden overflow-y-visible';
+import Header from '@/components/Header';
+import ShowCardFromStrapi from '@/components/ShowCardFromStrapi';
+import ShowCardSkeleton from '@/components/ShowCardSkeleton';
+import { useOptimizedShows } from '@/hooks/useOptimizedStrapi';
+import { formatStrapiShow, sortShows } from '@/utils/strapiHelpers';
+import { useEffect, useMemo, useState } from 'react';
+import SimpleParallaxHero from "@/components/SimpleParallaxHero";
+import { useToast } from '@/hooks/use-toast';
 
 const Shows = () => {
-  // Scrolla alltid upp när komponenten mountar
+  const [retryCount, setRetryCount] = useState(0);
+  const { toast } = useToast();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Hämta föreställningar med React Query
-  const { data: strapiData, isLoading, error } = useQuery({
-    queryKey: ['shows'],
-    queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('strapi-shows');
-      if (error) throw error;
-      return data;
-    },
-    staleTime: 10 * 60 * 1000,
-    gcTime:    30 * 60 * 1000,
-    retry:     2,
-    refetchOnWindowFocus: false,
-  });
+  const { data, isLoading, error, refetch } = useOptimizedShows();
 
-  // Formatera data en gång per uppdatering
+  const handleRetry = async () => {
+    console.log('Retrying shows fetch...');
+    setRetryCount(prev => prev + 1);
+    try {
+      await refetch();
+      toast({
+        title: "Uppdaterat",
+        description: "Föreställningarna har laddats om.",
+      });
+    } catch (err) {
+      console.error('Retry failed:', err);
+      toast({
+        title: "Fel",
+        description: "Kunde fortfarande inte ladda föreställningarna. Försök igen senare.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  console.log('Shows page - Data:', data);
+  console.log('Shows page - Error:', error);
+  console.log('Shows page - Loading:', isLoading);
+
   const shows = useMemo(() => {
-    const items = strapiData?.data ?? [];
-    return items.map(formatStrapiShowSimple).filter(Boolean);
-  }, [strapiData]);
+    if (!data) return [];
+    
+    try {
+      const formattedShows = data?.data ? data.data.map(formatStrapiShow).filter(Boolean) : [];
+      const sortedShows = sortShows(formattedShows);
+      return sortedShows;
+    } catch (err) {
+      console.error('Error formatting shows:', err);
+      return [];
+    }
+  }, [data]);
 
-  // Felhantering
-  if (error) {
-    console.error('Error loading shows from Strapi:', error);
+  console.log('Formatted shows:', shows);
+
+  if (isLoading) {
     return (
-      <div className={containerClasses}>
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
         <Header />
-        <section className="px-0.5 md:px-4 mt-16 py-6 flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-theatre-light/80">
-              Ett fel uppstod vid laddning av föreställningar. Försök igen!
-            </p>
+        <section className="py-8 px-0.5 md:px-4 pb-8 mt-20 flex-1">
+          <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
+            {[...Array(4)].map((_, index) => (
+              <ShowCardSkeleton key={index} />
+            ))}
           </div>
         </section>
       </div>
     );
   }
 
-  // Normal vy
+  if (error) {
+    console.error('Error loading shows:', error);
+    return (
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
+        <Header />
+        <div className="flex-1 flex items-center justify-center px-4">
+          <div className="text-center text-white max-w-md">
+            <h2 className="text-2xl font-bold mb-4">Föreställningar kunde inte laddas</h2>
+            <p className="text-lg mb-6">Det verkar som att det är problem med att ladda föreställningarna just nu.</p>
+            <div className="space-y-4">
+              <button
+                onClick={handleRetry}
+                className="bg-accent-color-primary hover:bg-accent-color-primary/90 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                Försök igen {retryCount > 0 && `(${retryCount + 1})`}
+              </button>
+              <p className="text-sm opacity-75">
+                Om problemet kvarstår, kontakta oss via info@improteatern.se
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={containerClasses}>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
       <Header />
-
-      {/* Hero */}
-      <section className="md:px-4 mt-16 md:py-6 px-0 relative z-10"></section>
-
-      {/* Shows Grid */}
-      <section className="py-2 px-0.5 md:px-4 pb-8 flex-1 relative z-10">
-        <div className="mx-[12px] md:mx-auto md:max-w-6xl">
-          {isLoading ? (
-            <div className="grid gap-6 mb-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-              {[...Array(6)].map((_, idx) => (
-                <ShowCardSkeleton key={idx} />
-              ))}
-            </div>
-          ) : shows.length > 0 ? (
-            <div className="grid gap-6 mb-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-              {shows.map((show) => (
-                <ShowCardSimple
-                  key={`show-${show.id}-${show.slug}`}
-                  show={show}
-                />
-              ))}
-            </div>
+      <SimpleParallaxHero imageSrc="/uploads/images/shows_2024.jpg" />
+      <section className="py-8 px-0.5 md:px-4 pb-8 mt-0 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
+        <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
+          {shows.length > 0 ? (
+            shows.map((show, index) => (
+              <ShowCardFromStrapi 
+                key={show.id || index} 
+                show={show}
+              />
+            ))
           ) : (
-            <div className="text-center text-theatre-light/80">
-              <p>Vi har inga föreställningar ute just nu. Kom gärna tillbaka senare!</p>
+            <div className="col-span-2 text-center text-white text-xl">
+              Vi har inga föreställningar planerade just nu! Kom gärna tillbaka senare eller följ oss i våra kanaler för info om framtida föreställningar.
             </div>
           )}
         </div>
       </section>
-
-      <SimpleParallaxHero imageSrc="/uploads/images/shows_2024.jpg" />
     </div>
   );
 };
