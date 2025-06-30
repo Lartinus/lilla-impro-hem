@@ -44,9 +44,6 @@ const Shows = () => {
         <Header />
         <section className="px-0.5 md:px-4 mt-16 py-6 flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 shadow">
-              Föreställningar
-            </h1>
             <p className="text-theatre-light/80">
               Ett fel uppstod vid laddning av föreställningar. Försök igen!
             </p>
@@ -62,13 +59,7 @@ const Shows = () => {
       <Header />
 
       {/* Hero */}
-      <section className="md:px-4 mt-16 md:py-6 px-0 relative z-10">
-        <div className="text-center">
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4">
-            Föreställningar
-          </h1>
-        </div>
-      </section>
+      <section className="md:px-4 mt-16 md:py-6 px-0 relative z-10"></section>
 
       {/* Shows Grid */}
       <section className="py-2 px-0.5 md:px-4 pb-8 flex-1 relative z-10">
