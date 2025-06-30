@@ -35,9 +35,14 @@ const ShowInfo = ({ title, date, location, mapLink, description }: ShowInfoProps
       <div className="mb-4">
         <div className="flex items-center mb-1">
           <MapPin size={16} className="text-red-800 mr-2" />
-          <p className="text-content-secondary">
+          <a 
+            href={mapLink} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-content-secondary hover:underline"
+          >
             {location}
-          </p>
+          </a>
         </div>
       </div>
       
