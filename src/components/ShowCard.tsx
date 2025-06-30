@@ -38,20 +38,20 @@ const ShowCard = ({ show }: ShowCardProps) => {
         <div className="mb-4">
           <h2 className="mb-2">{show.title}</h2>
           <div className="mb-1">
-            <a
-              href={show.mapLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-content-secondary hover:underline font-normal"
+            <span 
+              onClick={() => window.open(show.mapLink, '_blank')}
+              className="cursor-pointer hover:underline"
               style={{ 
-                fontSize: '12px !important', 
-                fontFamily: 'inherit !important',
-                fontWeight: '400 !important',
-                lineHeight: '1.2 !important'
+                fontSize: '11px',
+                fontFamily: '"Satoshi", sans-serif',
+                fontWeight: '400',
+                lineHeight: '1.2',
+                color: 'var(--content-secondary)',
+                display: 'inline-block'
               }}
             >
               {show.location}
-            </a>
+            </span>
           </div>
         </div>
 
