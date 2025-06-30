@@ -39,7 +39,7 @@ const Index = () => {
             </div>
 
             {/* Mobil-only logotyp längst ner */}
-            <div className="block md:hidden mt-6 ml-[-10px]">
+            <div className="block md:hidden mt-2 ml-[-10px]">
               <a href="/om-oss" className="inline-block">
                 <img
                   src="/uploads/LIT_BoW_large.png"
