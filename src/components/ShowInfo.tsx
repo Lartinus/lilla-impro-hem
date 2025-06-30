@@ -29,7 +29,7 @@ const ShowInfo = ({ title, date, location, mapLink, description }: ShowInfoProps
   return (
     <>
       <h2 className="mb-4">
-        <span className="hidden md:block">{title} {formatDateTime(date)}</span>
+        {title} {formatDateTime(date)}
       </h2>
       
       <div className="mb-4">

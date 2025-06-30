@@ -1,32 +1,22 @@
 
-import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
-
 interface PracticalInfoProps {
   practicalInfo: string[];
 }
 
 const PracticalInfo = ({ practicalInfo }: PracticalInfoProps) => {
-  // Format each item as a proper markdown list item
-  const formatAsMarkdownList = (items: string[]) => {
-    return items
-      .filter(item => item.trim()) // Remove empty items
-      .map(item => {
-        const trimmed = item.trim();
-        // If it doesn't start with -, add it
-        return trimmed.startsWith('-') ? trimmed : `- ${trimmed}`;
-      })
-      .join('\n');
-  };
-
-  const markdownList = formatAsMarkdownList(practicalInfo);
+  if (!practicalInfo || practicalInfo.length === 0) return null;
   
   return (
     <div className="mb-6">
       <h4 className="text-gray-800 font-bold mb-3">Praktisk information</h4>
-      <div 
-        className="text-gray-700 text-base body-text" 
-        dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(markdownList) }}
-      />
+      <div className="space-y-2">
+        {practicalInfo.map((item, index) => (
+          <div key={index} className="flex items-start space-x-3">
+            <div className="w-2 h-2 bg-accent-color-primary rounded-full flex-shrink-0 mt-2"></div>
+            <p className="text-gray-700 text-base">{item}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
