@@ -1,5 +1,5 @@
 // src/pages/Mohippa.tsx
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import PrivateInquiryForm from '@/components/PrivateInquiryForm';
 import { ArrowRight } from 'lucide-react';
