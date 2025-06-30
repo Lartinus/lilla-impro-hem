@@ -13,8 +13,8 @@ export const useShows = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 45 * 60 * 1000, // 45 minutes - Phase 2 increase
-    gcTime: 90 * 60 * 1000, // 1.5 hours - Phase 2 increase
+    staleTime: 30 * 60 * 1000, // 30 minutes - increased
+    gcTime: 60 * 60 * 1000, // 1 hour - increased
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -35,19 +35,19 @@ export const useShow = (slug: string) => {
       return data;
     },
     enabled: !!slug,
-    staleTime: 90 * 60 * 1000, // 1.5 hours - Phase 2 increase
-    gcTime: 3 * 60 * 60 * 1000, // 3 hours - Phase 2 increase
+    staleTime: 60 * 60 * 1000, // 1 hour - increased
+    gcTime: 2 * 60 * 60 * 1000, // 2 hours - increased
     retry: 2,
     refetchOnWindowFocus: false,
   });
 };
 
-// Ultra-optimized parallel courses query - Phase 2 enhanced
+// Ultra-optimized parallel courses query
 export const useCoursesParallel = () => {
   return useQuery({
     queryKey: ['courses-parallel'],
     queryFn: async () => {
-      console.log('useCoursesParallel: Starting ultra-optimized parallel fetch...');
+      console.log('useCoursesParallel: Starting parallel fetch...');
       const startTime = performance.now();
       
       const [coursesResponse, mainInfoResponse] = await Promise.all([
@@ -58,7 +58,7 @@ export const useCoursesParallel = () => {
       ]);
 
       const endTime = performance.now();
-      console.log(`useCoursesParallel: Ultra-optimized parallel API calls took ${endTime - startTime} milliseconds`);
+      console.log(`useCoursesParallel: Parallel API calls took ${endTime - startTime} milliseconds`);
 
       if (coursesResponse.error) throw coursesResponse.error;
       if (mainInfoResponse.error) throw mainInfoResponse.error;
@@ -68,19 +68,19 @@ export const useCoursesParallel = () => {
         mainInfoData: mainInfoResponse.data
       };
     },
-    staleTime: 90 * 60 * 1000, // 1.5 hours - Phase 2 increase
-    gcTime: 6 * 60 * 60 * 1000, // 6 hours - Phase 2 increase
+    staleTime: 60 * 60 * 1000, // 1 hour - increased
+    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased
     retry: 2,
     refetchOnWindowFocus: false,
   });
 };
 
-// Keep for backward compatibility but with Phase 2 optimizations
+// Keep for backward compatibility
 export const useCourses = () => {
   return useQuery({
     queryKey: ['courses'],
     queryFn: async () => {
-      console.log('useCourses: Fetching courses with Phase 2 optimizations...');
+      console.log('useCourses: Fetching courses...');
       const startTime = performance.now();
       const { data, error } = await supabase.functions.invoke('strapi-courses');
       const endTime = performance.now();
@@ -88,8 +88,8 @@ export const useCourses = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 90 * 60 * 1000, // 1.5 hours - Phase 2 increase
-    gcTime: 6 * 60 * 60 * 1000, // 6 hours - Phase 2 increase
+    staleTime: 60 * 60 * 1000, // 1 hour - increased
+    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -99,7 +99,7 @@ export const useCourseMainInfo = () => {
   return useQuery({
     queryKey: ['course-main-info'],
     queryFn: async () => {
-      console.log('useCourseMainInfo: Fetching course main info with Phase 2 optimizations...');
+      console.log('useCourseMainInfo: Fetching course main info...');
       const startTime = performance.now();
       const { data, error } = await supabase.functions.invoke('strapi-site-content', {
         body: { type: 'course-main-info' }
@@ -109,8 +109,8 @@ export const useCourseMainInfo = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 6 * 60 * 60 * 1000, // 6 hours - Phase 2 increase
-    gcTime: 12 * 60 * 60 * 1000, // 12 hours - Phase 2 increase
+    staleTime: 4 * 60 * 60 * 1000, // 4 hours - increased
+    gcTime: 8 * 60 * 60 * 1000, // 8 hours - increased
     retry: 1,
     refetchOnWindowFocus: false,
   });
@@ -120,7 +120,7 @@ export const usePrivateParty = () => {
   return useQuery({
     queryKey: ['private-party'],
     queryFn: async () => {
-      console.log('usePrivateParty: Fetching private party content with Phase 2 optimizations...');
+      console.log('usePrivateParty: Fetching private party content...');
       const startTime = performance.now();
       const { data, error } = await supabase.functions.invoke('strapi-site-content', {
         body: { type: 'private-party' }
@@ -133,8 +133,8 @@ export const usePrivateParty = () => {
       }
       return data;
     },
-    staleTime: 4 * 60 * 60 * 1000, // 4 hours - Phase 2 increase
-    gcTime: 8 * 60 * 60 * 1000, // 8 hours - Phase 2 increase
+    staleTime: 2 * 60 * 60 * 1000, // 2 hours - increased
+    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased
     retry: 2,
     refetchOnWindowFocus: false,
   });
@@ -144,7 +144,7 @@ export const useAboutPageContent = () => {
   return useQuery({
     queryKey: ['about-page-content'],
     queryFn: async () => {
-      console.log('useAboutPageContent: Fetching about page content with Phase 2 optimizations...');
+      console.log('useAboutPageContent: Fetching about page content...');
       const startTime = performance.now();
       const { data, error } = await supabase.functions.invoke('strapi-site-content', {
         body: { type: 'about' }
@@ -154,8 +154,8 @@ export const useAboutPageContent = () => {
       if (error) throw error;
       return data;
     },
-    staleTime: 4 * 60 * 60 * 1000, // 4 hours - Phase 2 increase
-    gcTime: 8 * 60 * 60 * 1000, // 8 hours - Phase 2 increase
+    staleTime: 2 * 60 * 60 * 1000, // 2 hours - increased
+    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased
     refetchOnWindowFocus: false,
   });
 };
@@ -164,7 +164,7 @@ export const useSiteContent = (contentType: string = 'site-settings') => {
   return useQuery({
     queryKey: ['site-content', contentType],
     queryFn: async () => {
-      console.log(`useSiteContent: Fetching ${contentType} content with Phase 2 optimizations...`);
+      console.log(`useSiteContent: Fetching ${contentType} content...`);
       const startTime = performance.now();
       const { data, error } = await supabase.functions.invoke('strapi-site-content', {
         body: { type: contentType }
@@ -174,8 +174,8 @@ export const useSiteContent = (contentType: string = 'site-settings') => {
       if (error) throw error;
       return data;
     },
-    staleTime: 4 * 60 * 60 * 1000, // 4 hours - Phase 2 increase
-    gcTime: 8 * 60 * 60 * 1000, // 8 hours - Phase 2 increase
+    staleTime: 2 * 60 * 60 * 1000, // 2 hours - increased
+    gcTime: 4 * 60 * 60 * 1000, // 4 hours - increased
     refetchOnWindowFocus: false,
   });
 };

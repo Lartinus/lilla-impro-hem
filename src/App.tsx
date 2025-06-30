@@ -13,7 +13,7 @@ import About from "./pages/About";
 import Corporate from "./pages/Corporate";
 import Mohippa from "./pages/Mohippa";
 import NotFound from "./pages/NotFound";
-import { AuthProvider } from "./components/auth/AuthProvider";
+import AuthProvider from "./components/auth/AuthProvider";
 
 // Optimized QueryClient with better defaults
 const queryClient = new QueryClient({
