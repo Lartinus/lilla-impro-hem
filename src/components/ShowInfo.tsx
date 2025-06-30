@@ -28,6 +28,38 @@ const ShowInfo = ({ title, date, location, mapLink, description }: ShowInfoProps
 
   return (
     <>
+      <style>
+        {`
+          .location-text-override {
+            font-size: 10px !important;
+            font-family: 'Satoshi', sans-serif !important;
+            font-weight: 400 !important;
+            line-height: 1.2 !important;
+            color: var(--content-secondary) !important;
+            display: inline-block !important;
+            text-decoration: none !important;
+            text-transform: none !important;
+            letter-spacing: normal !important;
+            max-width: 100% !important;
+            word-break: break-word !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          
+          .location-text-override * {
+            font-size: 10px !important;
+            font-family: 'Satoshi', sans-serif !important;
+            font-weight: 400 !important;
+            line-height: 1.2 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          
+          .location-text-override:hover {
+            text-decoration: underline !important;
+          }
+        `}
+      </style>
       <h2 className="mb-4">
         {title} {formatDateTime(date)}
       </h2>
@@ -40,7 +72,7 @@ const ShowInfo = ({ title, date, location, mapLink, description }: ShowInfoProps
               href={mapLink} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hover:underline"
+              className="hover:underline location-text-override"
             >
               {location}
             </a>
