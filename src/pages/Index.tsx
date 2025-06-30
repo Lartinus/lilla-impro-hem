@@ -37,7 +37,7 @@ const Index = () => {
             </div>
 
             {/* Mobil-only logotyp längst ner */}
-            <div className="block md:hidden mt-6 flex justify-center">
+            <div className="block md:hidden mt-6">
               <img
                 src="/uploads/LIT_BoW_large.png"
                 alt="Lilla Improteatern logotyp"
