@@ -36,8 +36,8 @@ const ShowCard = ({ show }: ShowCardProps) => {
       <CardContent className="p-6 lg:p-8 flex flex-col flex-1">
         {/* Titel & Plats */}
         <div className="mb-4">
-          <h2 className="text-xl font-bold text-accent-color-text mb-2">{show.title}</h2>
-          <h3 className="text-theatre-secondary font-medium mb-1">
+          <h2 className="mb-2">{show.title}</h2>
+          <h4 className="mb-1">
             <a
               href={show.mapLink}
               target="_blank"
@@ -46,7 +46,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
             >
               {show.location}
             </a>
-          </h3>
+          </h4>
         </div>
 
         {/* Beskrivning */}
