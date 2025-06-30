@@ -35,7 +35,7 @@ const OtherShowsSection = ({ shows }: OtherShowsSectionProps) => {
 
   return (
     <div className="mt-8">
-      <h3 className="text-xl font-bold text-theatre-light mb-6">Fler föreställningar</h3>
+      <p className="text-xl font-bold text-theatre-light mb-6">Fler föreställningar</p>
       <div className="grid gap-6 md:grid-cols-2 auto-rows-fr">
         {shows.map((show) => (
           <Link key={show.id} to={`/shows/${show.slug}`} className="block">
