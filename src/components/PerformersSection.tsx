@@ -57,7 +57,7 @@ const PerformersSection = ({
                     className="text-content-secondary break-words mt-1 performer-bio"
                     style={{ 
                       lineHeight: 'var(--body-line-height)',
-                      fontSize: 'clamp(0.875rem, 2vw, 0.75rem)'
+                      fontSize: 'clamp(0.95rem, 2.5vw, 0.75rem)'
                     }}
                     dangerouslySetInnerHTML={{
                       __html: convertMarkdownToHtml(perf.bio)
