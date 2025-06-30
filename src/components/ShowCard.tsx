@@ -39,9 +39,9 @@ const ShowCard = ({ show }: ShowCardProps) => {
       rounded-none flex flex-col
       w-screen
       max-w-none
-      px-4
+      px-2
       md:w-auto md:px-0">
-      <CardContent className="p-0 md:p-6 lg:p-8 flex flex-col flex-1">
+      <CardContent className="p-2 md:p-6 lg:p-8 flex flex-col flex-1">
         {/* Titel & Plats */}
         <div className="mb-4">
           <h2 className="mb-2">{show.title}</h2>
