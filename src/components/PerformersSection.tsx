@@ -79,6 +79,12 @@ const PerformersSection = ({
                   <div
                     className="
                       performer-bio
+                      break-words
+                      mt-1
+                      [&>p]:mb-1 [&>p]:mt-0
+                      [&>h1]:mb-0.5 [&>h2]:mb-0.5 [&>h3]:mb-0.5
+                      [&>h4]:mb-0.5 [&>h5]:mb-0.5 [&>h6]:mb-0.5
+                      [&>*:first-child]:mt-0
                     "
                     style={{ lineHeight: 'var(--body-line-height)' }}
                     dangerouslySetInnerHTML={{
