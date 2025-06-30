@@ -80,7 +80,7 @@ const PerformersSection = ({
                     className="
                       performer-bio
                       break-words
-                      mt-4
+                      mt-2
                       [&>p]:mb-1 [&>p]:mt-0
                       [&>h1]:mb-0.5 [&>h2]:mb-0.5 [&>h3]:mb-0.5
                       [&>h4]:mb-0.5 [&>h5]:mb-0.5 [&>h6]:mb-0.5
