@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import ServiceBoxes from '@/components/ServiceBoxes';
 
@@ -38,15 +39,17 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Mobil-only logotyp längst ner, men nu *inne* i den vita boxen */}
-            <div className="block md:hidden absolute left-4 bottom-[-50px]">
-              <a href="/om-oss">
-                <img
-                  src="/uploads/LIT_BoW_large.png"
-                  alt="Lilla Improteatern logotyp"
-                  className="h-[200px] cursor-pointer"
-                  />
-              </a>
+            {/* Mobil-only logotyp längst ner med vit bakgrund och mer avstånd */}
+            <div className="block md:hidden absolute left-4 bottom-[-120px]">
+              <div className="bg-white p-4 rounded-lg shadow-lg">
+                <a href="/om-oss">
+                  <img
+                    src="/uploads/LIT_BoW_large.png"
+                    alt="Lilla Improteatern logotyp"
+                    className="h-[200px] cursor-pointer"
+                    />
+                </a>
+              </div>
             </div>
           </div>
         </div>
