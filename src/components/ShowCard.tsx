@@ -1,3 +1,4 @@
+
 // src/components/ShowCard.tsx
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -38,11 +39,11 @@ const ShowCard = ({ show }: ShowCardProps) => {
       rounded-none flex flex-col
       w-screen
       max-w-none
-      px-1
+      px-0
       md:w-auto md:px-0">
-      <CardContent className="p-1 md:p-6 lg:p-8 flex flex-col flex-1">
+      <CardContent className="p-0 md:p-6 lg:p-8 flex flex-col flex-1">
         {/* Titel & Plats */}
-        <div className="mb-4">
+        <div className="mb-4 px-1 md:px-0">
           <h2 className="mb-2">{show.title}</h2>
           <div className="mb-1">
             <span 
@@ -55,7 +56,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
         </div>
 
         {/* Beskrivning */}
-        <div className="text-content-secondary leading-relaxed mb-6 text-base">
+        <div className="text-content-secondary leading-relaxed mb-6 text-base px-1 md:px-0">
           {show.description.split('\n').map((para, idx) => (
             <p key={idx} className="mb-4 last:mb-0">
               {para}
@@ -64,10 +65,12 @@ const ShowCard = ({ show }: ShowCardProps) => {
         </div>
 
         {/* Medverkande */}
-        <PerformersSection performers={show.performers} title="Medverkande" />
+        <div className="px-1 md:px-0">
+          <PerformersSection performers={show.performers} title="Medverkande" />
+        </div>
 
         {/* Praktisk info */}
-        <div className="mb-6">
+        <div className="mb-6 px-1 md:px-0">
           <h4 className="text-content-primary font-bold mb-3">Praktisk information</h4>
           <div className="space-y-2">
             {show.practicalInfo.map((item, idx) => (
@@ -82,7 +85,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
         </div>
 
         {/* Köp biljetter */}
-        <div className="mt-auto">
+        <div className="mt-auto px-1 md:px-0">
           <h4 className="text-content-primary font-bold mb-4">Köp biljetter</h4>
           {/* Ordinarie */}
           <div className="bg-surface-secondary p-4 rounded-none border border-color-primary mb-4">
