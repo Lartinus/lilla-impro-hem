@@ -10,15 +10,21 @@ const Mohippa: React.FC = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const update = () => {
+
+    const updateMarginTop = () => {
       const w = window.innerWidth;
-      if (w >= 1024) setMarginTop('-200px');
-      else if (w >= 768) setMarginTop('-150px');
-      else setMarginTop('-120px');
+      if (w >= 1024) {
+        setMarginTop('-200px');  // desktop
+      } else if (w >= 768) {
+        setMarginTop('-150px');  // tablet
+      } else {
+        setMarginTop('-120px');  // mobile
+      }
     };
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
+
+    updateMarginTop();
+    window.addEventListener('resize', updateMarginTop);
+    return () => window.removeEventListener('resize', updateMarginTop);
   }, []);
 
   return (
@@ -35,6 +41,7 @@ const Mohippa: React.FC = () => {
       <Header />
       <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
 
+      {/* Content Section */}
       <main
         className="z-10 w-full relative overflow-x-hidden pb-16 md:pb-28"
         style={{ marginTop }}
