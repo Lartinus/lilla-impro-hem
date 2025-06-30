@@ -146,7 +146,7 @@
     font-family: "RetroVoice", sans-serif;
     font-weight: 700;
     font-size: clamp(1.8rem, 6vw, 3.25rem);
-    color: var(--theatre-primary);
+    color: var(--theatre-dark);
     line-height: 1;
   }
 
@@ -155,35 +155,35 @@
     font-family: "RetroVoice", sans-serif;
     font-weight: 600;
     font-size: clamp(1.5rem, 5vw, 1.75rem);
-    color: var(--theatre-primary);
+    color: var(--theatre-dark);
     line-height: 1;
   }
   h3 {
     font-family: "RetroVoice", sans-serif;
     font-weight: 500;
     font-size: clamp(1.4rem, 4vw, 1.6rem);
-    color: var(--theatre-primary);
+    color: var(--theatre-dark);
     line-height: 1;
   }
   h4 {
     font-family: "RetroVoice", sans-serif;
     font-weight: 500;
     font-size: clamp(1.4rem, 3vw, 1.5rem);
-    color: var(--theatre-primary);
+    color: var(--theatre-dark);
     line-height: 1;
   }
   h5 {
     font-family: "RetroVoice", sans-serif;
     font-weight: 500;
     font-size: clamp(1.125rem, 2.5vw, 1.25rem);
-    color: var(--theatre-primary);
+    color: var(--theatre-dark);
     line-height: 1;
   }
   h6 {
     font-family: "RetroVoice", sans-serif;
     font-weight: 500;
     font-size: clamp(1.125rem, 2.5vw, 1.25rem);
-    color: var(--theatre-primary);
+    color: var(--theatre-dark);
     line-height: 1;
   }
 
