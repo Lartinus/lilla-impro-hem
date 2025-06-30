@@ -175,10 +175,13 @@
     widows: 2;
     orphans: 2;
   }
+  
   h1, h2, h3, h4, h5, h6 {
-    widows: 2;
-    orphans: 2;
-  }
+  widows: 2;
+  orphans: 2;
+  -webkit-text-wrap: balance;
+  text-wrap: balance;
+}
 
   /* Rich-text lists: pilar istället för punkter */
   .rich-text ul {
