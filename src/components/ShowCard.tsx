@@ -31,6 +31,21 @@ const ShowCard = ({ show }: ShowCardProps) => {
     if (discountCode) console.log(`Rabattkod: ${discountCode}`);
   };
 
+  // Force small text style by using a class that overrides everything
+  const locationLinkStyle = {
+    fontSize: '10px',
+    fontFamily: 'Satoshi, sans-serif',
+    fontWeight: 400,
+    lineHeight: 1.2,
+    color: 'var(--content-secondary)',
+    display: 'inline-block',
+    textDecoration: 'none',
+    textTransform: 'none' as const,
+    letterSpacing: 'normal',
+    maxWidth: '100%',
+    wordBreak: 'break-word' as const
+  };
+
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col">
       <CardContent className="p-6 lg:p-8 flex flex-col flex-1">
@@ -41,26 +56,9 @@ const ShowCard = ({ show }: ShowCardProps) => {
             <div 
               onClick={() => window.open(show.mapLink, '_blank')}
               className="cursor-pointer hover:underline"
-              style={{ 
-                fontSize: '10px !important',
-                fontFamily: '"Satoshi", sans-serif !important',
-                fontWeight: '400 !important',
-                lineHeight: '1.2 !important',
-                color: 'var(--content-secondary) !important',
-                display: 'inline-block',
-                textDecoration: 'none',
-                textTransform: 'none !important',
-                letterSpacing: 'normal !important'
-              }}
+              style={locationLinkStyle}
             >
-              <span style={{ 
-                fontSize: '10px !important',
-                fontFamily: 'inherit !important',
-                all: 'unset',
-                fontSize: '10px !important'
-              }}>
-                {show.location}
-              </span>
+              {show.location}
             </div>
           </div>
         </div>
