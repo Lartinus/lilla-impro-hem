@@ -10,7 +10,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
       <div className="container mx-auto px-1 lg:px-5">
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
@@ -25,7 +25,7 @@ const Header = () => {
           </div>
 
           {/* Desktopnav*/}
-          <nav className="hidden lg:flex items-center text-theatre-light space-x-12">
+          <nav className="hidden lg:flex items-center text-theatre-light space-x-12 font-satoshi">
             <NavLink to="/">Hem</NavLink>
             <NavLink to="/kurser">Kurser</NavLink>
             <NavLink to="/foretag">Företag</NavLink>
@@ -38,7 +38,7 @@ const Header = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20"
+            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 font-satoshi"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
@@ -48,7 +48,7 @@ const Header = () => {
 
         {isMenuOpen && (
           <div className="lg:hidden pb-6 pt-2 px-4 animate-fade-in">
-            <nav className="flex flex-col space-y-6 text-theatre-light">
+            <nav className="flex flex-col space-y-6 text-theatre-light font-satoshi">
               <NavLink to="/"    disableUnderline>Hem</NavLink>
               <NavLink to="/kurser" disableUnderline>Kurser</NavLink>
               <NavLink to="/foretag" disableUnderline>Företag</NavLink>
