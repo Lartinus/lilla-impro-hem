@@ -1,6 +1,7 @@
+// src/components/PerformersSection.tsx
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 
-interface Performer {
+export interface Performer {
   id: number;
   name: string;
   image: string | null;
@@ -14,78 +15,49 @@ interface PerformersSectionProps {
 
 const PerformersSection = ({
   performers,
-  title = "Medverkande"
+  title = 'Medverkande'
 }: PerformersSectionProps) => {
-  console.log('PerformersSection - performers:', performers);
   if (!performers || performers.length === 0) return null;
 
   return (
     <div className="mb-6">
-      <h2 className="mb-3">{title}</h2>
+      <h4 className="text-gray-800 font-bold mb-3">{title}</h4>
       <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
         <div className="space-y-6">
-          {performers.map(performer => {
-            // Check if we have a valid image URL
-            const hasValidImage =
-              performer.image &&
-              performer.image !== 'null' &&
-              performer.image.trim() !== '' &&
-              performer.image !== 'undefined';
-
-            console.log(
-              'PerformersSection - performer:',
-              performer.name,
-              'imageUrl:',
-              performer.image,
-              'hasValidImage:',
-              hasValidImage
-            );
+          {performers.map((perf) => {
+            const hasImage =
+              perf.image &&
+              perf.image !== 'null' &&
+              perf.image.trim() !== '' &&
+              perf.image !== 'undefined';
 
             return (
               <div
-                key={performer.id}
+                key={perf.id}
                 className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4"
               >
-                {hasValidImage && (
+                {hasImage ? (
                   <img
-                    src={performer.image!}
-                    alt={performer.name}
-                    className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0"
-                    onError={e => {
-                      console.error('Failed to load performer image:', performer.image);
-                      const target = e.currentTarget;
-                      target.style.display = 'none';
-                      const fallback = target.nextElementSibling as HTMLElement;
-                      if (fallback) {
-                        fallback.style.display = 'flex';
-                      }
-                    }}
-                    onLoad={() => {
-                      console.log('Successfully loaded performer image:', performer.image);
+                    src={perf.image!}
+                    alt={perf.name}
+                    className="w-32 h-32 object-cover object-top flex-shrink-0"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = 'none';
                     }}
                   />
+                ) : (
+                  <div className="w-32 h-32 bg-gray-300 flex items-center justify-center flex-shrink-0">
+                    <span className="text-gray-600 text-sm">Ingen bild</span>
+                  </div>
                 )}
 
-                {/* Fallback div */}
-                <div
-                  className="w-32 h-32 bg-gray-300 rounded-none flex items-center justify-center flex-shrink-0"
-                  style={{ display: hasValidImage ? 'none' : 'flex' }}
-                >
-                  <span className="text-gray-600 text-sm">Ingen bild</span>
-                </div>
-
                 <div className="flex-1 min-w-0">
-                  <h6 className="performer-name mb-0">{performer.name}</h6>
+                  <h5 className="font-bold text-gray-800 mb-2">{perf.name}</h5>
                   <div
-                    className="
-                      performer-bio
-                      mt-1 break-words
-                      text-[14px]
-                      md:text-[12px]
-                    "
+                    className="text-gray-700 break-words mt-4 text-[16px] md:text-[14px] [&>p]:mb-1 [&>p]:mt-0"
                     style={{ lineHeight: 'var(--body-line-height)' }}
                     dangerouslySetInnerHTML={{
-                      __html: convertMarkdownToHtml(performer.bio)
+                      __html: convertMarkdownToHtml(perf.bio)
                     }}
                   />
                 </div>
