@@ -36,6 +36,7 @@ const Index = () => {
                   Vi bygger med kvalitet, nyfikenhet och ett stort fokus på att göra improvisatörerna bättre och publiken gladare – och på att skapa ett community där du som elev, improvisatör och publik blir en del av något större. Välkommen till ett nytt hem för Improv Comedy i Stockholm.
                 </p>
               </div>
+            </div>
 
             {/* Mobil-only logotyp längst ner */}
             <div className="block md:hidden mt-6 ml-[-10px]">
