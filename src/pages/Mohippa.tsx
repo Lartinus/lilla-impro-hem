@@ -24,7 +24,13 @@ const Mohippa: React.FC = () => {
   return (
     <div
       className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible"
-      style={{ boxSizing: 'border-box', padding: 0, margin: 0, width: '100vw', minHeight: '100dvh' }}
+      style={{
+        boxSizing: 'border-box',
+        padding: 0,
+        margin: 0,
+        width: '100vw',
+        minHeight: '100dvh',
+      }}
     >
       <Header />
       <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
@@ -34,6 +40,7 @@ const Mohippa: React.FC = () => {
         style={{ marginTop }}
       >
         <div className="space-y-10 bg-white backdrop-blur-sm p-6 md:p-8 lg:p-12 mx-3 md:mx-auto md:max-w-4xl shadow-xl text-left">
+          
           {/* Huvudinnehåll */}
           <div className="space-y-4">
             <h2>Impro för möhippa, svensexa eller festen.</h2>
@@ -70,4 +77,23 @@ const Mohippa: React.FC = () => {
                 "After work",
                 "Kompisgäng som vill göra något kul tillsammans"
               ].map((item, i) => (
-                <li
+                <li key={i} className="flex items-center space-x-2">
+                  <ArrowRight className="text-red-800 flex-shrink-0" size={16} />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Kontaktformulär */}
+          <div className="pt-6 border-t border-gray-200">
+            <h3 className="mb-4">Hör av dig</h3>
+            <PrivateInquiryForm />
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Mohippa;
