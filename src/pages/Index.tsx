@@ -9,6 +9,17 @@ const Index = () => {
 
       <section className="min-h-screen flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
         <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
+          {/* Mobil-only logotyp UTANFÖR den vita rutan */}
+          <div className="block md:hidden absolute top-4 left-4 z-10">
+            <a href="/om-oss">
+              <img
+                src="/uploads/LIT_BoW_large.png"
+                alt="Lilla Improteatern logotyp"
+                className="h-[150px] cursor-pointer"
+                />
+            </a>
+          </div>
+
           <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
             
             {/* Inledning */}
@@ -37,17 +48,6 @@ const Index = () => {
                   Vi bygger med kvalitet, nyfikenhet och ett stort fokus på att göra improvisatörerna bättre och publiken gladare – och på att skapa ett community där du som elev, improvisatör och publik blir en del av något större. Välkommen till ett nytt hem för Improv Comedy i Stockholm.
                 </p>
               </div>
-            </div>
-
-            {/* Mobil-only logotyp inom den vita rutan */}
-            <div className="block md:hidden flex justify-start -mt-4 pl-1">
-              <a href="/om-oss">
-                <img
-                  src="/uploads/LIT_BoW_large.png"
-                  alt="Lilla Improteatern logotyp"
-                  className="h-[150px] cursor-pointer"
-                  />
-              </a>
             </div>
           </div>
         </div>
