@@ -9,7 +9,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary backdrop-blur-md">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-gray-light backdrop-blur-md">
       <div className="container mx-auto px-1 lg:px-5">
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
@@ -24,7 +24,7 @@ const Header = () => {
           </div>
 
           {/* Desktopnav*/}
-          <nav className="hidden lg:flex items-center theatre-gray-light/90 space-x-12">
+          <nav className="hidden lg:flex items-center text-theatre-gray-light space-x-12">
             <NavLink to="/">Hem</NavLink>
             <NavLink to="/kurser">Kurser</NavLink>
             <NavLink to="/foretag">Företag</NavLink>
@@ -37,7 +37,7 @@ const Header = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="flex lg:hidden theatre-gray-light hover:bg-theatre-light/20"
+            className="flex lg:hidden text-theatre-gray-light hover:bg-theatre-light/20"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
