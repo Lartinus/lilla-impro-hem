@@ -11,7 +11,7 @@ const Index = () => {
               <h1 className="mt-[10px] mb-[15px] md:mb-[30px]">
                 Lilla improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv&nbsp;Comedy.
               </h1>
-               <div className="border-t border-gray-700 pt-[10px]">
+               <div className="border-t border-gray-500 pt-[10px]">
                 <p className="text-base md:text-lg md:my-8">
                 Vi tror på att humor går att träna och att den blir allra bäst när vi skapar den tillsammans. 
                 På vår teater får du utvecklas som improvisatör i inspirerande kursmiljöer 
