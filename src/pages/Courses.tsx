@@ -3,34 +3,61 @@ import Header from '@/components/Header';
 import CourseGrid from '@/components/CourseGrid';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 import CourseInfoSection from '@/components/CourseInfoSection';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useCourses } from '@/hooks/useStrapi';
 import { formatStrapiCourse, sortCourses } from '@/utils/strapiHelpers';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
+import { useToast } from '@/hooks/use-toast';
 
 const Courses = () => {
+  const [retryCount, setRetryCount] = useState(0);
+  const { toast } = useToast();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Use only the courses query, not the parallel one
-  const { data, isLoading, error } = useCourses();
+  const { data, isLoading, error, refetch } = useCourses();
+
+  // Handle retry logic
+  const handleRetry = async () => {
+    console.log('Retrying course fetch...');
+    setRetryCount(prev => prev + 1);
+    try {
+      await refetch();
+      toast({
+        title: "Uppdaterat",
+        description: "Kurserna har laddats om.",
+      });
+    } catch (err) {
+      console.error('Retry failed:', err);
+      toast({
+        title: "Fel",
+        description: "Kunde fortfarande inte ladda kurserna. Försök igen senare.",
+        variant: "destructive",
+      });
+    }
+  };
 
   console.log('Courses page - Data:', data);
+  console.log('Courses page - Error:', error);
+  console.log('Courses page - Loading:', isLoading);
 
-  // Memoize formatted and sorted courses to avoid recalculating
   const courses = useMemo(() => {
     if (!data) return [];
     
-    const formattedCourses = data?.data ? data.data.map(formatStrapiCourse).filter(Boolean) : [];
-    const sortedCourses = sortCourses(formattedCourses);
-    
-    return sortedCourses;
+    try {
+      const formattedCourses = data?.data ? data.data.map(formatStrapiCourse).filter(Boolean) : [];
+      const sortedCourses = sortCourses(formattedCourses);
+      return sortedCourses;
+    } catch (err) {
+      console.error('Error formatting courses:', err);
+      return [];
+    }
   }, [data]);
 
   console.log('Formatted courses:', courses);
 
-  // Fallback practical info if course doesn't have its own
   const practicalInfo = [
     "Kommer inom kort."
   ];
@@ -51,12 +78,28 @@ const Courses = () => {
     );
   }
 
+  // Enhanced error handling with retry option
   if (error) {
-    console.error('Error loading data:', error);
+    console.error('Error loading courses:', error);
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-white text-xl">Ett fel uppstod vid laddning av kurser. Testa igen!</div>
+        <Header />
+        <div className="flex-1 flex items-center justify-center px-4">
+          <div className="text-center text-white max-w-md">
+            <h2 className="text-2xl font-bold mb-4">Kurser kunde inte laddas</h2>
+            <p className="text-lg mb-6">Det verkar som att det är problem med att ladda kurserna just nu. Detta kan bero på tillfälliga serverfel.</p>
+            <div className="space-y-4">
+              <button
+                onClick={handleRetry}
+                className="bg-accent-color-primary hover:bg-accent-color-primary/90 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                Försök igen {retryCount > 0 && `(${retryCount + 1})`}
+              </button>
+              <p className="text-sm opacity-75">
+                Om problemet kvarstår, kontakta oss via info@littimprov.se
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     );

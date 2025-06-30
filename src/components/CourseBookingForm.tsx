@@ -75,15 +75,16 @@ const CourseBookingForm = ({
   const effectiveMaxParticipants = activeInstance?.max_participants || maxParticipants;
   const isFull = effectiveMaxParticipants && currentBookings !== null && currentBookings >= effectiveMaxParticipants;
 
-  // Check current bookings when dialog opens
+  // Enhanced dialog open handler with better error handling
   const handleDialogOpen = async (open: boolean) => {
     if (open) {
       setIsCheckingAvailability(true);
       try {
-        // If no active instance exists, create one
+        // If no active instance exists, create one using the utility
         if (!activeInstance && !isLoadingInstances) {
           console.log('No active instance found, creating new one...');
-          const newInstance = await createCourseInstance(courseTitle);
+          const { ensureCourseTableExists } = await import('@/utils/courseTableUtils');
+          const newInstance = await ensureCourseTableExists(courseTitle);
           setActiveInstance(newInstance);
           setCurrentBookings(0);
         } else if (activeInstance) {
@@ -94,8 +95,8 @@ const CourseBookingForm = ({
       } catch (error) {
         console.error('Error handling course instance:', error);
         toast({
-          title: "Fel",
-          description: "Det gick inte att förbereda bokningen. Försök igen.",
+          title: "Problem med kursbokning",
+          description: "Det gick inte att förbereda bokningen. Kursen kanske inte är tillgänglig för bokning än. Kontakta oss via info@littimprov.se om problemet kvarstår.",
           variant: "destructive",
         });
       } finally {
@@ -161,7 +162,7 @@ const CourseBookingForm = ({
     if (!activeInstance) {
       toast({
         title: "Fel",
-        description: "Ingen aktiv kursomgång hittades. Försök igen.",
+        description: "Ingen aktiv kursomgång hittades. Försök igen eller kontakta oss.",
         variant: "destructive",
       });
       return;
@@ -170,7 +171,7 @@ const CourseBookingForm = ({
     setIsSubmitting(true);
     
     try {
-      // Check for duplicate booking in the specific course instance table
+      // Check for duplicate booking
       const isDuplicate = await checkDuplicateBooking(data.email, activeInstance.table_name);
       if (isDuplicate) {
         toast({
@@ -182,13 +183,13 @@ const CourseBookingForm = ({
         return;
       }
 
-      // Check if course is full before submitting
+      // Check if course is full
       if (effectiveMaxParticipants) {
         const count = await getCurrentCourseBookings(activeInstance.table_name);
         if (count >= effectiveMaxParticipants) {
           toast({
             title: "Kursen är fullbokad",
-            description: "Tyvärr är kursen nu fullbokad. Försök anmäla intresse istället.",
+            description: "Tyvärr är kursen nu fullbokad. Kontakta oss för att komma med på väntelistan.",
             variant: "destructive",
           });
           setIsSubmitting(false);
@@ -206,9 +207,7 @@ const CourseBookingForm = ({
         message: !isAvailable ? (data.message?.trim() || '') : '',
       };
 
-      // Insert into the specific course instance table
       await insertCourseBooking(activeInstance.table_name, submitData);
-
       await sendConfirmationEmail(data);
 
       toast({
@@ -221,15 +220,14 @@ const CourseBookingForm = ({
       form.reset();
       setIsOpen(false);
 
-      // Update current bookings count
       if (effectiveMaxParticipants) {
         setCurrentBookings(prev => prev !== null ? prev + 1 : 1);
       }
     } catch (error) {
       console.error('Error submitting booking:', error);
       toast({
-        title: "Fel",
-        description: "Det gick inte att skicka din bokning. Försök igen.",
+        title: "Fel vid bokning",
+        description: "Det gick inte att skicka din bokning. Kontakta oss direkt via info@littimprov.se eller försök igen senare.",
         variant: "destructive",
       });
     } finally {

@@ -67,21 +67,34 @@ export const useCoursesParallel = () => {
   });
 };
 
-// Keep for backward compatibility - HYPER OPTIMIZED
+// Enhanced useCourses with better error handling
 export const useCourses = () => {
   return useQuery({
     queryKey: ['courses'],
     queryFn: async () => {
+      console.log('Fetching courses...');
       const { data, error } = await supabase.functions.invoke('strapi-courses');
-      if (error) throw error;
+      
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(`Kurser kunde inte laddas: ${error.message}`);
+      }
+      
+      // Handle error responses from the edge function
+      if (data?.error) {
+        console.error('Edge function returned error:', data.error);
+        throw new Error(data.error);
+      }
+      
+      console.log('Successfully fetched courses');
       return data;
     },
-    staleTime: 6 * 60 * 60 * 1000, // 6 hours - increased further
-    gcTime: 12 * 60 * 60 * 1000, // 12 hours - increased from 8 hours
-    retry: 1, // Reduced retries for faster failures
-    retryDelay: 1000, // Faster retry delay
+    staleTime: 5 * 60 * 1000, // 5 minutes - reduced for more reliable updates
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    retry: 2, // Allow 2 retries
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     refetchOnWindowFocus: false,
-    refetchOnMount: false, // Don't refetch on mount if data exists
+    refetchOnMount: false,
   });
 };
 
