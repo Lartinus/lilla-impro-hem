@@ -1,5 +1,6 @@
-
-/* Fonts */
+/* ==========================================================================  
+   FONTS
+   ========================================================================== */
 @font-face {
   font-family: "RetroVoice";
   src: url("/fonts/RetroVoice-RegularNormEx2.ttf") format("truetype");
@@ -8,16 +9,26 @@
   font-display: swap;
 }
 
-/* Colors */
+
+/* ==========================================================================  
+   CSS-VARIABLER (Light & Dark Mode)
+   ========================================================================== */
 @layer base {
-  /* Light-mode color variables */
+  /* ────────────────────────────────────────────────────────────────────────
+     Light-mode color variables
+     ───────────────────────────────────────────────────────────────────── */
   :root {
+    /* Base colors */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
+
+    /* Surface cards / popovers */
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
+
+    /* Theme accents */
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
@@ -28,10 +39,14 @@
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+
+    /* Borders, inputs, rings, radii */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
+
+    /* Sidebar specific */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -40,142 +55,217 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Bullet & typography overrides */
     --bullet-size: 0.5rem;
+    --p-light-color: #2A2A2A;
+    --h1-light-color: #2A2A2A;
+    --h2-light-color: #2A2A2A;
+    --h3-light-color: #2A2A2A;
+    --h4-light-color: #2A2A2A;
+    --h5-light-color: #772424;
+    --h6-light-color: #2A2A2A;
 
-    --p-color: #2A2A2A;
-    --h1-color: #2A2A2A;
-    --h2-color: #2A2A2A;
-    --h3-color: #2A2A2A;
-    --h4-color: #2A2A2A;
-    --h5-color: #772424;
-    --h6-color: #2A2A2A;
+    --p-dark-color: #F5F5F5;
+    --h1-dark-color: #F5F5F5;
+    --h2-dark-color: #F5F5F5;
+    --h3-dark-color: #F5F5F5;
+    --h4-dark-color: #F5F5F5;
+    --h5-dark-color: #F5F5F5;
+    --h6-dark-color: #F5F5F5;
   }
 
-  /* Paragraph text color */
-  [class^="bg-white"] p,
-  .bg-theatre-light p {
-    color: var(--p-color);
+  /* ────────────────────────────────────────────────────────────────────────
+     Dark-mode overrides
+     ───────────────────────────────────────────────────────────────────── */
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
+}
 
-  /* Heading colors on light backgrounds */
-  [class^="bg-white"] h1,
-  .bg-theatre-light h1 { color: var(--h1-color); }
-  [class^="bg-white"] h2,
-  .bg-theatre-light h2 { color: var(--h2-color); }
-  [class^="bg-white"] h3,
-  .bg-theatre-light h3 { color: var(--h3-color); }
-  [class^="bg-white"] h4,
-  .bg-theatre-light h4 { color: var(--h4-color); }
-  [class^="bg-white"] h5,
-  .bg-theatre-light h5 { color: var(--h5-color); }
-  [class^="bg-white"] h6,
-  .bg-theatre-light h6 { color: var(--h6-color); }
 
-  /* Typography */
+/* ==========================================================================  
+   BASE ELEMENTSTILAR  
+   ========================================================================== */
+@layer base {
+  /* Body & BG/Text */
   body {
     font-family: "Satoshi", sans-serif;
     @apply bg-background text-foreground;
   }
 
-  p {
-    font-size: clamp(0.95rem, 2.5vw, 1rem);
+  /* Paragraph & Heading line-widows/orphans */
+  p, h1, h2, h3, h4, h5, h6 {
+    widows: 2;
+    orphans: 2;
   }
 
+  /* Automatic text balancing */
+  h1, h2, h3, h4, h5, h6 {
+    -webkit-text-wrap: balance;
+    text-wrap: balance;
+  }
+}
+
+
+/* ==========================================================================  
+   TYPOGRAFI  
+   ========================================================================== */
+@layer base {
+  /* Rich-text & body copy */
+  p {
+    font-size: clamp(0.95rem, 2.5vw, 1rem);
+    line-height: 1.5 !important;
+  }
+
+  /* Headings */
   h1 {
     font-family: "RetroVoice", sans-serif;
-    line-height: 1.0;
+    line-height: 1;
     font-size: clamp(1.8rem, 6vw, 3.25rem);
   }
   h2, h3, h4, h5, h6 {
     font-family: "RetroVoice", sans-serif;
-    line-height: 1.0;
-    color: inherit;
+    line-height: 1;
+    font-size: clamp(1.5rem, 5vw, 1.75rem);
   }
-  h2 { font-size: clamp(1.5rem, 5vw, 1.75rem); }
   h3 { font-size: clamp(1.4rem, 4vw, 1.6rem); }
   h4 { font-size: clamp(1.4rem, 3vw, 1.5rem); }
   h5 { font-size: clamp(1.125rem, 2.5vw, 1.25rem); }
   h6 { font-size: clamp(1.125rem, 2.5vw, 1.25rem); }
 
+  /* Spacing after heading + paragraph */
   h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
     margin-top: 0.75rem;
   }
-
-  p,
-  .text-base,
-  .leading-relaxed,
-  .body-text {
-    line-height: 1.5 !important;
-  }
-
-  p {
-    widows: 2;
-    orphans: 2;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-  widows: 2;
-  orphans: 2;
-  -webkit-text-wrap: balance;
-  text-wrap: balance;
 }
 
-  /* Rich-text lists: pilar istället för punkter */
+
+/* ==========================================================================  
+   COLOR OVERRIDES FÖR BAKGRUNDSKLASSER  
+   ========================================================================== */
+@layer base {
+  /* Paragraph text color */
+  [class^="bg-white"] p,
+  .bg-theatre-light p {
+    color: var(--p-light-color);
+  }
+  [class^="bg-black"] p,
+  .bg-theatre-primary p,
+  .bg-theatre-dark p {
+    color: var(--p-dark-color);
+  }
+
+  /* Headings on light bg */
+  [class^="bg-white"] h1, .bg-theatre-light h1 { color: var(--h1-light-color); }
+  [class^="bg-white"] h2, .bg-theatre-light h2 { color: var(--h2-light-color); }
+  [class^="bg-white"] h3, .bg-theatre-light h3 { color: var(--h3-light-color); }
+  [class^="bg-white"] h4, .bg-theatre-light h4 { color: var(--h4-light-color); }
+  [class^="bg-white"] h5, .bg-theatre-light h5 { color: var(--h5-light-color); }
+  [class^="bg-white"] h6, .bg-theatre-light h6 { color: var(--h6-light-color); }
+
+  /* Headings on dark bg */
+  .bg-theatre-primary h1, .bg-theatre-dark h1, [class^="bg-black"] h1 { color: var(--h1-dark-color); }
+  .bg-theatre-primary h2, .bg-theatre-dark h2, [class^="bg-black"] h2 { color: var(--h2-dark-color); }
+  .bg-theatre-primary h3, .bg-theatre-dark h3, [class^="bg-black"] h3 { color: var(--h3-dark-color); }
+  .bg-theatre-primary h4, .bg-theatre-dark h4, [class^="bg-black"] h4 { color: var(--h4-dark-color); }
+  .bg-theatre-primary h5, .bg-theatre-dark h5, [class^="bg-black"] h5 { color: var(--h5-dark-color); }
+  .bg-theatre-primary h6, .bg-theatre-dark h6, [class^="bg-black"] h6 { color: var(--h6-dark-color); }
+}
+
+
+/* ==========================================================================  
+   RICH-TEXT & PROSE CUSTOMIZATION  
+   ========================================================================== */
+@layer components {
+  /* Bullet lists with arrows */
   .rich-text ul {
     list-style: none;
     padding-left: 1.25rem;
   }
   .rich-text ul li::marker {
     content: '→ ';
-    font-size: 1em;
-    /* Tailwind blue-500 */
     color: #3b82f6;
+    font-size: 1em;
   }
 
-  /* Resterande rich-text-stilar */
+  /* Rich-text paragraphs & spacing */
   .rich-text p {
     color: inherit;
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin: 1rem 0;
   }
+
+  /* Rich-text headings spacing */
   .rich-text h1,
   .rich-text h2,
   .rich-text h3,
   .rich-text h4,
   .rich-text h5,
   .rich-text h6 {
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
+    margin: 2.5rem 0 1rem;
   }
+
+  /* Ordered lists */
   .rich-text ol {
-    padding-left: 1.25rem;
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
     list-style-position: outside;
+    padding-left: 1.25rem;
+    margin: 0.5rem 0 1rem;
   }
+
+  /* List item gap */
   .rich-text li {
     margin-bottom: 0.25rem;
   }
 
-/* Ta bort punkter för alla ul inuti prose */
+  /* Prose overrides for Tailwind Typography plugin */
   .prose ul {
     list-style: none;
-    padding-left: 1.25rem; /* gör plats för pilen */
+    padding-left: 1.25rem;
   }
-
-  /* Byt ut marker för alla li inuti prose */
   .prose ul li::marker {
     content: '→ ';
-    /* Tailwind blue-500 */
     color: #3b82f6;
     font-size: 1em;
   }
-
 }
 
+
+/* ==========================================================================  
+   TAILWIND DIREKTIV  
+   ========================================================================== */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
