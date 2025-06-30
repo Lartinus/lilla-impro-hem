@@ -1,4 +1,3 @@
-
 // src/components/ShowCard.tsx
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -39,9 +38,9 @@ const ShowCard = ({ show }: ShowCardProps) => {
       rounded-none flex flex-col
       w-screen
       max-w-none
-      px-2
+      px-1
       md:w-auto md:px-0">
-      <CardContent className="p-2 md:p-6 lg:p-8 flex flex-col flex-1">
+      <CardContent className="p-1 md:p-6 lg:p-8 flex flex-col flex-1">
         {/* Titel & Plats */}
         <div className="mb-4">
           <h2 className="mb-2">{show.title}</h2>
