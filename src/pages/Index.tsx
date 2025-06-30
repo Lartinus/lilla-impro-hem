@@ -37,14 +37,15 @@ const Index = () => {
             </div>
 
             {/* Mobil-only logotyp längst ner */}
-            <div className="block md:hidden mt-6 ml[-40px]">
-              <img
-                src="/uploads/LIT_BoW_large.png"
-                alt="Lilla Improteatern logotyp"
-                className="h-[250px]"
-              />
-            </div>
-            
+            <div className="block md:hidden mt-6 ml-[-20px]">
+              <a href="/om-oss" className="inline-block">
+                <img
+                  src="/uploads/LIT_BoW_large.png"
+                  alt="Lilla Improteatern logotyp"
+                  className="h-[250px] cursor-pointer"
+                  />
+              </a>
+            </div>            
           </div>
         </div>
       </section>
