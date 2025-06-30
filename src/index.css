@@ -147,7 +147,7 @@
   h1 {
     font-family: "RetroVoice", sans-serif;
     line-height: 1.0;
-    font-size: clamp(1.8rem, 6vw, 3rem);
+    font-size: clamp(1.8rem, 6vw, 3.25rem);
   }
   h2, h3, h4, h5, h6 {
     font-family: "RetroVoice", sans-serif;
