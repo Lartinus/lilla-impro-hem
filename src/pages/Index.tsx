@@ -30,13 +30,13 @@ const Index = () => {
             </div>
 
             {/* Avslutande text */}
-            <div className="bg-white text-left md:text-center">
+            {/* <div className="bg-white text-left md:text-center">
               <div className="mx-3 md:mx-0 md:max-w-6xl lg:max-w-7xl py-[10px] pt-4">
                 <p className="text-base md:text-lg">
                   Vi bygger med kvalitet, nyfikenhet och ett stort fokus på att göra improvisatörerna bättre och publiken gladare – och på att skapa ett community där du som elev, improvisatör och publik blir en del av något större. Välkommen till ett nytt hem för Improv Comedy i Stockholm.
                 </p>
               </div>
-            </div>
+            </div>*/}
 
             {/* Mobil-only logotyp inom den vita rutan - längst ner */}
             <div className="block md:hidden mt-6">
