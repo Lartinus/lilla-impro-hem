@@ -73,18 +73,18 @@ export default function CourseInfoSection() {
           </div>
         </div>
 
-        {/* Röd callout med red-primary - minskad spacing */}
-        <div className="bg-red-700 p-6 rounded-none text-white [&>*]:text-white [&>p]:text-white [&>h2]:text-white [&>h3]:text-white my-6">
+        {/* Röd callout med red-primary */}
+        <div className="bg-red-700 p-6 rounded-none text-white [&>*]:text-white [&>p]:text-white [&>h2]:text-white [&>h3]:text-white">
           <p>
             Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the scene", att följa det roliga och att få det att växa.
           </p>
         </div>
 
-        {/* Avslutande text med mindre indragning på punktlistor */}
+        {/* Avslutande text */}
         <div>
-          <div className="prose space-y-4 [&_ul]:pl-4">
+          <div className="prose space-y-4">
             <p>Du är varmt välkommen till oss oavsett om du:</p>
-            <ul className="list-disc pl-4 space-y-1">
+            <ul className="list-disc pl-2 space-y-1">
               <li>Aldrig har testat Improv Comedy förut</li>
               <li>Vill utvecklas som komisk scenperson</li>
               <li>Är rutinerad och vill vässa ditt hantverk</li>
@@ -93,7 +93,7 @@ export default function CourseInfoSection() {
             <p>
               Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi hjälper dig med att:
             </p>
-            <ul className="list-disc pl-4 space-y-1">
+            <ul className="list-disc pl-2 space-y-1">
               <li>Få konkreta verktyg för att skapa humoristiska scener</li>
               <li>Utveckla ditt scenspråk, lyssnande och komiska timing</li>
               <li>Bli modigare, säkrare och mer initiativtagande</li>
