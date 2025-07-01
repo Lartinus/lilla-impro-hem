@@ -1,4 +1,5 @@
 
+
 interface BookingInformationProps {
   maxParticipants?: number | null;
 }
@@ -7,8 +8,8 @@ export const BookingInformation = ({ maxParticipants }: BookingInformationProps)
   return (
     <>
       <div className="text-muted-foreground space-y-1">
-        <p className="text-sm font-bold">Bokningsinformation</p>
-        <div className="text-xs">
+        <p className="text-xs font-bold">Bokningsinformation</p>
+        <div className="text-xs space-y-0.5">
           <p>- Anmälan är bindande</p>
           <p>- Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
           <p>- Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter debiteras 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart debiteras hela avgiften</p>
@@ -19,10 +20,11 @@ export const BookingInformation = ({ maxParticipants }: BookingInformationProps)
       </div>
 
       {maxParticipants && (
-        <div className="text-sm text-muted-foreground">
+        <div className="text-xs text-muted-foreground">
           Max {maxParticipants} deltagare
         </div>
       )}
     </>
   );
 };
+
