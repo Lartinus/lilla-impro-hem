@@ -20,7 +20,6 @@ const Index = () => {
 
       <section className="h-[200vh] flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
         <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
-
           <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto relative z-10">
             
             <div className="mx-3 md:mx-0 md:max-w-6xl lg:max-w-7xl pb-1">
@@ -44,23 +43,20 @@ const Index = () => {
                   src="/uploads/LIT_BoW_large.png"
                   alt="Lilla Improteatern logotyp"
                   className="h-[120px] cursor-pointer"
-                  />
+                />
               </a>
             </div>
           </div>
         </div>
 
         {/* Logotyp längst ner på sidan */}
-        <div className="absolute bottom-[20rem] left-1/2 transform -translate-x-1/2 z-5">
+        <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-5 text-center">
           <img
             src="/uploads/LIT_WoB_large.png"
             alt="Lilla Improteatern logotyp"
-            className="h-40 md:h-48 lg:h-56"
+            className="h-40 md:h-48 lg:h-56 mx-auto mb-4"
           />
-        </div>
-        <div className="absolute bottom-[10rem] left-1/2 -translate-x-1/2 text-center text-white text-sm">
-          <p>Följ oss på @lillaimproteatern</p>
-        </div>
+          <p className="text-white text-sm">Följ oss på @lillaimproteatern</p>
         </div>
       </section>
     </div>
