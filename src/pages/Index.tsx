@@ -1,8 +1,12 @@
 
 import Header from '@/components/Header';
 import ServiceBoxes from '@/components/ServiceBoxes';
+import { useOptimizedPrefetch } from '@/hooks/useOptimizedPrefetch';
 
 const Index = () => {
+  // Use optimized prefetch for better performance
+  useOptimizedPrefetch();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-theatre-secondary to-theatre-tertiary">
       <Header />
@@ -12,7 +16,6 @@ const Index = () => {
 
           <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
             
-            {/* Inledning */}
             <div className="mx-3 md:mx-0 md:max-w-6xl lg:max-w-7xl pb-1">
               <h1 className="mt-[10px] mb-[25px] md:mb-[30px]">
                 Lilla improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv&nbsp;Comedy.
@@ -24,12 +27,10 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Tjänster/Service-sektionen */}
             <div className="space-y-4">
               <ServiceBoxes />
             </div>
 
-            {/* Mobil-only logotyp inom den vita rutan - längst ner */}
             <div className="block md:hidden mt-6">
               <a href="/om-oss">
                 <img
