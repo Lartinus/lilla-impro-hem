@@ -156,7 +156,7 @@ const PurchaseForm = ({
         <p className="font-bold text-gray-800 text-base mt-2">
           Totalt: {finalTotal}kr
         </p>
-        <p className="text-gray-600 text-sm mt-1">
+        <p className="text-gray-600 text-sm">
           Varav {vatAmount.toFixed(2)}kr moms
         </p>
       </div>
