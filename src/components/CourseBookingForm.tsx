@@ -312,7 +312,7 @@ const CourseBookingForm = ({
               </div>
 
               <div className="text-muted-foreground space-y-1 pt-4" style={{ fontSize: '10px !important' }}>
-                <p style={{ fontSize: '10px !important' }}>• Anmälan är bindande</p>
+                <p className="text-xs">• Anmälan är bindande</p>
                 <p style={{ fontSize: '10px !important' }}>• Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
                 <p style={{ fontSize: '10px !important' }}>• Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter debiteras 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart debiteras hela avgiften</p>
                 <p style={{ fontSize: '10px !important' }}>• Vid utebliven närvaro sker ingen återbetalning</p>
