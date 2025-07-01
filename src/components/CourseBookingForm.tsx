@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -40,20 +40,21 @@ const CourseBookingForm = ({
   });
 
   const { toast } = useToast();
-  const { data: courseInstances, isLoading: instancesLoading } = useCourseInstances(courseTitle);
+  const { data: courseInstances, isLoading: instancesLoading, refetch } = useCourseInstances(courseTitle);
 
-  // Lazy course table creation - only when user tries to book
-  const ensureCourseTable = async () => {
+  // Improved function to ensure course table exists
+  const ensureCourseTableExists = useCallback(async () => {
     console.log('Ensuring course table exists for:', courseTitle);
     
-    // Check if we already have an active instance
+    // First check if we already have an active instance
     if (courseInstances && courseInstances.length > 0) {
-      console.log('Course instance already exists:', courseInstances[0]);
+      console.log('Using existing course instance:', courseInstances[0]);
       return courseInstances[0];
     }
 
-    // Create new instance and table
     try {
+      // Use the sync-courses function to create the instance and table
+      console.log('Creating new course instance via sync-courses...');
       const { data, error } = await supabase.functions.invoke('sync-courses');
       
       if (error) {
@@ -63,13 +64,21 @@ const CourseBookingForm = ({
       
       console.log('Sync result:', data);
       
-      // Refresh instances after sync
-      return null; // Will be handled by refetch
+      // Refetch course instances to get the newly created one
+      const { data: refreshedInstances } = await refetch();
+      
+      if (refreshedInstances && refreshedInstances.length > 0) {
+        console.log('Found newly created instance:', refreshedInstances[0]);
+        return refreshedInstances[0];
+      } else {
+        throw new Error('Ingen kurstabell kunde skapas');
+      }
+      
     } catch (error) {
       console.error('Failed to ensure course table:', error);
       throw error;
     }
-  };
+  }, [courseTitle, courseInstances, refetch]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,18 +95,17 @@ const CourseBookingForm = ({
     setIsSubmitting(true);
     
     try {
-      // Ensure course table exists (lazy creation)
-      const courseInstance = await ensureCourseTable();
+      console.log('Starting booking process...');
       
-      if (!courseInstance && courseInstances && courseInstances.length === 0) {
-        throw new Error('Kunde inte skapa kurstabell');
+      // Ensure course table exists and get the instance
+      const courseInstance = await ensureCourseTableExists();
+      
+      if (!courseInstance || !courseInstance.table_name) {
+        throw new Error('Kunde inte få tillgång till kurstabell');
       }
-      
-      const tableName = courseInstance?.table_name || courseInstances?.[0]?.table_name;
-      
-      if (!tableName) {
-        throw new Error('Ingen kurstabell hittades');
-      }
+
+      const tableName = courseInstance.table_name;
+      console.log('Using table:', tableName);
 
       // Check for duplicate booking
       const isDuplicate = await checkDuplicateBooking(formData.email, tableName);
@@ -112,13 +120,16 @@ const CourseBookingForm = ({
       }
 
       // Insert booking
+      console.log('Inserting booking...');
       await insertCourseBooking(tableName, formData);
 
       // Send confirmation email
+      console.log('Sending confirmation email...');
       const { error: emailError } = await supabase.functions.invoke('send-course-confirmation', {
         body: {
           ...formData,
           course_title: courseTitle,
+          isAvailable: isAvailable,
         }
       });
 
