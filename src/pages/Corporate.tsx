@@ -65,9 +65,9 @@ const Corporate = () => {
           {/* Intro */}
           <div className="space-y-4">
             <h2>Workshops & Events för er organisation</h2>
-            <p className="font-bold text-sm">
+            <h5>
               Utveckla kreativitet, samarbete och kommunikation genom improvisationsteater.
-            </p>
+            </h5>
             <p>
               Improvisationsteater är ett kraftfullt verktyg för teambuilding, kreativ problemlösning och 
               kommunikationsutveckling. Våra skräddarsydda workshops hjälper era medarbetare att utveckla 
@@ -79,7 +79,7 @@ const Corporate = () => {
             </p>
           </div>
           <div>
-            <h2>Vad vi erbjuder</h2>
+            <h2 className="-my-2">Vad vi erbjuder</h2>
           </div>
           {/* Vad vi erbjuder */}
           <div className="space-y-4 border-3 border-red-800 p-4">
