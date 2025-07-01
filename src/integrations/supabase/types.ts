@@ -48,6 +48,42 @@ export type Database = {
         }
         Relationships: []
       }
+      course_helgworkshops_specialkurser_1751354357209: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          name: string
+          phone: string
+          postal_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          phone: string
+          postal_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string
+          postal_code?: string | null
+        }
+        Relationships: []
+      }
       course_house_teams_forts_ttning_1751294175035: {
         Row: {
           address: string | null

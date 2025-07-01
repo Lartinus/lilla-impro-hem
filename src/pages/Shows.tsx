@@ -1,9 +1,9 @@
 
 import Header from '@/components/Header';
-import ShowCardFromStrapi from '@/components/ShowCardFromStrapi';
+import ShowCardSimple from '@/components/ShowCardSimple';
 import ShowCardSkeleton from '@/components/ShowCardSkeleton';
 import { useOptimizedShows } from '@/hooks/useOptimizedStrapi';
-import { formatStrapiShow, sortShows } from '@/utils/strapiHelpers';
+import { formatStrapiShowSimple, sortShows } from '@/utils/strapiHelpers';
 import { useEffect, useMemo, useState } from 'react';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
 import { useToast } from '@/hooks/use-toast';
@@ -45,7 +45,7 @@ const Shows = () => {
     if (!data) return [];
     
     try {
-      const formattedShows = data?.data ? data.data.map(formatStrapiShow).filter(Boolean) : [];
+      const formattedShows = data?.data ? data.data.map(formatStrapiShowSimple).filter(Boolean) : [];
       const sortedShows = sortShows(formattedShows);
       return sortedShows;
     } catch (err) {
@@ -105,7 +105,7 @@ const Shows = () => {
         <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
           {shows.length > 0 ? (
             shows.map((show, index) => (
-              <ShowCardFromStrapi 
+              <ShowCardSimple 
                 key={show.id || index} 
                 show={show}
               />
