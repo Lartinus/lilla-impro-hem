@@ -1,4 +1,3 @@
-
 /* ==========================================================================  
    FONTS
    ========================================================================== */
@@ -7,7 +6,7 @@
   src: url("/fonts/RetroVoice-RegularNormEx2.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 
