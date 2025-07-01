@@ -251,6 +251,14 @@ export type Database = {
         }
         Returns: undefined
       }
+      is_valid_email: {
+        Args: { email: string }
+        Returns: boolean
+      }
+      is_valid_phone: {
+        Args: { phone: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "staff" | "user"
