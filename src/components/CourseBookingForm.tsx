@@ -154,7 +154,7 @@ const CourseBookingForm = ({
                   <FormItem>
                     <FormLabel>Namn *</FormLabel>
                     <FormControl>
-                      <Input placeholder="För- och efternamn" {...field} />
+                      <Input placeholder="För- och efternamn" className="rounded-none" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -168,7 +168,7 @@ const CourseBookingForm = ({
                   <FormItem>
                     <FormLabel>Telefonnummer *</FormLabel>
                     <FormControl>
-                      <Input placeholder="070-123 45 67" {...field} />
+                      <Input placeholder="070-123 45 67" className="rounded-none" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -182,7 +182,7 @@ const CourseBookingForm = ({
                   <FormItem>
                     <FormLabel>E-postadress *</FormLabel>
                     <FormControl>
-                      <Input placeholder="din@email.se" type="email" {...field} />
+                      <Input placeholder="din@email.se" type="email" className="rounded-none" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -198,7 +198,7 @@ const CourseBookingForm = ({
                     <FormControl>
                       <Textarea 
                         placeholder="Här kan du skriva en kort text om dig som improvisatör och hur du vill utvecklas"
-                        className="min-h-[100px]"
+                        className="min-h-[100px] rounded-none"
                         {...field} 
                       />
                     </FormControl>
@@ -212,11 +212,11 @@ const CourseBookingForm = ({
                   type="button"
                   variant="outline"
                   onClick={() => setOpen(false)}
-                  className="flex-1"
+                  className="flex-1 rounded-none"
                 >
                   Avbryt
                 </Button>
-                <Button type="submit" disabled={isSubmitting} className="flex-1">
+                <Button type="submit" disabled={isSubmitting} className="flex-1 rounded-none">
                   {isSubmitting ? 'Skickar...' : 'Skicka intresseanmälan'}
                 </Button>
               </div>
@@ -285,7 +285,7 @@ const CourseBookingForm = ({
                 <FormField
                   control={form.control}
                   name="postalCode"
-                  render={({ field }) => (
+                  render(({ field }) => (
                     <FormItem>
                       <FormLabel>Postnummer *</FormLabel>
                       <FormControl>
@@ -293,7 +293,7 @@ const CourseBookingForm = ({
                       </FormControl>
                       <FormMessage />
                     </FormItem>
-                  )}
+                  ))
                 />
 
                 <FormField
@@ -311,15 +311,14 @@ const CourseBookingForm = ({
                 />
               </div>
 
-              
               <div className="text-muted-foreground space-y-1">
                 <p className="text-sm font-bold">Bokningsinformation</p>
-                <p className="text-xs">- Anmälan är bindande</p>
-                <p className="text-xs">- Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
-                <p className="text-xs">- Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter debiteras 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart debiteras hela avgiften</p>
-                <p className="text-xs">- Vid utebliven närvaro sker ingen återbetalning</p>
-                <p className="text-xs">- Bekräftelse på din plats skickas via mejl inom 5 arbetsdagar efter att anmälan har registrerats</p>
-                <p className="text-xs">- För frågor eller särskilda önskemål, kontakta oss på kurs@improteatern.se</p>
+                <p className="text-xs">Anmälan är bindande</p>
+                <p className="text-xs">Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
+                <p className="text-xs">Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter debiteras 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart debiteras hela avgiften</p>
+                <p className="text-xs">Vid utebliven närvaro sker ingen återbetalning</p>
+                <p className="text-xs">Bekräftelse på din plats skickas via mejl inom 5 arbetsdagar efter att anmälan har registrerats</p>
+                <p className="text-xs">För frågor eller särskilda önskemål, kontakta oss på kurs@improteatern.se</p>
               </div>
 
               {maxParticipants && (
@@ -332,12 +331,12 @@ const CourseBookingForm = ({
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setOpen(false)}
-                  className="flex-1"
+                  onClick(() => setOpen(false)}
+                  className="flex-1 rounded-none"
                 >
                   Avbryt
                 </Button>
-                <Button type="submit" disabled={isSubmitting} className="flex-1">
+                <Button type="submit" disabled={isSubmitting} className="flex-1 rounded-none">
                   {isSubmitting ? 'Skickar...' : 'Boka din plats'}
                 </Button>
               </div>
