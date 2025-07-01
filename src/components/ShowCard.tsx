@@ -74,7 +74,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
 
         {/* Praktisk info */}
         <div className="mb-6 px-1 md:px-0">
-          <p className="text-content-primary font-bold font-satoshi mb-3">Praktisk information</p>
+          <p className="text-content-primary font-bold font-satoshi mb-3 !font-satoshi" style={{ fontFamily: 'Satoshi, sans-serif' }}>Praktisk information</p>
           <div className="space-y-2">
             {show.practicalInfo.map((item, idx) => (
               <div key={idx} className="flex items-start space-x-3">
