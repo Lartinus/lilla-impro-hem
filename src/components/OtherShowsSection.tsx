@@ -1,6 +1,7 @@
 
 import { Link } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
+import OptimizedImage from './OptimizedImage';
 
 interface Show {
   id: number;
@@ -42,11 +43,12 @@ const OtherShowsSection = ({ shows, onImageLoad }: OtherShowsSectionProps) => {
           <Link key={show.id} to={`/shows/${show.slug}`} className="block">
             <div className="border-4 border-white bg-white rounded-none p-0 hover:shadow-lg transition-all duration-300 group flex flex-col h-full">
               <div className="w-full h-48 flex-shrink-0">
-                <img 
-                  src={show.image} 
+                <OptimizedImage
+                  src={show.image}
                   alt={show.title}
                   className="w-full h-full object-cover"
-                  onLoad={() => onImageLoad?.(show.image)}
+                  onLoad={onImageLoad}
+                  preferredSize="medium"
                 />
               </div>
               <div className="flex-1 p-6 flex flex-col">
