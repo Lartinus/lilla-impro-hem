@@ -311,7 +311,7 @@ const CourseBookingForm = ({
                 />
               </div>
 
-              <div className="text-muted-foreground space-y-1 pt-4" style={{ fontSize: '10px !important' }}>
+              <div className="text-muted-foreground space-y-1">
                 <p className="text-sm font-bold">• Bokningsinformation</p>
                 <p className="text-sm">• Anmälan är bindande</p>
                 <p className="text-sm">• Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
