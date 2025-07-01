@@ -1,165 +1,127 @@
-
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { useCourseInstances, checkDuplicateBooking, insertCourseBooking } from '@/hooks/useCourseInstances';
-import { Loader2 } from 'lucide-react';
+import { generateTableName } from '@/utils/courseTableUtils';
 
 interface CourseBookingFormProps {
   courseTitle: string;
   isAvailable: boolean;
   showButton: boolean;
   buttonText?: string;
-  buttonVariant?: "default" | "outline" | "blue";
+  buttonVariant?: 'default' | 'blue';
   maxParticipants?: number | null;
 }
+
+const formSchema = z.object({
+  name: z.string().min(2, 'Namn måste vara minst 2 tecken'),
+  email: z.string().email('Ogiltig e-postadress'),
+  phone: z.string().min(6, 'Telefonnummer måste vara minst 6 tecken'),
+  address: z.string().optional(),
+  postalCode: z.string().optional(),
+  city: z.string().optional(),
+  message: z.string().optional(),
+});
+
+const houseTeamsSchema = z.object({
+  name: z.string().min(2, 'Namn måste vara minst 2 tecken'),
+  email: z.string().email('Ogiltig e-postadress'),
+  phone: z.string().min(6, 'Telefonnummer måste vara minst 6 tecken'),
+  message: z.string().optional(),
+});
 
 const CourseBookingForm = ({ 
   courseTitle, 
   isAvailable, 
   showButton, 
-  buttonText = "Boka plats",
-  buttonVariant = "default",
+  buttonText = 'Anmäl dig',
+  buttonVariant = 'default',
   maxParticipants 
 }: CourseBookingFormProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    address: '',
-    postal_code: '',
-    city: '',
-    message: ''
+  const { toast } = useToast();
+
+  // Check if this is a House Teams or fortsättning course
+  const isHouseTeamsOrContinuation = courseTitle.includes("House teams") || courseTitle.includes("fortsättning");
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      postalCode: '',
+      city: '',
+      message: '',
+    },
   });
 
-  const { toast } = useToast();
-  const { data: courseInstances, isLoading: instancesLoading, refetch } = useCourseInstances(courseTitle);
+  const houseTeamsForm = useForm<z.infer<typeof houseTeamsSchema>>({
+    resolver: zodResolver(houseTeamsSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      message: '',
+    },
+  });
 
-  // Improved function to ensure course table exists
-  const ensureCourseTableExists = useCallback(async () => {
-    console.log('Ensuring course table exists for:', courseTitle);
-    
-    // First check if we already have an active instance
-    if (courseInstances && courseInstances.length > 0) {
-      console.log('Using existing course instance:', courseInstances[0]);
-      return courseInstances[0];
-    }
-
-    try {
-      // Use the sync-courses function to create the instance and table
-      console.log('Creating new course instance via sync-courses...');
-      const { data, error } = await supabase.functions.invoke('sync-courses');
-      
-      if (error) {
-        console.error('Error in sync-courses:', error);
-        throw new Error('Fel vid kurssynkronisering');
-      }
-      
-      console.log('Sync result:', data);
-      
-      // Refetch course instances to get the newly created one
-      const { data: refreshedInstances } = await refetch();
-      
-      if (refreshedInstances && refreshedInstances.length > 0) {
-        console.log('Found newly created instance:', refreshedInstances[0]);
-        return refreshedInstances[0];
-      } else {
-        throw new Error('Ingen kurstabell kunde skapas');
-      }
-      
-    } catch (error) {
-      console.error('Failed to ensure course table:', error);
-      throw error;
-    }
-  }, [courseTitle, courseInstances, refetch]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.name || !formData.phone || !formData.email) {
-      toast({
-        title: "Saknade uppgifter",
-        description: "Vänligen fyll i alla obligatoriska fält.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleSubmit = async (values: z.infer<typeof formSchema> | z.infer<typeof houseTeamsSchema>) => {
     setIsSubmitting(true);
     
     try {
-      console.log('Starting booking process...');
+      const tableName = generateTableName(courseTitle);
+      console.log('Submitting to table:', tableName);
       
-      // Ensure course table exists and get the instance
-      const courseInstance = await ensureCourseTableExists();
-      
-      if (!courseInstance || !courseInstance.table_name) {
-        throw new Error('Kunde inte få tillgång till kurstabell');
-      }
+      const { error } = await supabase
+        .from(tableName)
+        .insert([{
+          name: values.name,
+          email: values.email,
+          phone: values.phone,
+          address: 'address' in values ? values.address || '' : '',
+          postal_code: 'postalCode' in values ? values.postalCode || '' : '',
+          city: 'city' in values ? values.city || '' : '',
+          message: values.message || ''
+        }]);
 
-      const tableName = courseInstance.table_name;
-      console.log('Using table:', tableName);
-
-      // Check for duplicate booking
-      const isDuplicate = await checkDuplicateBooking(formData.email, tableName);
-      
-      if (isDuplicate) {
-        toast({
-          title: "Bokning finns redan",
-          description: "Du har redan bokat denna kurs med denna e-postadress.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Insert booking
-      console.log('Inserting booking...');
-      await insertCourseBooking(tableName, formData);
-
-      // Send confirmation email
-      console.log('Sending confirmation email...');
-      const { error: emailError } = await supabase.functions.invoke('send-course-confirmation', {
-        body: {
-          ...formData,
-          course_title: courseTitle,
-          isAvailable: isAvailable,
-        }
-      });
-
-      if (emailError) {
-        console.error('Failed to send confirmation email:', emailError);
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
       }
 
       toast({
-        title: isAvailable ? "Bokning bekräftad!" : "Intresseanmälan registrerad!",
-        description: isAvailable 
-          ? "Din plats är nu bokad. Du kommer att få en bekräftelse via e-post." 
-          : "Vi har registrerat ditt intresse och hör av oss när kursen blir tillgänglig.",
+        title: "Anmälan skickad!",
+        description: "Vi återkommer till dig så snart som möjligt.",
       });
-      
-      setIsOpen(false);
-      setFormData({
-        name: '',
-        phone: '',
-        email: '',
-        address: '',
-        postal_code: '',
-        city: '',
-        message: ''
-      });
-      
+
+      if (isHouseTeamsOrContinuation) {
+        houseTeamsForm.reset();
+      } else {
+        form.reset();
+      }
+      setOpen(false);
     } catch (error) {
-      console.error('Booking error:', error);
+      console.error('Error submitting form:', error);
       toast({
-        title: "Fel vid bokning",
-        description: "Det gick inte att skicka din bokning. Kontakta oss direkt via info@improteatern.se eller försök igen senare.",
+        title: "Något gick fel",
+        description: "Försök igen eller kontakta oss direkt.",
         variant: "destructive",
       });
     } finally {
@@ -167,133 +129,229 @@ const CourseBookingForm = ({
     }
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
   if (!showButton) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button 
-          variant={buttonVariant}
-          className="w-full mt-4"
-          disabled={instancesLoading}
-        >
-          {instancesLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Laddar...
-            </>
-          ) : (
-            buttonText
-          )}
+        <Button variant={buttonVariant} className="w-full">
+          {buttonText}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[425px] rounded-none">
         <DialogHeader>
           <DialogTitle>
-            {isAvailable ? `Boka plats - ${courseTitle}` : `Anmäl intresse - ${courseTitle}`}
+            {isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : `Anmäl dig till ${courseTitle}`}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 gap-4">
-            <div>
-              <Label htmlFor="name">Namn *</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                required
+
+        {isHouseTeamsOrContinuation ? (
+          <Form {...houseTeamsForm}>
+            <form onSubmit={houseTeamsForm.handleSubmit(handleSubmit)} className="space-y-4">
+              <FormField
+                control={houseTeamsForm.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Namn *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="För- och efternamn" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div>
-              <Label htmlFor="phone">Telefon *</Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                required
+
+              <FormField
+                control={houseTeamsForm.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Telefonnummer *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="070-123 45 67" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div>
-              <Label htmlFor="email">E-post *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                required
+
+              <FormField
+                control={houseTeamsForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>E-postadress *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="din@email.se" type="email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div>
-              <Label htmlFor="address">Adress</Label>
-              <Input
-                id="address"
-                value={formData.address}
-                onChange={(e) => handleInputChange('address', e.target.value)}
+
+              <FormField
+                control={houseTeamsForm.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Om dig som improvisatör</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Här kan du skriva en kort text om dig som improvisatör och hur du vill utvecklas"
+                        className="min-h-[100px]"
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Label htmlFor="postal_code">Postnummer</Label>
-                <Input
-                  id="postal_code"
-                  value={formData.postal_code}
-                  onChange={(e) => handleInputChange('postal_code', e.target.value)}
+
+              <div className="flex space-x-2 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  className="flex-1"
+                >
+                  Avbryt
+                </Button>
+                <Button type="submit" disabled={isSubmitting} className="flex-1">
+                  {isSubmitting ? 'Skickar...' : 'Skicka intresseanmälan'}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        ) : (
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Namn *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ditt fullständiga namn" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>E-postadress *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="din@email.se" type="email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Telefonnummer *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="070-123 45 67" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Adress</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Gatuadress" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="postalCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Postnummer</FormLabel>
+                      <FormControl>
+                        <Input placeholder="12345" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Stad</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Stockholm" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
-              <div>
-                <Label htmlFor="city">Ort</Label>
-                <Input
-                  id="city"
-                  value={formData.city}
-                  onChange={(e) => handleInputChange('city', e.target.value)}
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="message">Meddelande</Label>
-              <Textarea
-                id="message"
-                value={formData.message}
-                onChange={(e) => handleInputChange('message', e.target.value)}
-                rows={3}
+
+              <FormField
+                control={form.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Meddelande (valfritt)</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Har du några frågor eller särskilda behov?"
+                        className="min-h-[80px]"
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-          </div>
-          
-          <div className="flex gap-2 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsOpen(false)}
-              className="flex-1"
-              disabled={isSubmitting}
-            >
-              Avbryt
-            </Button>
-            <Button 
-              type="submit" 
-              className="flex-1"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {isAvailable ? 'Bokar...' : 'Skickar...'}
-                </>
-              ) : (
-                isAvailable ? 'Bekräfta bokning' : 'Skicka intresseanmälan'
+
+              {maxParticipants && (
+                <div className="text-sm text-muted-foreground">
+                  Max {maxParticipants} deltagare
+                </div>
               )}
-            </Button>
-          </div>
-        </form>
+
+              <div className="flex space-x-2 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  className="flex-1"
+                >
+                  Avbryt
+                </Button>
+                <Button type="submit" disabled={isSubmitting} className="flex-1">
+                  {isSubmitting ? 'Skickar...' : 'Skicka anmälan'}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        )}
       </DialogContent>
     </Dialog>
   );
