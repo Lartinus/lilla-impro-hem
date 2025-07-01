@@ -138,7 +138,7 @@ const PurchaseForm = ({
       
       {/* Order Summary */}
       <div className="mb-6">
-        <h5 className="font-medium text-gray-800 mb-2">Sammanfattning</h5>
+        <p className="font-medium mb-2">Sammanfattning</h5>
         {ticketCount > 0 && (
           <div className="text-gray-700">
             Ordinarie biljetter: {ticketCount} × {ticketPrice}kr = {regularTotal}kr
@@ -154,7 +154,7 @@ const PurchaseForm = ({
             Rabatt ({discountCode}): -{discountAmount}kr
           </div>
         )}
-        <div className="font-bold text-gray-800 text-lg mt-2">
+        <div className="font-bold text-gray-800 text-base mt-2">
           Totalt: {finalTotal}kr
         </div>
         <div className="text-gray-600 text-sm mt-1">
