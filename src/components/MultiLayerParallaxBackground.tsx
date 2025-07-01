@@ -71,7 +71,7 @@ const MultiLayerParallaxBackground = ({
         className="absolute w-full h-[500px]"
         style={{
           top: '0px',
-          transform: `translateY(${scrollY * 0.2 * intensity}px)`,
+          transform: `translateY(${scrollY * -0.2 * intensity}px)`,
           willChange: 'transform'
         }}
       >
@@ -93,7 +93,7 @@ const MultiLayerParallaxBackground = ({
         className="absolute w-full h-[500px]"
         style={{
           top: '350px', // Överlappande med 150px
-          transform: `translateY(${scrollY * 0.35 * intensity}px)`,
+          transform: `translateY(${scrollY * -0.35 * intensity}px)`,
           willChange: 'transform'
         }}
       >
@@ -115,7 +115,7 @@ const MultiLayerParallaxBackground = ({
         className="absolute w-full h-[500px]"
         style={{
           top: '700px', // Överlappande med 150px
-          transform: `translateY(${scrollY * 0.5 * intensity}px)`,
+          transform: `translateY(${scrollY * -0.5 * intensity}px)`,
           willChange: 'transform'
         }}
       >
@@ -137,7 +137,7 @@ const MultiLayerParallaxBackground = ({
         className="absolute w-full h-[500px]"
         style={{
           top: '1050px', // Överlappande med 150px
-          transform: `translateY(${scrollY * 0.7 * intensity}px)`,
+          transform: `translateY(${scrollY * -0.7 * intensity}px)`,
           willChange: 'transform'
         }}
       >
