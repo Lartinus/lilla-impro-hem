@@ -97,7 +97,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             isAvailable={courseAvailability}
             showButton={shouldShowButton}
             buttonText={buttonText}
-            buttonVariant={isHouseTeams ? "outline" : "default"}
+            buttonVariant="default"
             maxParticipants={course.maxParticipants}
           />
         )}

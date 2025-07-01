@@ -1,3 +1,4 @@
+
 // src/components/CourseInfoSection.tsx
 import React from 'react';
 
@@ -70,8 +71,8 @@ export default function CourseInfoSection() {
           </p>
         </div>
 
-        {/* Röd callout */}
-        <div className="bg-[#772424] p-6 rounded-none text-white [&>*]:text-white [&>p]:text-white [&>h2]:text-white [&>h3]:text-white">
+        {/* Röd callout med red-primary */}
+        <div className="bg-red-700 p-6 rounded-none text-white [&>*]:text-white [&>p]:text-white [&>h2]:text-white [&>h3]:text-white">
           <h3>Lär dig spela det som redan är kul</h3>
           <p>
             Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the scene", att följa det roliga och att få det att växa.
