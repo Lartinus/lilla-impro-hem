@@ -1,5 +1,6 @@
 
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
+import OptimizedImage from './OptimizedImage';
 
 export interface Performer {
   id: number;
@@ -11,11 +12,13 @@ export interface Performer {
 interface PerformersSectionProps {
   performers: Performer[];
   title?: string;
+  onImageLoad?: (src: string) => void;
 }
 
 const PerformersSection = ({
   performers,
-  title = 'Medverkande'
+  title = 'Medverkande',
+  onImageLoad
 }: PerformersSectionProps) => {
   if (!performers || performers.length === 0) return null;
 
@@ -37,13 +40,13 @@ const PerformersSection = ({
                 className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4"
               >
                 {hasImage ? (
-                  <img
+                  <OptimizedImage
                     src={perf.image!}
                     alt={perf.name}
                     className="w-32 h-32 object-cover object-top flex-shrink-0"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.display = 'none';
-                    }}
+                    onLoad={onImageLoad}
+                    preferredSize="small"
+                    fallbackText="Ingen bild"
                   />
                 ) : (
                   <div className="w-32 h-32 bg-surface-muted flex items-center justify-center flex-shrink-0">

@@ -32,16 +32,42 @@ const ShowDetails = () => {
   const show = allShows.find(s => s.slug === slug);
   const otherShows = allShows.filter(s => s.slug !== slug);
 
-  // Extract image URLs for loading tracking
+  // Extract image URLs for loading tracking with better stability
   const imageUrls = useMemo(() => {
     const urls: string[] = [];
-    if (show?.image) urls.push(show.image);
+    
+    // Add main show image
+    if (show?.image && typeof show.image === 'string' && show.image.trim()) {
+      urls.push(show.image);
+    }
+    
+    // Add performer images
+    if (show?.performers) {
+      show.performers.forEach(performer => {
+        if (performer.image && 
+            typeof performer.image === 'string' && 
+            performer.image.trim() && 
+            performer.image !== 'null' && 
+            performer.image !== 'undefined') {
+          urls.push(performer.image);
+        }
+      });
+    }
+    
+    // Add other shows images
     otherShows.forEach(otherShow => {
-      if (otherShow.image) urls.push(otherShow.image);
+      if (otherShow.image && 
+          typeof otherShow.image === 'string' && 
+          otherShow.image.trim()) {
+        urls.push(otherShow.image);
+      }
     });
-    console.log('ShowDetails image URLs:', urls);
-    return urls;
-  }, [show, otherShows]);
+    
+    // Remove duplicates and sort for stability
+    const uniqueUrls = Array.from(new Set(urls)).sort();
+    console.log('ShowDetails image URLs:', uniqueUrls);
+    return uniqueUrls;
+  }, [show?.image, show?.performers, otherShows]);
 
   const { handleImageLoad, allImagesLoaded } = useImageLoader(imageUrls);
   const showLoadingOverlay = isLoading || (!allImagesLoaded && imageUrls.length > 0);
@@ -151,7 +177,10 @@ const ShowDetails = () => {
             )}
             
             {show.performers && show.performers.length > 0 && (
-              <PerformersSection performers={show.performers} />
+              <PerformersSection 
+                performers={show.performers} 
+                onImageLoad={handleImageLoad}
+              />
             )}
           </div>
           
