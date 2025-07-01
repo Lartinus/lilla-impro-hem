@@ -2,7 +2,6 @@
 import Header from '@/components/Header';
 import ShowDetailsHeader from '@/components/ShowDetailsHeader';
 import ShowInfo from '@/components/ShowInfo';
-import PracticalInfo from '@/components/PracticalInfo';
 import TicketPurchase from '@/components/TicketPurchase';
 import PurchaseForm from '@/components/PurchaseForm';
 import PerformersSection from '@/components/PerformersSection';
@@ -97,7 +96,20 @@ const ShowDetails = () => {
               description={show.description}
             />
             
-            <PracticalInfo practicalInfo={show.practicalInfo} />
+            {/* Practical Info - inlined with consistent styling */}
+            {show.practicalInfo && show.practicalInfo.length > 0 && (
+              <div className="mb-6">
+                <div className="text-content-primary font-bold mb-3">Praktisk information</div>
+                <div className="space-y-2">
+                  {show.practicalInfo.map((item, index) => (
+                    <div key={index} className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-accent-color-primary rounded-full flex-shrink-0 mt-2"></div>
+                      <p className="text-content-secondary text-base">{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             
             {!showPurchaseForm ? (
               <TicketPurchase 
