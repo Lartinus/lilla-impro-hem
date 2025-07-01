@@ -1,9 +1,6 @@
 
 // src/components/ShowCard.tsx
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useState } from 'react';
 import PerformersSection, { Performer } from '@/components/PerformersSection';
 
 interface Show {
@@ -23,17 +20,6 @@ interface ShowCardProps {
 }
 
 const ShowCard = ({ show }: ShowCardProps) => {
-  const [ticketCount, setTicketCount] = useState(1);
-  const [discountTickets, setDiscountTickets] = useState(0);
-  const [discountCode, setDiscountCode] = useState('');
-
-  const handleBuyTickets = () => {
-    console.log(
-      `Köper ${ticketCount} ordinarie och ${discountTickets} rabatterade biljetter till ${show.title}`
-    );
-    if (discountCode) console.log(`Rabattkod: ${discountCode}`);
-  };
-
   return (
     <Card className="
       group hover:shadow-xl 
@@ -85,70 +71,6 @@ const ShowCard = ({ show }: ShowCardProps) => {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Köp biljetter */}
-        <div className="mt-auto px-1 md:px-0">
-          <p className="text-content-primary font-bold mb-2">Köp biljetter</p>
-          {/* Ordinarie */}
-          <div className="bg-surface-secondary p-4 rounded-none border border-color-primary mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-content-primary font-medium">Pris {show.ticketPrice}kr</span>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setTicketCount(Math.max(0, ticketCount - 1))}
-                  className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
-                >
-                  –
-                </button>
-                <span className="w-8 text-center">{ticketCount}</span>
-                <button
-                  onClick={() => setTicketCount(ticketCount + 1)}
-                  className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-            <div className="mt-3">
-              <Input
-                placeholder="Ev. rabattkod"
-                value={discountCode}
-                onChange={(e) => setDiscountCode(e.target.value)}
-                className="rounded-none border-color-primary"
-              />
-            </div>
-          </div>
-
-          {/* Rabatterade */}
-          <div className="bg-surface-secondary p-4 rounded-none border border-color-primary mb-4">
-            <div className="flex items-center justify-between">
-              <span className="text-content-primary font-medium">Student/pensionär {show.discountPrice}kr</span>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setDiscountTickets(Math.max(0, discountTickets - 1))}
-                  className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
-                >
-                  –
-                </button>
-                <span className="w-8 text-center">{discountTickets}</span>
-                <button
-                  onClick={() => setDiscountTickets(discountTickets + 1)}
-                  className="w-8 h-8 border border-color-primary rounded-none flex items-center justify-center hover:bg-surface-muted"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <Button
-            onClick={handleBuyTickets}
-            className="bg-accent-color-primary hover:bg-accent-color-hover text-white px-4 py-2 rounded-none text-sm"
-            disabled={ticketCount === 0 && discountTickets === 0}
-          >
-            Fortsätt →
-          </Button>
         </div>
       </CardContent>
     </Card>
