@@ -66,10 +66,11 @@ const MultiLayerParallaxBackground = ({
         Parallax Active - Scroll: {scrollY}px
       </div>
 
-      {/* Bakgrundslager 1 - Längst bak, långsammast */}
+      {/* Bakgrundslager 1 - Överst, längst bak */}
       <div
-        className="absolute inset-0 w-full h-full"
+        className="absolute w-full h-[400px]"
         style={{
+          top: '0px',
           transform: `translateY(${scrollY * 0.2 * intensity}px)`,
           willChange: 'transform'
         }}
@@ -77,7 +78,7 @@ const MultiLayerParallaxBackground = ({
         <img
           src={PARALLAX_IMAGES[0]}
           alt=""
-          className="w-full h-[120%] object-cover object-center"
+          className="w-full h-full object-cover"
           style={{ 
             opacity: 0.6,
             filter: 'brightness(0.7) contrast(1.1)',
@@ -87,18 +88,19 @@ const MultiLayerParallaxBackground = ({
         />
       </div>
 
-      {/* Bakgrundslager 2 - Diagonal placering */}
+      {/* Bakgrundslager 2 - 300px mellanrum */}
       <div
-        className="absolute inset-0 w-full h-full"
+        className="absolute w-full h-[400px]"
         style={{
-          transform: `translateY(${scrollY * 0.35 * intensity}px) translateX(-10%)`,
+          top: '700px', // 400px höjd + 300px mellanrum
+          transform: `translateY(${scrollY * 0.35 * intensity}px)`,
           willChange: 'transform'
         }}
       >
         <img
           src={PARALLAX_IMAGES[1]}
           alt=""
-          className="w-[110%] h-[110%] object-cover object-left"
+          className="w-full h-full object-cover"
           style={{ 
             opacity: 0.5,
             filter: 'brightness(0.8) sepia(0.1)',
@@ -108,18 +110,19 @@ const MultiLayerParallaxBackground = ({
         />
       </div>
 
-      {/* Mellanrum lager 3 - Höger sida */}
+      {/* Mellanrum lager 3 - Ytterligare 300px mellanrum */}
       <div
-        className="absolute inset-0 w-full h-full"
+        className="absolute w-full h-[400px]"
         style={{
-          transform: `translateY(${scrollY * 0.5 * intensity}px) translateX(15%)`,
+          top: '1400px', // 700px + 400px + 300px mellanrum
+          transform: `translateY(${scrollY * 0.5 * intensity}px)`,
           willChange: 'transform'
         }}
       >
         <img
           src={PARALLAX_IMAGES[2]}
           alt=""
-          className="w-[100%] h-[105%] object-cover object-right"
+          className="w-full h-full object-cover"
           style={{ 
             opacity: 0.4,
             filter: 'brightness(0.9) saturate(0.8)',
@@ -129,18 +132,19 @@ const MultiLayerParallaxBackground = ({
         />
       </div>
 
-      {/* Främsta lagret - Snabbast rörelse */}
+      {/* Främsta lagret - Längst ner */}
       <div
-        className="absolute inset-0 w-full h-full"
+        className="absolute w-full h-[400px]"
         style={{
-          transform: `translateY(${scrollY * 0.7 * intensity}px) translateX(-5%)`,
+          top: '2100px', // 1400px + 400px + 300px mellanrum
+          transform: `translateY(${scrollY * 0.7 * intensity}px)`,
           willChange: 'transform'
         }}
       >
         <img
           src={PARALLAX_IMAGES[3]}
           alt=""
-          className="w-[105%] h-[100%] object-cover object-center"
+          className="w-full h-full object-cover"
           style={{ 
             opacity: 0.3,
             filter: 'brightness(1.1) contrast(0.9)',
