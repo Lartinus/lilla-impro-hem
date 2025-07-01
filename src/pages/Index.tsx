@@ -58,6 +58,9 @@ const Index = () => {
             className="h-40 md:h-48 lg:h-56"
           />
         </div>
+        <div>
+        <p text-center text-sm>Följ oss på @lillaimproteatern</p>
+        </div>
       </section>
     </div>
   );
