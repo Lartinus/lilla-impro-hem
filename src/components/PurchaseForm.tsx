@@ -172,7 +172,7 @@ const PurchaseForm = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">E-post</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">E-post (hit skickas biljetterna)</label>
           <Input
             type="email"
             value={purchaseData.email}
