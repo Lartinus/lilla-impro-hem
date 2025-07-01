@@ -57,7 +57,7 @@ export default function CourseInfoSection() {
         {/* För dig som vill lära dig Improv Comedy */}
         <div className="mb-4">
           <h2>För dig som vill lära dig Improv Comedy - med målet att själv stå på scen.</h2>
-          <div className="prose">
+          <div className="prose mb-4"">
             <p>
               Lilla Improteatern är platsen för dig som vill bli skickligare på att skapa roliga scener tillsammans med andra. Här lär du dig inte bara hur man improviserar – du förstår varför det funkar, vad som gör en scen rolig och hur du skapar det tillsammans med andra.
             </p>
