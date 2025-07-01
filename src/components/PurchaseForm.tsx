@@ -134,11 +134,10 @@ const PurchaseForm = ({
 
   return (
     <div className="mb-6">
-      <h4 className="text-gray-800 font-bold mb-4">Slutför köp</h4>
+      <h4 className="text-gray-800 font-bold mb-4">Sammanfattning</h4>
       
       {/* Order Summary */}
       <div className="mb-6">
-        <p className="font-medium mb-2">Sammanfattning</p>
         {ticketCount > 0 && (
           <p className="text-gray-700">
             Ordinarie biljetter: {ticketCount} × {ticketPrice}kr = {regularTotal}kr
