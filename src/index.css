@@ -197,6 +197,11 @@
   h6 + p {
     margin-top: 0.75rem;
   }
+
+  input,
+  textarea {
+    @apply rounded-none;
+  }
 }
 
 
