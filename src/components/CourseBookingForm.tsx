@@ -1,5 +1,3 @@
-
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -313,13 +311,13 @@ const CourseBookingForm = ({
                 />
               </div>
 
-              <div className="text-[10px] text-muted-foreground space-y-1 pt-4">
-                <p>• Anmälan är bindande</p>
-                <p>• Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
-                <p>• Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter debiteras 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart debiteras hela avgiften</p>
-                <p>• Vid utebliven närvaro sker ingen återbetalning</p>
-                <p>• Bekräftelse på din plats skickas via mejl inom 5 arbetsdagar efter att anmälan har registrerats</p>
-                <p>• För frågor eller särskilda önskemål, kontakta oss på kurs@improteatern.se</p>
+              <div className="text-muted-foreground space-y-1 pt-4" style={{ fontSize: '10px !important' }}>
+                <p style={{ fontSize: '10px !important' }}>• Anmälan är bindande</p>
+                <p style={{ fontSize: '10px !important' }}>• Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
+                <p style={{ fontSize: '10px !important' }}>• Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter debiteras 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart debiteras hela avgiften</p>
+                <p style={{ fontSize: '10px !important' }}>• Vid utebliven närvaro sker ingen återbetalning</p>
+                <p style={{ fontSize: '10px !important' }}>• Bekräftelse på din plats skickas via mejl inom 5 arbetsdagar efter att anmälan har registrerats</p>
+                <p style={{ fontSize: '10px !important' }}>• För frågor eller särskilda önskemål, kontakta oss på kurs@improteatern.se</p>
               </div>
 
               {maxParticipants && (
@@ -350,4 +348,3 @@ const CourseBookingForm = ({
 };
 
 export default CourseBookingForm;
-
