@@ -2,9 +2,11 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAvailableTickets } from '@/hooks/useTicketSync';
+import { useTicketBooking } from '@/hooks/useTicketBooking';
 import TicketPurchase from './TicketPurchase';
 import PurchaseForm from './PurchaseForm';
 import StripeCheckout from './StripeCheckout';
+import TicketCountdown from './TicketCountdown';
 
 interface TicketPurchaseCompleteProps {
   onPurchase: (data: { regularTickets: number; discountTickets: number; discountCode: string }) => void;
@@ -40,10 +42,19 @@ const TicketPurchaseComplete = ({
   });
 
   const { data: availableTickets = totalTickets } = useAvailableTickets(showSlug, totalTickets);
+  const { booking, timeLeft, createBooking, clearBooking, hasActiveBooking } = useTicketBooking();
 
-  const handleTicketPurchase = (data: { regularTickets: number; discountTickets: number; discountCode: string }) => {
-    setTicketData(data);
-    setCurrentStep('form');
+  const handleTicketPurchase = async (data: { regularTickets: number; discountTickets: number; discountCode: string }) => {
+    try {
+      // Create booking for the selected tickets
+      await createBooking(showSlug, data.regularTickets, data.discountTickets);
+      
+      setTicketData(data);
+      setCurrentStep('form');
+    } catch (error) {
+      console.error('Failed to book tickets:', error);
+      alert('Kunde inte reservera biljetterna. Försök igen.');
+    }
   };
 
   const handleFormComplete = (formData: { name: string; email: string; phone: string }) => {
@@ -52,6 +63,7 @@ const TicketPurchaseComplete = ({
   };
 
   const handleBackToTickets = () => {
+    clearBooking();
     setCurrentStep('purchase');
   };
 
@@ -59,38 +71,59 @@ const TicketPurchaseComplete = ({
     setCurrentStep('form');
   };
 
+  const handleBookingExpired = () => {
+    alert('Din reservation har gått ut. Vänligen välj biljetter igen.');
+    setCurrentStep('purchase');
+  };
+
   if (currentStep === 'checkout') {
     return (
-      <StripeCheckout
-        showSlug={showSlug}
-        showTitle={showTitle}
-        showDate={showDate}
-        showLocation={showLocation}
-        regularTickets={ticketData.regularTickets}
-        discountTickets={ticketData.discountTickets}
-        discountCode={ticketData.discountCode}
-        ticketPrice={ticketPrice}
-        discountPrice={discountPrice}
-        buyerName={purchaseData.name}
-        buyerEmail={purchaseData.email}
-        buyerPhone={purchaseData.phone}
-        onBack={handleBackToForm}
-      />
+      <div className="space-y-4">
+        {hasActiveBooking && (
+          <TicketCountdown 
+            timeLeft={timeLeft} 
+            onExpired={handleBookingExpired}
+          />
+        )}
+        <StripeCheckout
+          showSlug={showSlug}
+          showTitle={showTitle}
+          showDate={showDate}
+          showLocation={showLocation}
+          regularTickets={ticketData.regularTickets}
+          discountTickets={ticketData.discountTickets}
+          discountCode={ticketData.discountCode}
+          ticketPrice={ticketPrice}
+          discountPrice={discountPrice}
+          buyerName={purchaseData.name}
+          buyerEmail={purchaseData.email}
+          buyerPhone={purchaseData.phone}
+          onBack={handleBackToForm}
+        />
+      </div>
     );
   }
 
   if (currentStep === 'form') {
     return (
-      <PurchaseForm
-        ticketCount={ticketData.regularTickets}
-        discountTickets={ticketData.discountTickets}
-        discountCode={ticketData.discountCode}
-        showTitle={showTitle}
-        ticketPrice={ticketPrice}
-        discountPrice={discountPrice}
-        onBack={handleBackToTickets}
-        onComplete={handleFormComplete}
-      />
+      <div className="space-y-4">
+        {hasActiveBooking && (
+          <TicketCountdown 
+            timeLeft={timeLeft} 
+            onExpired={handleBookingExpired}
+          />
+        )}
+        <PurchaseForm
+          ticketCount={ticketData.regularTickets}
+          discountTickets={ticketData.discountTickets}
+          discountCode={ticketData.discountCode}
+          showTitle={showTitle}
+          ticketPrice={ticketPrice}
+          discountPrice={discountPrice}
+          onBack={handleBackToTickets}
+          onComplete={handleFormComplete}
+        />
+      </div>
     );
   }
 

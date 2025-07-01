@@ -189,6 +189,36 @@ export type Database = {
         }
         Relationships: []
       }
+      ticket_bookings: {
+        Row: {
+          created_at: string
+          discount_tickets: number
+          expires_at: string
+          id: string
+          regular_tickets: number
+          session_id: string
+          show_slug: string
+        }
+        Insert: {
+          created_at?: string
+          discount_tickets?: number
+          expires_at: string
+          id?: string
+          regular_tickets?: number
+          session_id: string
+          show_slug: string
+        }
+        Update: {
+          created_at?: string
+          discount_tickets?: number
+          expires_at?: string
+          id?: string
+          regular_tickets?: number
+          session_id?: string
+          show_slug?: string
+        }
+        Relationships: []
+      }
       ticket_purchases: {
         Row: {
           buyer_email: string
@@ -282,9 +312,25 @@ export type Database = {
         Args: { table_name: string; email_address: string }
         Returns: boolean
       }
+      cleanup_expired_bookings: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       create_course_booking_table: {
         Args: { table_name: string }
         Returns: undefined
+      }
+      create_ticket_booking: {
+        Args: {
+          show_slug_param: string
+          regular_tickets_param: number
+          discount_tickets_param: number
+          session_id_param: string
+        }
+        Returns: {
+          booking_id: string
+          expires_at: string
+        }[]
       }
       drop_course_booking_table: {
         Args: { table_name: string }
@@ -295,6 +341,10 @@ export type Database = {
         Returns: string
       }
       get_available_tickets: {
+        Args: { show_slug_param: string; total_tickets: number }
+        Returns: number
+      }
+      get_available_tickets_with_bookings: {
         Args: { show_slug_param: string; total_tickets: number }
         Returns: number
       }

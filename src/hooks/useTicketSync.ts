@@ -6,7 +6,7 @@ export const useAvailableTickets = (showSlug: string, totalTickets: number) => {
   return useQuery({
     queryKey: ['available-tickets', showSlug],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_available_tickets', {
+      const { data, error } = await supabase.rpc('get_available_tickets_with_bookings', {
         show_slug_param: showSlug,
         total_tickets: totalTickets
       });
