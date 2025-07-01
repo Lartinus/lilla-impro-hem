@@ -79,7 +79,7 @@ const Corporate = () => {
             </p>
           </div>
           <div>
-            <h2 className="-my-2">Vad vi erbjuder</h2>
+            <h2 className="-my-4">Vad vi erbjuder</h2>
           </div>
           {/* Vad vi erbjuder */}
           <div className="space-y-4 border-3 border-red-800 p-4">
@@ -90,7 +90,7 @@ const Corporate = () => {
               ["Ledarskapsträning", "Utveckla förmågan att ta initiativ, stötta teammedlemmar och hantera osäkerhet med självförtroende och anpassningsförmåga."]
             ].map(([title, body], i) => (
               <div key={i}>
-                <h5>{title}</h5>
+                <p className="text-bold">{title}</p>
                 <p>{body}</p>
               </div>
             ))}
