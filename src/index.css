@@ -1,3 +1,4 @@
+
 /* ==========================================================================  
    FONTS
    ========================================================================== */
@@ -114,9 +115,17 @@
    BASE ELEMENTSTILAR (inklusive globala @apply-regler)
    ========================================================================== */
 @layer base {
-  /* Body & bakgrund */
+  /* HTML & Body overscroll behavior and smooth scrolling */
+  html, body {
+    min-height: 100%;
+    margin: 0;
+    background: theme(colors.theatre.tertiary);
+    overscroll-behavior-y: none;
+  }
+
   body {
     font-family: "Satoshi", sans-serif;
+    -webkit-overflow-scrolling: touch;
     @apply bg-background text-foreground;
   }
 
