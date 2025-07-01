@@ -106,7 +106,7 @@ const Corporate = () => {
                   {i + 1}
                 </div>
                 <div>
-                  <h3 className="text-black">{step}</h3>
+                  <p className="font-bold">{step}</p>
                   <p>
                     {[
                       "Vi träffas (digitalt eller fysiskt) för att förstå era mål, utmaningar och vilken typ av workshop som skulle passa bäst.",
