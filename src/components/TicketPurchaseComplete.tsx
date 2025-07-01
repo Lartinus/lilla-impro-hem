@@ -147,7 +147,11 @@ const TicketPurchaseComplete = ({
 
   // Check if sold out before showing ticket purchase
   if (availableTickets <= 0) {
-    return <SoldOut />;
+    return (
+      <div className="mb-8">
+        <SoldOut />
+      </div>
+    );
   }
 
   return (
