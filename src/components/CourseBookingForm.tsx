@@ -1,4 +1,5 @@
 
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,10 +33,9 @@ const formSchema = z.object({
   name: z.string().min(2, 'Namn måste vara minst 2 tecken'),
   email: z.string().email('Ogiltig e-postadress'),
   phone: z.string().min(6, 'Telefonnummer måste vara minst 6 tecken'),
-  address: z.string().optional(),
-  postalCode: z.string().optional(),
-  city: z.string().optional(),
-  message: z.string().optional(),
+  address: z.string().min(1, 'Adress är obligatorisk'),
+  postalCode: z.string().min(1, 'Postnummer är obligatoriskt'),
+  city: z.string().min(1, 'Stad är obligatorisk'),
 });
 
 const houseTeamsSchema = z.object({
@@ -69,7 +69,6 @@ const CourseBookingForm = ({
       address: '',
       postalCode: '',
       city: '',
-      message: '',
     },
   });
 
@@ -100,7 +99,7 @@ const CourseBookingForm = ({
         booking_address: 'address' in values ? values.address || '' : '',
         booking_postal_code: 'postalCode' in values ? values.postalCode || '' : '',
         booking_city: 'city' in values ? values.city || '' : '',
-        booking_message: values.message || ''
+        booking_message: 'message' in values ? values.message || '' : ''
       });
 
       if (error) {
@@ -137,7 +136,7 @@ const CourseBookingForm = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant={buttonVariant} className="w-full">
-          {buttonText}
+          {isHouseTeamsOrContinuation ? buttonText : 'Boka din plats'}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] rounded-none">
@@ -235,7 +234,7 @@ const CourseBookingForm = ({
                   <FormItem>
                     <FormLabel>Namn *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ditt fullständiga namn" {...field} />
+                      <Input placeholder="Ditt fullständiga namn" className="rounded-none" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -249,7 +248,7 @@ const CourseBookingForm = ({
                   <FormItem>
                     <FormLabel>E-postadress *</FormLabel>
                     <FormControl>
-                      <Input placeholder="din@email.se" type="email" {...field} />
+                      <Input placeholder="din@email.se" type="email" className="rounded-none" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -263,7 +262,7 @@ const CourseBookingForm = ({
                   <FormItem>
                     <FormLabel>Telefonnummer *</FormLabel>
                     <FormControl>
-                      <Input placeholder="070-123 45 67" {...field} />
+                      <Input placeholder="070-123 45 67" className="rounded-none" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -275,9 +274,9 @@ const CourseBookingForm = ({
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Adress</FormLabel>
+                    <FormLabel>Adress *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Gatuadress" {...field} />
+                      <Input placeholder="Gatuadress" className="rounded-none" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -290,9 +289,9 @@ const CourseBookingForm = ({
                   name="postalCode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Postnummer</FormLabel>
+                      <FormLabel>Postnummer *</FormLabel>
                       <FormControl>
-                        <Input placeholder="12345" {...field} />
+                        <Input placeholder="12345" className="rounded-none" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -304,9 +303,9 @@ const CourseBookingForm = ({
                   name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Stad</FormLabel>
+                      <FormLabel>Stad *</FormLabel>
                       <FormControl>
-                        <Input placeholder="Stockholm" {...field} />
+                        <Input placeholder="Stockholm" className="rounded-none" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -314,23 +313,14 @@ const CourseBookingForm = ({
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Meddelande (valfritt)</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Har du några frågor eller särskilda behov?"
-                        className="min-h-[80px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="text-sm text-muted-foreground space-y-1 pt-4">
+                <p>• Anmälan är bindande</p>
+                <p>• Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
+                <p>• Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter debiteras 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart debiteras hela avgiften</p>
+                <p>• Vid utebliven närvaro sker ingen återbetalning</p>
+                <p>• Bekräftelse på din plats skickas via mejl inom 5 arbetsdagar efter att anmälan har registrerats</p>
+                <p>• För frågor eller särskilda önskemål, kontakta oss på kurs@improteatern.se</p>
+              </div>
 
               {maxParticipants && (
                 <div className="text-sm text-muted-foreground">
@@ -348,7 +338,7 @@ const CourseBookingForm = ({
                   Avbryt
                 </Button>
                 <Button type="submit" disabled={isSubmitting} className="flex-1">
-                  {isSubmitting ? 'Skickar...' : 'Skicka anmälan'}
+                  {isSubmitting ? 'Skickar...' : 'Boka din plats'}
                 </Button>
               </div>
             </form>
@@ -360,3 +350,4 @@ const CourseBookingForm = ({
 };
 
 export default CourseBookingForm;
+
