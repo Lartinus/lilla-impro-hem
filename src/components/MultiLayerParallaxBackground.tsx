@@ -66,7 +66,7 @@ const MultiLayerParallaxBackground = ({
         Parallax Active - Scroll: {scrollY}px
       </div>
 
-      {/* Bakgrundslager 1 - Överst, längst bak */}
+      {/* Bakgrundslager 1 - Första bilden */}
       <div
         className="absolute w-full h-[400px]"
         style={{
@@ -80,7 +80,7 @@ const MultiLayerParallaxBackground = ({
           alt=""
           className="w-full h-full object-cover"
           style={{ 
-            opacity: 0.6,
+            opacity: 0.85,
             filter: 'brightness(0.7) contrast(1.1)',
           }}
           onLoad={() => console.log('Parallax image 1 loaded')}
@@ -88,11 +88,11 @@ const MultiLayerParallaxBackground = ({
         />
       </div>
 
-      {/* Bakgrundslager 2 - 300px mellanrum */}
+      {/* Bakgrundslager 2 - Direkt under första bilden */}
       <div
         className="absolute w-full h-[400px]"
         style={{
-          top: '700px', // 400px höjd + 300px mellanrum
+          top: '400px', // Direkt under första bilden
           transform: `translateY(${scrollY * 0.35 * intensity}px)`,
           willChange: 'transform'
         }}
@@ -102,7 +102,7 @@ const MultiLayerParallaxBackground = ({
           alt=""
           className="w-full h-full object-cover"
           style={{ 
-            opacity: 0.5,
+            opacity: 0.85,
             filter: 'brightness(0.8) sepia(0.1)',
           }}
           onLoad={() => console.log('Parallax image 2 loaded')}
@@ -110,11 +110,11 @@ const MultiLayerParallaxBackground = ({
         />
       </div>
 
-      {/* Mellanrum lager 3 - Ytterligare 300px mellanrum */}
+      {/* Bakgrundslager 3 - Direkt under andra bilden */}
       <div
         className="absolute w-full h-[400px]"
         style={{
-          top: '1400px', // 700px + 400px + 300px mellanrum
+          top: '800px', // Direkt under andra bilden
           transform: `translateY(${scrollY * 0.5 * intensity}px)`,
           willChange: 'transform'
         }}
@@ -124,7 +124,7 @@ const MultiLayerParallaxBackground = ({
           alt=""
           className="w-full h-full object-cover"
           style={{ 
-            opacity: 0.4,
+            opacity: 0.85,
             filter: 'brightness(0.9) saturate(0.8)',
           }}
           onLoad={() => console.log('Parallax image 3 loaded')}
@@ -132,11 +132,11 @@ const MultiLayerParallaxBackground = ({
         />
       </div>
 
-      {/* Främsta lagret - Längst ner */}
+      {/* Bakgrundslager 4 - Direkt under tredje bilden */}
       <div
         className="absolute w-full h-[400px]"
         style={{
-          top: '2100px', // 1400px + 400px + 300px mellanrum
+          top: '1200px', // Direkt under tredje bilden
           transform: `translateY(${scrollY * 0.7 * intensity}px)`,
           willChange: 'transform'
         }}
@@ -146,7 +146,7 @@ const MultiLayerParallaxBackground = ({
           alt=""
           className="w-full h-full object-cover"
           style={{ 
-            opacity: 0.3,
+            opacity: 0.85,
             filter: 'brightness(1.1) contrast(0.9)',
           }}
           onLoad={() => console.log('Parallax image 4 loaded')}
