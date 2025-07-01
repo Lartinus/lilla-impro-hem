@@ -27,7 +27,7 @@ export default function CourseLeaderInfo({ courseLeader }: CourseLeaderInfoProps
             preferredSize="small"
           />
           <div className="flex-1 min-w-0">
-            <p className="font-bold mb-2">{courseLeader.name}</p>
+            <p className="font-bold text-sm">{courseLeader.name}</p>
             <div
               className="leading-relaxed break-words [&>p]:text-[14px] 4md:[&>p]:text-[14px]"
               dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(courseLeader.bio) }}
