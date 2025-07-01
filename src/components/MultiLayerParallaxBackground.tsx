@@ -68,7 +68,7 @@ const MultiLayerParallaxBackground = ({
 
       {/* Bakgrundslager 1 - Första bilden */}
       <div
-        className="absolute w-full h-[400px]"
+        className="absolute w-full h-[500px]"
         style={{
           top: '0px',
           transform: `translateY(${scrollY * 0.2 * intensity}px)`,
@@ -88,11 +88,11 @@ const MultiLayerParallaxBackground = ({
         />
       </div>
 
-      {/* Bakgrundslager 2 - Direkt under första bilden */}
+      {/* Bakgrundslager 2 - Överlappande med första bilden */}
       <div
-        className="absolute w-full h-[400px]"
+        className="absolute w-full h-[500px]"
         style={{
-          top: '400px', // Direkt under första bilden
+          top: '350px', // Överlappande med 150px
           transform: `translateY(${scrollY * 0.35 * intensity}px)`,
           willChange: 'transform'
         }}
@@ -110,11 +110,11 @@ const MultiLayerParallaxBackground = ({
         />
       </div>
 
-      {/* Bakgrundslager 3 - Direkt under andra bilden */}
+      {/* Bakgrundslager 3 - Överlappande med andra bilden */}
       <div
-        className="absolute w-full h-[400px]"
+        className="absolute w-full h-[500px]"
         style={{
-          top: '800px', // Direkt under andra bilden
+          top: '700px', // Överlappande med 150px
           transform: `translateY(${scrollY * 0.5 * intensity}px)`,
           willChange: 'transform'
         }}
@@ -132,11 +132,11 @@ const MultiLayerParallaxBackground = ({
         />
       </div>
 
-      {/* Bakgrundslager 4 - Direkt under tredje bilden */}
+      {/* Bakgrundslager 4 - Överlappande med tredje bilden */}
       <div
-        className="absolute w-full h-[400px]"
+        className="absolute w-full h-[500px]"
         style={{
-          top: '1200px', // Direkt under tredje bilden
+          top: '1050px', // Överlappande med 150px
           transform: `translateY(${scrollY * 0.7 * intensity}px)`,
           willChange: 'transform'
         }}
