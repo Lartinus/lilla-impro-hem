@@ -47,7 +47,7 @@ const ShowCardSimple = ({
   const isSoldOut = availableTickets <= 0;
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none overflow-hidden">
+    <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none overflow-hidden relative">
       <CardContent className="p-0">
         {/* Optimized Show Image */}
         {show.image && (
@@ -75,17 +75,20 @@ const ShowCardSimple = ({
             </p>
           </div>
 
-          {isSoldOut ? (
-            <SoldOut />
-          ) : (
-            <Link 
-              to={`/shows/${show.slug}`} 
-              className="inline-flex items-center text-accent-color-text hover:text-accent-color-hover font-medium transition-colors text-sm"
-            >
-              Läs mer →
-            </Link>
-          )}
+          <Link 
+            to={`/shows/${show.slug}`} 
+            className="inline-flex items-center text-accent-color-text hover:text-accent-color-hover font-medium transition-colors text-sm"
+          >
+            Läs mer →
+          </Link>
         </div>
+
+        {/* SoldOut positioned in bottom-right corner */}
+        {isSoldOut && (
+          <div className="absolute bottom-3 right-3">
+            <SoldOut />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
