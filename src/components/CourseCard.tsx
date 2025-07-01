@@ -44,6 +44,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   // For house teams, set available to false to show interest form
   const courseAvailability = isHouseTeams ? false : course.available;
   const buttonText = isHouseTeams ? "Anmäl intresse" : course.buttonText;
+  const buttonVariant = isHouseTeams ? "blue" : "default";
 
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col course-card">
@@ -97,7 +98,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             isAvailable={courseAvailability}
             showButton={shouldShowButton}
             buttonText={buttonText}
-            buttonVariant="default"
+            buttonVariant={buttonVariant}
             maxParticipants={course.maxParticipants}
           />
         )}
