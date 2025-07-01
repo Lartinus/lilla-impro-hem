@@ -52,7 +52,7 @@ export default function CourseInfoSection() {
   ];
 
   return (
-    <section className="flex justify-center px-0 md:px-4 mt-12">
+    <section className="flex justify-center px-0 md:px-4 my-4">
       <div className="bg-white w-full max-w-3xl mx-[12px] md:mx-0 p-8 shadow-lg rounded-none space-y-12">
         {/* För dig som vill lära dig Improv Comedy */}
         <div>
