@@ -189,6 +189,69 @@ export type Database = {
         }
         Relationships: []
       }
+      ticket_purchases: {
+        Row: {
+          buyer_email: string
+          buyer_name: string
+          buyer_phone: string
+          created_at: string
+          discount_code: string | null
+          discount_tickets: number
+          id: string
+          payment_status: string
+          qr_data: string
+          regular_tickets: number
+          show_date: string
+          show_location: string
+          show_slug: string
+          show_title: string
+          stripe_session_id: string | null
+          ticket_code: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          buyer_email: string
+          buyer_name: string
+          buyer_phone: string
+          created_at?: string
+          discount_code?: string | null
+          discount_tickets?: number
+          id?: string
+          payment_status?: string
+          qr_data: string
+          regular_tickets?: number
+          show_date: string
+          show_location: string
+          show_slug: string
+          show_title: string
+          stripe_session_id?: string | null
+          ticket_code: string
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          buyer_email?: string
+          buyer_name?: string
+          buyer_phone?: string
+          created_at?: string
+          discount_code?: string | null
+          discount_tickets?: number
+          id?: string
+          payment_status?: string
+          qr_data?: string
+          regular_tickets?: number
+          show_date?: string
+          show_location?: string
+          show_slug?: string
+          show_title?: string
+          stripe_session_id?: string | null
+          ticket_code?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -226,6 +289,14 @@ export type Database = {
       drop_course_booking_table: {
         Args: { table_name: string }
         Returns: undefined
+      }
+      generate_ticket_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      get_available_tickets: {
+        Args: { show_slug_param: string; total_tickets: number }
+        Returns: number
       }
       get_course_booking_count: {
         Args: { table_name: string }

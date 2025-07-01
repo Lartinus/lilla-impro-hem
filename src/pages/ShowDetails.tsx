@@ -2,21 +2,17 @@
 import Header from '@/components/Header';
 import ShowDetailsHeader from '@/components/ShowDetailsHeader';
 import ShowInfo from '@/components/ShowInfo';
-import TicketPurchase from '@/components/TicketPurchase';
-import PurchaseForm from '@/components/PurchaseForm';
+import TicketPurchaseComplete from '@/components/TicketPurchaseComplete';
 import PerformersSection from '@/components/PerformersSection';
 import OtherShowsSection from '@/components/OtherShowsSection';
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useOptimizedShows } from '@/hooks/useOptimizedStrapi';
 import { formatStrapiShow } from '@/utils/strapiHelpers';
-import { Loader } from 'lucide-react';
 import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
 
 const ShowDetails = () => {
   const { slug } = useParams();
-  const [showPurchaseForm, setShowPurchaseForm] = useState(false);
-  const [purchaseTickets, setPurchaseTickets] = useState({ regular: 0, discount: 0, code: '' });
 
   // Scroll to top when slug changes (navigating to another show)
   useEffect(() => {
@@ -72,15 +68,6 @@ const ShowDetails = () => {
     );
   }
 
-  const handlePurchase = (data: { regularTickets: number; discountTickets: number; discountCode: string }) => {
-    setPurchaseTickets({ regular: data.regularTickets, discount: data.discountTickets, code: data.discountCode });
-    setShowPurchaseForm(true);
-  };
-
-  const handleCompletePurchase = () => {
-    setShowPurchaseForm(false);
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
       <Header />
@@ -112,25 +99,16 @@ const ShowDetails = () => {
               </div>
             )}
             
-            {!showPurchaseForm ? (
-              <TicketPurchase 
-                onPurchase={handlePurchase}
-                ticketPrice={show.ticketPrice}
-                discountPrice={show.discountPrice}
-                availableTickets={show.availableTickets}
-              />
-            ) : (
-              <PurchaseForm 
-                ticketCount={purchaseTickets.regular}
-                discountTickets={purchaseTickets.discount}
-                discountCode={purchaseTickets.code}
-                showTitle={show.title}
-                ticketPrice={show.ticketPrice}
-                discountPrice={show.discountPrice}
-                onBack={() => setShowPurchaseForm(false)}
-                onComplete={handleCompletePurchase}
-              />
-            )}
+            <TicketPurchaseComplete
+              onPurchase={() => {}} // Not used anymore, handled internally
+              ticketPrice={show.ticketPrice}
+              discountPrice={show.discountPrice}
+              totalTickets={show.availableTickets}
+              showSlug={show.slug}
+              showTitle={show.title}
+              showDate={show.date}
+              showLocation={show.location}
+            />
             
             {show.performers && show.performers.length > 0 && (
               <PerformersSection performers={show.performers} />
