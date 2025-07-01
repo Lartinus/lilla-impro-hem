@@ -121,8 +121,8 @@ const Corporate = () => {
           </div>
 
           {/* Formulär */}
-          <div className="space-y-4 mt-[20px] border-t border-gray-400">
-            <p>
+          <div className="space-y-4 border-t border-gray-400">
+            <p className="mt-[20px]">
               Berätta om er organisation och vad ni är ute efter, så hör vi av oss för att diskutera möjligheterna.
             </p>
             <CorporateInquiryForm />
