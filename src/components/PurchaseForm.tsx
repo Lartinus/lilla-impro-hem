@@ -138,28 +138,28 @@ const PurchaseForm = ({
       
       {/* Order Summary */}
       <div className="mb-6">
-        <p className="font-medium mb-2">Sammanfattning</h5>
+        <p className="font-medium mb-2">Sammanfattning</p>
         {ticketCount > 0 && (
-          <div className="text-gray-700">
+          <p className="text-gray-700">
             Ordinarie biljetter: {ticketCount} × {ticketPrice}kr = {regularTotal}kr
-          </div>
+          </p>
         )}
         {discountTickets > 0 && (
-          <div className="text-gray-700">
+          <p className="text-gray-700">
             Rabatterade biljetter: {discountTickets} × {discountPrice}kr = {discountTotal}kr
-          </div>
+          </p>
         )}
         {discountAmount > 0 && (
-          <div className="text-green-600">
+          <p className="text-green-600">
             Rabatt ({discountCode}): -{discountAmount}kr
-          </div>
+          </p>
         )}
-        <div className="font-bold text-gray-800 text-base mt-2">
+        <p className="font-bold text-gray-800 text-base mt-2">
           Totalt: {finalTotal}kr
-        </div>
-        <div className="text-gray-600 text-sm mt-1">
+        </p>
+        <p className="text-gray-600 text-sm mt-1">
           Varav {vatAmount.toFixed(2)}kr moms
-        </div>
+        </p>
       </div>
       
       <div className="space-y-4 mb-6 max-w-md">
