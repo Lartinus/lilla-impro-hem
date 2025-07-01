@@ -58,8 +58,9 @@ const Index = () => {
             className="h-40 md:h-48 lg:h-56"
           />
         </div>
-        <div className="absolute bottom-[10rem] text-center text-white text-sm">
-        <p>Följ oss på @lillaimproteatern</p>
+        <div className="absolute bottom-[10rem] left-1/2 -translate-x-1/2 text-center text-white text-sm">
+          <p>Följ oss på @lillaimproteatern</p>
+        </div>
         </div>
       </section>
     </div>
