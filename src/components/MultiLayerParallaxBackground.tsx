@@ -80,7 +80,7 @@ const MultiLayerParallaxBackground = ({
           alt=""
           className="w-full h-full object-cover"
           style={{ 
-            opacity: 0.85,
+            opacity: 1,
             filter: 'brightness(0.7) contrast(1.1)',
           }}
           onLoad={() => console.log('Parallax image 1 loaded')}
@@ -102,7 +102,7 @@ const MultiLayerParallaxBackground = ({
           alt=""
           className="w-full h-full object-cover"
           style={{ 
-            opacity: 0.85,
+            opacity: 1,
             filter: 'brightness(0.8) sepia(0.1)',
           }}
           onLoad={() => console.log('Parallax image 2 loaded')}
@@ -124,7 +124,7 @@ const MultiLayerParallaxBackground = ({
           alt=""
           className="w-full h-full object-cover"
           style={{ 
-            opacity: 0.85,
+            opacity: 1,
             filter: 'brightness(0.9) saturate(0.8)',
           }}
           onLoad={() => console.log('Parallax image 3 loaded')}
@@ -146,7 +146,7 @@ const MultiLayerParallaxBackground = ({
           alt=""
           className="w-full h-full object-cover"
           style={{ 
-            opacity: 0.85,
+            opacity: 1,
             filter: 'brightness(1.1) contrast(0.9)',
           }}
           onLoad={() => console.log('Parallax image 4 loaded')}
@@ -164,6 +164,15 @@ const MultiLayerParallaxBackground = ({
             rgba(119, 36, 36, 0.1) 100%)`
         }} 
       />
+
+      {/* Logotyp längst ner, ovanpå bilderna men under den vita boxen */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-5">
+        <img
+          src="/uploads/LIT_WoB_large.png"
+          alt="Lilla Improteatern logotyp"
+          className="h-20 md:h-24"
+        />
+      </div>
     </div>
   );
 };
