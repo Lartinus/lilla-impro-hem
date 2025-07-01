@@ -23,7 +23,7 @@ const OptimizedImage = ({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  // Memoize the image URL calculation
+  // Memoize the image URL calculation and use original src for onLoad callback
   const optimizedSrc = useCallback(() => {
     if (!src) return null;
 
@@ -39,28 +39,27 @@ const OptimizedImage = ({
   const imageUrl = optimizedSrc();
 
   const handleLoad = useCallback(() => {
-    console.log('OptimizedImage: Image loaded successfully:', imageUrl);
+    console.log('OptimizedImage: Image loaded successfully, calling onLoad with original src:', src);
     setIsLoading(false);
-    if (onLoad && imageUrl) {
-      console.log('OptimizedImage: Calling onLoad with:', imageUrl);
-      onLoad(imageUrl);
+    // Always call onLoad with the original src to match imageUrls array
+    if (onLoad && src) {
+      onLoad(src);
     }
-  }, [onLoad, imageUrl]);
+  }, [onLoad, src]);
 
   const handleError = useCallback(() => {
-    console.log('OptimizedImage: Image failed to load:', imageUrl);
+    console.log('OptimizedImage: Image failed to load, calling onLoad with original src:', src);
     setHasError(true);
     setIsLoading(false);
-    // Still call onLoad even on error to not block the loading indicator
-    if (onLoad && imageUrl) {
-      console.log('OptimizedImage: Calling onLoad after error with:', imageUrl);
-      onLoad(imageUrl);
+    // Still call onLoad with original src even on error to not block the loading indicator
+    if (onLoad && src) {
+      onLoad(src);
     }
-  }, [onLoad, imageUrl]);
+  }, [onLoad, src]);
 
   // If no valid image URL, call onLoad immediately with original src to not block loading
   if (!imageUrl && onLoad && src) {
-    console.log('OptimizedImage: No valid image URL, calling onLoad immediately for:', src);
+    console.log('OptimizedImage: No valid image URL, calling onLoad immediately for original src:', src);
     onLoad(src);
   }
 

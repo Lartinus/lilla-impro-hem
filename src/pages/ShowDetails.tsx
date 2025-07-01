@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import ShowDetailsHeader from '@/components/ShowDetailsHeader';
 import ShowInfo from '@/components/ShowInfo';
@@ -32,17 +31,19 @@ const ShowDetails = () => {
   const show = allShows.find(s => s.slug === slug);
   const otherShows = allShows.filter(s => s.slug !== slug);
 
-  // Extract image URLs for loading tracking with better stability
+  // Extract image URLs for loading tracking with much better stability
   const imageUrls = useMemo(() => {
+    if (!show) return [];
+    
     const urls: string[] = [];
     
     // Add main show image
-    if (show?.image && typeof show.image === 'string' && show.image.trim()) {
+    if (show.image && typeof show.image === 'string' && show.image.trim()) {
       urls.push(show.image);
     }
     
-    // Add performer images
-    if (show?.performers) {
+    // Add performer images - use stable iteration
+    if (show.performers && Array.isArray(show.performers)) {
       show.performers.forEach(performer => {
         if (performer.image && 
             typeof performer.image === 'string' && 
@@ -54,7 +55,7 @@ const ShowDetails = () => {
       });
     }
     
-    // Add other shows images
+    // Add other shows images - use stable iteration
     otherShows.forEach(otherShow => {
       if (otherShow.image && 
           typeof otherShow.image === 'string' && 
@@ -65,9 +66,14 @@ const ShowDetails = () => {
     
     // Remove duplicates and sort for stability
     const uniqueUrls = Array.from(new Set(urls)).sort();
-    console.log('ShowDetails image URLs:', uniqueUrls);
+    console.log('ShowDetails image URLs (stable):', uniqueUrls);
     return uniqueUrls;
-  }, [show?.image, show?.performers, otherShows]);
+  }, [
+    show?.id, 
+    show?.image, 
+    show?.performers?.map(p => `${p.id}-${p.image}`).join(','),
+    otherShows.map(s => `${s.id}-${s.image}`).join(',')
+  ]);
 
   const { handleImageLoad, allImagesLoaded } = useImageLoader(imageUrls);
   const showLoadingOverlay = isLoading || (!allImagesLoaded && imageUrls.length > 0);

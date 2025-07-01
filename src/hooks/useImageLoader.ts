@@ -36,12 +36,13 @@ export const useImageLoader = (imageUrls: string[]) => {
     setAllImagesLoaded(allLoaded);
   }, [loadedImages, imageUrls]);
 
-  // Reset loaded images when imageUrls change completely
+  // Reset loaded images when imageUrls change significantly
   useEffect(() => {
-    console.log('useImageLoader: Resetting loaded images due to URL change');
+    const urlsString = imageUrls.sort().join(',');
+    console.log('useImageLoader: URL change detected, resetting loaded images. New URLs:', urlsString);
     setLoadedImages(new Set());
-    setAllImagesLoaded(false);
-  }, [imageUrls.join(',')]);
+    setAllImagesLoaded(imageUrls.length === 0);
+  }, [imageUrls.sort().join(',')]);
 
   return {
     handleImageLoad,
