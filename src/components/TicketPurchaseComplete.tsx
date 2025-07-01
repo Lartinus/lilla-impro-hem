@@ -46,6 +46,9 @@ const TicketPurchaseComplete = ({
 
   const handleTicketPurchase = async (data: { regularTickets: number; discountTickets: number; discountCode: string }) => {
     try {
+      // Clear any existing booking first
+      clearBooking();
+      
       // Create booking for the selected tickets
       await createBooking(showSlug, data.regularTickets, data.discountTickets);
       
@@ -63,8 +66,15 @@ const TicketPurchaseComplete = ({
   };
 
   const handleBackToTickets = () => {
+    // Clear the booking to release the tickets
     clearBooking();
     setCurrentStep('purchase');
+    // Reset ticket data to allow new booking
+    setTicketData({
+      regularTickets: 0,
+      discountTickets: 0,
+      discountCode: ''
+    });
   };
 
   const handleBackToForm = () => {
@@ -74,6 +84,12 @@ const TicketPurchaseComplete = ({
   const handleBookingExpired = () => {
     alert('Din reservation har gått ut. Vänligen välj biljetter igen.');
     setCurrentStep('purchase');
+    // Reset ticket data when booking expires
+    setTicketData({
+      regularTickets: 0,
+      discountTickets: 0,
+      discountCode: ''
+    });
   };
 
   if (currentStep === 'checkout') {

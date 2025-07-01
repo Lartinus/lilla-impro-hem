@@ -27,7 +27,7 @@ const TicketCountdown = ({ timeLeft, onExpired }: TicketCountdownProps) => {
   const isUrgent = timeLeft <= 120; // Last 2 minutes
 
   return (
-    <div className={`p-3 rounded-none border-2 text-center ${
+    <div className={`p-3 rounded-none border-2 text-left max-w-sm mb-4 ${
       isUrgent ? 'border-red-600 bg-red-50' : 'border-blue-600 bg-blue-50'
     }`}>
       <div className="flex flex-col">
