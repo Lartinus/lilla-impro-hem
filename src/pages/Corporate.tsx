@@ -67,7 +67,7 @@ const Corporate = () => {
             <h2>Workshops & Events för er organisation</h2>
             <p className="font-bold text-sm">
               Utveckla kreativitet, samarbete och kommunikation genom improvisationsteater.
-            </h5>
+            </p>
             <p>
               Improvisationsteater är ett kraftfullt verktyg för teambuilding, kreativ problemlösning och 
               kommunikationsutveckling. Våra skräddarsydda workshops hjälper era medarbetare att utveckla 
