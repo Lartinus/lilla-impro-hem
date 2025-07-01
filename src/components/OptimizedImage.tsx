@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getStrapiImageUrl } from '@/utils/strapiHelpers';
@@ -8,6 +9,7 @@ interface OptimizedImageProps {
   className?: string;
   fallbackText?: string;
   preferredSize?: 'small' | 'medium' | 'large';
+  onLoad?: (src: string) => void;
 }
 
 const OptimizedImage = ({ 
@@ -15,7 +17,8 @@ const OptimizedImage = ({
   alt, 
   className = "", 
   fallbackText = "Ingen bild",
-  preferredSize = 'small'
+  preferredSize = 'small',
+  onLoad
 }: OptimizedImageProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -37,12 +40,18 @@ const OptimizedImage = ({
 
   const handleLoad = useCallback(() => {
     setIsLoading(false);
-  }, []);
+    if (onLoad && imageUrl) {
+      onLoad(imageUrl);
+    }
+  }, [onLoad, imageUrl]);
 
   const handleError = useCallback(() => {
     setHasError(true);
     setIsLoading(false);
-  }, []);
+    if (onLoad && imageUrl) {
+      onLoad(imageUrl); // Still call onLoad even on error to not block the loading indicator
+    }
+  }, [onLoad, imageUrl]);
 
   if (!imageUrl || hasError) {
     return (

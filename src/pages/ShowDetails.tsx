@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import ShowDetailsHeader from '@/components/ShowDetailsHeader';
 import ShowInfo from '@/components/ShowInfo';
@@ -7,10 +6,12 @@ import PurchaseForm from '@/components/PurchaseForm';
 import PerformersSection from '@/components/PerformersSection';
 import OtherShowsSection from '@/components/OtherShowsSection';
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useOptimizedShows } from '@/hooks/useOptimizedStrapi';
 import { formatStrapiShow } from '@/utils/strapiHelpers';
 import { Loader } from 'lucide-react';
+import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
+import { useImageLoader } from '@/hooks/useImageLoader';
 
 const ShowDetails = () => {
   const { slug } = useParams();
@@ -29,13 +30,24 @@ const ShowDetails = () => {
   const show = allShows.find(s => s.slug === slug);
   const otherShows = allShows.filter(s => s.slug !== slug);
 
+  // Extract image URLs for loading tracking
+  const imageUrls = useMemo(() => {
+    const urls: string[] = [];
+    if (show?.image) urls.push(show.image);
+    otherShows.forEach(otherShow => {
+      if (otherShow.image) urls.push(otherShow.image);
+    });
+    return urls;
+  }, [show, otherShows]);
+
+  const { handleImageLoad, allImagesLoaded } = useImageLoader(imageUrls);
+  const showLoadingOverlay = isLoading || (!allImagesLoaded && imageUrls.length > 0);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
         <Header />
-        <div className="pt-32 text-center flex-1 flex items-center justify-center">
-          <Loader className="w-8 h-8 animate-spin text-white" />
-        </div>
+        <SubtleLoadingOverlay isVisible={true} />
       </div>
     );
   }
@@ -84,6 +96,7 @@ const ShowDetails = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
       <Header />
+      <SubtleLoadingOverlay isVisible={showLoadingOverlay} />
       
       <ShowDetailsHeader showsUrl="/shows" />
 
@@ -137,7 +150,7 @@ const ShowDetails = () => {
             )}
           </div>
           
-          <OtherShowsSection shows={otherShows} />
+          <OtherShowsSection shows={otherShows} onImageLoad={handleImageLoad} />
         </div>
       </section>
     </div>

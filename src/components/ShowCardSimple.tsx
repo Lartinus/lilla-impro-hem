@@ -16,10 +16,12 @@ interface SimpleShow {
 
 interface ShowCardSimpleProps {
   show: SimpleShow;
+  onImageLoad?: (src: string) => void;
 }
 
 const ShowCardSimple = ({
-  show
+  show,
+  onImageLoad
 }: ShowCardSimpleProps) => {
   const formatDateTime = (dateString: string) => {
     try {
@@ -46,7 +48,8 @@ const ShowCardSimple = ({
             src={show.image} 
             alt={show.title} 
             className="w-full h-48 md:h-56 object-cover" 
-            preferredSize="medium" 
+            preferredSize="medium"
+            onLoad={onImageLoad}
           />
         )}
 

@@ -7,6 +7,8 @@ import { formatStrapiShowSimple, sortShows } from '@/utils/strapiHelpers';
 import { useEffect, useMemo, useState } from 'react';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
 import { useToast } from '@/hooks/use-toast';
+import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
+import { useImageLoader } from '@/hooks/useImageLoader';
 
 const Shows = () => {
   const [retryCount, setRetryCount] = useState(0);
@@ -54,19 +56,21 @@ const Shows = () => {
     }
   }, [data]);
 
+  // Extract image URLs for loading tracking
+  const imageUrls = useMemo(() => {
+    return shows.map(show => show.image).filter(Boolean) as string[];
+  }, [shows]);
+
+  const { handleImageLoad, allImagesLoaded } = useImageLoader(imageUrls);
+  const showLoadingOverlay = isLoading || (!allImagesLoaded && shows.length > 0);
+
   console.log('Formatted shows:', shows);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
         <Header />
-        <section className="py-8 px-0.5 md:px-4 pb-8 mt-20 flex-1">
-          <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
-            {[...Array(4)].map((_, index) => (
-              <ShowCardSkeleton key={index} />
-            ))}
-          </div>
-        </section>
+        <SubtleLoadingOverlay isVisible={true} />
       </div>
     );
   }
@@ -101,6 +105,7 @@ const Shows = () => {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
       <Header />
       <SimpleParallaxHero imageSrc="/uploads/images/shows_2024.jpg" />
+      <SubtleLoadingOverlay isVisible={showLoadingOverlay} />
       <section className="py-8 px-0.5 md:px-4 pb-8 mt-0 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
         <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
           {shows.length > 0 ? (
@@ -108,6 +113,7 @@ const Shows = () => {
               <ShowCardSimple 
                 key={show.id || index} 
                 show={show}
+                onImageLoad={handleImageLoad}
               />
             ))
           ) : (

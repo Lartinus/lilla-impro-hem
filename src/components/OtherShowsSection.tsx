@@ -13,9 +13,10 @@ interface Show {
 
 interface OtherShowsSectionProps {
   shows: Show[];
+  onImageLoad?: (src: string) => void;
 }
 
-const OtherShowsSection = ({ shows }: OtherShowsSectionProps) => {
+const OtherShowsSection = ({ shows, onImageLoad }: OtherShowsSectionProps) => {
   const formatDateTime = (dateString: string) => {
     try {
       const dateObj = new Date(dateString);
@@ -45,6 +46,7 @@ const OtherShowsSection = ({ shows }: OtherShowsSectionProps) => {
                   src={show.image} 
                   alt={show.title}
                   className="w-full h-full object-cover"
+                  onLoad={() => onImageLoad?.(show.image)}
                 />
               </div>
               <div className="flex-1 p-6 flex flex-col">
