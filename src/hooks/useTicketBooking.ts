@@ -29,8 +29,13 @@ export const useTicketBooking = () => {
   ) => {
     try {
       const sessionId = getSessionId();
+      const totalRequested = regularTickets + discountTickets;
       
-      console.log('Creating booking with session ID:', sessionId);
+      console.log('🎫 Creating booking with session ID:', sessionId);
+      console.log(`  - Show: ${showSlug}`);
+      console.log(`  - Regular tickets: ${regularTickets}`);
+      console.log(`  - Discount tickets: ${discountTickets}`);
+      console.log(`  - Total tickets: ${totalRequested}`);
       
       const { data, error } = await supabase.rpc('create_ticket_booking', {
         show_slug_param: showSlug,
@@ -40,7 +45,7 @@ export const useTicketBooking = () => {
       });
 
       if (error) {
-        console.error('Error creating booking:', error);
+        console.error('❌ Error creating booking:', error);
         throw error;
       }
 
@@ -52,14 +57,14 @@ export const useTicketBooking = () => {
           sessionId: sessionId
         };
         
-        console.log('Booking created successfully:', newBooking);
+        console.log('✅ Booking created successfully:', newBooking);
         setBooking(newBooking);
         sessionStorage.setItem('current-booking', JSON.stringify(newBooking));
         
         return newBooking;
       }
     } catch (error) {
-      console.error('Failed to create booking:', error);
+      console.error('❌ Failed to create booking:', error);
       throw error;
     }
   };

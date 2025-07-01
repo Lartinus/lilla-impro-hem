@@ -44,9 +44,27 @@ const TicketPurchaseComplete = ({
   const { data: availableTickets = totalTickets } = useAvailableTickets(showSlug, totalTickets);
   const { booking, timeLeft, createBooking, clearBooking, hasActiveBooking } = useTicketBooking();
 
+  // Add detailed logging for debugging
+  console.log(`🎭 TicketPurchaseComplete for ${showSlug}:`);
+  console.log(`  - totalTickets (prop): ${totalTickets}`);
+  console.log(`  - availableTickets (computed): ${availableTickets}`);
+  console.log(`  - hasActiveBooking: ${hasActiveBooking}`);
+
   const handleTicketPurchase = async (data: { regularTickets: number; discountTickets: number; discountCode: string }) => {
     try {
-      console.log('Starting ticket purchase process...');
+      console.log('🎫 Starting ticket purchase process...');
+      console.log(`  - Regular tickets: ${data.regularTickets}`);
+      console.log(`  - Discount tickets: ${data.discountTickets}`);
+      console.log(`  - Total requested: ${data.regularTickets + data.discountTickets}`);
+      console.log(`  - Available tickets: ${availableTickets}`);
+      
+      // Check if enough tickets are available
+      const totalRequested = data.regularTickets + data.discountTickets;
+      if (totalRequested > availableTickets) {
+        console.error(`❌ Not enough tickets available. Requested: ${totalRequested}, Available: ${availableTickets}`);
+        alert(`Endast ${availableTickets} biljetter tillgängliga. Du försöker köpa ${totalRequested} biljetter.`);
+        return;
+      }
       
       // Create booking for the selected tickets
       await createBooking(showSlug, data.regularTickets, data.discountTickets);
@@ -54,7 +72,7 @@ const TicketPurchaseComplete = ({
       setTicketData(data);
       setCurrentStep('form');
     } catch (error) {
-      console.error('Failed to book tickets:', error);
+      console.error('❌ Failed to book tickets:', error);
       alert('Kunde inte reservera biljetterna. Försök igen.');
     }
   };

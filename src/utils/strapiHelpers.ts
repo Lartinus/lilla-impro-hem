@@ -1,4 +1,3 @@
-
 // strapiHelpers.ts
 
 export type Size = 'small' | 'medium' | 'large';
@@ -110,6 +109,10 @@ export const formatStrapiShow = (show: any) => {
     .map(line => line.replace(/^[-#]\s*/, '').trim())
     .filter(Boolean);
 
+  // Improved available tickets handling with better logging
+  const availableTickets = attrs.available_tickets ?? 50;
+  console.log(`📊 Show "${attrs.titel}": available_tickets from Strapi = ${attrs.available_tickets}, using = ${availableTickets}`);
+
   return {
     id: show.id,
     title: attrs.titel ?? attrs.title,
@@ -125,7 +128,7 @@ export const formatStrapiShow = (show: any) => {
     performers,
     ticketPrice: attrs.ticket_price ?? 150,
     discountPrice: attrs.discount_price ?? 120,
-    availableTickets: attrs.available_tickets ?? 50,
+    availableTickets,
   };
 };
 
