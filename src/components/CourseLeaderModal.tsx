@@ -38,9 +38,9 @@ const CourseLeaderModal = ({ leader, isOpen, onClose }: CourseLeaderModalProps) 
             />
           </div>
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-theatre-primary mb-4">
+            <p className="text-xl font-bold text-theatre-primary mb-4">
               {leader.name}
-            </h3>
+            </p>
             <p className="text-gray-700 leading-relaxed">
               {leader.bio}
             </p>
