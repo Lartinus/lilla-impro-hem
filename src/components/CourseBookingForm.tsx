@@ -55,7 +55,6 @@ const CourseBookingForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  // Check if this is a House Teams or fortsättning course
   const isHouseTeamsOrContinuation = courseTitle.includes("House teams") || courseTitle.includes("fortsättning");
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -82,13 +81,8 @@ const CourseBookingForm = ({
 
   const handleSubmit = async (values: z.infer<typeof formSchema> | z.infer<typeof houseTeamsSchema>) => {
     setIsSubmitting(true);
-    
     try {
-      // Ensure the course instance exists and get the table name
       const courseInstance = await ensureCourseTableExists(courseTitle);
-      console.log('Course instance:', courseInstance);
-      
-      // Use the RPC function to insert the booking
       const { error } = await supabase.rpc('insert_course_booking', {
         table_name: courseInstance.table_name,
         booking_name: values.name,
@@ -99,30 +93,12 @@ const CourseBookingForm = ({
         booking_city: 'city' in values ? values.city || '' : '',
         booking_message: 'message' in values ? values.message || '' : ''
       });
-
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
-      }
-
-      toast({
-        title: "Anmälan skickad!",
-        description: "Vi återkommer till dig så snart som möjligt.",
-      });
-
-      if (isHouseTeamsOrContinuation) {
-        houseTeamsForm.reset();
-      } else {
-        form.reset();
-      }
+      if (error) throw error;
+      toast({ title: "Anmälan skickad!", description: "Vi återkommer till dig så snart som möjligt." });
+      (isHouseTeamsOrContinuation ? houseTeamsForm : form).reset();
       setOpen(false);
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      toast({
-        title: "Något gick fel",
-        description: "Försök igen eller kontakta oss direkt.",
-        variant: "destructive",
-      });
+    } catch {
+      toast({ title: "Något gick fel", description: "Försök igen eller kontakta oss direkt.", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
@@ -133,13 +109,13 @@ const CourseBookingForm = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={buttonVariant} className="w-full">
+        <Button variant={buttonVariant} className="w-full rounded-none">
           {isHouseTeamsOrContinuation ? buttonText : 'Boka din plats'}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] rounded-none">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="rounded-none">
             {isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : `Anmäl dig till ${courseTitle}`}
           </DialogTitle>
         </DialogHeader>
@@ -208,12 +184,7 @@ const CourseBookingForm = ({
               />
 
               <div className="flex space-x-2 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                  className="flex-1 rounded-none"
-                >
+                <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1 rounded-none">
                   Avbryt
                 </Button>
                 <Button type="submit" disabled={isSubmitting} className="flex-1 rounded-none">
@@ -285,7 +256,7 @@ const CourseBookingForm = ({
                 <FormField
                   control={form.control}
                   name="postalCode"
-                  render(({ field }) => (
+                  render={({ field }) => (
                     <FormItem>
                       <FormLabel>Postnummer *</FormLabel>
                       <FormControl>
@@ -293,7 +264,7 @@ const CourseBookingForm = ({
                       </FormControl>
                       <FormMessage />
                     </FormItem>
-                  ))
+                  )}
                 />
 
                 <FormField
@@ -328,12 +299,7 @@ const CourseBookingForm = ({
               )}
 
               <div className="flex space-x-2 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick(() => setOpen(false)}
-                  className="flex-1 rounded-none"
-                >
+                <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1 rounded-none">
                   Avbryt
                 </Button>
                 <Button type="submit" disabled={isSubmitting} className="flex-1 rounded-none">
