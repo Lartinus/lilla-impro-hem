@@ -30,6 +30,8 @@ export const useTicketBooking = () => {
     try {
       const sessionId = getSessionId();
       
+      console.log('Creating booking with session ID:', sessionId);
+      
       const { data, error } = await supabase.rpc('create_ticket_booking', {
         show_slug_param: showSlug,
         regular_tickets_param: regularTickets,
@@ -50,6 +52,7 @@ export const useTicketBooking = () => {
           sessionId: sessionId
         };
         
+        console.log('Booking created successfully:', newBooking);
         setBooking(newBooking);
         sessionStorage.setItem('current-booking', JSON.stringify(newBooking));
         
@@ -61,10 +64,35 @@ export const useTicketBooking = () => {
     }
   };
 
-  const clearBooking = () => {
-    setBooking(null);
-    setTimeLeft(0);
-    sessionStorage.removeItem('current-booking');
+  const clearBooking = async () => {
+    try {
+      const sessionId = getSessionId();
+      console.log('Clearing booking for session ID:', sessionId);
+      
+      // Remove booking from database
+      const { error } = await supabase
+        .from('ticket_bookings')
+        .delete()
+        .eq('session_id', sessionId);
+      
+      if (error) {
+        console.error('Error clearing booking from database:', error);
+        // Continue with local cleanup even if database cleanup fails
+      }
+      
+      // Clear local state
+      setBooking(null);
+      setTimeLeft(0);
+      sessionStorage.removeItem('current-booking');
+      
+      console.log('Booking cleared successfully');
+    } catch (error) {
+      console.error('Failed to clear booking:', error);
+      // Still clear local state even if database cleanup fails
+      setBooking(null);
+      setTimeLeft(0);
+      sessionStorage.removeItem('current-booking');
+    }
   };
 
   // Calculate time left in seconds
@@ -104,7 +132,9 @@ export const useTicketBooking = () => {
         
         if (expires > now) {
           setBooking(parsed);
+          console.log('Restored existing booking:', parsed);
         } else {
+          console.log('Saved booking has expired, clearing...');
           sessionStorage.removeItem('current-booking');
         }
       } catch (error) {
