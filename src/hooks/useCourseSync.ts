@@ -1,9 +1,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 
 export const useCourseSync = () => {
-  const { toast } = useToast();
 
   const syncCourses = async () => {
     try {
@@ -18,20 +16,13 @@ export const useCourseSync = () => {
       
       console.log('Course sync result:', data);
       
-      toast({
-        title: "Kurser synkroniserade",
-        description: "Alla kurser från Strapi har synkroniserats och kurstabeller har skapats.",
-      });
+      // Removed toast notification - sync should be silent
       
       return data;
     } catch (error) {
-      console.error('Failed to sync courses:', error);
+      console.error('Failed to sync courses (silent):', error);
       
-      toast({
-        title: "Synkroniseringsfel",
-        description: "Det gick inte att synkronisera kurserna. Försök igen senare.",
-        variant: "destructive",
-      });
+      // Removed toast notification - errors should also be silent for background sync
       
       throw error;
     }
