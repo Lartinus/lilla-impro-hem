@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,7 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { generateTableName } from '@/utils/courseTableUtils';
+import { ensureCourseTableExists } from '@/utils/courseTableUtils';
 
 interface CourseBookingFormProps {
   courseTitle: string;
@@ -86,20 +87,21 @@ const CourseBookingForm = ({
     setIsSubmitting(true);
     
     try {
-      const tableName = generateTableName(courseTitle);
-      console.log('Submitting to table:', tableName);
+      // Ensure the course instance exists and get the table name
+      const courseInstance = await ensureCourseTableExists(courseTitle);
+      console.log('Course instance:', courseInstance);
       
-      const { error } = await supabase
-        .from(tableName)
-        .insert([{
-          name: values.name,
-          email: values.email,
-          phone: values.phone,
-          address: 'address' in values ? values.address || '' : '',
-          postal_code: 'postalCode' in values ? values.postalCode || '' : '',
-          city: 'city' in values ? values.city || '' : '',
-          message: values.message || ''
-        }]);
+      // Use the RPC function to insert the booking
+      const { error } = await supabase.rpc('insert_course_booking', {
+        table_name: courseInstance.table_name,
+        booking_name: values.name,
+        booking_phone: values.phone,
+        booking_email: values.email,
+        booking_address: 'address' in values ? values.address || '' : '',
+        booking_postal_code: 'postalCode' in values ? values.postalCode || '' : '',
+        booking_city: 'city' in values ? values.city || '' : '',
+        booking_message: values.message || ''
+      });
 
       if (error) {
         console.error('Supabase error:', error);
