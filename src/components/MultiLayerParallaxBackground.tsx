@@ -164,15 +164,6 @@ const MultiLayerParallaxBackground = ({
             rgba(119, 36, 36, 0.1) 100%)`
         }} 
       />
-
-      {/* Logotyp längst ner, ovanpå bilderna men under den vita boxen */}
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-5">
-        <img
-          src="/uploads/LIT_WoB_large.png"
-          alt="Lilla Improteatern logotyp"
-          className="h-32 md:h-40 lg:h-48"
-        />
-      </div>
     </div>
   );
 };

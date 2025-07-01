@@ -12,13 +12,13 @@ const Index = () => {
   const enableParallaxBackground = true;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-secondary to-theatre-tertiary relative">
+    <div className="h-[200vh] bg-gradient-to-br from-theatre-secondary to-theatre-tertiary relative">
       {/* Parallax bakgrund - lägg till/ta bort enkelt */}
       <MultiLayerParallaxBackground enabled={enableParallaxBackground} />
       
       <Header />
 
-      <section className="min-h-screen flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
+      <section className="h-[200vh] flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
         <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
 
           <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto relative z-10">
@@ -48,6 +48,15 @@ const Index = () => {
               </a>
             </div>
           </div>
+        </div>
+
+        {/* Logotyp längst ner på sidan */}
+        <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-5">
+          <img
+            src="/uploads/LIT_WoB_large.png"
+            alt="Lilla Improteatern logotyp"
+            className="h-40 md:h-48 lg:h-56"
+          />
         </div>
       </section>
     </div>
