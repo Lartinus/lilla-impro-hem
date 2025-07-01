@@ -3,6 +3,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
 import OptimizedImage from './OptimizedImage';
+import SoldOut from './SoldOut';
+import { useAvailableTickets } from '@/hooks/useTicketSync';
 
 interface SimpleShow {
   id: number;
@@ -12,6 +14,7 @@ interface SimpleShow {
   location: string;
   slug: string;
   image?: string | null;
+  availableTickets?: number;
 }
 
 interface ShowCardSimpleProps {
@@ -23,6 +26,8 @@ const ShowCardSimple = ({
   show,
   onImageLoad
 }: ShowCardSimpleProps) => {
+  const { data: availableTickets = show.availableTickets || 100 } = useAvailableTickets(show.slug, show.availableTickets || 100);
+
   const formatDateTime = (dateString: string) => {
     try {
       const dateObj = new Date(dateString);
@@ -38,6 +43,8 @@ const ShowCardSimple = ({
       return dateString;
     }
   };
+
+  const isSoldOut = availableTickets <= 0;
 
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none overflow-hidden">
@@ -67,13 +74,17 @@ const ShowCardSimple = ({
               {show.location}
             </p>
           </div>
-          
-          <Link 
-            to={`/shows/${show.slug}`} 
-            className="inline-flex items-center text-accent-color-text hover:text-accent-color-hover font-medium transition-colors text-sm"
-          >
-            Läs mer →
-          </Link>
+
+          {isSoldOut ? (
+            <SoldOut />
+          ) : (
+            <Link 
+              to={`/shows/${show.slug}`} 
+              className="inline-flex items-center text-accent-color-text hover:text-accent-color-hover font-medium transition-colors text-sm"
+            >
+              Läs mer →
+            </Link>
+          )}
         </div>
       </CardContent>
     </Card>
