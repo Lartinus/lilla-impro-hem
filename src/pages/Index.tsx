@@ -1,20 +1,27 @@
 
 import Header from '@/components/Header';
 import ServiceBoxes from '@/components/ServiceBoxes';
+import MultiLayerParallaxBackground from '@/components/MultiLayerParallaxBackground';
 import { useOptimizedPrefetch } from '@/hooks/useOptimizedPrefetch';
 
 const Index = () => {
   // Use optimized prefetch for better performance
   useOptimizedPrefetch();
 
+  // Enkelt sätt att stänga av parallax-bakgrunden
+  const enableParallaxBackground = true;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-theatre-secondary to-theatre-tertiary">
+    <div className="min-h-screen bg-gradient-to-br from-theatre-secondary to-theatre-tertiary relative">
+      {/* Parallax bakgrund - lägg till/ta bort enkelt */}
+      <MultiLayerParallaxBackground enabled={enableParallaxBackground} />
+      
       <Header />
 
       <section className="min-h-screen flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
         <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
 
-          <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto">
+          <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto relative z-10">
             
             <div className="mx-3 md:mx-0 md:max-w-6xl lg:max-w-7xl pb-1">
               <h1 className="mt-[10px] mb-[25px] md:mb-[30px]">
