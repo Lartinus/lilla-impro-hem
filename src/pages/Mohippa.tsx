@@ -57,7 +57,7 @@ export default function Mohippa() {
               och skapar något som passar just er.
             </p>
 
-            <h3>Vad kan ni boka?</h3>
+            <p className="font-bold">Vad kan ni boka?</p>
             <ul className="space-y-2">
               {[
                 ["Improshow", "En specialutformad improföreställning där vi inkluderar detaljer om t.ex. födelsedagsbarnet eller brudparet"],
@@ -76,7 +76,7 @@ export default function Mohippa() {
 
           {/* Exempel på tillfällen */}
           <div className="space-y-4">
-            <h3>Exempel på tillfällen vi passar för</h3>
+            <p className="font-bold">Exempel på tillfällen vi passar för</p>
             <ul className="space-y-2">
               {[
                 "Möhippor & svensexor",
@@ -94,7 +94,7 @@ export default function Mohippa() {
 
           {/* Kontaktformulär */}
           <div className="pt-6 border-t border-gray-200">
-            <h3 className="mb-4">Hör av dig</h3>
+            <p className="mb-4 font-bold">Hör av dig</p>
             <PrivateInquiryForm />
           </div>
         </div>
