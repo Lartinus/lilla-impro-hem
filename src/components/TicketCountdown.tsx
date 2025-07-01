@@ -1,6 +1,5 @@
 
 import { useEffect, useState } from 'react';
-import { Clock } from 'lucide-react';
 
 interface TicketCountdownProps {
   timeLeft: number;
@@ -28,15 +27,14 @@ const TicketCountdown = ({ timeLeft, onExpired }: TicketCountdownProps) => {
   const isUrgent = timeLeft <= 120; // Last 2 minutes
 
   return (
-    <div className={`flex items-center space-x-2 p-3 rounded-none border-2 ${
-      isUrgent ? 'border-red-600 bg-red-50' : 'border-orange-500 bg-orange-50'
+    <div className={`p-3 rounded-none border-2 text-center ${
+      isUrgent ? 'border-red-600 bg-red-50' : 'border-blue-600 bg-blue-50'
     }`}>
-      <Clock size={20} className={isUrgent ? 'text-red-600' : 'text-orange-600'} />
       <div className="flex flex-col">
-        <span className={`font-semibold ${isUrgent ? 'text-red-800' : 'text-orange-800'}`}>
+        <span className={`font-semibold ${isUrgent ? 'text-red-800' : 'text-blue-800'}`}>
           Dina biljetter är reserverade
         </span>
-        <span className={`text-sm ${isUrgent ? 'text-red-600' : 'text-orange-600'}`}>
+        <span className={`text-sm ${isUrgent ? 'text-red-600' : 'text-blue-600'}`}>
           Tid kvar: {minutes}:{seconds.toString().padStart(2, '0')} minuter
         </span>
       </div>
