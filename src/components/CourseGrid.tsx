@@ -1,4 +1,3 @@
-
 import CourseCard from '@/components/CourseCard';
 
 interface CourseGridProps {
@@ -68,7 +67,7 @@ const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
       </div>
       
       {/* Last row with adaptive layout for desktop */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Last regular course */}
         <CourseCard 
           key={lastRegularCourse.id || 'last-regular'} 
@@ -76,14 +75,16 @@ const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
           practicalInfo={practicalInfo}
         />
         
-        {/* Fixed info courses */}
-        {fixedInfoCourses.map((course, index) => (
-          <CourseCard 
-            key={course.id || `fixed-${index}`} 
-            course={course}
-            practicalInfo={practicalInfo}
-          />
-        ))}
+        {/* Fixed info courses stacked vertically */}
+        <div className="flex flex-col gap-6">
+          {fixedInfoCourses.map((course, index) => (
+            <CourseCard 
+              key={course.id || `fixed-${index}`} 
+              course={course}
+              practicalInfo={practicalInfo}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
