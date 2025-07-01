@@ -54,7 +54,7 @@ const MultiLayerParallaxBackground = ({
 
   return (
     <div 
-      className="fixed inset-0 w-full h-full overflow-hidden pointer-events-none"
+      className="fixed inset-0 w-full h-[200vh] overflow-hidden pointer-events-none"
       style={{ zIndex: 0 }}
       aria-hidden="true"
     >
@@ -166,11 +166,11 @@ const MultiLayerParallaxBackground = ({
       />
 
       {/* Logotyp längst ner, ovanpå bilderna men under den vita boxen */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-5">
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-5">
         <img
           src="/uploads/LIT_WoB_large.png"
           alt="Lilla Improteatern logotyp"
-          className="h-24 md:h-50"
+          className="h-32 md:h-40 lg:h-48"
         />
       </div>
     </div>
