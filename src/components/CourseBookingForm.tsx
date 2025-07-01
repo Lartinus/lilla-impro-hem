@@ -313,11 +313,11 @@ const CourseBookingForm = ({
 
               <div className="text-muted-foreground space-y-1 pt-4" style={{ fontSize: '10px !important' }}>
                 <p className="text-sm">• Anmälan är bindande</p>
-                <p style={{ fontSize: '10px !important' }}>• Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
-                <p style={{ fontSize: '10px !important' }}>• Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter debiteras 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart debiteras hela avgiften</p>
-                <p style={{ fontSize: '10px !important' }}>• Vid utebliven närvaro sker ingen återbetalning</p>
-                <p style={{ fontSize: '10px !important' }}>• Bekräftelse på din plats skickas via mejl inom 5 arbetsdagar efter att anmälan har registrerats</p>
-                <p style={{ fontSize: '10px !important' }}>• För frågor eller särskilda önskemål, kontakta oss på kurs@improteatern.se</p>
+                <p className="text-sm">• Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
+                <p className="text-sm">• Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter debiteras 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart debiteras hela avgiften</p>
+                <p className="text-sm">• Vid utebliven närvaro sker ingen återbetalning</p>
+                <p className="text-sm">• Bekräftelse på din plats skickas via mejl inom 5 arbetsdagar efter att anmälan har registrerats</p>
+                <p className="text-sm">• För frågor eller särskilda önskemål, kontakta oss på kurs@improteatern.se</p>
               </div>
 
               {maxParticipants && (
