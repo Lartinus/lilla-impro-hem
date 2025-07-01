@@ -19,9 +19,9 @@ const Index = () => {
               </h1>
               <div className="border-t border-gray-400 pt-[25px] md:pt-[10px] w-full lg:w-[90%] lg:mx-auto">
                 <p className="text-base md:text-lg md:my-8">
-                  Vi tror på att humor går att träna och att den blir allra bäst när vi skapar den tillsammans. 
-                  På vår teater får du utvecklas som improvisatör i inspirerande kursmiljöer 
-                  och ta del av roliga, smarta och lekfulla föreställningar.
+                  Improv Comedy är underhållningen som skapas i stunden och som aldrig sker igen. 
+                  Hos oss kan du lära dig hantverket med några av Sveriges bästa pedagoger, uppleva lekfulla föreställningar där allt kan hända eller boka workshops anpassade för både privatpersoner och företag. 
+                  Oavsett om du är nybörjare eller erfaren improvisatör är du välkommen till Lilla improteatern.
                 </p>
               </div>
             </div>
