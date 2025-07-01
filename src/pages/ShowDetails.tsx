@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import ShowDetailsHeader from '@/components/ShowDetailsHeader';
 import ShowInfo from '@/components/ShowInfo';
@@ -6,12 +7,11 @@ import PurchaseForm from '@/components/PurchaseForm';
 import PerformersSection from '@/components/PerformersSection';
 import OtherShowsSection from '@/components/OtherShowsSection';
 import { useParams } from 'react-router-dom';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useOptimizedShows } from '@/hooks/useOptimizedStrapi';
 import { formatStrapiShow } from '@/utils/strapiHelpers';
 import { Loader } from 'lucide-react';
 import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
-import { useImageLoader } from '@/hooks/useImageLoader';
 
 const ShowDetails = () => {
   const { slug } = useParams();
@@ -30,55 +30,6 @@ const ShowDetails = () => {
   const allShows = allShowsData?.data?.map(formatStrapiShow).filter(Boolean) || [];
   const show = allShows.find(s => s.slug === slug);
   const otherShows = allShows.filter(s => s.slug !== slug);
-
-  // Extract image URLs for loading tracking with much better stability
-  const imageUrls = useMemo(() => {
-    if (!show) return [];
-    
-    const urls: string[] = [];
-    
-    // Add main show image
-    if (show.image && typeof show.image === 'string' && show.image.trim()) {
-      urls.push(show.image);
-    }
-    
-    // Add performer images - use stable iteration
-    if (show.performers && Array.isArray(show.performers)) {
-      show.performers.forEach(performer => {
-        if (performer.image && 
-            typeof performer.image === 'string' && 
-            performer.image.trim() && 
-            performer.image !== 'null' && 
-            performer.image !== 'undefined') {
-          urls.push(performer.image);
-        }
-      });
-    }
-    
-    // Add other shows images - use stable iteration
-    otherShows.forEach(otherShow => {
-      if (otherShow.image && 
-          typeof otherShow.image === 'string' && 
-          otherShow.image.trim()) {
-        urls.push(otherShow.image);
-      }
-    });
-    
-    // Remove duplicates and sort for stability
-    const uniqueUrls = Array.from(new Set(urls)).sort();
-    console.log('ShowDetails image URLs (stable):', uniqueUrls);
-    return uniqueUrls;
-  }, [
-    show?.id, 
-    show?.image, 
-    show?.performers?.map(p => `${p.id}-${p.image}`).join(','),
-    otherShows.map(s => `${s.id}-${s.image}`).join(',')
-  ]);
-
-  const { handleImageLoad, allImagesLoaded } = useImageLoader(imageUrls);
-  const showLoadingOverlay = isLoading || (!allImagesLoaded && imageUrls.length > 0);
-
-  console.log('ShowDetails - Images loaded:', allImagesLoaded, 'Show loading overlay:', showLoadingOverlay);
 
   if (isLoading) {
     return (
@@ -133,7 +84,6 @@ const ShowDetails = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
       <Header />
-      <SubtleLoadingOverlay isVisible={showLoadingOverlay} />
       
       <ShowDetailsHeader showsUrl="/shows" />
 
@@ -183,14 +133,11 @@ const ShowDetails = () => {
             )}
             
             {show.performers && show.performers.length > 0 && (
-              <PerformersSection 
-                performers={show.performers} 
-                onImageLoad={handleImageLoad}
-              />
+              <PerformersSection performers={show.performers} />
             )}
           </div>
           
-          <OtherShowsSection shows={otherShows} onImageLoad={handleImageLoad} />
+          <OtherShowsSection shows={otherShows} />
         </div>
       </section>
     </div>

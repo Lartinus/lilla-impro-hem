@@ -12,13 +12,11 @@ export interface Performer {
 interface PerformersSectionProps {
   performers: Performer[];
   title?: string;
-  onImageLoad?: (src: string) => void;
 }
 
 const PerformersSection = ({
   performers,
-  title = 'Medverkande',
-  onImageLoad
+  title = 'Medverkande'
 }: PerformersSectionProps) => {
   if (!performers || performers.length === 0) return null;
 
@@ -44,7 +42,6 @@ const PerformersSection = ({
                     src={perf.image!}
                     alt={perf.name}
                     className="w-32 h-32 object-cover object-top flex-shrink-0"
-                    onLoad={onImageLoad}
                     preferredSize="small"
                     fallbackText="Ingen bild"
                   />
