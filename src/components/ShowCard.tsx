@@ -13,6 +13,9 @@ interface Show {
   description: string;
   performers: Performer[];
   practicalInfo: string[];
+  ticketPrice: number;
+  discountPrice: number;
+  availableTickets: number;
 }
 
 interface ShowCardProps {
@@ -90,7 +93,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
           {/* Ordinarie */}
           <div className="bg-surface-secondary p-4 rounded-none border border-color-primary mb-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-content-primary font-medium">Pris 175kr</span>
+              <span className="text-content-primary font-medium">Pris {show.ticketPrice}kr</span>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setTicketCount(Math.max(0, ticketCount - 1))}
@@ -120,7 +123,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
           {/* Rabatterade */}
           <div className="bg-surface-secondary p-4 rounded-none border border-color-primary mb-4">
             <div className="flex items-center justify-between">
-              <span className="text-content-primary font-medium">Student/pensionär 145kr</span>
+              <span className="text-content-primary font-medium">Student/pensionär {show.discountPrice}kr</span>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setDiscountTickets(Math.max(0, discountTickets - 1))}
