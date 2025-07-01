@@ -89,7 +89,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
 
         {/* Köp biljetter */}
         <div className="mt-auto px-1 md:px-0">
-          <p className="text-content-primary font-bold mb-4">Köp biljetter</p>
+          <p className="text-content-primary font-bold mb-2">Köp biljetter</p>
           {/* Ordinarie */}
           <div className="bg-surface-secondary p-4 rounded-none border border-color-primary mb-4">
             <div className="flex items-center justify-between mb-2">
