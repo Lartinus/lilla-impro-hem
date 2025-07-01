@@ -65,10 +65,10 @@ export default function CourseInfoSection() {
               Vi ser på improv comedy som ett hantverk. Genom ett tydligt pedagogiskt upplägg – förankrat i många års erfarenhet som både improvisatörer och pedagoger – erbjuder vi ett kurssystem som sträcker sig från grundläggande scenträning till långformsformat och ensemblearbete. Hos oss lär du dig att spela komiska scener med glädje, tydliga verktyg och ett fokus på samspelet.
             </p>
             <p>
-              Vi älskar att skratta. Men ännu mer älskar vi att förstå varför något är roligt – och hur man gör det tillsammans. Därför bygger vår undervisning på att steg för steg utveckla dina färdigheter som improvisatör. Inte genom att tvinga fram skämt, utan genom att spela scener som känns levande, enkla och roliga i stunden.
+              Vi älskar att skratta. Men ännu mer älskar vi att förstå varför något är roligt. Därför bygger vår undervisning på att steg för steg utveckla dina färdigheter som improvisatör. Inte genom att tvinga fram skämt, utan genom att spela scener som känns levande, enkla och roliga i stunden.
             </p>
             <p>
-              Vi tränar dig i att upptäcka det roliga och följa det i en trygg, tydlig och lekfull struktur där du får växa som improvisatör.
+              Vi tränar dig i att upptäcka det roliga och följa det i en lekfull struktur där du får växa som improvisatör.
             </p>
           </div>
         </div>
