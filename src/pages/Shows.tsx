@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import ShowCardSimple from '@/components/ShowCardSimple';
 import ShowCardSkeleton from '@/components/ShowCardSkeleton';
@@ -59,15 +58,22 @@ const Shows = () => {
   // Extract image URLs for loading tracking
   const imageUrls = useMemo(() => {
     const urls = shows.map(show => show.image).filter(Boolean) as string[];
-    console.log('Shows page image URLs:', urls);
+    console.log('Shows: Extracted image URLs:', urls);
     return urls;
   }, [shows]);
 
-  const { handleImageLoad, allImagesLoaded } = useImageLoader(imageUrls);
-  const showLoadingOverlay = isLoading || (!allImagesLoaded && shows.length > 0 && imageUrls.length > 0);
+  const { handleImageLoad, allImagesLoaded, loadedCount, totalCount } = useImageLoader(imageUrls);
+  
+  // Only show loading overlay if we're actually loading data OR if we have images that aren't loaded yet
+  const showLoadingOverlay = isLoading || (imageUrls.length > 0 && !allImagesLoaded);
 
-  console.log('Shows page - Images loaded:', allImagesLoaded, 'Show loading overlay:', showLoadingOverlay);
-  console.log('Formatted shows:', shows);
+  console.log('Shows: Loading state -', {
+    isLoading,
+    imagesLoaded: allImagesLoaded,
+    loadedCount,
+    totalCount,
+    showOverlay: showLoadingOverlay
+  });
 
   if (isLoading) {
     return (

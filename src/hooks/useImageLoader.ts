@@ -6,33 +6,42 @@ export const useImageLoader = (imageUrls: string[]) => {
   const [allImagesLoaded, setAllImagesLoaded] = useState(false);
 
   const handleImageLoad = useCallback((url: string) => {
-    console.log('Image loaded:', url);
+    console.log('useImageLoader: Image loaded:', url);
     setLoadedImages(prev => {
       const newSet = new Set(prev);
       newSet.add(url);
+      console.log('useImageLoader: Updated loaded images:', Array.from(newSet));
       return newSet;
     });
   }, []);
 
   useEffect(() => {
-    console.log('Image URLs changed:', imageUrls);
-    console.log('Loaded images:', Array.from(loadedImages));
+    console.log('useImageLoader: Image URLs changed:', imageUrls);
+    console.log('useImageLoader: Currently loaded images:', Array.from(loadedImages));
     
+    // Reset state when URLs change
     if (imageUrls.length === 0) {
-      console.log('No images to load, setting allImagesLoaded to true');
+      console.log('useImageLoader: No images to load, setting allImagesLoaded to true');
       setAllImagesLoaded(true);
       return;
     }
 
     const allLoaded = imageUrls.every(url => {
       const isLoaded = loadedImages.has(url);
-      console.log('Image', url, 'loaded:', isLoaded);
+      console.log('useImageLoader: Checking image', url, 'loaded:', isLoaded);
       return isLoaded;
     });
     
-    console.log('All images loaded:', allLoaded);
+    console.log('useImageLoader: All images loaded status:', allLoaded, `(${loadedImages.size}/${imageUrls.length})`);
     setAllImagesLoaded(allLoaded);
   }, [loadedImages, imageUrls]);
+
+  // Reset loaded images when imageUrls change completely
+  useEffect(() => {
+    console.log('useImageLoader: Resetting loaded images due to URL change');
+    setLoadedImages(new Set());
+    setAllImagesLoaded(false);
+  }, [imageUrls.join(',')]);
 
   return {
     handleImageLoad,
