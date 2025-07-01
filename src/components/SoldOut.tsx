@@ -3,8 +3,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const SoldOut = () => {
   return (
-    <Alert variant="destructive" className="border-red-600 bg-red-50">
-      <AlertDescription className="text-red-800 font-semibold text-center">
+    <Alert className="bg-red-700 border-red-700 rounded-none">
+      <AlertDescription className="text-white font-semibold text-center">
         Slutsåld!
       </AlertDescription>
     </Alert>
