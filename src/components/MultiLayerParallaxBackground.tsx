@@ -170,7 +170,7 @@ const MultiLayerParallaxBackground = ({
         <img
           src="/uploads/LIT_WoB_large.png"
           alt="Lilla Improteatern logotyp"
-          className="h-20 md:h-24"
+          className="h-24 md:h-50"
         />
       </div>
     </div>
