@@ -96,7 +96,7 @@ const TicketPurchaseComplete = ({
 
   if (currentStep === 'checkout') {
     return (
-      <div className="space-y-4">
+      <div className={`space-y-4 ${hasActiveBooking ? 'mb-8' : ''}`}>
         <StripeCheckout
           showSlug={showSlug}
           showTitle={showTitle}
@@ -124,7 +124,7 @@ const TicketPurchaseComplete = ({
 
   if (currentStep === 'form') {
     return (
-      <div className="space-y-4">
+      <div className={`space-y-4 ${hasActiveBooking ? 'mb-8' : ''}`}>
         <PurchaseForm
           ticketCount={ticketData.regularTickets}
           discountTickets={ticketData.discountTickets}
