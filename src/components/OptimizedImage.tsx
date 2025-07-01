@@ -39,6 +39,7 @@ const OptimizedImage = ({
   const imageUrl = optimizedSrc();
 
   const handleLoad = useCallback(() => {
+    console.log('Image loaded successfully:', imageUrl);
     setIsLoading(false);
     if (onLoad && imageUrl) {
       onLoad(imageUrl);
@@ -46,12 +47,22 @@ const OptimizedImage = ({
   }, [onLoad, imageUrl]);
 
   const handleError = useCallback(() => {
+    console.log('Image failed to load:', imageUrl);
     setHasError(true);
     setIsLoading(false);
+    // Still call onLoad even on error to not block the loading indicator
     if (onLoad && imageUrl) {
-      onLoad(imageUrl); // Still call onLoad even on error to not block the loading indicator
+      onLoad(imageUrl);
     }
   }, [onLoad, imageUrl]);
+
+  // If no image URL, call onLoad immediately to not block loading
+  useCallback(() => {
+    if (!imageUrl && onLoad && src) {
+      console.log('No valid image URL, calling onLoad for:', src);
+      onLoad(src);
+    }
+  }, [imageUrl, onLoad, src])();
 
   if (!imageUrl || hasError) {
     return (

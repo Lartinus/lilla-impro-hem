@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import ShowDetailsHeader from '@/components/ShowDetailsHeader';
 import ShowInfo from '@/components/ShowInfo';
@@ -18,9 +19,10 @@ const ShowDetails = () => {
   const [showPurchaseForm, setShowPurchaseForm] = useState(false);
   const [purchaseTickets, setPurchaseTickets] = useState({ regular: 0, discount: 0, code: '' });
 
+  // Scroll to top when slug changes (navigating to another show)
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [slug]);
 
   // Use optimized hooks for better performance
   const { data: allShowsData, isLoading, error } = useOptimizedShows();
@@ -37,11 +39,14 @@ const ShowDetails = () => {
     otherShows.forEach(otherShow => {
       if (otherShow.image) urls.push(otherShow.image);
     });
+    console.log('ShowDetails image URLs:', urls);
     return urls;
   }, [show, otherShows]);
 
   const { handleImageLoad, allImagesLoaded } = useImageLoader(imageUrls);
   const showLoadingOverlay = isLoading || (!allImagesLoaded && imageUrls.length > 0);
+
+  console.log('ShowDetails - Images loaded:', allImagesLoaded, 'Show loading overlay:', showLoadingOverlay);
 
   if (isLoading) {
     return (

@@ -58,12 +58,15 @@ const Shows = () => {
 
   // Extract image URLs for loading tracking
   const imageUrls = useMemo(() => {
-    return shows.map(show => show.image).filter(Boolean) as string[];
+    const urls = shows.map(show => show.image).filter(Boolean) as string[];
+    console.log('Shows page image URLs:', urls);
+    return urls;
   }, [shows]);
 
   const { handleImageLoad, allImagesLoaded } = useImageLoader(imageUrls);
-  const showLoadingOverlay = isLoading || (!allImagesLoaded && shows.length > 0);
+  const showLoadingOverlay = isLoading || (!allImagesLoaded && shows.length > 0 && imageUrls.length > 0);
 
+  console.log('Shows page - Images loaded:', allImagesLoaded, 'Show loading overlay:', showLoadingOverlay);
   console.log('Formatted shows:', shows);
 
   if (isLoading) {

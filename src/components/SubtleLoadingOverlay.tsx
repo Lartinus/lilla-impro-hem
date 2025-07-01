@@ -15,7 +15,7 @@ const SubtleLoadingOverlay = ({ isVisible, progress = 0 }: SubtleLoadingOverlayP
         <div className="mb-4">
           <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto"></div>
         </div>
-        <p className="text-sm opacity-80 mb-4">Laddar föreställningar...</p>
+        <p className="text-sm text-white opacity-90 mb-4">Laddar föreställningar...</p>
         {progress > 0 && (
           <Progress 
             value={progress} 
