@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAvailableTickets } from '@/hooks/useTicketSync';
@@ -7,6 +6,7 @@ import TicketPurchase from './TicketPurchase';
 import PurchaseForm from './PurchaseForm';
 import StripeCheckout from './StripeCheckout';
 import TicketCountdown from './TicketCountdown';
+import SoldOut from './SoldOut';
 
 interface TicketPurchaseCompleteProps {
   onPurchase: (data: { regularTickets: number; discountTickets: number; discountCode: string }) => void;
@@ -143,6 +143,11 @@ const TicketPurchaseComplete = ({
         )}
       </div>
     );
+  }
+
+  // Check if sold out before showing ticket purchase
+  if (availableTickets <= 0) {
+    return <SoldOut />;
   }
 
   return (
