@@ -187,7 +187,7 @@ const CourseBookingForm = ({
                 <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1 rounded-none">
                   Avbryt
                 </Button>
-                <Button type="submit" disabled={isSubmitting} className="flex-1 rounded-none">
+                <Button type="submit" disabled={isSubmitting} variant="blue" className="flex-1 rounded-none">
                   {isSubmitting ? 'Skickar...' : 'Skicka intresseanmälan'}
                 </Button>
               </div>
@@ -284,12 +284,14 @@ const CourseBookingForm = ({
 
               <div className="text-muted-foreground space-y-1">
                 <p className="text-sm font-bold">Bokningsinformation</p>
-                <p className="text-xs">- Anmälan är bindande</p>
-                <p className="text-xs">- Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
-                <p className="text-xs">- Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter debiteras 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart debiteras hela avgiften</p>
-                <p className="text-xs">- Vid utebliven närvaro sker ingen återbetalning</p>
-                <p className="text-xs">- Bekräftelse på din plats skickas via mejl inom 5 arbetsdagar efter att anmälan har registrerats</p>
-                <p className="text-xs">- För frågor eller särskilda önskemål, kontakta oss på kurs@improteatern.se</p>
+                <div style={{ fontSize: '10px !important' }}>
+                  <p>- Anmälan är bindande</p>
+                  <p>- Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
+                  <p>- Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter debiteras 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart debiteras hela avgiften</p>
+                  <p>- Vid utebliven närvaro sker ingen återbetalning</p>
+                  <p>- Bekräftelse på din plats skickas via mejl inom 5 arbetsdagar efter att anmälan har registrerats</p>
+                  <p>- För frågor eller särskilda önskemål, kontakta oss på kurs@improteatern.se</p>
+                </div>
               </div>
 
               {maxParticipants && (
