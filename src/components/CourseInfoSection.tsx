@@ -75,7 +75,7 @@ export default function CourseInfoSection() {
 
         {/* Röd callout med red-primary */}
         <div className="bg-red-700 p-6 rounded-none text-white [&>*]:text-white [&>p]:text-white [&>h2]:text-white [&>h3]:text-white">
-          <h3>Lär dig spela det som redan är kul</h3>
+          <p className="text-bold">Lär dig spela det som redan är kul</p>
           <p>
             Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the scene", att följa det roliga och att få det att växa.
           </p>
@@ -83,9 +83,8 @@ export default function CourseInfoSection() {
 
         {/* Avslutande text */}
         <div>
-          <h2 className="mb-3">Vem kan komma till Lilla Improteatern?</h2>
           <div className="prose space-y-4">
-            <h5>Du är varmt välkommen oavsett om du:</h5>
+            <p className="text-bold">Du är varmt välkommen till oss oavsett om du:</p>
             <ul className="list-disc pl-5 space-y-1">
               <li>Aldrig har testat Improv Comedy förut</li>
               <li>Vill utvecklas som komisk scenperson</li>
