@@ -15,7 +15,7 @@ interface CourseBookingFormProps {
   isAvailable: boolean;
   showButton: boolean;
   buttonText?: string;
-  buttonVariant?: "default" | "outline";
+  buttonVariant?: "default" | "outline" | "blue";
   maxParticipants?: number | null;
 }
 
