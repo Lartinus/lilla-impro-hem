@@ -99,16 +99,18 @@ const ShowDetails = () => {
               </div>
             )}
             
-            <TicketPurchaseComplete
-              onPurchase={() => {}} // Not used anymore, handled internally
-              ticketPrice={show.ticketPrice}
-              discountPrice={show.discountPrice}
-              totalTickets={show.availableTickets}
-              showSlug={show.slug}
-              showTitle={show.title}
-              showDate={show.date}
-              showLocation={show.location}
-            />
+            <div className={show.performers && show.performers.length > 0 ? 'mb-8' : ''}>
+              <TicketPurchaseComplete
+                onPurchase={() => {}} // Not used anymore, handled internally
+                ticketPrice={show.ticketPrice}
+                discountPrice={show.discountPrice}
+                totalTickets={show.availableTickets}
+                showSlug={show.slug}
+                showTitle={show.title}
+                showDate={show.date}
+                showLocation={show.location}
+              />
+            </div>
             
             {show.performers && show.performers.length > 0 && (
               <PerformersSection performers={show.performers} />
