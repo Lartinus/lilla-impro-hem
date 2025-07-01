@@ -286,7 +286,7 @@
   }
   .prose ul {
     list-style: none;
-    padding-left: 0.25rem;
+    padding-left: 0.0rem;
   }
   .prose ul li {
     position: relative;
