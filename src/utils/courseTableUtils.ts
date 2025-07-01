@@ -1,5 +1,15 @@
-
 import { supabase } from '@/integrations/supabase/client';
+
+export const generateTableName = (courseTitle: string) => {
+  const timestamp = Date.now();
+  const sanitizedTitle = courseTitle
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '_')
+    .replace(/_{2,}/g, '_')
+    .replace(/^_|_$/g, '');
+  
+  return `course_${sanitizedTitle}_${timestamp}`;
+};
 
 export const ensureCourseTableExists = async (courseTitle: string) => {
   try {
