@@ -59,7 +59,7 @@ const Index = () => {
           />
         </div>
         <div>
-        <p text-center text-sm>Följ oss på @lillaimproteatern</p>
+        <p classname="absolute bottom-[15rem] text-center text-sm">Följ oss på @lillaimproteatern</p>
         </div>
       </section>
     </div>
