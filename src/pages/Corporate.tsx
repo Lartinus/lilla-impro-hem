@@ -90,7 +90,7 @@ const Corporate = () => {
               ["Ledarskapsträning", "Utveckla förmågan att ta initiativ, stötta teammedlemmar och hantera osäkerhet med självförtroende och anpassningsförmåga."]
             ].map(([title, body], i) => (
               <div key={i}>
-                <p className="text-bold">{title}</p>
+                <p className="font-bold">{title}</p>
                 <p>{body}</p>
               </div>
             ))}
