@@ -22,6 +22,8 @@ const MultiLayerParallaxBackground = ({
   const handleScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
     setScrollY(currentScrollY);
+    // Debug: Log scroll values to console
+    console.log('Parallax scroll Y:', currentScrollY);
   }, []);
 
   useEffect(() => {
@@ -47,12 +49,23 @@ const MultiLayerParallaxBackground = ({
 
   if (!enabled) return null;
 
+  // Debug: Log that component is rendering
+  console.log('Parallax component rendering with enabled:', enabled);
+
   return (
     <div 
       className="fixed inset-0 w-full h-full overflow-hidden pointer-events-none"
-      style={{ zIndex: -1 }}
+      style={{ zIndex: 0 }}
       aria-hidden="true"
     >
+      {/* Debug indicator - remove after testing */}
+      <div 
+        className="absolute top-4 left-4 bg-red-500 text-white p-2 text-sm z-50 pointer-events-auto"
+        style={{ position: 'fixed' }}
+      >
+        Parallax Active - Scroll: {scrollY}px
+      </div>
+
       {/* Bakgrundslager 1 - Längst bak, långsammast */}
       <div
         className="absolute inset-0 w-full h-full"
@@ -64,11 +77,13 @@ const MultiLayerParallaxBackground = ({
         <img
           src={PARALLAX_IMAGES[0]}
           alt=""
-          className="w-full h-[120%] object-cover object-center opacity-30"
+          className="w-full h-[120%] object-cover object-center"
           style={{ 
+            opacity: 0.6,
             filter: 'brightness(0.7) contrast(1.1)',
-            mixBlendMode: 'multiply'
           }}
+          onLoad={() => console.log('Parallax image 1 loaded')}
+          onError={() => console.error('Failed to load parallax image 1')}
         />
       </div>
 
@@ -83,11 +98,13 @@ const MultiLayerParallaxBackground = ({
         <img
           src={PARALLAX_IMAGES[1]}
           alt=""
-          className="w-[110%] h-[110%] object-cover object-left opacity-25"
+          className="w-[110%] h-[110%] object-cover object-left"
           style={{ 
+            opacity: 0.5,
             filter: 'brightness(0.8) sepia(0.1)',
-            mixBlendMode: 'overlay'
           }}
+          onLoad={() => console.log('Parallax image 2 loaded')}
+          onError={() => console.error('Failed to load parallax image 2')}
         />
       </div>
 
@@ -102,11 +119,13 @@ const MultiLayerParallaxBackground = ({
         <img
           src={PARALLAX_IMAGES[2]}
           alt=""
-          className="w-[100%] h-[105%] object-cover object-right opacity-20"
+          className="w-[100%] h-[105%] object-cover object-right"
           style={{ 
+            opacity: 0.4,
             filter: 'brightness(0.9) saturate(0.8)',
-            mixBlendMode: 'soft-light'
           }}
+          onLoad={() => console.log('Parallax image 3 loaded')}
+          onError={() => console.error('Failed to load parallax image 3')}
         />
       </div>
 
@@ -121,11 +140,13 @@ const MultiLayerParallaxBackground = ({
         <img
           src={PARALLAX_IMAGES[3]}
           alt=""
-          className="w-[105%] h-[100%] object-cover object-center opacity-15"
+          className="w-[105%] h-[100%] object-cover object-center"
           style={{ 
+            opacity: 0.3,
             filter: 'brightness(1.1) contrast(0.9)',
-            mixBlendMode: 'screen'
           }}
+          onLoad={() => console.log('Parallax image 4 loaded')}
+          onError={() => console.error('Failed to load parallax image 4')}
         />
       </div>
 
