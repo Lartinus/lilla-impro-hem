@@ -1,4 +1,3 @@
-
 import Header from '@/components/Header';
 import ShowDetailsHeader from '@/components/ShowDetailsHeader';
 import ShowInfo from '@/components/ShowInfo';
@@ -124,6 +123,8 @@ const ShowDetails = () => {
                 discountTickets={purchaseTickets.discount}
                 discountCode={purchaseTickets.code}
                 showTitle={show.title}
+                ticketPrice={show.ticketPrice}
+                discountPrice={show.discountPrice}
                 onBack={() => setShowPurchaseForm(false)}
                 onComplete={handleCompletePurchase}
               />

@@ -7,11 +7,22 @@ interface PurchaseFormProps {
   discountTickets: number;
   discountCode: string;
   showTitle: string;
+  ticketPrice: number;  // Add this prop
+  discountPrice: number;  // Add this prop
   onBack: () => void;
   onComplete: (data: { name: string; email: string; phone: string }) => void;
 }
 
-const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, onBack, onComplete }: PurchaseFormProps) => {
+const PurchaseForm = ({ 
+  ticketCount, 
+  discountTickets, 
+  discountCode, 
+  showTitle, 
+  ticketPrice,
+  discountPrice,
+  onBack, 
+  onComplete 
+}: PurchaseFormProps) => {
   const [purchaseData, setPurchaseData] = useState({
     name: '',
     email: '',
@@ -28,9 +39,9 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
     email: false
   });
 
-  // Calculate total with potential discount
-  const regularTotal = ticketCount * 175;
-  const discountTotal = discountTickets * 145;
+  // Calculate total with prices from Strapi
+  const regularTotal = ticketCount * ticketPrice;
+  const discountTotal = discountTickets * discountPrice;
   let finalTotal = regularTotal + discountTotal;
   
   // Apply discount code logic if needed (example: 10% off with "RABATT10")
@@ -130,12 +141,12 @@ const PurchaseForm = ({ ticketCount, discountTickets, discountCode, showTitle, o
         <h5 className="font-medium text-gray-800 mb-2">Sammanfattning</h5>
         {ticketCount > 0 && (
           <div className="text-gray-700">
-            Ordinarie biljetter: {ticketCount} × 175kr = {regularTotal}kr
+            Ordinarie biljetter: {ticketCount} × {ticketPrice}kr = {regularTotal}kr
           </div>
         )}
         {discountTickets > 0 && (
           <div className="text-gray-700">
-            Rabatterade biljetter: {discountTickets} × 145kr = {discountTotal}kr
+            Rabatterade biljetter: {discountTickets} × {discountPrice}kr = {discountTotal}kr
           </div>
         )}
         {discountAmount > 0 && (
