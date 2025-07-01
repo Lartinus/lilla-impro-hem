@@ -313,7 +313,7 @@ const CourseBookingForm = ({
                 />
               </div>
 
-              <div className="text-sm text-muted-foreground space-y-1 pt-4">
+              <div className="text-xs text-muted-foreground space-y-1 pt-4">
                 <p>• Anmälan är bindande</p>
                 <p>• Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
                 <p>• Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter debiteras 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart debiteras hela avgiften</p>
