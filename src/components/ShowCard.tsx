@@ -71,7 +71,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
 
         {/* Praktisk info */}
         <div className="mb-6 px-1 md:px-0">
-          <h4 className="text-content-primary font-bold mb-3">Praktisk information</h4>
+          <p className="text-content-primary font-bold mb-3">Praktisk information</p>
           <div className="space-y-2">
             {show.practicalInfo.map((item, idx) => (
               <div key={idx} className="flex items-start space-x-3">
@@ -86,7 +86,7 @@ const ShowCard = ({ show }: ShowCardProps) => {
 
         {/* Köp biljetter */}
         <div className="mt-auto px-1 md:px-0">
-          <h4 className="text-content-primary font-bold mb-4">Köp biljetter</h4>
+          <p className="text-content-primary font-bold mb-4">Köp biljetter</p>
           {/* Ordinarie */}
           <div className="bg-surface-secondary p-4 rounded-none border border-color-primary mb-4">
             <div className="flex items-center justify-between mb-2">
