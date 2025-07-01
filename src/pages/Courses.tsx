@@ -4,7 +4,7 @@ import CourseGrid from '@/components/CourseGrid';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 import CourseInfoSection from '@/components/CourseInfoSection';
 import { useEffect, useMemo, useState } from 'react';
-import { useOptimizedCourses } from '@/hooks/useOptimizedStrapi';
+import { useOptimizedCourses, getApiPerformanceMetrics } from '@/hooks/useOptimizedStrapi';
 import { useSmartCourseSync } from '@/hooks/useSmartCourseSync';
 import { formatStrapiCourse, sortCourses } from '@/utils/strapiHelpers';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const Courses = () => {
   const [retryCount, setRetryCount] = useState(0);
+  const [loadingStartTime] = useState(Date.now());
   const { toast } = useToast();
   const { runSmartSync } = useSmartCourseSync();
 
@@ -20,6 +21,20 @@ const Courses = () => {
   }, []);
 
   const { data, isLoading, error, refetch } = useOptimizedCourses();
+
+  // Performance monitoring
+  useEffect(() => {
+    if (data || error) {
+      const loadingDuration = Date.now() - loadingStartTime;
+      console.log(`📊 Courses page loaded in ${loadingDuration}ms`);
+      
+      // Log performance metrics for debugging
+      const metrics = getApiPerformanceMetrics();
+      if (Object.keys(metrics).length > 0) {
+        console.log('📊 API Performance Metrics:', metrics);
+      }
+    }
+  }, [data, error, loadingStartTime]);
 
   // Run smart background sync only when data loads successfully
   useEffect(() => {
@@ -32,18 +47,23 @@ const Courses = () => {
     }
   }, [data, runSmartSync]);
 
-  // Handle retry logic
+  // Handle retry logic with performance awareness
   const handleRetry = async () => {
     console.log('Retrying course fetch...');
     setRetryCount(prev => prev + 1);
+    const retryStartTime = Date.now();
+    
     try {
       await refetch();
+      const retryDuration = Date.now() - retryStartTime;
+      console.log(`✅ Retry successful in ${retryDuration}ms`);
       toast({
         title: "Uppdaterat",
         description: "Kurserna har laddats om.",
       });
     } catch (err) {
-      console.error('Retry failed:', err);
+      const retryDuration = Date.now() - retryStartTime;
+      console.error(`❌ Retry failed after ${retryDuration}ms:`, err);
       toast({
         title: "Fel",
         description: "Kunde fortfarande inte ladda kurserna. Försök igen senare.",
@@ -75,7 +95,7 @@ const Courses = () => {
     "Kommer inom kort."
   ];
 
-  // Show loading state with skeletons
+  // Show enhanced loading state with skeletons
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
@@ -86,14 +106,19 @@ const Courses = () => {
               <CourseCardSkeleton key={index} />
             ))}
           </div>
+          <div className="text-center text-white/70 text-sm mt-8">
+            Laddar kurser...
+          </div>
         </section>
       </div>
     );
   }
 
-  // Enhanced error handling with retry option
+  // Enhanced error handling with retry option and performance info
   if (error) {
     console.error('Error loading courses:', error);
+    const loadingDuration = Date.now() - loadingStartTime;
+    
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
         <Header />
@@ -110,6 +135,9 @@ const Courses = () => {
               </button>
               <p className="text-sm opacity-75">
                 Om problemet kvarstår, kontakta oss via info@improteatern.se
+              </p>
+              <p className="text-xs opacity-50">
+                Laddningstid: {Math.round(loadingDuration / 1000)}s
               </p>
             </div>
           </div>
