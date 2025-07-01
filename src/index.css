@@ -252,11 +252,19 @@
     padding-left: 1.25rem;
     line-height: 1;
   }
-  .rich-text ul li::marker {
-    content: '→ ';
+  .rich-text ul li {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  .rich-text ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
     color: #3b82f6;
     font-size: 1em;
-    
+    font-family: Arial, sans-serif;
+    -webkit-font-feature-settings: "liga" off;
+    font-feature-settings: "liga" off;
   }
   .rich-text p {
     margin: 1rem 0;
@@ -280,10 +288,19 @@
     list-style: none;
     padding-left: 1.25rem;
   }
-  .prose ul li::marker {
-    content: '→ ';
+  .prose ul li {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  .prose ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
     color: #3b82f6;
     font-size: 1em;
+    font-family: Arial, sans-serif;
+    -webkit-font-feature-settings: "liga" off;
+    font-feature-settings: "liga" off;
   }
 }
 
