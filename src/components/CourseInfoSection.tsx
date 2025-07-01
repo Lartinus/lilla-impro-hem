@@ -74,7 +74,7 @@ export default function CourseInfoSection() {
         </div>
 
         {/* Röd callout med red-primary */}
-        <div className="bg-red-700 p-6 rounded-none text-white [&>*]:text-white [&>p]:text-white [&>h2]:text-white [&>h3]:text-white">
+        <div className="bg-red-700 p-3 rounded-none text-white [&>*]:text-white [&>p]:text-white [&>h2]:text-white [&>h3]:text-white">
           <p>
             Istället för att kämpa för att hitta på något kul, lär vi dig hur man upptäcker det som redan är roligt – i dina impulser, i samspelet och i scenens logik. Vi tränar dig att hitta "Game of the scene", att följa det roliga och att få det att växa.
           </p>
