@@ -8,7 +8,7 @@ export const BookingInformation = ({ maxParticipants }: BookingInformationProps)
   return (
     <>
       <div className="text-muted-foreground space-y-1">
-        <p className="text-xs font-bold">Bokningsinformation</p>
+        <p className="text-sm font-bold">Bokningsinformation</p>
         <div className="text-xs space-y-0.5">
           <p>- Anmälan är bindande</p>
           <p>- Betalning sker via faktura som mejlas till e-postadressen du anger ovan</p>
