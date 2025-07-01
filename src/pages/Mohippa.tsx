@@ -94,7 +94,7 @@ export default function Mohippa() {
 
           {/* Kontaktformulär */}
           <div className="pt-6 border-t border-gray-200">
-            <p className="mb-4 font-bold">Hör av dig</p>
+            <p className="mb-4">Hör gärna av dig så pratar vi om hur vi kan få till något.</p>
             <PrivateInquiryForm />
           </div>
         </div>
