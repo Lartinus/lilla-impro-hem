@@ -8,7 +8,7 @@ const PracticalInfo = ({ practicalInfo }: PracticalInfoProps) => {
   
   return (
     <div className="mb-6">
-      <p className="text-base text-gray-800 font-bold mb-3">Praktisk information</p>
+      <p className="text-base text-gray-800 font-bold mb-1">Praktisk information</p>
       <div className="space-y-2">
         {practicalInfo.map((item, index) => (
           <div key={index} className="flex items-start space-x-3">
