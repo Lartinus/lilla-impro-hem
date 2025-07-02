@@ -12,13 +12,13 @@ const Index = () => {
   const enableParallaxBackground = true;
 
   return (
-    <div className="h-[200vh] bg-gradient-to-br from-theatre-secondary to-theatre-tertiary relative">
+    <div className="min-h-[300vh] bg-gradient-to-br from-theatre-secondary to-theatre-tertiary relative">
       {/* Parallax bakgrund - lägg till/ta bort enkelt */}
       <MultiLayerParallaxBackground enabled={enableParallaxBackground} />
       
       <Header />
 
-      <section className="h-[200vh] flex flex-col px-0.5 relative overflow-hidden py-0 md:px-0 md:justify-center md:items-center">
+      <section className="min-h-[250vh] flex flex-col px-0.5 relative overflow-hidden py-0 md:px-0">
         <div className="mt-[500px] md:mt-12 md:flex md:items-center md:justify-center md:min-h-screen my-[30px] py-[20px]">
           <div className="p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto relative z-10">
             
@@ -38,9 +38,11 @@ const Index = () => {
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Logotyp längst ner på sidan */}
-        <div className="absolute bottom-[18rem] left-1/2 transform -translate-x-1/2 z-20 text-center">
+      {/* Logotyp placerad EFTER den vita boxen för att garantera att den hamnar under */}
+      <div className="relative z-30 text-center pb-20 md:pb-32">
+        <div className="mt-16 md:mt-24 mb-8">
           <img
             src="/uploads/LIT_WoB_large.png"
             alt="Lilla Improteatern logotyp"
@@ -48,7 +50,7 @@ const Index = () => {
           />
           <p className="text-white text-sm">Följ oss på @lillaimproteatern</p>
         </div>
-      </section>
+      </div>
     </div>
   );
 };
