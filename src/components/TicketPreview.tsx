@@ -46,8 +46,8 @@ const TicketPreview = () => {
               padding: '20px',
               textAlign: 'center'
             }}>
-              <h1 style={{ margin: 0, fontSize: '24px' }}>{mockPurchase.show_title}</h1>
-              <p style={{ margin: '10px 0 0 0' }}>BILJETT</p>
+              <h1 style={{ margin: 0, fontSize: '24px', color: 'white' }}>{mockPurchase.show_title}</h1>
+              <p style={{ margin: '10px 0 0 0', color: 'white' }}>BILJETT</p>
             </div>
             
             <div style={{ padding: '30px' }}>
@@ -91,7 +91,9 @@ const TicketPreview = () => {
                 }}>
                   {mockPurchase.ticket_code}
                 </div>
-                <img src={qrCodeUrl} alt="QR Code" style={{ maxWidth: '200px' }} />
+                <div style={{ textAlign: 'center' }}>
+                  <img src={qrCodeUrl} alt="QR Code" style={{ maxWidth: '200px', display: 'block', margin: '0 auto' }} />
+                </div>
                 <p><small>Visa denna QR-kod vid entrén</small></p>
               </div>
             </div>
@@ -101,14 +103,12 @@ const TicketPreview = () => {
             maxWidth: '600px',
             margin: '20px auto',
             padding: '20px',
-            background: '#f5f5f5'
+            background: '#f5f5f5',
+            fontSize: '14px'
           }}>
-            <h3>Viktig information:</h3>
-            <ul>
-              <li>Ta med dig denna biljett (utskriven eller på mobilen) till föreställningen</li>
-              <li>Kom i god tid innan föreställningen börjar</li>
-              <li>Kontakta oss på info@lit.se om du har frågor</li>
-            </ul>
+            <h3 style={{ fontSize: '16px' }}>Viktig information</h3>
+            <p>Ta med dig denna biljett (utskriven eller på mobilen) till föreställningen</p>
+            <p>Kom i god tid innan föreställningen börjar</p>
           </div>
         </div>
       </div>
