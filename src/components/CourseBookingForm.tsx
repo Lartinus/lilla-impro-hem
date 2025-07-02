@@ -46,6 +46,8 @@ const CourseBookingForm = ({
   const { handleSubmit: submitBooking, isSubmitting } = useCourseBooking(courseTitle);
   const isMobile = useIsMobile();
 
+  console.log('CourseBookingForm - isMobile:', isMobile, 'window.innerWidth:', typeof window !== 'undefined' ? window.innerWidth : 'undefined');
+
   const isHouseTeamsOrContinuation = courseTitle.includes("House teams") || courseTitle.includes("fortsättning");
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -80,7 +82,54 @@ const CourseBookingForm = ({
 
   if (!showButton) return null;
 
-  const formContent = (
+  // Mobile-optimized form content without ScrollArea
+  const mobileFormContent = (
+    <div className="flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto px-1 pb-4">
+        {isHouseTeamsOrContinuation ? (
+          <Form {...houseTeamsForm}>
+            <form onSubmit={houseTeamsForm.handleSubmit(handleFormSubmit)} className="space-y-4">
+              <HouseTeamsFormFields form={houseTeamsForm} />
+            </form>
+          </Form>
+        ) : (
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
+              <BookingFormFields form={form} />
+              <BookingInformation maxParticipants={maxParticipants} />
+            </form>
+          </Form>
+        )}
+      </div>
+      
+      {/* Fixed button area at bottom */}
+      <div className="flex-shrink-0 border-t bg-background p-4 space-y-2">
+        <div className="flex space-x-2">
+          <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1 rounded-none">
+            Avbryt
+          </Button>
+          <Button 
+            type="button" 
+            onClick={() => {
+              if (isHouseTeamsOrContinuation) {
+                houseTeamsForm.handleSubmit(handleFormSubmit)();
+              } else {
+                form.handleSubmit(handleFormSubmit)();
+              }
+            }}
+            disabled={isSubmitting} 
+            variant={isHouseTeamsOrContinuation ? "blue" : "default"} 
+            className="flex-1 rounded-none"
+          >
+            {isSubmitting ? 'Skickar...' : (isHouseTeamsOrContinuation ? 'Skicka intresseanmälan' : 'Boka din plats')}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Desktop form content with ScrollArea
+  const desktopFormContent = (
     <ScrollArea className="max-h-[60vh] lg:max-h-[65vh] px-1">
       {isHouseTeamsOrContinuation ? (
         <Form {...houseTeamsForm}>
@@ -126,13 +175,13 @@ const CourseBookingForm = ({
             {isHouseTeamsOrContinuation ? buttonText : 'Boka din plats'}
           </Button>
         </SheetTrigger>
-        <SheetContent side="bottom" className="h-[85vh] rounded-t-lg">
-          <SheetHeader className="pb-4">
+        <SheetContent side="bottom" className="h-[90vh] rounded-t-lg p-0 flex flex-col overflow-hidden">
+          <SheetHeader className="p-6 pb-4 flex-shrink-0">
             <SheetTitle className="text-left">
               {isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : `Anmäl dig till ${courseTitle}`}
             </SheetTitle>
           </SheetHeader>
-          {formContent}
+          {mobileFormContent}
         </SheetContent>
       </Sheet>
     );
@@ -151,7 +200,7 @@ const CourseBookingForm = ({
             {isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : `Anmäl dig till ${courseTitle}`}
           </DialogTitle>
         </DialogHeader>
-        {formContent}
+        {desktopFormContent}
       </DialogContent>
     </Dialog>
   );
