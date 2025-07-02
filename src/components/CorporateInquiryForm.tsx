@@ -1,9 +1,12 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const CorporateInquiryForm = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,14 +15,66 @@ const CorporateInquiryForm = () => {
     occasion: '',
     requirements: ''
   });
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const mailtoLink = `mailto:info@lillaimproteatern.se?subject=Företagsförfrågan från ${formData.company}&body=Namn: ${formData.name}%0D%0AE-post: ${formData.email}%0D%0ATelefon: ${formData.phone}%0D%0AFöretag: ${formData.company}%0D%0ATillfälle: ${formData.occasion}%0D%0AVad ni är ute efter: ${formData.requirements}`;
-    
-    window.location.href = mailtoLink;
-    setIsFormOpen(false);
+    if (!formData.name || !formData.email || !formData.company || !formData.requirements) {
+      toast({
+        title: "Obligatoriska fält saknas",
+        description: "Vänligen fyll i alla obligatoriska fält (märkta med *).",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('send-inquiry', {
+        body: {
+          type: 'corporate',
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          company: formData.company,
+          occasion: formData.occasion,
+          requirements: formData.requirements
+        }
+      });
+
+      if (error) {
+        console.error('Error sending inquiry:', error);
+        throw new Error(error.message || 'Ett fel uppstod när förfrågan skulle skickas');
+      }
+
+      toast({
+        title: "Förfrågan skickad!",
+        description: "Vi har tagit emot er förfrågan och kommer att kontakta er så snart som möjligt.",
+      });
+
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        occasion: '',
+        requirements: ''
+      });
+      setIsFormOpen(false);
+
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Ett fel uppstod",
+        description: error instanceof Error ? error.message : "Kunde inte skicka förfrågan. Försök igen senare.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -55,7 +110,8 @@ const CorporateInquiryForm = () => {
             required
             value={formData.name}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white"
+            disabled={isSubmitting}
+            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white disabled:opacity-50"
           />
         </div>
         
@@ -70,7 +126,8 @@ const CorporateInquiryForm = () => {
             required
             value={formData.email}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white"
+            disabled={isSubmitting}
+            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white disabled:opacity-50"
           />
         </div>
         
@@ -84,7 +141,8 @@ const CorporateInquiryForm = () => {
             name="phone"
             value={formData.phone}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white"
+            disabled={isSubmitting}
+            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white disabled:opacity-50"
           />
         </div>
         
@@ -99,7 +157,8 @@ const CorporateInquiryForm = () => {
             required
             value={formData.company}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white"
+            disabled={isSubmitting}
+            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white disabled:opacity-50"
           />
         </div>
         
@@ -113,8 +172,9 @@ const CorporateInquiryForm = () => {
             name="occasion"
             value={formData.occasion}
             onChange={handleInputChange}
+            disabled={isSubmitting}
             placeholder="T.ex. kickoff, teambuilding, konferens"
-            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white placeholder:text-gray-500 text-sm sm:text-base"
+            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-black bg-white placeholder:text-gray-500 text-sm sm:text-base disabled:opacity-50"
           />
         </div>
         
@@ -129,20 +189,26 @@ const CorporateInquiryForm = () => {
             rows={4}
             value={formData.requirements}
             onChange={handleInputChange}
+            disabled={isSubmitting}
             placeholder="Beskriv era behov och mål för aktiviteten"
-            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[100px] max-h-[300px] text-black bg-white placeholder:text-gray-500 text-sm sm:text-base"
+            className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[100px] max-h-[300px] text-black bg-white placeholder:text-gray-500 text-sm sm:text-base disabled:opacity-50"
           />
         </div>
         
         <div className="flex space-x-3">
-          <Button type="submit" className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white">
-            Skicka förfrågan
+          <Button 
+            type="submit" 
+            disabled={isSubmitting}
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
+          >
+            {isSubmitting ? 'Skickar...' : 'Skicka förfrågan'}
           </Button>
           <Button 
             type="button" 
             variant="outline" 
             onClick={() => setIsFormOpen(false)}
-            className="px-6 py-2 border-gray-400 text-gray-700 hover:bg-gray-50"
+            disabled={isSubmitting}
+            className="px-6 py-2 border-gray-400 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
           >
             Avbryt
           </Button>

@@ -225,6 +225,45 @@ export type Database = {
         }
         Relationships: []
       }
+      inquiries: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+          occasion: string | null
+          phone: string | null
+          requirements: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          occasion?: string | null
+          phone?: string | null
+          requirements: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          occasion?: string | null
+          phone?: string | null
+          requirements?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ticket_bookings: {
         Row: {
           created_at: string
