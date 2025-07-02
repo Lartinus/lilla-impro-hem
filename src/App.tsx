@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +13,8 @@ import Shows from "./pages/Shows";
 import ShowDetails from "./pages/ShowDetails";
 import Mohippa from "./pages/Mohippa";
 import NotFound from "./pages/NotFound";
+import TicketPreviewPage from "./pages/TicketPreviewPage";
+import CourseConfirmationPreviewPage from "./pages/CourseConfirmationPreviewPage";
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -49,6 +50,8 @@ const App = () => (
               <Route path="/om-oss" element={<About />} />
               <Route path="/shows" element={<Shows />} />
               <Route path="/shows/:slug" element={<ShowDetails />} />
+              <Route path="/biljett" element={<TicketPreviewPage />} />
+              <Route path="/kursanmälan" element={<CourseConfirmationPreviewPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </PrefetchProvider>
