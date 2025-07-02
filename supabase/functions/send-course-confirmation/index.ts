@@ -33,18 +33,18 @@ const handler = async (req: Request): Promise<Response> => {
 
     const emailContent = isAvailable 
       ? `
-        <h4>Tack för din kursbokning, ${name}!</h4>
+        <p>Tack för din kursbokning, ${name}!</p>
         <p>Vi har tagit emot din bokning för kursen <strong>${courseTitle}</strong>.</p>
         <p>Vi kommer att kontakta dig snart med mer information om kursen, inklusive tid, plats och praktiska detaljer.</p>
         <p>Vi ser fram emot att träffa dig på kursen!</p>
         <p>Med vänliga hälsningar,<br>Lilla Improteatern</p>
       `
       : `
-        <h1>Tack för din intresseanmälan, ${name}!</h1>
-        <p>Vi har tagit emot din intresseanmälan för kursen <strong>${courseTitle}</strong>.</p>
+        <p>Tack för din intresseanmälan, ${name}!</p>
+        <p>Vi har tagit emot din intresseanmälan för <strong>${courseTitle}</strong>.</p>
         <p>Vi kommer att kontakta dig så snart det finns lediga platser eller när nästa kurs planeras.</p>
         <p>Tack för ditt intresse!</p>
-        <p>Med vänliga hälsningar,<br>Lilla Imroteatern</p>
+        <p>Med vänliga hälsningar,<br>Lilla Improteatern</p>
       `;
 
     const emailResponse = await resend.emails.send({
