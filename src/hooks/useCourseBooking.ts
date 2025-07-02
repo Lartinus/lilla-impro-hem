@@ -42,7 +42,7 @@ export const useCourseBooking = (courseTitle: string) => {
       console.log('🎯 Starting course booking process for:', courseTitle);
       console.log('📝 Booking data:', values);
       
-      // Ensure the course table exists
+      // Ensure the course table exists - now with better error handling
       let courseInstance;
       try {
         courseInstance = await ensureCourseTableExists(courseTitle);
@@ -51,7 +51,7 @@ export const useCourseBooking = (courseTitle: string) => {
         console.error('❌ Failed to ensure course table exists:', tableError);
         toast({ 
           title: "Systemfel", 
-          description: "Kunde inte förbereda anmälan. Kontakta support om problemet kvarstår.",
+          description: "Anmälningssystemet är tillfälligt otillgängligt. Försök igen om en stund eller kontakta oss direkt.",
           variant: "destructive" 
         });
         return { success: false, error: 'table_creation_failed' };
@@ -77,7 +77,7 @@ export const useCourseBooking = (courseTitle: string) => {
         }
       } catch (duplicateError) {
         console.error('⚠️ Duplicate check failed:', duplicateError);
-        // Continue anyway
+        // Continue anyway - better to allow a potential duplicate than block a valid booking
       }
       
       // Insert the booking
@@ -107,7 +107,7 @@ export const useCourseBooking = (courseTitle: string) => {
           } else if (insertError.message.includes('Namn får inte vara tomt')) {
             errorMessage = "Namn är obligatoriskt och får inte vara tomt.";
           } else if (insertError.message.includes('Namn är för långt')) {
-            errorMessage = "Namn är för långt. Maximalt 100 tecken tillåtet.";
+            errorMessage = "Namnet är för långt. Maximalt 100 tecken tillåtet.";
           } else if (insertError.message.includes('duplicate key') || insertError.message.includes('unique constraint')) {
             errorMessage = "Du har redan anmält dig till denna kurs med den e-postadressen.";
           } else if (insertError.message.includes('permission denied')) {
