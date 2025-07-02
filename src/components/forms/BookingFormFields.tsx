@@ -42,7 +42,7 @@ interface HouseTeamsFormFieldsProps {
 
 export const BookingFormFields = ({ form }: BookingFormFieldsProps) => {
   return (
-    <>
+    <div className="space-y-4 pb-2">
       <FormField
         control={form.control}
         name="name"
@@ -109,7 +109,7 @@ export const BookingFormFields = ({ form }: BookingFormFieldsProps) => {
         )}
       />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           control={form.control}
           name="postalCode"
@@ -138,13 +138,13 @@ export const BookingFormFields = ({ form }: BookingFormFieldsProps) => {
           )}
         />
       </div>
-    </>
+    </div>
   );
 };
 
 export const HouseTeamsFormFields = ({ form }: HouseTeamsFormFieldsProps) => {
   return (
-    <>
+    <div className="space-y-4 pb-2">
       <FormField
         control={form.control}
         name="name"
@@ -206,7 +206,7 @@ export const HouseTeamsFormFields = ({ form }: HouseTeamsFormFieldsProps) => {
             <FormControl>
               <Textarea 
                 placeholder="Här kan du skriva en kort text om dig som improvisatör och hur du vill utvecklas"
-                className="min-h-[100px] rounded-none"
+                className="min-h-[100px] rounded-none resize-none"
                 {...field} 
               />
             </FormControl>
@@ -214,7 +214,7 @@ export const HouseTeamsFormFields = ({ form }: HouseTeamsFormFieldsProps) => {
           </FormItem>
         )}
       />
-    </>
+    </div>
   );
 };
 
