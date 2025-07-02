@@ -41,11 +41,11 @@ export const useCourseBooking = (courseTitle: string) => {
       console.log('Starting course booking process for:', courseTitle);
       console.log('Booking data:', values);
       
-      // Ensure the course table exists (this now includes proper table existence checks)
+      // Ensure the course table exists (this now uses the fixed table creation function)
       const courseInstance = await ensureCourseTableExists(courseTitle);
       console.log('Using course instance:', courseInstance);
       
-      // Check for duplicate booking - only if table exists
+      // Check for duplicate booking
       const { data: isDuplicate, error: duplicateCheckError } = await supabase.rpc('check_duplicate_course_booking', {
         table_name: courseInstance.table_name,
         email_address: values.email.toLowerCase()
@@ -53,7 +53,7 @@ export const useCourseBooking = (courseTitle: string) => {
       
       if (duplicateCheckError) {
         console.error('Error checking for duplicate booking:', duplicateCheckError);
-        // Don't throw here - continue with booking attempt
+        // Continue with booking attempt - don't block on this check
         console.warn('Continuing with booking despite duplicate check error');
       }
       
@@ -84,18 +84,7 @@ export const useCourseBooking = (courseTitle: string) => {
         // Handle specific database validation errors with Swedish messages
         let errorMessage = "Något gick fel vid anmälan. Försök igen.";
         
-        if (insertError.message.includes('relation') && insertError.message.includes('does not exist')) {
-          // This specific error should be handled by our table creation logic now
-          errorMessage = "Tekniskt fel med kurssystemet. Tabellen skapas nu, försök igen om en stund.";
-          
-          // Trigger the fix function
-          try {
-            await supabase.functions.invoke('fix-missing-course-table');
-            errorMessage = "Kurssystemet har uppdaterats. Försök igen nu.";
-          } catch (fixError) {
-            console.error('Error calling fix function:', fixError);
-          }
-        } else if (insertError.message.includes('Ogiltig e-postadress')) {
+        if (insertError.message.includes('Ogiltig e-postadress')) {
           errorMessage = "Ogiltig e-postadress. Kontrollera att du har angett rätt format.";
         } else if (insertError.message.includes('Ogiltigt telefonnummer')) {
           errorMessage = "Ogiltigt telefonnummer. Ange ett nummer mellan 6-20 tecken.";
@@ -152,7 +141,7 @@ export const useCourseBooking = (courseTitle: string) => {
       console.error('Error submitting course booking:', error);
       
       // Only show generic error if we haven't already shown a specific one
-      if (!error?.message?.includes('Ogiltig') && !error?.message?.includes('duplicate') && !error?.message?.includes('Tekniskt fel')) {
+      if (!error?.message?.includes('Ogiltig') && !error?.message?.includes('duplicate')) {
         toast({ 
           title: "Något gick fel", 
           description: "Försök igen eller kontakta oss direkt.", 
