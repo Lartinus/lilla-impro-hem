@@ -153,6 +153,42 @@ export type Database = {
         }
         Relationships: []
       }
+      course_niv_1_scenarbete_improv_comedy_1749454350362: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          name: string
+          phone: string
+          postal_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          phone: string
+          postal_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string
+          postal_code?: string | null
+        }
+        Relationships: []
+      }
       course_niv_2_l_ngform_improviserad_komik_1749806847850: {
         Row: {
           address: string | null

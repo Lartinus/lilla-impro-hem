@@ -44,6 +44,18 @@ export const useCourseBooking = (courseTitle: string) => {
       // Ensure the course table exists (now uses the fixed database function)
       const courseInstance = await ensureCourseTableExists(courseTitle);
       console.log('✅ Using course instance:', courseInstance);
+      console.log('📋 Table name:', courseInstance.table_name);
+      
+      // Verify table exists one more time
+      const { data: tableExists, error: tableCheckError } = await supabase.rpc('table_exists', {
+        table_name: courseInstance.table_name
+      });
+
+      if (tableCheckError) {
+        console.error('⚠️ Error checking table existence:', tableCheckError);
+      } else {
+        console.log('🔍 Table exists check result:', tableExists);
+      }
       
       // Check for duplicate booking
       const { data: isDuplicate, error: duplicateCheckError } = await supabase.rpc('check_duplicate_course_booking', {
@@ -55,6 +67,8 @@ export const useCourseBooking = (courseTitle: string) => {
         console.error('⚠️ Error checking for duplicate booking:', duplicateCheckError);
         // Continue with booking attempt - don't block on this check
         console.warn('Continuing with booking despite duplicate check error');
+      } else {
+        console.log('🔍 Duplicate check result:', isDuplicate);
       }
       
       if (isDuplicate) {
@@ -67,6 +81,7 @@ export const useCourseBooking = (courseTitle: string) => {
       }
       
       // Insert the booking using the fixed database function
+      console.log('💾 Attempting to insert booking...');
       const { error: insertError } = await supabase.rpc('insert_course_booking', {
         table_name: courseInstance.table_name,
         booking_name: values.name,
@@ -80,6 +95,7 @@ export const useCourseBooking = (courseTitle: string) => {
       
       if (insertError) {
         console.error('❌ Database error during booking:', insertError);
+        console.error('📊 Error details:', JSON.stringify(insertError, null, 2));
         
         // Handle specific database validation errors with Swedish messages
         let errorMessage = "Något gick fel vid anmälan. Försök igen.";
@@ -105,12 +121,13 @@ export const useCourseBooking = (courseTitle: string) => {
         throw insertError;
       }
       
-      console.log('✅ Course booking submitted successfully');
+      console.log('✅ Course booking submitted successfully to table:', courseInstance.table_name);
       
       // Send confirmation email by calling the edge function
       try {
         const isHouseTeamsOrContinuation = courseTitle.includes("House teams") || courseTitle.includes("fortsättning");
         
+        console.log('📧 Sending confirmation email...');
         const { error: emailError } = await supabase.functions.invoke('send-course-confirmation', {
           body: {
             name: values.name,
