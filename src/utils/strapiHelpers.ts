@@ -109,9 +109,21 @@ export const formatStrapiShow = (show: any) => {
     .map(line => line.replace(/^[-#]\s*/, '').trim())
     .filter(Boolean);
 
-  // Improved available tickets handling with better logging
-  const availableTickets = attrs.available_tickets ?? 50;
-  console.log(`📊 Show "${attrs.titel}": available_tickets from Strapi = ${attrs.available_tickets}, using = ${availableTickets}`);
+  // Critical: available_tickets from Strapi represents TOTAL tickets for the show
+  // This is the maximum number of tickets that can be sold
+  const totalTickets = attrs.available_tickets;
+  
+  // Log detailed information for debugging
+  console.log(`📊 Show "${attrs.titel}" (${attrs.slug}):`);
+  console.log(`  - available_tickets from Strapi: ${attrs.available_tickets}`);
+  console.log(`  - This represents TOTAL tickets available for sale`);
+  
+  // Error handling: if no total tickets specified, we cannot proceed
+  if (totalTickets === undefined || totalTickets === null) {
+    console.error(`❌ CRITICAL: No available_tickets specified for show "${attrs.titel}" (${attrs.slug})`);
+    console.error(`  - This field is required to calculate ticket availability`);
+    console.error(`  - Show will be marked as sold out until this is fixed in Strapi`);
+  }
 
   return {
     id: show.id,
@@ -128,7 +140,7 @@ export const formatStrapiShow = (show: any) => {
     performers,
     ticketPrice: attrs.ticket_price ?? 150,
     discountPrice: attrs.discount_price ?? 120,
-    availableTickets,
+    totalTickets, // This is the TOTAL number of tickets available for the show
   };
 };
 

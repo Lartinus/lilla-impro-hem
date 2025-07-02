@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAvailableTickets } from '@/hooks/useTicketSync';
@@ -12,7 +13,7 @@ interface TicketPurchaseCompleteProps {
   onPurchase: (data: { regularTickets: number; discountTickets: number; discountCode: string }) => void;
   ticketPrice?: number;
   discountPrice?: number;
-  totalTickets?: number;
+  totalTickets: number; // Now required - no fallback
   showSlug: string;
   showTitle: string;
   showDate: string;
@@ -23,7 +24,7 @@ const TicketPurchaseComplete = ({
   onPurchase, 
   ticketPrice = 175, 
   discountPrice = 145, 
-  totalTickets = 100,
+  totalTickets, // No fallback value
   showSlug,
   showTitle,
   showDate,
@@ -41,14 +42,32 @@ const TicketPurchaseComplete = ({
     phone: ''
   });
 
-  const { data: availableTickets = totalTickets } = useAvailableTickets(showSlug, totalTickets);
+  // Critical error handling: if totalTickets is not provided, we cannot proceed
+  if (totalTickets === undefined || totalTickets === null) {
+    console.error(`❌ CRITICAL ERROR: No totalTickets provided for show ${showSlug}`);
+    console.error(`  - This value must come from Strapi's available_tickets field`);
+    console.error(`  - Show will be displayed as sold out until this is fixed`);
+    
+    return (
+      <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded">
+        <h4 className="text-red-800 font-bold mb-2">Biljettkonfiguration saknas</h4>
+        <p className="text-red-700 text-sm">
+          Totalt antal biljetter har inte konfigurerats för denna föreställning. 
+          Kontakta administratören för att lösa detta problem.
+        </p>
+      </div>
+    );
+  }
+
+  const { data: availableTickets } = useAvailableTickets(showSlug, totalTickets);
   const { booking, timeLeft, createBooking, clearBooking, hasActiveBooking } = useTicketBooking();
 
   // Add detailed logging for debugging
   console.log(`🎭 TicketPurchaseComplete for ${showSlug}:`);
-  console.log(`  - totalTickets (prop): ${totalTickets}`);
+  console.log(`  - totalTickets (from Strapi): ${totalTickets}`);
   console.log(`  - availableTickets (computed): ${availableTickets}`);
   console.log(`  - hasActiveBooking: ${hasActiveBooking}`);
+  console.log(`  - Calculation: ${totalTickets} total - sold - booked = ${availableTickets} available`);
 
   const handleTicketPurchase = async (data: { regularTickets: number; discountTickets: number; discountCode: string }) => {
     try {
@@ -60,7 +79,7 @@ const TicketPurchaseComplete = ({
       
       // Check if enough tickets are available
       const totalRequested = data.regularTickets + data.discountTickets;
-      if (totalRequested > availableTickets) {
+      if (availableTickets !== undefined && totalRequested > availableTickets) {
         console.error(`❌ Not enough tickets available. Requested: ${totalRequested}, Available: ${availableTickets}`);
         alert(`Endast ${availableTickets} biljetter tillgängliga. Du försöker köpa ${totalRequested} biljetter.`);
         return;
@@ -164,7 +183,7 @@ const TicketPurchaseComplete = ({
   }
 
   // Check if sold out before showing ticket purchase
-  if (availableTickets <= 0) {
+  if (availableTickets !== undefined && availableTickets <= 0) {
     return <SoldOut />;
   }
 

@@ -68,6 +68,11 @@ const ShowDetails = () => {
     );
   }
 
+  // Critical check: ensure we have totalTickets from Strapi
+  if (show.totalTickets === undefined || show.totalTickets === null) {
+    console.error(`❌ CRITICAL: Show "${show.title}" (${show.slug}) has no totalTickets configured in Strapi`);
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
       <Header />
@@ -100,16 +105,26 @@ const ShowDetails = () => {
             )}
             
             <div className={show.performers && show.performers.length > 0 ? 'mb-8' : ''}>
-              <TicketPurchaseComplete
-                onPurchase={() => {}} // Not used anymore, handled internally
-                ticketPrice={show.ticketPrice}
-                discountPrice={show.discountPrice}
-                totalTickets={show.availableTickets}
-                showSlug={show.slug}
-                showTitle={show.title}
-                showDate={show.date}
-                showLocation={show.location}
-              />
+              {show.totalTickets !== undefined && show.totalTickets !== null ? (
+                <TicketPurchaseComplete
+                  onPurchase={() => {}} // Not used anymore, handled internally
+                  ticketPrice={show.ticketPrice}
+                  discountPrice={show.discountPrice}
+                  totalTickets={show.totalTickets}
+                  showSlug={show.slug}
+                  showTitle={show.title}
+                  showDate={show.date}
+                  showLocation={show.location}
+                />
+              ) : (
+                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
+                  <h4 className="text-yellow-800 font-bold mb-2">Biljettkonfiguration saknas</h4>
+                  <p className="text-yellow-700 text-sm">
+                    Totalt antal biljetter har inte konfigurerats för denna föreställning i Strapi. 
+                    Kontakta administratören för att lösa detta problem.
+                  </p>
+                </div>
+              )}
             </div>
             
             {show.performers && show.performers.length > 0 && (
