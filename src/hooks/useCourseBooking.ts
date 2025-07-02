@@ -51,35 +51,10 @@ export const useCourseBooking = (courseTitle: string) => {
         console.error('❌ Failed to ensure course table exists:', tableError);
         toast({ 
           title: "Systemfel", 
-          description: "Kunde inte förbereda anmälan. Försök igen om en stund.",
+          description: "Kunde inte förbereda anmälan. Kontakta support om problemet kvarstår.",
           variant: "destructive" 
         });
         return { success: false, error: 'table_creation_failed' };
-      }
-      
-      // Verify table exists
-      try {
-        const { data: tableExists, error: tableCheckError } = await supabase.rpc('table_exists', {
-          table_name: courseInstance.table_name
-        });
-
-        if (tableCheckError) {
-          console.error('⚠️ Error checking table existence:', tableCheckError);
-        } else {
-          console.log('🔍 Table exists check result:', tableExists);
-          if (!tableExists) {
-            console.error('❌ Table does not exist after creation attempt');
-            toast({ 
-              title: "Systemfel", 
-              description: "Anmälningssystemet är inte tillgängligt just nu. Försök igen senare.",
-              variant: "destructive" 
-            });
-            return { success: false, error: 'table_missing' };
-          }
-        }
-      } catch (verifyError) {
-        console.error('❌ Failed to verify table existence:', verifyError);
-        // Continue anyway - the booking might still work
       }
       
       // Check for duplicate booking

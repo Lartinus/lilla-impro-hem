@@ -70,24 +70,6 @@ export const ensureCourseTableExists = async (courseTitle: string) => {
         }
         
         console.log('✅ Successfully recreated missing table:', existingInstance.table_name);
-      } else {
-        console.log('✅ Table exists, checking booking count...');
-        
-        // Table exists, get booking count safely
-        try {
-          const { data: bookingCount, error: countError } = await supabase.rpc('get_course_booking_count', {
-            table_name: existingInstance.table_name
-          });
-
-          if (countError) {
-            console.error('⚠️ Error getting booking count:', countError);
-          } else {
-            console.log('📊 Table has', bookingCount, 'bookings');
-          }
-        } catch (countError) {
-          console.error('⚠️ Failed to get booking count:', countError);
-          // Don't fail the whole process for this
-        }
       }
       
       return existingInstance;
