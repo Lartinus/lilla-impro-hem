@@ -38,12 +38,12 @@ export const useCourseBooking = (courseTitle: string) => {
   const handleSubmit = async (values: z.infer<typeof formSchema> | z.infer<typeof houseTeamsSchema>) => {
     setIsSubmitting(true);
     try {
-      console.log('Starting course booking process for:', courseTitle);
-      console.log('Booking data:', values);
+      console.log('🎯 Starting course booking process for:', courseTitle);
+      console.log('📝 Booking data:', values);
       
-      // Ensure the course table exists (this now uses the fixed table creation function)
+      // Ensure the course table exists (now uses the fixed database function)
       const courseInstance = await ensureCourseTableExists(courseTitle);
-      console.log('Using course instance:', courseInstance);
+      console.log('✅ Using course instance:', courseInstance);
       
       // Check for duplicate booking
       const { data: isDuplicate, error: duplicateCheckError } = await supabase.rpc('check_duplicate_course_booking', {
@@ -52,7 +52,7 @@ export const useCourseBooking = (courseTitle: string) => {
       });
       
       if (duplicateCheckError) {
-        console.error('Error checking for duplicate booking:', duplicateCheckError);
+        console.error('⚠️ Error checking for duplicate booking:', duplicateCheckError);
         // Continue with booking attempt - don't block on this check
         console.warn('Continuing with booking despite duplicate check error');
       }
@@ -66,7 +66,7 @@ export const useCourseBooking = (courseTitle: string) => {
         return { success: false, error: 'duplicate' };
       }
       
-      // Insert the booking
+      // Insert the booking using the fixed database function
       const { error: insertError } = await supabase.rpc('insert_course_booking', {
         table_name: courseInstance.table_name,
         booking_name: values.name,
@@ -79,7 +79,7 @@ export const useCourseBooking = (courseTitle: string) => {
       });
       
       if (insertError) {
-        console.error('Database error during booking:', insertError);
+        console.error('❌ Database error during booking:', insertError);
         
         // Handle specific database validation errors with Swedish messages
         let errorMessage = "Något gick fel vid anmälan. Försök igen.";
@@ -105,7 +105,7 @@ export const useCourseBooking = (courseTitle: string) => {
         throw insertError;
       }
       
-      console.log('Course booking submitted successfully');
+      console.log('✅ Course booking submitted successfully');
       
       // Send confirmation email by calling the edge function
       try {
@@ -121,13 +121,13 @@ export const useCourseBooking = (courseTitle: string) => {
         });
 
         if (emailError) {
-          console.error('Error sending confirmation email:', emailError);
+          console.error('⚠️ Error sending confirmation email:', emailError);
           // Don't throw here - booking was successful, just email failed
         } else {
-          console.log('Confirmation email sent successfully');
+          console.log('📧 Confirmation email sent successfully');
         }
       } catch (emailError) {
-        console.error('Error sending confirmation email:', emailError);
+        console.error('⚠️ Error sending confirmation email:', emailError);
         // Don't throw here - booking was successful, just email failed
       }
       
@@ -138,7 +138,7 @@ export const useCourseBooking = (courseTitle: string) => {
       
       return { success: true };
     } catch (error) {
-      console.error('Error submitting course booking:', error);
+      console.error('❌ Error submitting course booking:', error);
       
       // Only show generic error if we haven't already shown a specific one
       if (!error?.message?.includes('Ogiltig') && !error?.message?.includes('duplicate')) {

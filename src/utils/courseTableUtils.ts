@@ -56,7 +56,7 @@ export const ensureCourseTableExists = async (courseTitle: string) => {
       const tableExists = await checkTableExists(existingInstance.table_name);
 
       if (!tableExists) {
-        console.warn('Table does not exist, creating it:', existingInstance.table_name);
+        console.log('Table missing, creating:', existingInstance.table_name);
         
         // Create the missing table using the fixed function
         const { error: createTableError } = await supabase.rpc('create_course_booking_table', {
@@ -70,6 +70,8 @@ export const ensureCourseTableExists = async (courseTitle: string) => {
         
         console.log('Successfully created missing table:', existingInstance.table_name);
       } else {
+        console.log('Table exists, checking booking count...');
+        
         // Table exists, get booking count safely
         const { data: bookingCount, error: countError } = await supabase.rpc('get_course_booking_count', {
           table_name: existingInstance.table_name
@@ -78,7 +80,7 @@ export const ensureCourseTableExists = async (courseTitle: string) => {
         if (countError) {
           console.error('Error getting booking count:', countError);
         } else {
-          console.log('Table exists and has', bookingCount, 'bookings');
+          console.log('Table has', bookingCount, 'bookings');
         }
       }
       
@@ -109,7 +111,7 @@ export const ensureCourseTableExists = async (courseTitle: string) => {
 
     console.log('Successfully created course instance:', instanceData);
 
-    // Create the actual booking table
+    // Create the actual booking table using the fixed function
     const { error: tableError } = await supabase.rpc('create_course_booking_table', {
       table_name: tableName
     });
