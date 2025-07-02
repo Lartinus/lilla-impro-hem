@@ -124,7 +124,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'LIT - Lunds Improvisationsteater <noreply@lit.se>',
+        from: 'Lilla Improteatern <noreply@improteatern.se>',
         to: [purchase.buyer_email],
         subject: `Din biljett - ${purchase.show_title}`,
         html: emailHtml,
