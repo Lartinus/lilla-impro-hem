@@ -18,9 +18,9 @@ const Index = () => {
       
       <Header />
 
-      <section className="h-[200vh] flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
-        <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
-          <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto relative z-10">
+      <section className="h-[200vh] flex flex-col px-0.5 relative overflow-hidden py-0 md:px-0 md:justify-center md:items-center">
+        <div className="mt-[500px] md:mt-12 md:flex md:items-center md:justify-center md:min-h-screen my-[30px] py-[20px]">
+          <div className="p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto relative z-10">
             
             <div className="mx-3 md:mx-0 md:max-w-6xl lg:max-w-7xl pb-1">
               <h1 className="mt-[10px] mb-[25px] md:mb-[30px]">
@@ -40,7 +40,7 @@ const Index = () => {
         </div>
 
         {/* Logotyp längst ner på sidan */}
-        <div className="absolute bottom-[18rem] left-1/2 transform -translate-x-1/2 z-5 text-center">
+        <div className="absolute bottom-[18rem] left-1/2 transform -translate-x-1/2 z-20 text-center">
           <img
             src="/uploads/LIT_WoB_large.png"
             alt="Lilla Improteatern logotyp"
