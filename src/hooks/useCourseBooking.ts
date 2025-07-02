@@ -37,93 +37,129 @@ export const useCourseBooking = (courseTitle: string) => {
 
   const handleSubmit = async (values: z.infer<typeof formSchema> | z.infer<typeof houseTeamsSchema>) => {
     setIsSubmitting(true);
+    
     try {
       console.log('🎯 Starting course booking process for:', courseTitle);
       console.log('📝 Booking data:', values);
       
-      // Ensure the course table exists (now uses the fixed database function)
-      const courseInstance = await ensureCourseTableExists(courseTitle);
-      console.log('✅ Using course instance:', courseInstance);
-      console.log('📋 Table name:', courseInstance.table_name);
+      // Ensure the course table exists
+      let courseInstance;
+      try {
+        courseInstance = await ensureCourseTableExists(courseTitle);
+        console.log('✅ Using course instance:', courseInstance);
+      } catch (tableError) {
+        console.error('❌ Failed to ensure course table exists:', tableError);
+        toast({ 
+          title: "Systemfel", 
+          description: "Kunde inte förbereda anmälan. Försök igen om en stund.",
+          variant: "destructive" 
+        });
+        return { success: false, error: 'table_creation_failed' };
+      }
       
-      // Verify table exists one more time
-      const { data: tableExists, error: tableCheckError } = await supabase.rpc('table_exists', {
-        table_name: courseInstance.table_name
-      });
+      // Verify table exists
+      try {
+        const { data: tableExists, error: tableCheckError } = await supabase.rpc('table_exists', {
+          table_name: courseInstance.table_name
+        });
 
-      if (tableCheckError) {
-        console.error('⚠️ Error checking table existence:', tableCheckError);
-      } else {
-        console.log('🔍 Table exists check result:', tableExists);
+        if (tableCheckError) {
+          console.error('⚠️ Error checking table existence:', tableCheckError);
+        } else {
+          console.log('🔍 Table exists check result:', tableExists);
+          if (!tableExists) {
+            console.error('❌ Table does not exist after creation attempt');
+            toast({ 
+              title: "Systemfel", 
+              description: "Anmälningssystemet är inte tillgängligt just nu. Försök igen senare.",
+              variant: "destructive" 
+            });
+            return { success: false, error: 'table_missing' };
+          }
+        }
+      } catch (verifyError) {
+        console.error('❌ Failed to verify table existence:', verifyError);
+        // Continue anyway - the booking might still work
       }
       
       // Check for duplicate booking
-      const { data: isDuplicate, error: duplicateCheckError } = await supabase.rpc('check_duplicate_course_booking', {
-        table_name: courseInstance.table_name,
-        email_address: values.email.toLowerCase()
-      });
-      
-      if (duplicateCheckError) {
-        console.error('⚠️ Error checking for duplicate booking:', duplicateCheckError);
-        // Continue with booking attempt - don't block on this check
-        console.warn('Continuing with booking despite duplicate check error');
-      } else {
-        console.log('🔍 Duplicate check result:', isDuplicate);
-      }
-      
-      if (isDuplicate) {
-        toast({ 
-          title: "Redan anmäld", 
-          description: "Du har redan anmält dig till denna kurs med den e-postadressen.",
-          variant: "destructive" 
+      try {
+        const { data: isDuplicate, error: duplicateCheckError } = await supabase.rpc('check_duplicate_course_booking', {
+          table_name: courseInstance.table_name,
+          email_address: values.email.toLowerCase()
         });
-        return { success: false, error: 'duplicate' };
+        
+        if (duplicateCheckError) {
+          console.error('⚠️ Error checking for duplicate booking:', duplicateCheckError);
+          // Continue with booking attempt - don't block on this check
+        } else if (isDuplicate) {
+          toast({ 
+            title: "Redan anmäld", 
+            description: "Du har redan anmält dig till denna kurs med den e-postadressen.",
+            variant: "destructive" 
+          });
+          return { success: false, error: 'duplicate' };
+        }
+      } catch (duplicateError) {
+        console.error('⚠️ Duplicate check failed:', duplicateError);
+        // Continue anyway
       }
       
-      // Insert the booking using the fixed database function
+      // Insert the booking
       console.log('💾 Attempting to insert booking...');
-      const { error: insertError } = await supabase.rpc('insert_course_booking', {
-        table_name: courseInstance.table_name,
-        booking_name: values.name,
-        booking_phone: values.phone,
-        booking_email: values.email,
-        booking_address: 'address' in values ? values.address || '' : '',
-        booking_postal_code: 'postalCode' in values ? values.postalCode || '' : '',
-        booking_city: 'city' in values ? values.city || '' : '',
-        booking_message: 'message' in values ? values.message || '' : ''
-      });
-      
-      if (insertError) {
-        console.error('❌ Database error during booking:', insertError);
-        console.error('📊 Error details:', JSON.stringify(insertError, null, 2));
+      try {
+        const { error: insertError } = await supabase.rpc('insert_course_booking', {
+          table_name: courseInstance.table_name,
+          booking_name: values.name,
+          booking_phone: values.phone,
+          booking_email: values.email,
+          booking_address: 'address' in values ? values.address || '' : '',
+          booking_postal_code: 'postalCode' in values ? values.postalCode || '' : '',
+          booking_city: 'city' in values ? values.city || '' : '',
+          booking_message: 'message' in values ? values.message || '' : ''
+        });
         
-        // Handle specific database validation errors with Swedish messages
-        let errorMessage = "Något gick fel vid anmälan. Försök igen.";
-        
-        if (insertError.message.includes('Ogiltig e-postadress')) {
-          errorMessage = "Ogiltig e-postadress. Kontrollera att du har angett rätt format.";
-        } else if (insertError.message.includes('Ogiltigt telefonnummer')) {
-          errorMessage = "Ogiltigt telefonnummer. Ange ett nummer mellan 6-20 tecken.";
-        } else if (insertError.message.includes('Namn får inte vara tomt')) {
-          errorMessage = "Namn är obligatoriskt och får inte vara tomt.";
-        } else if (insertError.message.includes('Namn är för långt')) {
-          errorMessage = "Namn är för långt. Maximalt 100 tecken tillåtet.";
-        } else if (insertError.message.includes('duplicate key') || insertError.message.includes('unique constraint')) {
-          errorMessage = "Du har redan anmält dig till denna kurs med den e-postadressen.";
+        if (insertError) {
+          console.error('❌ Database error during booking:', insertError);
+          
+          // Handle specific database validation errors
+          let errorMessage = "Något gick fel vid anmälan. Kontrollera dina uppgifter och försök igen.";
+          
+          if (insertError.message.includes('Ogiltig e-postadress')) {
+            errorMessage = "Ogiltig e-postadress. Kontrollera att du har angett rätt format.";
+          } else if (insertError.message.includes('Ogiltigt telefonnummer')) {
+            errorMessage = "Ogiltigt telefonnummer. Ange ett nummer mellan 6-20 tecken.";
+          } else if (insertError.message.includes('Namn får inte vara tomt')) {
+            errorMessage = "Namn är obligatoriskt och får inte vara tomt.";
+          } else if (insertError.message.includes('Namn är för långt')) {
+            errorMessage = "Namn är för långt. Maximalt 100 tecken tillåtet.";
+          } else if (insertError.message.includes('duplicate key') || insertError.message.includes('unique constraint')) {
+            errorMessage = "Du har redan anmält dig till denna kurs med den e-postadressen.";
+          } else if (insertError.message.includes('permission denied')) {
+            errorMessage = "Åtkomst nekad. Kontakta support om problemet kvarstår.";
+          }
+          
+          toast({ 
+            title: "Anmälan misslyckades", 
+            description: errorMessage,
+            variant: "destructive" 
+          });
+          
+          return { success: false, error: insertError };
         }
-        
+      } catch (insertError) {
+        console.error('❌ Failed to insert booking:', insertError);
         toast({ 
           title: "Anmälan misslyckades", 
-          description: errorMessage,
+          description: "Kunde inte skicka anmälan. Kontrollera din internetanslutning och försök igen.",
           variant: "destructive" 
         });
-        
-        throw insertError;
+        return { success: false, error: insertError };
       }
       
       console.log('✅ Course booking submitted successfully to table:', courseInstance.table_name);
       
-      // Send confirmation email by calling the edge function
+      // Send confirmation email
       try {
         const isHouseTeamsOrContinuation = courseTitle.includes("House teams") || courseTitle.includes("fortsättning");
         
@@ -139,13 +175,13 @@ export const useCourseBooking = (courseTitle: string) => {
 
         if (emailError) {
           console.error('⚠️ Error sending confirmation email:', emailError);
-          // Don't throw here - booking was successful, just email failed
+          // Don't fail the booking just because email failed
         } else {
           console.log('📧 Confirmation email sent successfully');
         }
       } catch (emailError) {
         console.error('⚠️ Error sending confirmation email:', emailError);
-        // Don't throw here - booking was successful, just email failed
+        // Don't fail the booking just because email failed
       }
       
       toast({ 
@@ -154,17 +190,15 @@ export const useCourseBooking = (courseTitle: string) => {
       });
       
       return { success: true };
-    } catch (error) {
-      console.error('❌ Error submitting course booking:', error);
       
-      // Only show generic error if we haven't already shown a specific one
-      if (!error?.message?.includes('Ogiltig') && !error?.message?.includes('duplicate')) {
-        toast({ 
-          title: "Något gick fel", 
-          description: "Försök igen eller kontakta oss direkt.", 
-          variant: "destructive" 
-        });
-      }
+    } catch (error) {
+      console.error('❌ Unexpected error in course booking:', error);
+      
+      toast({ 
+        title: "Oväntat fel", 
+        description: "Ett oväntat fel inträffade. Försök igen eller kontakta oss direkt.", 
+        variant: "destructive" 
+      });
       
       return { success: false, error };
     } finally {

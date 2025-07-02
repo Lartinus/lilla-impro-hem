@@ -21,21 +21,51 @@ serve(async (req) => {
 
     const strapiToken = Deno.env.get('STRAPI_API_TOKEN');
     if (!strapiToken) {
-      throw new Error('STRAPI_API_TOKEN not configured');
+      console.error('STRAPI_API_TOKEN not configured');
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'STRAPI_API_TOKEN not configured',
+        message: 'Course sync failed - missing API token'
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     console.log('Starting course sync...');
 
-    // Fetch courses from Strapi
-    const strapiResponse = await fetch('https://lit-backend-b3a2f4db3c92.herokuapp.com/api/courses?populate=*', {
-      headers: {
-        'Authorization': `Bearer ${strapiToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    // Fetch courses from Strapi with error handling
+    let strapiResponse;
+    try {
+      strapiResponse = await fetch('https://lit-backend-b3a2f4db3c92.herokuapp.com/api/courses?populate=*', {
+        headers: {
+          'Authorization': `Bearer ${strapiToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (fetchError) {
+      console.error('Failed to fetch from Strapi:', fetchError);
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'Failed to connect to Strapi',
+        message: 'Course sync failed - connection error',
+        details: fetchError.message
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     if (!strapiResponse.ok) {
-      throw new Error(`Strapi API error: ${strapiResponse.status}`);
+      console.error(`Strapi API error: ${strapiResponse.status} ${strapiResponse.statusText}`);
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: `Strapi API error: ${strapiResponse.status}`,
+        message: 'Course sync failed - API error'
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const strapiData = await strapiResponse.json();
@@ -49,19 +79,25 @@ serve(async (req) => {
 
     for (const course of courses) {
       try {
-        const courseTitle = course.attributes?.title;
+        const courseTitle = course.attributes?.title || course.attributes?.titel;
         if (!courseTitle) {
           console.warn('Course missing title, skipping:', course.id);
           continue;
         }
 
         // Check if we already have an active instance for this course
-        const { data: existingInstances } = await supabaseClient
+        const { data: existingInstances, error: fetchInstanceError } = await supabaseClient
           .from('course_instances')
           .select('*')
           .eq('course_title', courseTitle)
           .eq('is_active', true)
           .limit(1);
+
+        if (fetchInstanceError) {
+          console.error(`Error fetching instances for "${courseTitle}":`, fetchInstanceError);
+          errorCount++;
+          continue;
+        }
 
         if (existingInstances && existingInstances.length > 0) {
           console.log(`Course "${courseTitle}" already has active instance, skipping`);
@@ -94,7 +130,7 @@ serve(async (req) => {
           continue;
         }
 
-        // Create booking table
+        // Create booking table using the fixed function
         const { error: tableError } = await supabaseClient.rpc('create_course_booking_table', {
           table_name: tableName
         });
@@ -134,7 +170,8 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       success: false, 
       error: error.message,
-      message: 'Course sync failed'
+      message: 'Course sync failed',
+      stack: error.stack
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
