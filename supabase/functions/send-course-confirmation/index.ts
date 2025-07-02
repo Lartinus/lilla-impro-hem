@@ -31,54 +31,113 @@ const handler = async (req: Request): Promise<Response> => {
       ? `Bekräftelse av kursbokning - ${courseTitle}`
       : `Bekräftelse av intresseanmälan - ${courseTitle}`;
 
+    // Table-based email template for better compatibility
     const emailContent = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #fff; max-width: 600px; margin: 20px auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-        <div style="border-bottom: 2px solid #d32f2f; padding-bottom: 20px; margin-bottom: 30px; padding: 20px;">
-          <h2 style="color: #d32f2f; margin: 0 0 10px 0; font-size: 24px;">
-            ${subject}
-          </h2>
-        </div>
-        
-        <div style="padding: 0 30px; margin-bottom: 30px;">
-          <p style="margin-bottom: 15px;">
-            ${isAvailable ? 
-              `Tack för din kursbokning, <strong>${name}</strong>!` : 
-              `Tack för din intresseanmälan, <strong>${name}</strong>!`
-            }
-          </p>
-          
-          <p style="margin-bottom: 15px;">
-            ${isAvailable ? 
-              `Vi har tagit emot din bokning för kursen <strong>${courseTitle}</strong>.` : 
-              `Vi har tagit emot din intresseanmälan för <strong>${courseTitle}</strong>.`
-            }
-          </p>
-          
-          <p style="margin-bottom: 15px;">
-            ${isAvailable ? 
-              "Vi kommer att kontakta dig snart med mer information om kursen, inklusive tid, plats och praktiska detaljer." : 
-              "Vi kommer att kontakta dig så snart det finns lediga platser eller när nästa kurs planeras."
-            }
-          </p>
-          
-          <p style="margin-bottom: 15px;">
-            ${isAvailable ? 
-              "Vi ser fram emot att träffa dig på kursen!" : 
-              "Tack för ditt intresse!"
-            }
-          </p>
-        </div>
-        
-        <div style="border-top: 1px solid #eee; padding: 20px 30px; color: #666; font-size: 14px; background-color: #f9f9f9;">
-          <p style="margin: 0;">
-            Med vänliga hälsningar,<br>
-            <strong style="color: #d32f2f;">Lilla Improteatern</strong>
-          </p>
-          <p style="margin: 10px 0 0; font-size: 12px; color: #999;">
-            Besök oss på <a href="https://improteatern.se" style="color: #d32f2f; text-decoration: none;">improteatern.se</a>
-          </p>
-        </div>
-      </div>
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${subject}</title>
+      </head>
+      <body style="margin: 0; padding: 0; background-color: #f4f4f4;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px 0;">
+          <tr>
+            <td align="center">
+              <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <!-- Header -->
+                <tr>
+                  <td style="background-color: #d32f2f; padding: 30px 40px; border-bottom: 3px solid #b71c1c;">
+                    <h1 style="color: #ffffff; margin: 0; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; text-align: center;">
+                      Lilla Improteatern
+                    </h1>
+                  </td>
+                </tr>
+                
+                <!-- Subject -->
+                <tr>
+                  <td style="padding: 30px 40px 20px; background-color: #ffffff;">
+                    <h2 style="color: #d32f2f; margin: 0; font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; text-align: center;">
+                      ${subject}
+                    </h2>
+                  </td>
+                </tr>
+                
+                <!-- Content -->
+                <tr>
+                  <td style="padding: 0 40px 30px; background-color: #ffffff;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="padding: 15px 0;">
+                          <p style="margin: 0; color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+                            ${isAvailable ? 
+                              `Tack för din kursbokning, <strong>${name}</strong>!` : 
+                              `Tack för din intresseanmälan, <strong>${name}</strong>!`
+                            }
+                          </p>
+                        </td>
+                      </tr>
+                      
+                      <tr>
+                        <td style="padding: 15px 0;">
+                          <p style="margin: 0; color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+                            ${isAvailable ? 
+                              `Vi har tagit emot din bokning för kursen <strong>${courseTitle}</strong>.` : 
+                              `Vi har tagit emot din intresseanmälan för <strong>${courseTitle}</strong>.`
+                            }
+                          </p>
+                        </td>
+                      </tr>
+                      
+                      <tr>
+                        <td style="padding: 15px 0;">
+                          <p style="margin: 0; color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+                            ${isAvailable ? 
+                              "Vi kommer att kontakta dig snart med mer information om kursen, inklusive tid, plats och praktiska detaljer." : 
+                              "Vi kommer att kontakta dig så snart det finns lediga platser eller när nästa kurs planeras."
+                            }
+                          </p>
+                        </td>
+                      </tr>
+                      
+                      <tr>
+                        <td style="padding: 15px 0;">
+                          <p style="margin: 0; color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+                            ${isAvailable ? 
+                              "Vi ser fram emot att träffa dig på kursen!" : 
+                              "Tack för ditt intresse!"
+                            }
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                
+                <!-- Footer -->
+                <tr>
+                  <td style="background-color: #f9f9f9; padding: 30px 40px; border-top: 1px solid #eeeeee;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="text-align: center;">
+                          <p style="margin: 0 0 10px 0; color: #666666; font-family: Arial, sans-serif; font-size: 14px;">
+                            Med vänliga hälsningar,<br>
+                            <strong style="color: #d32f2f;">Lilla Improteatern</strong>
+                          </p>
+                          <p style="margin: 0; color: #999999; font-family: Arial, sans-serif; font-size: 12px;">
+                            Besök oss på <a href="https://improteatern.se" style="color: #d32f2f; text-decoration: none;">improteatern.se</a>
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
     `;
 
     const emailResponse = await resend.emails.send({
