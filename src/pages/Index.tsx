@@ -13,9 +13,9 @@ const Index = () => {
   // Enkelt sätt att stänga av parallax-bakgrunden
   const enableParallaxBackground = true;
 
-  // Responsive container heights
-  const containerHeight = isMobile ? "h-[120vh]" : "h-[200vh]";
-  const sectionHeight = isMobile ? "h-[120vh]" : "h-[200vh]";
+  // Responsive container heights - mobil får auto height för scrolling
+  const containerHeight = isMobile ? "h-auto min-h-screen" : "h-[200vh]";
+  const sectionHeight = isMobile ? "h-auto" : "h-[200vh]";
 
   return (
     <div className={`${containerHeight} bg-gradient-to-br from-theatre-secondary to-theatre-tertiary relative`}>
@@ -24,8 +24,8 @@ const Index = () => {
       
       <Header />
 
-      <section className={`${sectionHeight} flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0`}>
-        <div className={`flex items-center justify-center min-h-screen ${isMobile ? 'mt-32' : 'my-[30px]'} py-[20px]`}>
+      <section className={`${sectionHeight} ${isMobile ? 'flex flex-col' : 'flex flex-col justify-center'} px-0.5 relative overflow-hidden py-0 md:px-0`}>
+        <div className={`${isMobile ? 'mt-[700px]' : 'flex items-center justify-center min-h-screen my-[30px]'} py-[20px]`}>
           <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto relative z-10">
             
             <div className="mx-3 md:mx-0 md:max-w-6xl lg:max-w-7xl pb-1">
@@ -56,9 +56,9 @@ const Index = () => {
         </div>
 
         {/* Logotyp längst ner på sidan - responsiv positionering */}
-        <div className={`absolute ${isMobile ? 'bottom-[4rem]' : 'bottom-[18rem]'} left-1/2 transform -translate-x-1/2 z-5 text-center`}>
+        <div className={`${isMobile ? 'mt-[200px] mb-[100px]' : 'absolute bottom-[18rem] left-1/2 transform -translate-x-1/2'} ${isMobile ? '' : 'z-5'} text-center`}>
           <img
-            src="/uploads/images/parallax/ParallaxImage1.jpg"
+            src="/uploads/LIT_WoB_large.png"
             alt="Lilla Improteatern logotyp"
             className="h-40 md:h-48 lg:h-56 mx-auto mb-4"
           />
