@@ -25,7 +25,45 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { name, email, courseTitle, isAvailable }: ConfirmationEmailRequest = await req.json();
 
-    console.log(`Sending confirmation email to ${email} for course: ${courseTitle}`);
+    console.log(`Processing course confirmation for ${email} - course: ${courseTitle}`);
+
+    // First, try to add contact to Resend
+    try {
+      const contactData = {
+        email: email,
+        first_name: name.split(' ')[0] || name,
+        last_name: name.split(' ').slice(1).join(' ') || '',
+        unsubscribed: false,
+      };
+
+      console.log('Adding contact to Resend:', contactData);
+      
+      const contactResponse = await resend.contacts.create({
+        audienceId: process.env.RESEND_AUDIENCE_ID || 'default', // You'll need to set this
+        ...contactData
+      });
+
+      console.log('Contact added successfully:', contactResponse);
+
+      // Add tags to categorize the contact
+      if (contactResponse.data?.id) {
+        try {
+          await resend.contacts.update({
+            audienceId: process.env.RESEND_AUDIENCE_ID || 'default',
+            id: contactResponse.data.id,
+            unsubscribed: false,
+          });
+          console.log('Contact tags updated');
+        } catch (tagError) {
+          console.log('Could not update contact tags:', tagError);
+          // Continue anyway - not critical
+        }
+      }
+    } catch (contactError: any) {
+      console.log('Contact creation failed (continuing with email):', contactError);
+      // Continue with email sending even if contact creation fails
+      // This could happen if contact already exists or other API issues
+    }
 
     const subject = isAvailable 
       ? `Bekräftelse av kursbokning - ${courseTitle}`
@@ -140,11 +178,18 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
+    // Send the email
+    console.log('Sending confirmation email...');
     const emailResponse = await resend.emails.send({
       from: "Lilla Improteatern <noreply@improteatern.se>",
       to: [email],
       subject,
       html: emailContent,
+      tags: [
+        { name: 'type', value: 'course-confirmation' },
+        { name: 'course', value: courseTitle.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() },
+        { name: 'available', value: isAvailable ? 'yes' : 'no' }
+      ]
     });
 
     console.log("Email sent successfully:", emailResponse);

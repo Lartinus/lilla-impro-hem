@@ -21,6 +21,42 @@ serve(async (req) => {
 
     const purchase = await req.json();
     
+    console.log(`Processing ticket confirmation for ${purchase.buyer_email} - show: ${purchase.show_title}`);
+
+    // First, try to add contact to Resend
+    try {
+      const contactData = {
+        email: purchase.buyer_email,
+        first_name: purchase.buyer_name.split(' ')[0] || purchase.buyer_name,
+        last_name: purchase.buyer_name.split(' ').slice(1).join(' ') || '',
+        unsubscribed: false,
+      };
+
+      console.log('Adding ticket buyer as contact to Resend:', contactData);
+      
+      // Add contact
+      const contactResponse = await fetch('https://api.resend.com/contacts', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          audience_id: Deno.env.get('RESEND_AUDIENCE_ID') || 'default',
+          ...contactData
+        }),
+      });
+
+      if (contactResponse.ok) {
+        console.log('Contact added successfully for ticket buyer');
+      } else {
+        console.log('Contact creation failed (continuing with email):', await contactResponse.text());
+      }
+    } catch (contactError) {
+      console.log('Contact creation failed (continuing with email):', contactError);
+      // Continue with email sending even if contact creation fails
+    }
+    
     // Generate QR code URL (using a simple service for now)
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(purchase.qr_data)}`;
     
@@ -117,6 +153,7 @@ serve(async (req) => {
       </html>
     `;
 
+    // Send the email with tags for better tracking
     const emailResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -128,6 +165,11 @@ serve(async (req) => {
         to: [purchase.buyer_email],
         subject: `Din biljett - ${purchase.show_title}`,
         html: emailHtml,
+        tags: [
+          { name: 'type', value: 'ticket-confirmation' },
+          { name: 'show', value: purchase.show_slug },
+          { name: 'tickets', value: (purchase.regular_tickets + purchase.discount_tickets).toString() }
+        ]
       }),
     });
 
@@ -137,12 +179,14 @@ serve(async (req) => {
       throw new Error(`Failed to send email: ${errorText}`);
     }
 
+    console.log('Ticket confirmation email sent successfully');
+
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
-    console.error('Error sending confirmation email:', error);
+    console.error('Error sending ticket confirmation email:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
