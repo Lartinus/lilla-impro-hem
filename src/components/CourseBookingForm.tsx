@@ -81,10 +81,10 @@ const CourseBookingForm = ({
   if (!showButton) return null;
 
   const formContent = (
-    <ScrollArea className="max-h-[70vh] md:max-h-none px-1">
+    <ScrollArea className="max-h-[60vh] lg:max-h-[65vh] px-1">
       {isHouseTeamsOrContinuation ? (
         <Form {...houseTeamsForm}>
-          <form onSubmit={houseTeamsForm.handleSubmit(handleFormSubmit)} className="space-y-4">
+          <form onSubmit={houseTeamsForm.handleSubmit(handleFormSubmit)} className="space-y-4 pr-3">
             <HouseTeamsFormFields form={houseTeamsForm} />
 
             <div className="flex space-x-2 pt-4">
@@ -99,7 +99,7 @@ const CourseBookingForm = ({
         </Form>
       ) : (
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 pr-3">
             <BookingFormFields form={form} />
             
             <BookingInformation maxParticipants={maxParticipants} />
@@ -145,7 +145,7 @@ const CourseBookingForm = ({
           {isHouseTeamsOrContinuation ? buttonText : 'Boka din plats'}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] rounded-none">
+      <DialogContent className="sm:max-w-[425px] max-h-[80vh] rounded-none overflow-hidden">
         <DialogHeader>
           <DialogTitle className="rounded-none">
             {isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : `Anmäl dig till ${courseTitle}`}
