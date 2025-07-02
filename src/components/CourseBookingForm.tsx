@@ -1,4 +1,3 @@
-
 import { useState, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -111,7 +110,7 @@ const CourseBookingForm = ({
       <div className="flex-1 overflow-y-auto px-6 py-4">
         {isHouseTeamsOrContinuation ? (
           <Form {...houseTeamsForm}>
-            <form onSubmit={houseTeamsForm.handleSubmit(handleFormSubmit)} className="space-y-4 pb-24">
+            <form onSubmit={houseTeamsForm.handleSubmit(handleFormSubmit)} className="space-y-4 pb-32">
               <div onFocus={handleFieldFocus}>
                 <HouseTeamsFormFields form={houseTeamsForm} />
               </div>
@@ -119,7 +118,7 @@ const CourseBookingForm = ({
           </Form>
         ) : (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 pb-24">
+            <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 pb-32">
               <div onFocus={handleFieldFocus}>
                 <BookingFormFields form={form} />
                 <BookingInformation maxParticipants={maxParticipants} />
