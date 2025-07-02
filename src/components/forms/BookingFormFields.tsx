@@ -153,7 +153,7 @@ export const HouseTeamsFormFields = ({ form }: HouseTeamsFormFieldsProps) => {
             <FormLabel>Namn *</FormLabel>
             <FormControl>
               <Input 
-                placeholder="För- och efternamn" 
+                placeholder="Ditt fullständiga namn" 
                 className="rounded-none" 
                 maxLength={100}
                 {...field} 
