@@ -14,7 +14,7 @@ interface SimpleShow {
   location: string;
   slug: string;
   image?: string | null;
-  availableTickets?: number;
+  totalTickets?: number; // Make this required to get proper ticket counts
 }
 
 interface ShowCardSimpleProps {
@@ -26,7 +26,15 @@ const ShowCardSimple = ({
   show,
   onImageLoad
 }: ShowCardSimpleProps) => {
-  const { data: availableTickets = show.availableTickets || 100 } = useAvailableTickets(show.slug, show.availableTickets || 100);
+  // Only use useAvailableTickets if we have a valid totalTickets value from Strapi
+  const { data: availableTickets } = useAvailableTickets(
+    show.slug, 
+    show.totalTickets || 0 // Use 0 as fallback to ensure sold out shows are handled correctly
+  );
+
+  console.log(`🎫 ShowCardSimple for ${show.slug}:`);
+  console.log(`  - totalTickets from Strapi: ${show.totalTickets}`);
+  console.log(`  - availableTickets calculated: ${availableTickets}`);
 
   const formatDateTime = (dateString: string) => {
     try {
@@ -44,7 +52,17 @@ const ShowCardSimple = ({
     }
   };
 
-  const isSoldOut = availableTickets <= 0;
+  // Show as sold out if:
+  // 1. totalTickets is undefined/null (not configured in Strapi)
+  // 2. totalTickets is 0 (explicitly set to 0 in Strapi)
+  // 3. availableTickets is 0 or less (calculated as sold out)
+  const isSoldOut = show.totalTickets === undefined || 
+                    show.totalTickets === null || 
+                    show.totalTickets === 0 || 
+                    availableTickets === undefined || 
+                    availableTickets <= 0;
+
+  console.log(`  - isSoldOut: ${isSoldOut} (totalTickets: ${show.totalTickets}, available: ${availableTickets})`);
 
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none overflow-hidden relative">

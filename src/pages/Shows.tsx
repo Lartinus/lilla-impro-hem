@@ -46,8 +46,32 @@ const Shows = () => {
     if (!data) return [];
     
     try {
-      const formattedShows = data?.data ? data.data.map(formatStrapiShowSimple).filter(Boolean) : [];
+      // Use formatStrapiShow instead of formatStrapiShowSimple to get totalTickets
+      const formattedShows = data?.data ? data.data.map((show: any) => {
+        if (!show) return null;
+        const attrs = show.attributes ?? show;
+        if (!attrs) return null;
+
+        const loc = attrs.location;
+        const locationName = loc?.name ?? loc?.data?.attributes?.name ?? '';
+
+        // Include totalTickets from available_tickets field
+        return {
+          id: show.id,
+          title: attrs.titel ?? attrs.title,
+          date: attrs.datum ?? attrs.date,
+          time: attrs.time,
+          location: locationName,
+          slug: attrs.slug,
+          image: attrs.bild?.data?.attributes?.url ? 
+            `https://reliable-chicken-da8c8aa37e.strapiapp.com${attrs.bild.data.attributes.url}` : 
+            null,
+          totalTickets: attrs.available_tickets, // Critical: Include totalTickets for sold out calculation
+        };
+      }).filter(Boolean) : [];
+      
       const sortedShows = sortShows(formattedShows);
+      console.log('📊 Shows with totalTickets:', formattedShows.map(s => ({ slug: s.slug, totalTickets: s.totalTickets })));
       return sortedShows;
     } catch (err) {
       console.error('Error formatting shows:', err);

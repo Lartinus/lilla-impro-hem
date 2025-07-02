@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
 import OptimizedImage from './OptimizedImage';
@@ -12,7 +11,7 @@ interface Show {
   location: string;
   slug: string;
   image: string;
-  availableTickets?: number;
+  totalTickets?: number; // Add totalTickets to get proper ticket counts
 }
 
 interface OtherShowsSectionProps {
@@ -20,7 +19,15 @@ interface OtherShowsSectionProps {
 }
 
 const OtherShowCard = ({ show }: { show: Show }) => {
-  const { data: availableTickets = show.availableTickets || 100 } = useAvailableTickets(show.slug, show.availableTickets || 100);
+  // Only use useAvailableTickets if we have a valid totalTickets value from Strapi
+  const { data: availableTickets } = useAvailableTickets(
+    show.slug, 
+    show.totalTickets || 0 // Use 0 as fallback to ensure sold out shows are handled correctly
+  );
+
+  console.log(`🎫 OtherShowCard for ${show.slug}:`);
+  console.log(`  - totalTickets from Strapi: ${show.totalTickets}`);
+  console.log(`  - availableTickets calculated: ${availableTickets}`);
   
   const formatDateTime = (dateString: string) => {
     try {
@@ -37,7 +44,17 @@ const OtherShowCard = ({ show }: { show: Show }) => {
     }
   };
 
-  const isSoldOut = availableTickets <= 0;
+  // Show as sold out if:
+  // 1. totalTickets is undefined/null (not configured in Strapi)
+  // 2. totalTickets is 0 (explicitly set to 0 in Strapi)
+  // 3. availableTickets is 0 or less (calculated as sold out)
+  const isSoldOut = show.totalTickets === undefined || 
+                    show.totalTickets === null || 
+                    show.totalTickets === 0 || 
+                    availableTickets === undefined || 
+                    availableTickets <= 0;
+
+  console.log(`  - isSoldOut: ${isSoldOut} (totalTickets: ${show.totalTickets}, available: ${availableTickets})`);
 
   return (
     <Link key={show.id} to={`/shows/${show.slug}`} className="block">
