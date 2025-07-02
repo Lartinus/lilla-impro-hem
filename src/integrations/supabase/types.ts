@@ -380,6 +380,10 @@ export type Database = {
         Args: { phone: string }
         Returns: boolean
       }
+      table_exists: {
+        Args: { table_name: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "staff" | "user"

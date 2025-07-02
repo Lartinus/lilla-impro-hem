@@ -14,14 +14,11 @@ export const generateTableName = (courseTitle: string) => {
 
 const checkTableExists = async (tableName: string): Promise<boolean> => {
   try {
-    const { data, error } = await supabase
-      .from('information_schema.tables')
-      .select('table_name')
-      .eq('table_schema', 'public')
-      .eq('table_name', tableName)
-      .single();
+    const { data, error } = await supabase.rpc('table_exists', {
+      table_name: tableName
+    });
 
-    if (error && error.code !== 'PGRST116') { // PGRST116 is "not found" error
+    if (error) {
       console.error('Error checking table existence:', error);
       return false;
     }
@@ -55,7 +52,7 @@ export const ensureCourseTableExists = async (courseTitle: string) => {
       const existingInstance = existingInstances[0];
       console.log('Found existing course instance:', existingInstance);
       
-      // Verify that the table actually exists using proper table existence check
+      // Verify that the table actually exists using the new RPC function
       const tableExists = await checkTableExists(existingInstance.table_name);
 
       if (!tableExists) {
