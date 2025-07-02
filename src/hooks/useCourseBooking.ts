@@ -38,13 +38,35 @@ export const useCourseBooking = (courseTitle: string) => {
   const handleSubmit = async (values: z.infer<typeof formSchema> | z.infer<typeof houseTeamsSchema>) => {
     setIsSubmitting(true);
     try {
-      console.log('Submitting course booking for:', courseTitle);
+      console.log('Starting course booking process for:', courseTitle);
       console.log('Booking data:', values);
       
+      // Ensure the course table exists
       const courseInstance = await ensureCourseTableExists(courseTitle);
-      console.log('Course instance:', courseInstance);
+      console.log('Using course instance:', courseInstance);
       
-      const { error } = await supabase.rpc('insert_course_booking', {
+      // Check for duplicate booking
+      const { data: isDuplicate, error: duplicateCheckError } = await supabase.rpc('check_duplicate_course_booking', {
+        table_name: courseInstance.table_name,
+        email_address: values.email.toLowerCase()
+      });
+      
+      if (duplicateCheckError) {
+        console.error('Error checking for duplicate booking:', duplicateCheckError);
+        throw new Error('Kunde inte kontrollera befintliga bokningar');
+      }
+      
+      if (isDuplicate) {
+        toast({ 
+          title: "Redan anmäld", 
+          description: "Du har redan anmält dig till denna kurs med den e-postadressen.",
+          variant: "destructive" 
+        });
+        return { success: false, error: 'duplicate' };
+      }
+      
+      // Insert the booking
+      const { error: insertError } = await supabase.rpc('insert_course_booking', {
         table_name: courseInstance.table_name,
         booking_name: values.name,
         booking_phone: values.phone,
@@ -55,22 +77,24 @@ export const useCourseBooking = (courseTitle: string) => {
         booking_message: 'message' in values ? values.message || '' : ''
       });
       
-      if (error) {
-        console.error('Database error:', error);
+      if (insertError) {
+        console.error('Database error during booking:', insertError);
         
         // Handle specific database validation errors with Swedish messages
         let errorMessage = "Något gick fel vid anmälan. Försök igen.";
         
-        if (error.message.includes('Ogiltig e-postadress')) {
+        if (insertError.message.includes('Ogiltig e-postadress')) {
           errorMessage = "Ogiltig e-postadress. Kontrollera att du har angett rätt format.";
-        } else if (error.message.includes('Ogiltigt telefonnummer')) {
+        } else if (insertError.message.includes('Ogiltigt telefonnummer')) {
           errorMessage = "Ogiltigt telefonnummer. Ange ett nummer mellan 6-20 tecken.";
-        } else if (error.message.includes('Namn får inte vara tomt')) {
+        } else if (insertError.message.includes('Namn får inte vara tomt')) {
           errorMessage = "Namn är obligatoriskt och får inte vara tomt.";
-        } else if (error.message.includes('Namn är för långt')) {
+        } else if (insertError.message.includes('Namn är för långt')) {
           errorMessage = "Namn är för långt. Maximalt 100 tecken tillåtet.";
-        } else if (error.message.includes('duplicate key') || error.message.includes('unique constraint')) {
+        } else if (insertError.message.includes('duplicate key') || insertError.message.includes('unique constraint')) {
           errorMessage = "Du har redan anmält dig till denna kurs med den e-postadressen.";
+        } else if (insertError.message.includes('relation') && insertError.message.includes('does not exist')) {
+          errorMessage = "Tekniskt fel med kurssystemet. Försök igen om en stund.";
         }
         
         toast({ 
@@ -79,13 +103,38 @@ export const useCourseBooking = (courseTitle: string) => {
           variant: "destructive" 
         });
         
-        throw error;
+        throw insertError;
       }
       
       console.log('Course booking submitted successfully');
+      
+      // Send confirmation email by calling the edge function
+      try {
+        const isHouseTeamsOrContinuation = courseTitle.includes("House teams") || courseTitle.includes("fortsättning");
+        
+        const { error: emailError } = await supabase.functions.invoke('send-course-confirmation', {
+          body: {
+            name: values.name,
+            email: values.email,
+            courseTitle: courseTitle,
+            isAvailable: !isHouseTeamsOrContinuation
+          }
+        });
+
+        if (emailError) {
+          console.error('Error sending confirmation email:', emailError);
+          // Don't throw here - booking was successful, just email failed
+        } else {
+          console.log('Confirmation email sent successfully');
+        }
+      } catch (emailError) {
+        console.error('Error sending confirmation email:', emailError);
+        // Don't throw here - booking was successful, just email failed
+      }
+      
       toast({ 
         title: "Anmälan skickad!", 
-        description: "Vi återkommer till dig så snart som möjligt." 
+        description: "Vi återkommer till dig så snart som möjligt. Du kommer även få en bekräftelse via e-post." 
       });
       
       return { success: true };
@@ -93,7 +142,7 @@ export const useCourseBooking = (courseTitle: string) => {
       console.error('Error submitting course booking:', error);
       
       // Only show generic error if we haven't already shown a specific one
-      if (!error?.message?.includes('Ogiltig') && !error?.message?.includes('duplicate')) {
+      if (!error?.message?.includes('Ogiltig') && !error?.message?.includes('duplicate') && !error?.message?.includes('Tekniskt fel')) {
         toast({ 
           title: "Något gick fel", 
           description: "Försök igen eller kontakta oss direkt.", 

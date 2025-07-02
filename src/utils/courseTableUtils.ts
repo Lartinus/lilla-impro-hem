@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 
 export const generateTableName = (courseTitle: string) => {
@@ -13,7 +14,55 @@ export const generateTableName = (courseTitle: string) => {
 
 export const ensureCourseTableExists = async (courseTitle: string) => {
   try {
-    // Generate a consistent table name
+    console.log('Looking for existing course instance for:', courseTitle);
+    
+    // First, check if we already have an active instance for this course
+    const { data: existingInstances, error: fetchError } = await supabase
+      .from('course_instances')
+      .select('*')
+      .eq('course_title', courseTitle)
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    if (fetchError) {
+      console.error('Error fetching existing course instances:', fetchError);
+      throw fetchError;
+    }
+
+    if (existingInstances && existingInstances.length > 0) {
+      const existingInstance = existingInstances[0];
+      console.log('Found existing course instance:', existingInstance);
+      
+      // Verify that the table actually exists
+      const { data: tableExists, error: tableCheckError } = await supabase.rpc('get_course_booking_count', {
+        table_name: existingInstance.table_name
+      });
+
+      if (tableCheckError) {
+        console.warn('Table does not exist, will create it:', existingInstance.table_name);
+        
+        // Create the missing table
+        const { error: createTableError } = await supabase.rpc('create_course_booking_table', {
+          table_name: existingInstance.table_name
+        });
+
+        if (createTableError) {
+          console.error('Error creating missing course booking table:', createTableError);
+          throw createTableError;
+        }
+        
+        console.log('Successfully created missing table:', existingInstance.table_name);
+      } else {
+        console.log('Table exists and has', tableExists, 'bookings');
+      }
+      
+      return existingInstance;
+    }
+
+    // No existing active instance found, create a new one
+    console.log('No existing course instance found, creating new one for:', courseTitle);
+    
     const timestamp = Date.now();
     const sanitizedTitle = courseTitle
       .toLowerCase()
@@ -23,23 +72,7 @@ export const ensureCourseTableExists = async (courseTitle: string) => {
     
     const tableName = `course_${sanitizedTitle}_${timestamp}`;
 
-    // Check if we already have an active instance for this course
-    const { data: existingInstances } = await supabase
-      .from('course_instances')
-      .select('*')
-      .eq('course_title', courseTitle)
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
-      .limit(1);
-
-    if (existingInstances && existingInstances.length > 0) {
-      console.log('Found existing course instance:', existingInstances[0]);
-      return existingInstances[0];
-    }
-
     // Create new course instance
-    console.log('Creating new course instance for:', courseTitle);
-    
     const { data: instanceData, error: instanceError } = await supabase
       .from('course_instances')
       .insert({
@@ -55,6 +88,8 @@ export const ensureCourseTableExists = async (courseTitle: string) => {
       console.error('Error creating course instance:', instanceError);
       throw instanceError;
     }
+
+    console.log('Successfully created course instance:', instanceData);
 
     // Create the actual booking table
     const { error: tableError } = await supabase.rpc('create_course_booking_table', {
