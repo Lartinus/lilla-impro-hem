@@ -46,7 +46,7 @@ const Index = () => {
           <img
             src="/uploads/LIT_WoB_large.png"
             alt="Lilla Improteatern logotyp"
-            className="h-40 md:h-48 lg:h-56 mx-auto mb-4"
+            className="h-40 md:h-48 lg:h-56 mx-auto mb-4 shadow-xl"
           />
           <p className="text-white text-sm">Följ oss på @lillaimproteatern</p>
         </div>
