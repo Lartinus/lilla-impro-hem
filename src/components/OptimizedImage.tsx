@@ -1,10 +1,9 @@
-
 import { useState, useCallback } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getStrapiImageUrl } from '@/utils/strapiHelpers';
 
 interface OptimizedImageProps {
-  src: string | null;
+  src: string | any | null; // Support both string URLs and Strapi objects
   alt: string;
   className?: string;
   fallbackText?: string;
@@ -23,44 +22,60 @@ const OptimizedImage = ({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  // Memoize the image URL calculation and use original src for onLoad callback
-  const optimizedSrc = useCallback(() => {
-    if (!src) return null;
+  // Memoize the image URL calculation and determine original source for callback
+  const { imageUrl, originalSrc } = useCallback(() => {
+    if (!src) return { imageUrl: null, originalSrc: null };
 
-    // Om det redan är en full URL eller lokal sökväg
-    if (src.startsWith('http') || src.startsWith('/')) {
-      return src;
+    // If src is already a string URL (legacy behavior)
+    if (typeof src === 'string') {
+      // If it's already a full URL or local path, use as-is
+      if (src.startsWith('http') || src.startsWith('/')) {
+        return { imageUrl: src, originalSrc: src };
+      }
+      // Otherwise, treat as Strapi path and construct URL
+      return { 
+        imageUrl: getStrapiImageUrl(src, { size: preferredSize }), 
+        originalSrc: src 
+      };
     }
 
-    // Anropa nya signaturen: ett options‐objekt istället för 3 argument
-    return getStrapiImageUrl(src, { size: preferredSize });
-  }, [src, preferredSize]);
-
-  const imageUrl = optimizedSrc();
+    // If src is a Strapi object, use getStrapiImageUrl to process it
+    const processedUrl = getStrapiImageUrl(src, { size: preferredSize });
+    
+    // For callback consistency, construct the original URL pattern
+    const callbackUrl = src?.data?.attributes?.url ? 
+      `https://reliable-chicken-da8c8aa37e.media.strapiapp.com${src.data.attributes.url}` : 
+      processedUrl;
+    
+    return { 
+      imageUrl: processedUrl, 
+      originalSrc: callbackUrl 
+    };
+  }, [src, preferredSize])();
 
   const handleLoad = useCallback(() => {
-    console.log('OptimizedImage: Image loaded successfully, calling onLoad with original src:', src);
+    console.log('OptimizedImage: Image loaded successfully, calling onLoad with:', originalSrc);
     setIsLoading(false);
-    // Always call onLoad with the original src to match imageUrls array
-    if (onLoad && src) {
-      onLoad(src);
+    // Call onLoad with the original/constructed src for tracking consistency
+    if (onLoad && originalSrc) {
+      onLoad(originalSrc);
     }
-  }, [onLoad, src]);
+  }, [onLoad, originalSrc]);
 
   const handleError = useCallback(() => {
-    console.log('OptimizedImage: Image failed to load, calling onLoad with original src:', src);
+    console.log('OptimizedImage: Image failed to load, calling onLoad with:', originalSrc);
     setHasError(true);
     setIsLoading(false);
-    // Still call onLoad with original src even on error to not block the loading indicator
-    if (onLoad && src) {
-      onLoad(src);
+    // Still call onLoad even on error to not block the loading indicator
+    if (onLoad && originalSrc) {
+      onLoad(originalSrc);
     }
-  }, [onLoad, src]);
+  }, [onLoad, originalSrc]);
 
-  // If no valid image URL, call onLoad immediately with original src to not block loading
-  if (!imageUrl && onLoad && src) {
-    console.log('OptimizedImage: No valid image URL, calling onLoad immediately for original src:', src);
-    onLoad(src);
+  // If no valid image URL, call onLoad immediately to not block loading
+  if (!imageUrl && onLoad && originalSrc) {
+    console.log('OptimizedImage: No valid image URL, calling onLoad immediately for:', originalSrc);
+    onLoad(originalSrc);
   }
 
   if (!imageUrl || hasError) {
