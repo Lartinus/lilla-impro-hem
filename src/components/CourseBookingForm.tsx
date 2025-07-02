@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -45,6 +45,7 @@ const CourseBookingForm = ({
   const [open, setOpen] = useState(false);
   const { handleSubmit: submitBooking, isSubmitting } = useCourseBooking(courseTitle);
   const isMobile = useIsMobile();
+  const formContainerRef = useRef<HTMLDivElement>(null);
 
   console.log('CourseBookingForm - isMobile:', isMobile, 'window.innerWidth:', typeof window !== 'undefined' ? window.innerWidth : 'undefined');
 
@@ -80,32 +81,63 @@ const CourseBookingForm = ({
     }
   };
 
+  // Auto-scroll function for mobile
+  const handleFieldFocus = useCallback((event: React.FocusEvent) => {
+    if (!isMobile || !formContainerRef.current) return;
+    
+    // Small delay to ensure keyboard is shown
+    setTimeout(() => {
+      const target = event.target as HTMLElement;
+      const container = formContainerRef.current!;
+      const containerRect = container.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      
+      // Check if field is not fully visible
+      if (targetRect.bottom > containerRect.bottom - 100) {
+        target.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'nearest'
+        });
+      }
+    }, 100);
+  }, [isMobile]);
+
   if (!showButton) return null;
 
-  // Mobile-optimized form content without ScrollArea
+  // Mobile-optimized form content
   const mobileFormContent = (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto px-1 pb-4">
+    <div ref={formContainerRef} className="flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto px-6 py-4">
         {isHouseTeamsOrContinuation ? (
           <Form {...houseTeamsForm}>
-            <form onSubmit={houseTeamsForm.handleSubmit(handleFormSubmit)} className="space-y-4">
-              <HouseTeamsFormFields form={houseTeamsForm} />
+            <form onSubmit={houseTeamsForm.handleSubmit(handleFormSubmit)} className="space-y-4 pb-24">
+              <div onFocus={handleFieldFocus}>
+                <HouseTeamsFormFields form={houseTeamsForm} />
+              </div>
             </form>
           </Form>
         ) : (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
-              <BookingFormFields form={form} />
-              <BookingInformation maxParticipants={maxParticipants} />
+            <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 pb-24">
+              <div onFocus={handleFieldFocus}>
+                <BookingFormFields form={form} />
+                <BookingInformation maxParticipants={maxParticipants} />
+              </div>
             </form>
           </Form>
         )}
       </div>
       
       {/* Fixed button area at bottom */}
-      <div className="flex-shrink-0 border-t bg-background p-4 space-y-2">
-        <div className="flex space-x-2">
-          <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1 rounded-none">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 pb-safe">
+        <div className="flex space-x-3">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => setOpen(false)} 
+            className="flex-1 rounded-none"
+          >
             Avbryt
           </Button>
           <Button 
@@ -175,8 +207,8 @@ const CourseBookingForm = ({
             {isHouseTeamsOrContinuation ? buttonText : 'Boka din plats'}
           </Button>
         </SheetTrigger>
-        <SheetContent side="bottom" className="h-[90vh] rounded-t-lg p-0 flex flex-col overflow-hidden">
-          <SheetHeader className="p-6 pb-4 flex-shrink-0">
+        <SheetContent side="bottom" className="h-[100vh] w-full p-0 flex flex-col overflow-hidden">
+          <SheetHeader className="p-6 pb-4 flex-shrink-0 border-b border-gray-200">
             <SheetTitle className="text-left">
               {isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : `Anmäl dig till ${courseTitle}`}
             </SheetTitle>

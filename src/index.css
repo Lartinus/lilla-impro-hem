@@ -248,6 +248,11 @@
     font-size: inherit !important;
     margin: 0.25rem 0 !important;
   }
+
+  /* Safe area support for iOS */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
 }
 
 
