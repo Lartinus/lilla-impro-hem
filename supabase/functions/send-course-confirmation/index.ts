@@ -48,7 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
       `;
 
     const emailResponse = await resend.emails.send({
-      from: "Lilla Improteatern <onboarding@resend.dev>",
+      from: "Lilla Improteatern <noreply@improteatern.se>",
       to: [email],
       subject,
       html: emailContent,
