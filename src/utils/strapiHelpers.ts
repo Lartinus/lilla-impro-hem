@@ -1,3 +1,4 @@
+
 // strapiHelpers.ts
 
 export type Size = 'small' | 'medium' | 'large';
@@ -13,7 +14,7 @@ export const getStrapiImageUrl = (
   image: any,
   opts: ImageOpts = {}
 ): string | null => {
-  const { baseUrl = 'https://reliable-chicken-da8c8aa37e.strapiapp.com', size } = opts;
+  const { baseUrl = 'https://reliable-chicken-da8c8aa37e.media.strapiapp.com', size } = opts;
   if (!image) return null;
 
   // Extract URL from various Strapi response shapes

@@ -1,3 +1,4 @@
+
 import Header from '@/components/Header';
 import ShowCardSimple from '@/components/ShowCardSimple';
 import ShowCardSkeleton from '@/components/ShowCardSkeleton';
@@ -46,7 +47,7 @@ const Shows = () => {
     if (!data) return [];
     
     try {
-      // Use formatStrapiShow instead of formatStrapiShowSimple to get totalTickets
+      // Format shows and pass raw image object to OptimizedImage for proper URL handling
       const formattedShows = data?.data ? data.data.map((show: any) => {
         if (!show) return null;
         const attrs = show.attributes ?? show;
@@ -55,7 +56,7 @@ const Shows = () => {
         const loc = attrs.location;
         const locationName = loc?.name ?? loc?.data?.attributes?.name ?? '';
 
-        // Include totalTickets from available_tickets field
+        // Pass the raw image object instead of manually constructing URL
         return {
           id: show.id,
           title: attrs.titel ?? attrs.title,
@@ -63,9 +64,7 @@ const Shows = () => {
           time: attrs.time,
           location: locationName,
           slug: attrs.slug,
-          image: attrs.bild?.data?.attributes?.url ? 
-            `https://reliable-chicken-da8c8aa37e.strapiapp.com${attrs.bild.data.attributes.url}` : 
-            null,
+          image: attrs.bild, // Pass raw Strapi image object
           totalTickets: attrs.available_tickets, // Critical: Include totalTickets for sold out calculation
         };
       }).filter(Boolean) : [];
@@ -79,9 +78,15 @@ const Shows = () => {
     }
   }, [data]);
 
-  // Extract image URLs for loading tracking
+  // Extract image URLs for loading tracking - use getStrapiImageUrl for consistency
   const imageUrls = useMemo(() => {
-    const urls = shows.map(show => show.image).filter(Boolean) as string[];
+    const urls = shows.map(show => {
+      if (!show.image) return null;
+      // Use getStrapiImageUrl to get the correct URL for tracking
+      return show.image?.data?.attributes?.url ? 
+        `https://reliable-chicken-da8c8aa37e.media.strapiapp.com${show.image.data.attributes.url}` : 
+        null;
+    }).filter(Boolean) as string[];
     console.log('Shows: Extracted image URLs:', urls);
     return urls;
   }, [shows]);

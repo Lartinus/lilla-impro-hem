@@ -13,7 +13,7 @@ interface SimpleShow {
   time?: any;
   location: string;
   slug: string;
-  image?: string | null;
+  image?: any; // Raw Strapi image object
   totalTickets: number; // Required to get proper ticket counts
 }
 
@@ -61,17 +61,27 @@ const ShowCardSimple = ({
 
   console.log(`  - isSoldOut: ${isSoldOut} (totalTickets: ${show.totalTickets}, available: ${availableTickets})`);
 
+  // Get the image URL for onImageLoad callback
+  const imageUrl = show.image?.data?.attributes?.url ? 
+    `https://reliable-chicken-da8c8aa37e.media.strapiapp.com${show.image.data.attributes.url}` : 
+    null;
+
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none overflow-hidden relative">
       <CardContent className="p-0">
-        {/* Optimized Show Image */}
+        {/* Optimized Show Image - pass raw Strapi object */}
         {show.image && (
           <OptimizedImage 
             src={show.image} 
             alt={show.title} 
             className="w-full h-48 md:h-56 object-cover" 
             preferredSize="medium"
-            onLoad={onImageLoad}
+            onLoad={() => {
+              // Call onImageLoad with the constructed URL for tracking consistency
+              if (onImageLoad && imageUrl) {
+                onImageLoad(imageUrl);
+              }
+            }}
           />
         )}
 
