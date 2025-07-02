@@ -1,5 +1,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface MultiLayerParallaxBackgroundProps {
   enabled?: boolean;
@@ -18,12 +19,11 @@ const MultiLayerParallaxBackground = ({
   intensity = 1 
 }: MultiLayerParallaxBackgroundProps) => {
   const [scrollY, setScrollY] = useState(0);
+  const isMobile = useIsMobile();
 
   const handleScroll = useCallback(() => {
     const currentScrollY = window.scrollY;
     setScrollY(currentScrollY);
-    // Debug: Log scroll values to console
-    console.log('Parallax scroll Y:', currentScrollY);
   }, []);
 
   useEffect(() => {
@@ -49,29 +49,60 @@ const MultiLayerParallaxBackground = ({
 
   if (!enabled) return null;
 
-  // Debug: Log that component is rendering
-  console.log('Parallax component rendering with enabled:', enabled);
+  // Mobile/Tablet: Single hero image at 600px height
+  if (isMobile) {
+    return (
+      <div 
+        className="fixed inset-0 w-full h-[600px] overflow-hidden pointer-events-none"
+        style={{ zIndex: 0 }}
+        aria-hidden="true"
+      >
+        <div
+          className="absolute w-full h-[600px]"
+          style={{
+            top: '0px',
+            transform: `translateY(${scrollY * 0.3 * intensity}px)`,
+            willChange: 'transform'
+          }}
+        >
+          <img
+            src={PARALLAX_IMAGES[0]}
+            alt=""
+            className="w-full h-full object-cover"
+            style={{ 
+              opacity: 1,
+              filter: 'brightness(0.7) contrast(1.1)',
+            }}
+          />
+        </div>
 
+        {/* Gradient overlay för att smälta samman med sidans färgschema */}
+        <div 
+          className="absolute inset-0 pointer-events-none" 
+          style={{ 
+            background: `linear-gradient(135deg, 
+              rgba(119, 36, 36, 0.1) 0%, 
+              rgba(58, 18, 18, 0.2) 50%, 
+              rgba(119, 36, 36, 0.1) 100%)`
+          }} 
+        />
+      </div>
+    );
+  }
+
+  // Desktop: Multi-layer parallax effect
   return (
     <div 
       className="fixed inset-0 w-full h-[200vh] overflow-hidden pointer-events-none"
       style={{ zIndex: 0 }}
       aria-hidden="true"
     >
-      {/* Debug indicator - remove after testing */}
-      <div 
-        className="absolute top-4 left-4 bg-red-500 text-white p-2 text-sm z-50 pointer-events-auto"
-        style={{ position: 'fixed' }}
-      >
-        Parallax Active - Scroll: {scrollY}px
-      </div>
-
       {/* Bakgrundslager 1 - Första bilden */}
       <div
         className="absolute w-full h-[500px]"
         style={{
           top: '0px',
-          transform: `translateY(${scrollY * -0.2 * intensity}px)`,
+          transform: `translateY(${scrollY * 0.2 * intensity}px)`,
           willChange: 'transform'
         }}
       >
@@ -83,8 +114,6 @@ const MultiLayerParallaxBackground = ({
             opacity: 1,
             filter: 'brightness(0.7) contrast(1.1)',
           }}
-          onLoad={() => console.log('Parallax image 1 loaded')}
-          onError={() => console.error('Failed to load parallax image 1')}
         />
       </div>
 
@@ -92,8 +121,8 @@ const MultiLayerParallaxBackground = ({
       <div
         className="absolute w-full h-[500px]"
         style={{
-          top: '350px', // Överlappande med 150px
-          transform: `translateY(${scrollY * -0.35 * intensity}px)`,
+          top: '350px',
+          transform: `translateY(${scrollY * 0.35 * intensity}px)`,
           willChange: 'transform'
         }}
       >
@@ -105,8 +134,6 @@ const MultiLayerParallaxBackground = ({
             opacity: 1,
             filter: 'brightness(0.8) sepia(0.1)',
           }}
-          onLoad={() => console.log('Parallax image 2 loaded')}
-          onError={() => console.error('Failed to load parallax image 2')}
         />
       </div>
 
@@ -114,8 +141,8 @@ const MultiLayerParallaxBackground = ({
       <div
         className="absolute w-full h-[500px]"
         style={{
-          top: '700px', // Överlappande med 150px
-          transform: `translateY(${scrollY * -0.5 * intensity}px)`,
+          top: '700px',
+          transform: `translateY(${scrollY * 0.5 * intensity}px)`,
           willChange: 'transform'
         }}
       >
@@ -127,8 +154,6 @@ const MultiLayerParallaxBackground = ({
             opacity: 1,
             filter: 'brightness(0.9) saturate(0.8)',
           }}
-          onLoad={() => console.log('Parallax image 3 loaded')}
-          onError={() => console.error('Failed to load parallax image 3')}
         />
       </div>
 
@@ -136,8 +161,8 @@ const MultiLayerParallaxBackground = ({
       <div
         className="absolute w-full h-[500px]"
         style={{
-          top: '1050px', // Överlappande med 150px
-          transform: `translateY(${scrollY * -0.7 * intensity}px)`,
+          top: '1050px',
+          transform: `translateY(${scrollY * 0.7 * intensity}px)`,
           willChange: 'transform'
         }}
       >
@@ -149,8 +174,6 @@ const MultiLayerParallaxBackground = ({
             opacity: 1,
             filter: 'brightness(1.1) contrast(0.9)',
           }}
-          onLoad={() => console.log('Parallax image 4 loaded')}
-          onError={() => console.error('Failed to load parallax image 4')}
         />
       </div>
 
