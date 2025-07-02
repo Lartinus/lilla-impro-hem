@@ -3,29 +3,23 @@ import Header from '@/components/Header';
 import ServiceBoxes from '@/components/ServiceBoxes';
 import MultiLayerParallaxBackground from '@/components/MultiLayerParallaxBackground';
 import { useOptimizedPrefetch } from '@/hooks/useOptimizedPrefetch';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 const Index = () => {
   // Use optimized prefetch for better performance
   useOptimizedPrefetch();
-  const isMobile = useIsMobile();
 
   // Enkelt sätt att stänga av parallax-bakgrunden
   const enableParallaxBackground = true;
 
-  // Responsive container heights - mobil får auto height för scrolling
-  const containerHeight = isMobile ? "h-auto min-h-screen" : "h-[200vh]";
-  const sectionHeight = isMobile ? "h-auto" : "h-[200vh]";
-
   return (
-    <div className={`${containerHeight} bg-gradient-to-br from-theatre-secondary to-theatre-tertiary relative`}>
-      {/* Parallax bakgrund - responsiv */}
+    <div className="h-[200vh] bg-gradient-to-br from-theatre-secondary to-theatre-tertiary relative">
+      {/* Parallax bakgrund - lägg till/ta bort enkelt */}
       <MultiLayerParallaxBackground enabled={enableParallaxBackground} />
       
       <Header />
 
-      <section className={`${sectionHeight} ${isMobile ? 'flex flex-col' : 'flex flex-col justify-center'} px-0.5 relative overflow-hidden py-0 md:px-0`}>
-        <div className={`${isMobile ? 'mt-[700px]' : 'flex items-center justify-center min-h-screen my-[30px]'} py-[20px]`}>
+      <section className="h-[200vh] flex flex-col justify-center px-0.5 relative overflow-hidden py-0 md:px-0">
+        <div className="flex items-center justify-center min-h-screen my-[30px] py-[20px]">
           <div className="mt-12 md:mt-20 p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto relative z-10">
             
             <div className="mx-3 md:mx-0 md:max-w-6xl lg:max-w-7xl pb-1">
@@ -42,21 +36,11 @@ const Index = () => {
             <div className="space-y-4">
               <ServiceBoxes />
             </div>
-
-            <div className="block md:hidden mt-6">
-              <a href="/om-oss">
-                <img
-                  src="/uploads/LIT_BoW_large.png"
-                  alt="Lilla Improteatern logotyp"
-                  className="h-[120px] cursor-pointer"
-                />
-              </a>
-            </div>
           </div>
         </div>
 
-        {/* Logotyp längst ner på sidan - responsiv positionering */}
-        <div className={`${isMobile ? 'mt-[200px] mb-[100px]' : 'absolute bottom-[18rem] left-1/2 transform -translate-x-1/2'} ${isMobile ? '' : 'z-5'} text-center`}>
+        {/* Logotyp längst ner på sidan */}
+        <div className="absolute bottom-[18rem] left-1/2 transform -translate-x-1/2 z-5 text-center">
           <img
             src="/uploads/LIT_WoB_large.png"
             alt="Lilla Improteatern logotyp"
