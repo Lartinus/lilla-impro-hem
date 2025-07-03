@@ -33,8 +33,8 @@ const MultiLayerParallaxBackground = ({
   const [scrollY, setScrollY] = useState(0);
   const isMobile = useIsMobile();
 
-  // Reduce intensity on mobile for smoother performance
-  const mobileIntensity = intensity * 0.4; // Much gentler on mobile
+  // Increase mobile intensity for more noticeable parallax effect
+  const mobileIntensity = intensity * 0.8; // Increased from 0.4 to 0.8 for more visible movement
   const effectiveIntensity = isMobile ? mobileIntensity : intensity;
 
   const handleScroll = useCallback(() => {
@@ -81,7 +81,7 @@ const MultiLayerParallaxBackground = ({
 
   if (!enabled) return null;
 
-  // Mobile/Tablet: Single hero image with optimized settings - reduced height by 100px
+  // Mobile/Tablet: Single hero image with increased parallax effect - reduced height by 100px
   if (isMobile) {
     return (
       <div 
@@ -93,7 +93,7 @@ const MultiLayerParallaxBackground = ({
           className="absolute w-full h-[500px]"
           style={{
             top: '0px',
-            transform: `translate3d(0, ${scrollY * -0.1 * effectiveIntensity}px, 0)`,
+            transform: `translate3d(0, ${scrollY * -0.15 * effectiveIntensity}px, 0)`, // Increased from -0.1 to -0.15
             willChange: 'transform'
           }}
         >
