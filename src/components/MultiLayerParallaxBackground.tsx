@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -33,8 +32,8 @@ const MultiLayerParallaxBackground = ({
   const [scrollY, setScrollY] = useState(0);
   const isMobile = useIsMobile();
 
-  // Reduce intensity on mobile for smoother performance
-  const mobileIntensity = intensity * 0.3; // Much gentler on mobile
+  // Increase mobile intensity significantly for visible parallax effect
+  const mobileIntensity = intensity * 3.5;
   const effectiveIntensity = isMobile ? mobileIntensity : intensity;
 
   const handleScroll = useCallback(() => {
@@ -42,9 +41,9 @@ const MultiLayerParallaxBackground = ({
     setScrollY(currentScrollY);
   }, []);
 
-  // Throttled scroll handler for mobile
+  // Reduce throttling on mobile for smoother parallax
   const throttledHandleScroll = useCallback(
-    throttle(handleScroll, isMobile ? 33 : 16), // 30fps on mobile, 60fps on desktop
+    throttle(handleScroll, isMobile ? 16 : 16), // Same smooth rate for both mobile and desktop
     [handleScroll, isMobile]
   );
 
@@ -55,10 +54,9 @@ const MultiLayerParallaxBackground = ({
 
     const updateScrollY = () => {
       if (isMobile) {
-        // Direct update on mobile for better performance
-        throttledHandleScroll();
+        // Use requestAnimationFrame on mobile too for smoother parallax
+        handleScroll();
       } else {
-        // Use requestAnimationFrame on desktop
         handleScroll();
       }
       ticking = false;
@@ -66,22 +64,18 @@ const MultiLayerParallaxBackground = ({
 
     const requestTick = () => {
       if (!ticking) {
-        if (isMobile) {
-          updateScrollY();
-        } else {
-          requestAnimationFrame(updateScrollY);
-        }
+        requestAnimationFrame(updateScrollY);
         ticking = true;
       }
     };
 
     window.addEventListener('scroll', requestTick, { passive: true });
     return () => window.removeEventListener('scroll', requestTick);
-  }, [enabled, handleScroll, throttledHandleScroll, isMobile]);
+  }, [enabled, handleScroll, isMobile]);
 
   if (!enabled) return null;
 
-  // Mobile/Tablet: Single hero image with optimized settings - reduced height by 100px
+  // Mobile/Tablet: Single hero image with enhanced parallax effect
   if (isMobile) {
     return (
       <div 
@@ -93,7 +87,8 @@ const MultiLayerParallaxBackground = ({
           className="absolute w-full h-[500px]"
           style={{
             top: '0px',
-            transform: `translate3d(0, ${scrollY * -0.1 * effectiveIntensity}px, 0)`,
+            // Increased parallax value from -0.1 to -0.3 for visible effect
+            transform: `translate3d(0, ${scrollY * -0.3 * effectiveIntensity}px, 0)`,
             willChange: 'transform'
           }}
         >
