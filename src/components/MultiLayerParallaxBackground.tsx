@@ -33,7 +33,7 @@ const MultiLayerParallaxBackground = ({
   const isMobile = useIsMobile();
 
   // Increase mobile intensity significantly for visible parallax effect
-  const mobileIntensity = intensity * 3.5;
+  const mobileIntensity = intensity * 2.5;
   const effectiveIntensity = isMobile ? mobileIntensity : intensity;
 
   const handleScroll = useCallback(() => {
