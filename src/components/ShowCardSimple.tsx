@@ -27,7 +27,7 @@ const ShowCardSimple = ({
   onImageLoad
 }: ShowCardSimpleProps) => {
   // Use totalTickets from Strapi to calculate availability
-  const { data: availableTickets } = useAvailableTickets(
+  const { data: availableTickets, isLoading } = useAvailableTickets(
     show.slug, 
     show.totalTickets
   );
@@ -35,6 +35,7 @@ const ShowCardSimple = ({
   console.log(`🎫 ShowCardSimple for ${show.slug}:`);
   console.log(`  - totalTickets from Strapi: ${show.totalTickets}`);
   console.log(`  - availableTickets calculated: ${availableTickets}`);
+  console.log(`  - isLoading: ${isLoading}`);
 
   const formatDateTime = (dateString: string) => {
     try {
@@ -52,14 +53,14 @@ const ShowCardSimple = ({
     }
   };
 
-  // Show as sold out if:
-  // 1. totalTickets is 0 (explicitly set to 0 in Strapi)
-  // 2. availableTickets is 0 or less (calculated as sold out)
+  // Only show as sold out if:
+  // 1. totalTickets is explicitly set to 0 in Strapi (immediate sold out)
+  // 2. We have finished loading AND availableTickets is 0 or less
+  // This prevents flickering while data is loading
   const isSoldOut = show.totalTickets === 0 || 
-                    availableTickets === undefined || 
-                    availableTickets <= 0;
+                    (!isLoading && availableTickets !== undefined && availableTickets <= 0);
 
-  console.log(`  - isSoldOut: ${isSoldOut} (totalTickets: ${show.totalTickets}, available: ${availableTickets})`);
+  console.log(`  - isSoldOut: ${isSoldOut} (totalTickets: ${show.totalTickets}, available: ${availableTickets}, loading: ${isLoading})`);
 
   // Get the image URL for onImageLoad callback
   const imageUrl = show.image?.data?.attributes?.url ? 

@@ -81,16 +81,16 @@ const MultiLayerParallaxBackground = ({
 
   if (!enabled) return null;
 
-  // Mobile/Tablet: Single hero image with optimized settings
+  // Mobile/Tablet: Single hero image with optimized settings - reduced height by 100px
   if (isMobile) {
     return (
       <div 
-        className="fixed inset-0 w-full h-[600px] overflow-hidden pointer-events-none"
+        className="fixed inset-0 w-full h-[500px] overflow-hidden pointer-events-none"
         style={{ zIndex: 0 }}
         aria-hidden="true"
       >
         <div
-          className="absolute w-full h-[600px]"
+          className="absolute w-full h-[500px]"
           style={{
             top: '0px',
             transform: `translate3d(0, ${scrollY * -0.1 * effectiveIntensity}px, 0)`,
@@ -124,16 +124,16 @@ const MultiLayerParallaxBackground = ({
     );
   }
 
-  // Desktop: Multi-layer parallax effect with full features
+  // Desktop: Multi-layer parallax effect with full features - reduced first layer height by 100px
   return (
     <div 
       className="fixed inset-0 w-full h-[200vh] overflow-hidden pointer-events-none"
       style={{ zIndex: 0 }}
       aria-hidden="true"
     >
-      {/* Bakgrundslager 1 - Första bilden */}
+      {/* Bakgrundslager 1 - Första bilden - reduced from h-[500px] to h-[400px] */}
       <div
-        className="absolute w-full h-[500px]"
+        className="absolute w-full h-[400px]"
         style={{
           top: '0px',
           transform: `translate3d(0, ${scrollY * -0.2 * effectiveIntensity}px, 0)`,
