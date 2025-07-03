@@ -19,7 +19,7 @@ const Index = () => {
       <Header />
 
       <section className="min-h-[140vh] flex flex-col px-0.5 relative overflow-hidden py-0 md:px-0">
-        <div className="mt-[400px] md:mt-32 md:flex md:items-center md:justify-center md:min-h-screen my-[30px] py-[20px]">
+        <div className="mt-[400px] md:mt-[500px] md:flex md:items-center md:justify-center md:min-h-screen my-[30px] py-[20px]">
           <div className="p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto relative z-10">
             
             <div className="mx-3 md:mx-0 md:max-w-6xl lg:max-w-7xl pb-1">
