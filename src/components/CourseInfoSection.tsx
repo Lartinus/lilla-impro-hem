@@ -1,6 +1,7 @@
 
 // src/components/CourseInfoSection.tsx
 import React from 'react';
+import { ArrowRight } from 'lucide-react';
 
 interface Faq {
   question: string;
@@ -85,19 +86,19 @@ export default function CourseInfoSection() {
           <div className="prose space-y-4">
             <p>Du är varmt välkommen till oss oavsett om du:</p>
             <ul className="list-none pl-0 space-y-1">
-              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Aldrig har testat Improv Comedy förut</li>
-              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Vill utvecklas som komisk scenperson</li>
-              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Är rutinerad och vill vässa ditt hantverk</li>
-              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Söker en trygg, tydlig och inspirerande plats att växa på</li>
+              <li className="flex items-start space-x-2"><ArrowRight className="text-blue-600 mt-1 flex-shrink-0" size={16} /><span>Aldrig har testat Improv Comedy förut</span></li>
+              <li className="flex items-start space-x-2"><ArrowRight className="text-blue-600 mt-1 flex-shrink-0" size={16} /><span>Vill utvecklas som komisk scenperson</span></li>
+              <li className="flex items-start space-x-2"><ArrowRight className="text-blue-600 mt-1 flex-shrink-0" size={16} /><span>Är rutinerad och vill vässa ditt hantverk</span></li>
+              <li className="flex items-start space-x-2"><ArrowRight className="text-blue-600 mt-1 flex-shrink-0" size={16} /><span>Söker en trygg, tydlig och inspirerande plats att växa på</span></li>
             </ul>
             <p>
               Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi hjälper dig med att:
             </p>
             <ul className="list-none pl-0 space-y-1">
-              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Få konkreta verktyg för att skapa humoristiska scener</li>
-              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Utveckla ditt scenspråk, lyssnande och komiska timing</li>
-              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Bli modigare, säkrare och mer initiativtagande</li>
-              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Och få scentid. Massor.</li>
+              <li className="flex items-start space-x-2"><ArrowRight className="text-blue-600 mt-1 flex-shrink-0" size={16} /><span>Få konkreta verktyg för att skapa humoristiska scener</span></li>
+              <li className="flex items-start space-x-2"><ArrowRight className="text-blue-600 mt-1 flex-shrink-0" size={16} /><span>Utveckla ditt scenspråk, lyssnande och komiska timing</span></li>
+              <li className="flex items-start space-x-2"><ArrowRight className="text-blue-600 mt-1 flex-shrink-0" size={16} /><span>Bli modigare, säkrare och mer initiativtagande</span></li>
+              <li className="flex items-start space-x-2"><ArrowRight className="text-blue-600 mt-1 flex-shrink-0" size={16} /><span>Och få scentid. Massor.</span></li>
             </ul>
           </div>
         </div>

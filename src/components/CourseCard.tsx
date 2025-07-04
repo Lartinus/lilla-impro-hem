@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import CourseBookingForm from '@/components/CourseBookingForm';
 import CourseLeaderInfo from '@/components/CourseLeaderInfo';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
+import { ArrowRight } from 'lucide-react';
 
 interface Teacher {
   id: number;
@@ -80,11 +81,8 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             <h4 className="mb-2">Praktisk information</h4>
             <div className="space-y-2">
               {course.practicalInfo!.map((item, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <div 
-                    className="bullet-point bg-accent-color-primary rounded-full flex-shrink-0 mt-2"
-                    style={{ width: 'var(--bullet-size)', height: 'var(--bullet-size)' }}
-                  ></div>
+                <div key={index} className="flex items-start space-x-2">
+                  <ArrowRight className="text-blue-600 mt-1 flex-shrink-0" size={16} />
                   <p className="[&>p]:text-[14px] md:[&>p]:text-[16px]">{item}</p>
                 </div>
               ))}
