@@ -490,7 +490,7 @@ export const CourseManagement = () => {
       courseType,
       customName: courseType === 'helgworkshop' ? course.course_title : '',
       subtitle: course.subtitle || '',
-      instructor: course.instructor || '',
+      instructor: course.instructor || 'none',
       sessions: course.sessions || 1,
       hoursPerSession: course.hours_per_session || 2,
       startDate: course.start_date ? new Date(course.start_date) : undefined,
@@ -664,13 +664,13 @@ export const CourseManagement = () => {
                   <Label htmlFor="instructor">Kursledare (valfritt)</Label>
                   <Select 
                     value={newCourse.instructor} 
-                    onValueChange={(value) => setNewCourse({...newCourse, instructor: value})}
+                    onValueChange={(value) => setNewCourse({...newCourse, instructor: value === 'none' ? '' : value})}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Välj kursledare (valfritt)" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Ingen kursledare</SelectItem>
+                      <SelectItem value="none">Ingen kursledare</SelectItem>
                       {performers?.map((performer: any) => (
                         <SelectItem key={performer.id} value={performer.name}>
                           {performer.name}
