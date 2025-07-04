@@ -258,12 +258,12 @@ export const ShowManagement = () => {
     }
   });
 
-  // Fetch performers (actors, not course leaders)
-  const { data: performers } = useQuery({
-    queryKey: ['performers-actors'],
+  // Fetch actors (for shows, not course leaders)
+  const { data: actors } = useQuery({
+    queryKey: ['actors'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('performers')
+        .from('actors')
         .select('*')
         .eq('is_active', true)
         .order('name');
@@ -282,7 +282,7 @@ export const ShowManagement = () => {
         .select(`
           *,
           show_performers (
-            performers (
+            actors (
               id,
               name,
               bio,
@@ -296,7 +296,7 @@ export const ShowManagement = () => {
       
       return (data || []).map(show => ({
         ...show,
-        performers: show.show_performers?.map((sp: any) => sp.performers) || []
+        performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || []
       })) as AdminShowWithPerformers[];
     }
   });
@@ -336,9 +336,9 @@ export const ShowManagement = () => {
         const { error: performerError } = await supabase
           .from('show_performers')
           .insert(
-            performer_ids.map(performerId => ({
+            performer_ids.map(actorId => ({
               show_id: show.id,
-              performer_id: performerId
+              actor_id: actorId
             }))
           );
 
@@ -814,27 +814,27 @@ export const ShowManagement = () => {
               <div>
                 <Label>Skådespelare (max 12)</Label>
                 <div className="grid grid-cols-3 gap-2 mt-2 max-h-48 overflow-y-auto">
-                  {performers?.slice(0, 12).map((performer) => (
-                    <label key={performer.id} className="flex items-center space-x-2">
+                  {actors?.slice(0, 12).map((actor) => (
+                    <label key={actor.id} className="flex items-center space-x-2">
                       <input
                         type="checkbox"
-                        checked={newShow.performer_ids.includes(performer.id)}
-                        disabled={!newShow.performer_ids.includes(performer.id) && newShow.performer_ids.length >= 12}
+                        checked={newShow.performer_ids.includes(actor.id)}
+                        disabled={!newShow.performer_ids.includes(actor.id) && newShow.performer_ids.length >= 12}
                         onChange={(e) => {
                           if (e.target.checked) {
                             setNewShow(prev => ({
                               ...prev,
-                              performer_ids: [...prev.performer_ids, performer.id]
+                              performer_ids: [...prev.performer_ids, actor.id]
                             }));
                           } else {
                             setNewShow(prev => ({
                               ...prev,
-                              performer_ids: prev.performer_ids.filter(id => id !== performer.id)
+                              performer_ids: prev.performer_ids.filter(id => id !== actor.id)
                             }));
                           }
                         }}
                       />
-                      <span className="text-sm">{performer.name}</span>
+                      <span className="text-sm">{actor.name}</span>
                     </label>
                   ))}
                 </div>

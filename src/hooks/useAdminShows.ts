@@ -36,7 +36,7 @@ export const useAdminShows = () => {
         .select(`
           *,
           show_performers (
-            performers (
+            actors (
               id,
               name,
               bio,
@@ -51,7 +51,7 @@ export const useAdminShows = () => {
       
       return (data || []).map(show => ({
         ...show,
-        performers: show.show_performers?.map((sp: any) => sp.performers).filter(Boolean) || []
+        performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || []
       })) as AdminShow[];
     }
   });

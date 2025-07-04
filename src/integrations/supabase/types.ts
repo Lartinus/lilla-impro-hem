@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      actors: {
+        Row: {
+          bio: string | null
+          created_at: string
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       admin_shows: {
         Row: {
           created_at: string
@@ -457,32 +487,32 @@ export type Database = {
       }
       show_performers: {
         Row: {
+          actor_id: string
           created_at: string
           id: string
-          performer_id: string
           show_id: string
           sort_order: number | null
         }
         Insert: {
+          actor_id: string
           created_at?: string
           id?: string
-          performer_id: string
           show_id: string
           sort_order?: number | null
         }
         Update: {
+          actor_id?: string
           created_at?: string
           id?: string
-          performer_id?: string
           show_id?: string
           sort_order?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "show_performers_performer_id_fkey"
-            columns: ["performer_id"]
+            foreignKeyName: "show_performers_actor_id_fkey"
+            columns: ["actor_id"]
             isOneToOne: false
-            referencedRelation: "performers"
+            referencedRelation: "actors"
             referencedColumns: ["id"]
           },
           {

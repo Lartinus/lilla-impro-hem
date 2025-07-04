@@ -16,6 +16,7 @@ import { PerformerManagement } from '@/components/admin/PerformerManagement';
 import { InterestSignupManagement } from '@/components/admin/InterestSignupManagement';
 import { ShowManagement } from '@/components/admin/ShowManagement';
 import { VenueManagement } from '@/components/admin/VenueManagement';
+import { ActorManagement } from '@/components/admin/ActorManagement';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -175,13 +176,14 @@ const AdminDashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="overview">Översikt</TabsTrigger>
             <TabsTrigger value="courses">Kurser</TabsTrigger>
+            <TabsTrigger value="performers">Kursledare</TabsTrigger>
             <TabsTrigger value="shows">Föreställningar</TabsTrigger>
+            <TabsTrigger value="actors">Skådespelare</TabsTrigger>
             <TabsTrigger value="venues">Platser</TabsTrigger>
             <TabsTrigger value="interest">Intresse</TabsTrigger>
-            <TabsTrigger value="performers">Skådespelare</TabsTrigger>
             <TabsTrigger value="tickets">Biljetter</TabsTrigger>
             <TabsTrigger value="email">Email</TabsTrigger>
           </TabsList>
@@ -210,8 +212,16 @@ const AdminDashboard = () => {
             <CourseManagement />
           </TabsContent>
 
+          <TabsContent value="performers">
+            <PerformerManagement />
+          </TabsContent>
+
           <TabsContent value="shows">
             <ShowManagement />
+          </TabsContent>
+
+          <TabsContent value="actors">
+            <ActorManagement />
           </TabsContent>
 
           <TabsContent value="venues">
@@ -220,10 +230,6 @@ const AdminDashboard = () => {
 
           <TabsContent value="interest">
             <InterestSignupManagement />
-          </TabsContent>
-
-          <TabsContent value="performers">
-            <PerformerManagement />
           </TabsContent>
 
           <TabsContent value="tickets">
