@@ -263,7 +263,7 @@ export const ShowManagement = () => {
     queryKey: ['admin-shows'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('shows')
+        .from('admin_shows')
         .select(`
           *,
           show_performers (
@@ -306,7 +306,7 @@ export const ShowManagement = () => {
       const { performer_ids, ...showFields } = showData;
       
       const { data: show, error: showError } = await supabase
-        .from('shows')
+        .from('admin_shows')
         .insert([{
           ...showFields,
           sort_order: (shows?.length || 0) + 1
@@ -369,7 +369,7 @@ export const ShowManagement = () => {
   const updateShowMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<AdminShow> }) => {
       const { error } = await supabase
-        .from('shows')
+        .from('admin_shows')
         .update(data)
         .eq('id', id);
 
@@ -388,7 +388,7 @@ export const ShowManagement = () => {
   const deleteShowMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from('shows')
+        .from('admin_shows')
         .delete()
         .eq('id', id);
 
