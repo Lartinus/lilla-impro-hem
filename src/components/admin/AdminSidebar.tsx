@@ -108,7 +108,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 <SidebarMenuItem key={item.id}>
                   {item.type === 'single' ? (
                     <SidebarMenuButton
-                      onClick={() => setActiveSection(item.id)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setActiveSection(item.id);
+                      }}
                       isActive={activeSection === item.id}
                       className="w-full"
                     >
@@ -140,7 +144,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                           {item.children?.map((child) => (
                             <SidebarMenuItem key={child.id} className="ml-4">
                               <SidebarMenuButton
-                                onClick={() => setActiveSection(child.id)}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setActiveSection(child.id);
+                                }}
                                 isActive={activeSection === child.id}
                                 size="sm"
                                 className="w-full"
