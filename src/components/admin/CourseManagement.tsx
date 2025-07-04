@@ -68,14 +68,18 @@ export const CourseManagement = () => {
 
   const queryClient = useQueryClient();
 
-  // Fetch performers from Strapi
+  // Fetch performers from Strapi via edge function
   const { data: performers } = useQuery({
     queryKey: ['performers'],
     queryFn: async () => {
-      const response = await fetch('https://lit-strapi-backend-6a2b6b4993a6.herokuapp.com/api/performers?populate=*');
-      const data = await response.json();
-      return data.data;
-    }
+      const response = await supabase.functions.invoke('strapi-site-content', {
+        body: { type: 'performers' }
+      });
+      
+      if (response.error) throw response.error;
+      return response.data?.data || [];
+    },
+    retry: 1
   });
 
   // Create course mutation
