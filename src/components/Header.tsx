@@ -38,7 +38,7 @@ const Header = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 font-satoshi"
+            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 font-satoshi [&>svg]:text-theatre-light"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >

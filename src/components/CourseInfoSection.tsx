@@ -84,20 +84,20 @@ export default function CourseInfoSection() {
         <div>
           <div className="prose space-y-4">
             <p>Du är varmt välkommen till oss oavsett om du:</p>
-            <ul className="list-disc pl-0 space-y-1">
-              <li>Aldrig har testat Improv Comedy förut</li>
-              <li>Vill utvecklas som komisk scenperson</li>
-              <li>Är rutinerad och vill vässa ditt hantverk</li>
-              <li>Söker en trygg, tydlig och inspirerande plats att växa på</li>
+            <ul className="list-none pl-0 space-y-1">
+              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Aldrig har testat Improv Comedy förut</li>
+              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Vill utvecklas som komisk scenperson</li>
+              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Är rutinerad och vill vässa ditt hantverk</li>
+              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Söker en trygg, tydlig och inspirerande plats att växa på</li>
             </ul>
             <p>
               Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi hjälper dig med att:
             </p>
-            <ul className="list-disc pl-0 space-y-1">
-              <li>Få konkreta verktyg för att skapa humoristiska scener</li>
-              <li>Utveckla ditt scenspråk, lyssnande och komiska timing</li>
-              <li>Bli modigare, säkrare och mer initiativtagande</li>
-              <li>Och få scentid. Massor.</li>
+            <ul className="list-none pl-0 space-y-1">
+              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Få konkreta verktyg för att skapa humoristiska scener</li>
+              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Utveckla ditt scenspråk, lyssnande och komiska timing</li>
+              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Bli modigare, säkrare och mer initiativtagande</li>
+              <li className="relative pl-6 before:content-['→'] before:absolute before:left-0 before:text-blue-600">Och få scentid. Massor.</li>
             </ul>
           </div>
         </div>
