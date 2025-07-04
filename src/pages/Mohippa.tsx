@@ -60,7 +60,7 @@ export default function Mohippa() {
 
           {/* Vad kan ni boka sektion */}
           <div className="-mt-6">
-            <h2 className="mb-1">Vad kan ni boka?</h2>
+            <h2 className="mb-3">Vad kan ni boka?</h2>
             <div className="space-y-4 border-3 border-red-800 p-4">
             {[
               ["Improshow", "En specialutformad improföreställning där vi inkluderar detaljer om t.ex. födelsedagsbarnet eller brudparet"],
