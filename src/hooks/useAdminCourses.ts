@@ -35,7 +35,7 @@ export const useAdminCourses = () => {
         .from('course_instances')
         .select('*')
         .eq('is_active', true)
-        .order('created_at', { ascending: false });
+        .order('sort_order', { ascending: true });
 
       if (error) throw error;
 

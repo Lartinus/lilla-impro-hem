@@ -98,11 +98,11 @@ export const InterestSignupSection = () => {
             >
               <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
                 <div className="mb-3">
-                  <h2 className="text-xl font-bold mb-1">
+                  <h2>
                     {signup.title}
                   </h2>
                   {signup.subtitle && (
-                    <p className="font-bold text-xs text-muted-foreground">
+                    <p className="mt-1 font-bold text-xs">
                       {signup.subtitle}
                     </p>
                   )}
