@@ -81,8 +81,8 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             <h4 className="mb-2">Praktisk information</h4>
             <div className="space-y-2">
               {course.practicalInfo!.map((item, index) => (
-                <div key={index} className="flex items-start space-x-2">
-                  <ArrowRight className="text-blue-600 mt-1 flex-shrink-0" size={16} />
+                <div key={index} className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>
                   <p className="[&>p]:text-[14px] md:[&>p]:text-[16px]">{item}</p>
                 </div>
               ))}

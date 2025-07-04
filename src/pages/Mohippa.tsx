@@ -64,8 +64,8 @@ export default function Mohippa() {
                 ["Workshop", "En lekfull och inkluderande introduktion i Improv Comedy, inga förkunskaper krävs"],
                 ["Workshop + Show", "Börja med en workshop tillsammans, avsluta med att vi uppträder för er"]
               ].map(([title, body], i) => (
-                <li key={i} className="flex items-start space-x-2">
-                  <ArrowRight className="text-blue-600 mt-1 flex-shrink-0" size={16} />
+                <li key={i} className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>
                   <div>
                     <strong>{title}</strong> – {body}
                   </div>
@@ -84,8 +84,8 @@ export default function Mohippa() {
                 "After work",
                 "Kompisgäng som vill göra något kul tillsammans"
               ].map((item, i) => (
-                <li key={i} className="flex items-center space-x-2">
-                  <ArrowRight className="text-blue-600 flex-shrink-0" size={16} />
+                <li key={i} className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>
                   <span>{item}</span>
                 </li>
               ))}
