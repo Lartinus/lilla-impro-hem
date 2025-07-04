@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, Users } from 'lucide-react';
+import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 
 interface CourseInstance {
   id: string;
@@ -22,7 +22,12 @@ interface CourseWithBookings extends CourseInstance {
   bookingCount: number;
 }
 
+type SortField = 'course_title' | 'start_date' | 'bookingCount' | 'created_at';
+type SortDirection = 'asc' | 'desc';
+
 export const CourseManagement = () => {
+  const [sortField, setSortField] = useState<SortField>('created_at');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const { data: courses, isLoading } = useQuery({
     queryKey: ['admin-courses'],
     queryFn: async (): Promise<CourseWithBookings[]> => {
@@ -58,6 +63,54 @@ export const CourseManagement = () => {
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortIcon = (field: SortField) => {
+    if (sortField !== field) {
+      return <ArrowUpDown className="w-4 h-4" />;
+    }
+    return sortDirection === 'asc' ? 
+      <ArrowUp className="w-4 h-4" /> : 
+      <ArrowDown className="w-4 h-4" />;
+  };
+
+  const sortedCourses = courses ? [...courses].sort((a, b) => {
+    let aValue: string | number | Date;
+    let bValue: string | number | Date;
+
+    switch (sortField) {
+      case 'course_title':
+        aValue = a.course_title.toLowerCase();
+        bValue = b.course_title.toLowerCase();
+        break;
+      case 'start_date':
+        aValue = a.start_date ? new Date(a.start_date) : new Date(0);
+        bValue = b.start_date ? new Date(b.start_date) : new Date(0);
+        break;
+      case 'bookingCount':
+        aValue = a.bookingCount;
+        bValue = b.bookingCount;
+        break;
+      case 'created_at':
+        aValue = new Date(a.created_at);
+        bValue = new Date(b.created_at);
+        break;
+      default:
+        return 0;
+    }
+
+    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
+  }) : [];
 
   if (isLoading) {
     return (
@@ -98,17 +151,44 @@ export const CourseManagement = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Kurstitel</TableHead>
-                <TableHead>Startdatum</TableHead>
+                <TableHead>
+                  <Button 
+                    variant="ghost" 
+                    className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                    onClick={() => handleSort('course_title')}
+                  >
+                    Kurstitel
+                    <span className="ml-2">{getSortIcon('course_title')}</span>
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button 
+                    variant="ghost" 
+                    className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                    onClick={() => handleSort('start_date')}
+                  >
+                    Startdatum
+                    <span className="ml-2">{getSortIcon('start_date')}</span>
+                  </Button>
+                </TableHead>
                 <TableHead>Slutdatum</TableHead>
-                <TableHead>Anmälda</TableHead>
+                <TableHead>
+                  <Button 
+                    variant="ghost" 
+                    className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                    onClick={() => handleSort('bookingCount')}
+                  >
+                    Anmälda
+                    <span className="ml-2">{getSortIcon('bookingCount')}</span>
+                  </Button>
+                </TableHead>
                 <TableHead>Max antal</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Åtgärder</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {courses.map((course) => (
+              {sortedCourses.map((course) => (
                 <TableRow key={course.id}>
                   <TableCell className="font-medium">{course.course_title}</TableCell>
                   <TableCell>

@@ -12,6 +12,7 @@ import LoginForm from '@/components/auth/LoginForm';
 import SignUpForm from '@/components/auth/SignUpForm';
 import { CourseManagement } from '@/components/admin/CourseManagement';
 import { TicketManagement } from '@/components/admin/TicketManagement';
+import { EmailManagement } from '@/components/admin/EmailManagement';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -207,53 +208,7 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="email">
-            <Card>
-              <CardHeader>
-                <CardTitle>Email-verktyg</CardTitle>
-                <CardDescription>
-                  Skicka meddelanden till kursdeltagare och hantera email-mallar
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Card>
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-base">Email-mallar</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2 text-sm text-muted-foreground">
-                          <div>• Välkomstmejl</div>
-                          <div>• Praktisk information</div>
-                          <div>• Faktura och betalning</div>
-                          <div>• Påminnelser</div>
-                        </div>
-                        <Button variant="outline" className="w-full mt-4" disabled>
-                          Hantera mallar (kommande)
-                        </Button>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-base">Skicka meddelanden</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2 text-sm text-muted-foreground">
-                          <div>• Till alla kursdeltagare</div>
-                          <div>• Till specifik kurs</div>
-                          <div>• Till biljettköpare</div>
-                          <div>• Anpassade meddelanden</div>
-                        </div>
-                        <Button variant="outline" className="w-full mt-4" disabled>
-                          Nytt meddelande (kommande)
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <EmailManagement />
           </TabsContent>
         </Tabs>
       </main>
