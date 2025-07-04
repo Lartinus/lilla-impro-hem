@@ -82,9 +82,9 @@ export default function CourseInfoSection() {
 
         {/* Avslutande text */}
         <div>
-          <div className="prose space-y-4">
+          <div className="space-y-4">
             <p>Du är varmt välkommen till oss oavsett om du:</p>
-            <ul className="list-none pl-0 space-y-2 not-prose">
+            <ul className="list-none pl-0 space-y-2">
               <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span>Aldrig har testat Improv Comedy förut</span></li>
               <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span>Vill utvecklas som komisk scenperson</span></li>
               <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span>Är rutinerad och vill vässa ditt hantverk</span></li>
@@ -93,7 +93,7 @@ export default function CourseInfoSection() {
             <p>
               Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi hjälper dig med att:
             </p>
-            <ul className="list-none pl-0 space-y-2 not-prose">
+            <ul className="list-none pl-0 space-y-2">
               <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span>Få konkreta verktyg för att skapa humoristiska scener</span></li>
               <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span>Utveckla ditt scenspråk, lyssnande och komiska timing</span></li>
               <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span>Bli modigare, säkrare och mer initiativtagande</span></li>
