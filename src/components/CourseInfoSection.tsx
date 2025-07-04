@@ -85,19 +85,19 @@ export default function CourseInfoSection() {
           <div className="space-y-4">
             <p>Du är varmt välkommen till oss oavsett om du:</p>
             <ul className="list-none pl-0 space-y-2">
-              <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span className="text-content-primary">Aldrig har testat Improv Comedy förut</span></li>
-              <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span className="text-content-primary">Vill utvecklas som komisk scenperson</span></li>
-              <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span className="text-content-primary">Är rutinerad och vill vässa ditt hantverk</span></li>
-              <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span className="text-content-primary">Söker en trygg, tydlig och inspirerande plats att växa på</span></li>
+              <li className="flex items-start space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div><span className="text-content-primary">Aldrig har testat Improv Comedy förut</span></li>
+              <li className="flex items-start space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div><span className="text-content-primary">Vill utvecklas som komisk scenperson</span></li>
+              <li className="flex items-start space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div><span className="text-content-primary">Är rutinerad och vill vässa ditt hantverk</span></li>
+              <li className="flex items-start space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div><span className="text-content-primary">Söker en trygg, tydlig och inspirerande plats att växa på</span></li>
             </ul>
             <p>
               Det viktigaste är inte hur rolig du är när du börjar – utan hur nyfiken du är på att lära dig. Vi hjälper dig med att:
             </p>
             <ul className="list-none pl-0 space-y-2">
-              <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span className="text-content-primary">Få konkreta verktyg för att skapa humoristiska scener</span></li>
-              <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span className="text-content-primary">Utveckla ditt scenspråk, lyssnande och komiska timing</span></li>
-              <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span className="text-content-primary">Bli modigare, säkrare och mer initiativtagande</span></li>
-              <li className="flex items-center space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div><span className="text-content-primary">Och få scentid. Massor.</span></li>
+              <li className="flex items-start space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div><span className="text-content-primary">Få konkreta verktyg för att skapa humoristiska scener</span></li>
+              <li className="flex items-start space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div><span className="text-content-primary">Utveckla ditt scenspråk, lyssnande och komiska timing</span></li>
+              <li className="flex items-start space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div><span className="text-content-primary">Bli modigare, säkrare och mer initiativtagande</span></li>
+              <li className="flex items-start space-x-3"><div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div><span className="text-content-primary">Och få scentid. Massor.</span></li>
             </ul>
           </div>
         </div>
