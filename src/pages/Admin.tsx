@@ -5,8 +5,7 @@ import { useAdminStats } from '@/hooks/useAdminStats';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart3, Users, Ticket, Mail, Settings, LogIn } from 'lucide-react';
+import { BarChart3, Users, Ticket, Mail, Settings, LogIn, ChevronDown, ChevronRight } from 'lucide-react';
 import Header from '@/components/Header';
 import LoginForm from '@/components/auth/LoginForm';
 import SignUpForm from '@/components/auth/SignUpForm';
@@ -23,6 +22,11 @@ const AdminDashboard = () => {
   const { data: userRole, isLoading: roleLoading } = useUserRole();
   const { data: stats, isLoading: statsLoading } = useAdminStats();
   const [showSignUp, setShowSignUp] = React.useState(false);
+  const [activeSection, setActiveSection] = React.useState('overview');
+  const [expandedSections, setExpandedSections] = React.useState({
+    courses: false,
+    shows: false
+  });
 
   // Loading state
   if (authLoading || roleLoading) {
@@ -174,78 +178,208 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        {/* Main Content Tabs */}
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-9">
-            <TabsTrigger value="overview">Översikt</TabsTrigger>
-            <TabsTrigger value="courses">Kurser</TabsTrigger>
-            <TabsTrigger value="performers">Kursledare</TabsTrigger>
-            <TabsTrigger value="shows">Föreställningar</TabsTrigger>
-            <TabsTrigger value="actors">Skådespelare</TabsTrigger>
-            <TabsTrigger value="venues">Platser</TabsTrigger>
-            <TabsTrigger value="interest">Intresse</TabsTrigger>
-            <TabsTrigger value="tickets">Biljetter</TabsTrigger>
-            <TabsTrigger value="email">Email</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview">
+        {/* Main Content Layout */}
+        <div className="flex gap-6">
+          {/* Sidebar Navigation */}
+          <div className="w-64 space-y-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Dashboard Översikt</CardTitle>
-                <CardDescription>
-                  Snabb överblick över systemets status och aktivitet
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <BarChart3 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Dashboard kommer snart</h3>
-                  <p className="text-muted-foreground">
-                    Detaljerad statistik och grafer kommer att implementeras här
-                  </p>
-                </div>
+              <CardContent className="p-4">
+                <nav className="space-y-2">
+                  {/* Översikt */}
+                  <div>
+                    <Button
+                      variant={activeSection === 'overview' ? 'secondary' : 'ghost'}
+                      className="w-full justify-start"
+                      onClick={() => setActiveSection('overview')}
+                    >
+                      <BarChart3 className="w-4 h-4 mr-2" />
+                      Översikt
+                    </Button>
+                  </div>
+
+                  {/* Kurser Section */}
+                  <div className="space-y-1">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-between"
+                      onClick={() => setExpandedSections(prev => ({
+                        ...prev,
+                        courses: !prev.courses
+                      }))}
+                    >
+                      <span className="flex items-center">
+                        <Users className="w-4 h-4 mr-2" />
+                        Kurser
+                      </span>
+                      {expandedSections.courses ? (
+                        <ChevronDown className="w-4 h-4" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4" />
+                      )}
+                    </Button>
+                    {expandedSections.courses && (
+                      <div className="ml-6 space-y-1">
+                        <Button
+                          variant={activeSection === 'courses' ? 'secondary' : 'ghost'}
+                          size="sm"
+                          className="w-full justify-start"
+                          onClick={() => setActiveSection('courses')}
+                        >
+                          Kurshantering
+                        </Button>
+                        <Button
+                          variant={activeSection === 'interest' ? 'secondary' : 'ghost'}
+                          size="sm"
+                          className="w-full justify-start"
+                          onClick={() => setActiveSection('interest')}
+                        >
+                          Intresse
+                        </Button>
+                        <Button
+                          variant={activeSection === 'performers' ? 'secondary' : 'ghost'}
+                          size="sm"
+                          className="w-full justify-start"
+                          onClick={() => setActiveSection('performers')}
+                        >
+                          Kursledare
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Föreställningar Section */}
+                  <div className="space-y-1">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-between"
+                      onClick={() => setExpandedSections(prev => ({
+                        ...prev,
+                        shows: !prev.shows
+                      }))}
+                    >
+                      <span className="flex items-center">
+                        <Ticket className="w-4 h-4 mr-2" />
+                        Föreställningar
+                      </span>
+                      {expandedSections.shows ? (
+                        <ChevronDown className="w-4 h-4" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4" />
+                      )}
+                    </Button>
+                    {expandedSections.shows && (
+                      <div className="ml-6 space-y-1">
+                        <Button
+                          variant={activeSection === 'shows' ? 'secondary' : 'ghost'}
+                          size="sm"
+                          className="w-full justify-start"
+                          onClick={() => setActiveSection('shows')}
+                        >
+                          Föreställningar
+                        </Button>
+                        <Button
+                          variant={activeSection === 'actors' ? 'secondary' : 'ghost'}
+                          size="sm"
+                          className="w-full justify-start"
+                          onClick={() => setActiveSection('actors')}
+                        >
+                          Skådespelare
+                        </Button>
+                        <Button
+                          variant={activeSection === 'discount-codes' ? 'secondary' : 'ghost'}
+                          size="sm"
+                          className="w-full justify-start"
+                          onClick={() => setActiveSection('discount-codes')}
+                        >
+                          Rabattkoder
+                        </Button>
+                        <Button
+                          variant={activeSection === 'venues' ? 'secondary' : 'ghost'}
+                          size="sm"
+                          className="w-full justify-start"
+                          onClick={() => setActiveSection('venues')}
+                        >
+                          Platser
+                        </Button>
+                        <Button
+                          variant={activeSection === 'tickets' ? 'secondary' : 'ghost'}
+                          size="sm"
+                          className="w-full justify-start"
+                          onClick={() => setActiveSection('tickets')}
+                        >
+                          Biljetter
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Email Section */}
+                  <div>
+                    <Button
+                      variant={activeSection === 'email' ? 'secondary' : 'ghost'}
+                      className="w-full justify-start"
+                      onClick={() => setActiveSection('email')}
+                    >
+                      <Mail className="w-4 h-4 mr-2" />
+                      Email
+                    </Button>
+                  </div>
+                </nav>
               </CardContent>
             </Card>
-          </TabsContent>
+          </div>
 
-          <TabsContent value="courses">
-            <CourseManagement />
-          </TabsContent>
+          {/* Main Content Area */}
+          <div className="flex-1">
+            {activeSection === 'overview' && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Dashboard Översikt</CardTitle>
+                  <CardDescription>
+                    Snabb överblick över systemets status och aktivitet
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-12">
+                    <BarChart3 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">Dashboard kommer snart</h3>
+                    <p className="text-muted-foreground">
+                      Detaljerad statistik och grafer kommer att implementeras här
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
-          <TabsContent value="performers">
-            <PerformerManagement />
-          </TabsContent>
+            {activeSection === 'courses' && <CourseManagement />}
+            {activeSection === 'performers' && <PerformerManagement />}
+            {activeSection === 'interest' && <InterestSignupManagement />}
+            {activeSection === 'shows' && <ShowManagement />}
+            {activeSection === 'actors' && <ActorManagement />}
+            {activeSection === 'venues' && <VenueManagement />}
+            {activeSection === 'tickets' && <TicketManagement />}
+            
+            {activeSection === 'discount-codes' && (
+              <div className="text-center py-12">
+                <Ticket className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Rabattkoder kommer snart</h3>
+                <p className="text-muted-foreground">
+                  Funktionalitet för att hantera rabattkoder kommer att implementeras här
+                </p>
+              </div>
+            )}
 
-          <TabsContent value="shows">
-            <ShowManagement />
-          </TabsContent>
-
-          <TabsContent value="actors">
-            <ActorManagement />
-          </TabsContent>
-
-          <TabsContent value="venues">
-            <VenueManagement />
-          </TabsContent>
-
-          <TabsContent value="interest">
-            <InterestSignupManagement />
-          </TabsContent>
-
-          <TabsContent value="tickets">
-            <TicketManagement />
-          </TabsContent>
-
-          <TabsContent value="email">
-            <div className="text-center py-12">
-              <Mail className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Email-hantering kommer snart</h3>
-              <p className="text-muted-foreground">
-                Funktionalitet för att hantera emails kommer att implementeras här
-              </p>
-            </div>
-          </TabsContent>
-        </Tabs>
+            {activeSection === 'email' && (
+              <div className="text-center py-12">
+                <Mail className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Email-hantering kommer snart</h3>
+                <p className="text-muted-foreground">
+                  Funktionalitet för att hantera emails kommer att implementeras här
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </main>
     </div>
   );
