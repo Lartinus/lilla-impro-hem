@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useUserRole } from '@/hooks/useUserRole';
+import { useAdminStats } from '@/hooks/useAdminStats';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,10 +10,13 @@ import { BarChart3, Users, Ticket, Mail, Settings, LogIn } from 'lucide-react';
 import Header from '@/components/Header';
 import LoginForm from '@/components/auth/LoginForm';
 import SignUpForm from '@/components/auth/SignUpForm';
+import { CourseManagement } from '@/components/admin/CourseManagement';
+import { TicketManagement } from '@/components/admin/TicketManagement';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const { data: userRole, isLoading: roleLoading } = useUserRole();
+  const { data: stats, isLoading: statsLoading } = useAdminStats();
   const [showSignUp, setShowSignUp] = React.useState(false);
 
   // Loading state
@@ -92,7 +96,7 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 py-8 pt-10">
+      <main className="container mx-auto px-4 py-8 pt-20">
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
@@ -114,8 +118,12 @@ const AdminDashboard = () => {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">--</div>
-              <p className="text-xs text-muted-foreground">Läses in...</p>
+              <div className="text-2xl font-bold">
+                {statsLoading ? '--' : stats?.totalCourseBookings || 0}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {statsLoading ? 'Läses in...' : 'Totalt antal anmälningar'}
+              </p>
             </CardContent>
           </Card>
 
@@ -125,8 +133,12 @@ const AdminDashboard = () => {
               <Ticket className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">--</div>
-              <p className="text-xs text-muted-foreground">Läses in...</p>
+              <div className="text-2xl font-bold">
+                {statsLoading ? '--' : stats?.soldTickets || 0}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {statsLoading ? 'Läses in...' : 'Antal sålda biljetter'}
+              </p>
             </CardContent>
           </Card>
 
@@ -136,8 +148,12 @@ const AdminDashboard = () => {
               <BarChart3 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">--</div>
-              <p className="text-xs text-muted-foreground">Läses in...</p>
+              <div className="text-2xl font-bold">
+                {statsLoading ? '--' : stats?.activeCourses || 0}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {statsLoading ? 'Läses in...' : 'Antal aktiva kurser'}
+              </p>
             </CardContent>
           </Card>
 
@@ -183,43 +199,11 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="courses">
-            <Card>
-              <CardHeader>
-                <CardTitle>Kurshantering</CardTitle>
-                <CardDescription>
-                  Se alla kurser, anmälningar och hantera kursdeltagare
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Kursöversikt kommer snart</h3>
-                  <p className="text-muted-foreground">
-                    Lista över alla kurser med antal anmälda och detaljvy
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <CourseManagement />
           </TabsContent>
 
           <TabsContent value="tickets">
-            <Card>
-              <CardHeader>
-                <CardTitle>Biljetthantering</CardTitle>
-                <CardDescription>
-                  Översikt över biljettförsäljning och köpardetaljer
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Ticket className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Biljettöversikt kommer snart</h3>
-                  <p className="text-muted-foreground">
-                    Se alla shows, antal sålda biljetter och köparinformation
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <TicketManagement />
           </TabsContent>
 
           <TabsContent value="email">
