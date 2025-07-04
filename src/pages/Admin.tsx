@@ -5,7 +5,6 @@ import { useAdminStats } from '@/hooks/useAdminStats';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { BarChart3, Users, Ticket, Mail, Settings, LogIn } from 'lucide-react';
 import Header from '@/components/Header';
 import LoginForm from '@/components/auth/LoginForm';
@@ -17,7 +16,7 @@ import { InterestSignupManagement } from '@/components/admin/InterestSignupManag
 import { ShowManagement } from '@/components/admin/ShowManagement';
 import { VenueManagement } from '@/components/admin/VenueManagement';
 import { ActorManagement } from '@/components/admin/ActorManagement';
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { AdminNavigation } from '@/components/admin/AdminNavigation';
 import { DiscountCodeManagement } from '@/components/admin/DiscountCodeManagement';
 
 const AdminDashboard = () => {
@@ -161,95 +160,94 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <SidebarProvider>
-        <div className="flex min-h-screen w-full pt-20">
-          <AdminSidebar
+      <main className="container mx-auto px-4 py-8 pt-20">
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Administratörspanel</h1>
+              <p className="text-muted-foreground mt-2">Hantera kurser, biljetter och kommunikation</p>
+            </div>
+            <Badge variant="secondary" className="text-sm">
+              <Settings className="w-4 h-4 mr-1" />
+              Admin
+            </Badge>
+          </div>
+        </div>
+
+        {/* Dashboard Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Totala Kursanmälningar</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {statsLoading ? '--' : stats?.totalCourseBookings || 0}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {statsLoading ? 'Läses in...' : 'Totalt antal anmälningar'}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Sålda Biljetter</CardTitle>
+              <Ticket className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {statsLoading ? '--' : stats?.soldTickets || 0}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {statsLoading ? 'Läses in...' : 'Antal sålda biljetter'}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Aktiva Kurser</CardTitle>
+              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {statsLoading ? '--' : stats?.activeCourses || 0}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {statsLoading ? 'Läses in...' : 'Antal aktiva kurser'}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Skickade Email</CardTitle>
+              <Mail className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">--</div>
+              <p className="text-xs text-muted-foreground">Kommande funktion</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Navigation */}
+        <div className="mb-8">
+          <AdminNavigation
             activeSection={activeSection}
             setActiveSection={setActiveSection}
             expandedSections={expandedSections}
             setExpandedSections={setExpandedSections}
           />
-          
-          <SidebarInset className="flex-1">
-            <div className="flex h-12 items-center border-b px-4 sticky top-0 bg-background z-10">
-              <SidebarTrigger />
-              <div className="ml-4 flex items-center gap-2">
-                <h1 className="text-lg font-semibold">Administratörspanel</h1>
-                <Badge variant="secondary" className="text-xs">
-                  <Settings className="w-3 h-3 mr-1" />
-                  Admin
-                </Badge>
-              </div>
-            </div>
-            
-            <main className="flex-1 p-6 space-y-8">
-              {/* Dashboard Overview Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Totala Kursanmälningar</CardTitle>
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {statsLoading ? '--' : stats?.totalCourseBookings || 0}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {statsLoading ? 'Läses in...' : 'Totalt antal anmälningar'}
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Sålda Biljetter</CardTitle>
-                    <Ticket className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {statsLoading ? '--' : stats?.soldTickets || 0}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {statsLoading ? 'Läses in...' : 'Antal sålda biljetter'}
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Aktiva Kurser</CardTitle>
-                    <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {statsLoading ? '--' : stats?.activeCourses || 0}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {statsLoading ? 'Läses in...' : 'Antal aktiva kurser'}
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Skickade Email</CardTitle>
-                    <Mail className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">--</div>
-                    <p className="text-xs text-muted-foreground">Kommande funktion</p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Main Content */}
-              <div>
-                {renderContent()}
-              </div>
-            </main>
-          </SidebarInset>
         </div>
-      </SidebarProvider>
+
+        {/* Main Content */}
+        <div>
+          {renderContent()}
+        </div>
+      </main>
     </div>
   );
 };
