@@ -2,9 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 interface AdminStats {
-  totalCourseBookings: number;
-  soldTickets: number;
+  avgCourseParticipants: number;
+  avgSoldTicketsPerShow: number;
   activeCourses: number;
+  nextShowDate: string | null;
 }
 
 export const useAdminStats = () => {
@@ -19,6 +20,8 @@ export const useAdminStats = () => {
 
       // Get total course bookings by counting all course booking tables
       let totalCourseBookings = 0;
+      const activeCourseCount = courseInstances?.length || 0;
+      
       if (courseInstances) {
         for (const course of courseInstances) {
           try {
@@ -32,20 +35,38 @@ export const useAdminStats = () => {
         }
       }
 
-      // Get sold tickets
+      // Get sold tickets and active shows
       const { data: ticketPurchases } = await supabase
         .from('ticket_purchases')
         .select('regular_tickets, discount_tickets')
         .eq('payment_status', 'paid');
 
+      const { data: activeShows } = await supabase
+        .from('admin_shows')
+        .select('show_date')
+        .eq('is_active', true);
+
+      // Get next show date
+      const { data: nextShow } = await supabase
+        .from('admin_shows')
+        .select('show_date')
+        .eq('is_active', true)
+        .gte('show_date', new Date().toISOString().split('T')[0])
+        .order('show_date', { ascending: true })
+        .limit(1)
+        .single();
+
       const soldTickets = ticketPurchases?.reduce((total, purchase) => 
         total + purchase.regular_tickets + purchase.discount_tickets, 0
       ) || 0;
 
+      const activeShowCount = activeShows?.length || 0;
+
       return {
-        totalCourseBookings,
-        soldTickets,
-        activeCourses: courseInstances?.filter(c => c.is_active).length || 0
+        avgCourseParticipants: activeCourseCount > 0 ? Math.round(totalCourseBookings / activeCourseCount) : 0,
+        avgSoldTicketsPerShow: activeShowCount > 0 ? Math.round(soldTickets / activeShowCount) : 0,
+        activeCourses: activeCourseCount,
+        nextShowDate: nextShow?.show_date || null
       };
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
