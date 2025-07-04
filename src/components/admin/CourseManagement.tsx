@@ -63,6 +63,119 @@ interface NewCourseForm {
   practicalInfo: string;
 }
 
+// Mobile Course Card Component
+function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete }: {
+  course: CourseWithBookings;
+  onEdit: (course: CourseWithBookings) => void;
+  onToggleStatus: (course: CourseWithBookings) => void;
+  onDelete: (course: CourseWithBookings) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: course.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <Card ref={setNodeRef} style={style} className={isDragging ? 'z-50' : ''}>
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <button
+              className="cursor-grab hover:cursor-grabbing text-muted-foreground hover:text-foreground"
+              {...attributes}
+              {...listeners}
+            >
+              <GripVertical className="w-4 h-4" />
+            </button>
+            <span className="text-xs text-muted-foreground">#{course.sort_order || 0}</span>
+          </div>
+          <Badge variant={course.is_active ? "default" : "secondary"}>
+            {course.is_active ? 'Aktiv' : 'Inaktiv'}
+          </Badge>
+        </div>
+
+        <div className="space-y-3">
+          <div>
+            <h3 className="font-semibold text-base leading-5">{course.course_title}</h3>
+            {course.subtitle && (
+              <p className="text-sm text-muted-foreground mt-1">{course.subtitle}</p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span className="text-muted-foreground">Startdatum:</span>
+              <div>{course.start_date ? format(new Date(course.start_date), 'yyyy-MM-dd') : 'Ej satt'}</div>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Kursledare:</span>
+              <div className="flex items-center gap-1">
+                <User className="w-3 h-3" />
+                {course.instructor || 'Ej satt'}
+              </div>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Anmälningar:</span>
+              <div className="font-medium">{course.bookingCount}</div>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Max antal:</span>
+              <div>{course.max_participants || 12}</div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2 pt-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => onEdit(course)}
+              className="flex-1 min-w-0"
+            >
+              <Edit className="w-4 h-4 mr-1" />
+              Redigera
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => onToggleStatus(course)}
+              className="flex-1 min-w-0"
+            >
+              {course.is_active ? (
+                <PowerOff className="w-4 h-4 mr-1" />
+              ) : (
+                <Power className="w-4 h-4 mr-1" />
+              )}
+              {course.is_active ? 'Inaktivera' : 'Aktivera'}
+            </Button>
+            <Button 
+              variant="destructive" 
+              size="sm"
+              onClick={() => {
+                if (confirm(`Är du säker på att du vill radera "${course.course_title}"? Detta kan inte ångras.`)) {
+                  onDelete(course);
+                }
+              }}
+              className="min-w-0"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 // Sortable Row Component
 function SortableRow({ course, onEdit, onToggleStatus, onDelete }: {
   course: CourseWithBookings;
@@ -633,7 +746,6 @@ export const CourseManagement = () => {
                       <SelectItem value="houseteam">House Team & fortsättning</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
 
                 {newCourse.courseType === 'helgworkshop' && (
                   <div className="grid gap-2">
@@ -813,6 +925,7 @@ export const CourseManagement = () => {
                     }
                   </Button>
                 </div>
+                </div>
               </div>
             </DialogContent>
           </Dialog>
@@ -833,72 +946,93 @@ export const CourseManagement = () => {
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>
-                    <Button 
-                      variant="ghost" 
-                      className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
-                      onClick={() => handleSort('sort_order')}
-                    >
-                      Ordning
-                      <span className="ml-2">{getSortIcon('sort_order')}</span>
-                    </Button>
-                  </TableHead>
-                  <TableHead>
-                    <Button 
-                      variant="ghost" 
-                      className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
-                      onClick={() => handleSort('course_title')}
-                    >
-                      Kurstitel
-                      <span className="ml-2">{getSortIcon('course_title')}</span>
-                    </Button>
-                  </TableHead>
-                  <TableHead>
-                    <Button 
-                      variant="ghost" 
-                      className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
-                      onClick={() => handleSort('start_date')}
-                    >
-                      Startdatum
-                      <span className="ml-2">{getSortIcon('start_date')}</span>
-                    </Button>
-                  </TableHead>
-                  <TableHead>Kursledare</TableHead>
-                  <TableHead>
-                    <Button 
-                      variant="ghost" 
-                      className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
-                      onClick={() => handleSort('bookingCount')}
-                    >
-                      Anmälda
-                      <span className="ml-2">{getSortIcon('bookingCount')}</span>
-                    </Button>
-                  </TableHead>
-                  <TableHead>Max antal</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="w-[300px]">Åtgärder</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <SortableContext
-                  items={sortedCourses.map(course => course.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {sortedCourses.map((course) => (
-                    <SortableRow
-                      key={course.id}
-                      course={course}
-                      onEdit={handleEditCourse}
-                      onToggleStatus={course => toggleStatusMutation.mutate(course)}
-                      onDelete={course => deleteCourseMutation.mutate(course)}
-                    />
-                  ))}
-                </SortableContext>
-              </TableBody>
-            </Table>
+            {/* Desktop Table View */}
+            <div className="hidden md:block">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>
+                      <Button 
+                        variant="ghost" 
+                        className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                        onClick={() => handleSort('sort_order')}
+                      >
+                        Ordning
+                        <span className="ml-2">{getSortIcon('sort_order')}</span>
+                      </Button>
+                    </TableHead>
+                    <TableHead>
+                      <Button 
+                        variant="ghost" 
+                        className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                        onClick={() => handleSort('course_title')}
+                      >
+                        Kurstitel
+                        <span className="ml-2">{getSortIcon('course_title')}</span>
+                      </Button>
+                    </TableHead>
+                    <TableHead>
+                      <Button 
+                        variant="ghost" 
+                        className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                        onClick={() => handleSort('start_date')}
+                      >
+                        Startdatum
+                        <span className="ml-2">{getSortIcon('start_date')}</span>
+                      </Button>
+                    </TableHead>
+                    <TableHead>Kursledare</TableHead>
+                    <TableHead>
+                      <Button 
+                        variant="ghost" 
+                        className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                        onClick={() => handleSort('bookingCount')}
+                      >
+                        Anmälda
+                        <span className="ml-2">{getSortIcon('bookingCount')}</span>
+                      </Button>
+                    </TableHead>
+                    <TableHead>Max antal</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="w-[300px]">Åtgärder</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <SortableContext
+                    items={sortedCourses.map(course => course.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {sortedCourses.map((course) => (
+                      <SortableRow
+                        key={course.id}
+                        course={course}
+                        onEdit={handleEditCourse}
+                        onToggleStatus={course => toggleStatusMutation.mutate(course)}
+                        onDelete={course => deleteCourseMutation.mutate(course)}
+                      />
+                    ))}
+                  </SortableContext>
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-4">
+              <SortableContext
+                items={sortedCourses.map(course => course.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {sortedCourses.map((course) => (
+                  <MobileCourseCard
+                    key={course.id}
+                    course={course}
+                    onEdit={handleEditCourse}
+                    onToggleStatus={course => toggleStatusMutation.mutate(course)}
+                    onDelete={course => deleteCourseMutation.mutate(course)}
+                  />
+                ))}
+              </SortableContext>
+            </div>
           </DndContext>
         )}
       </CardContent>
