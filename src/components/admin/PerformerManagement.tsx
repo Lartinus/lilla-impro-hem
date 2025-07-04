@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { ImagePicker } from './ImagePicker';
 
 interface Performer {
   id: string;
@@ -234,12 +235,11 @@ export const PerformerManagement = () => {
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="image_url">Bild URL</Label>
-                  <Input
-                    id="image_url"
+                  <Label htmlFor="image">Bild</Label>
+                  <ImagePicker
                     value={performerForm.image_url}
-                    onChange={(e) => setPerformerForm({...performerForm, image_url: e.target.value})}
-                    placeholder="https://example.com/bild.jpg"
+                    onSelect={(url) => setPerformerForm({...performerForm, image_url: url})}
+                    triggerClassName="w-full"
                   />
                 </div>
 

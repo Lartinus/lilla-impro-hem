@@ -17,6 +17,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Eye, EyeOff, Plus, Edit, Trash2, GripVertical, Calendar, MapPin, Ticket } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { ImagePicker } from './ImagePicker';
 
 interface AdminShow {
   id: string;
@@ -596,12 +597,11 @@ export const ShowManagement = () => {
               </div>
 
               <div>
-                <Label htmlFor="image_url">Bild-URL</Label>
-                <Input
-                  id="image_url"
+                <Label htmlFor="image">Bild</Label>
+                <ImagePicker
                   value={newShow.image_url}
-                  onChange={(e) => setNewShow(prev => ({ ...prev, image_url: e.target.value }))}
-                  placeholder="https://example.com/image.jpg"
+                  onSelect={(url) => setNewShow(prev => ({ ...prev, image_url: url }))}
+                  triggerClassName="w-full"
                 />
               </div>
 

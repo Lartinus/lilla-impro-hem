@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { ImagePicker } from './ImagePicker';
 
 interface Actor {
   id: string;
@@ -375,12 +376,11 @@ export const ActorManagement = () => {
               </div>
 
               <div>
-                <Label htmlFor="image_url">Bild-URL</Label>
-                <Input
-                  id="image_url"
+                <Label htmlFor="image">Bild</Label>
+                <ImagePicker
                   value={newActor.image_url}
-                  onChange={(e) => setNewActor(prev => ({ ...prev, image_url: e.target.value }))}
-                  placeholder="https://example.com/image.jpg"
+                  onSelect={(url) => setNewActor(prev => ({ ...prev, image_url: url }))}
+                  triggerClassName="w-full"
                 />
               </div>
 
