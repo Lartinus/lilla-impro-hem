@@ -31,8 +31,8 @@ const handler = async (req: Request): Promise<Response> => {
     try {
       const contactData = {
         email: email,
-        first_name: name.split(' ')[0] || name,
-        last_name: name.split(' ').slice(1).join(' ') || '',
+        firstName: name.split(' ')[0] || name,
+        lastName: name.split(' ').slice(1).join(' ') || '',
         unsubscribed: false,
       };
 
