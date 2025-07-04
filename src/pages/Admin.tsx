@@ -1,13 +1,13 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useUserRole } from '@/hooks/useUserRole';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart3, Users, Ticket, Mail, Settings } from 'lucide-react';
+import { BarChart3, Users, Ticket, Mail, Settings, LogIn } from 'lucide-react';
 import Header from '@/components/Header';
+import LoginForm from '@/components/auth/LoginForm';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -22,9 +22,52 @@ const AdminDashboard = () => {
     );
   }
 
-  // Redirect if not authenticated or not admin
-  if (!user || userRole !== 'admin') {
-    return <Navigate to="/" replace />;
+  // Show login form if not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="max-w-md mx-auto">
+            <Card>
+              <CardHeader className="text-center">
+                <CardTitle className="flex items-center justify-center gap-2">
+                  <LogIn className="w-5 h-5" />
+                  Administratörsinloggning
+                </CardTitle>
+                <CardDescription>
+                  Logga in för att komma åt administratörspanelen
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <LoginForm />
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Show access denied if not admin
+  if (userRole !== 'admin') {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="max-w-md mx-auto">
+            <Card>
+              <CardHeader className="text-center">
+                <CardTitle className="text-destructive">Åtkomst nekad</CardTitle>
+                <CardDescription>
+                  Du har inte behörighet att komma åt denna sida.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   return (
