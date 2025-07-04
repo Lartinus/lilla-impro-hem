@@ -57,23 +57,24 @@ export default function Mohippa() {
               och skapar något som passar just er.
             </p>
 
-            <p className="font-bold">Vad kan ni boka?</p>
-            <ul className="space-y-2">
-              {[
-                ["Improshow", "En specialutformad improföreställning där vi inkluderar detaljer om t.ex. födelsedagsbarnet eller brudparet"],
-                ["Workshop", "En lekfull och inkluderande introduktion i Improv Comedy, inga förkunskaper krävs"],
-                ["Workshop + Show", "Börja med en workshop tillsammans, avsluta med att vi uppträder för er"]
-              ].map(([title, body], i) => (
-                <li key={i} className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>
-                  <div>
-                    <strong>{title}</strong> – {body}
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <h2 className="-my-4">Vad kan ni boka?</h2>
           </div>
-
+          
+          {/* Vad kan ni boka */}
+          <div className="space-y-4 border-3 border-red-800 p-4">
+            {[
+              ["Improshow", "En specialutformad improföreställning där vi inkluderar detaljer om t.ex. födelsedagsbarnet eller brudparet"],
+              ["Workshop", "En lekfull och inkluderande introduktion i Improv Comedy, inga förkunskaper krävs"],
+              ["Workshop + Show", "Börja med en workshop tillsammans, avsluta med att vi uppträder för er"]
+            ].map(([title, body], i) => (
+              <div key={i}>
+                <p className="font-bold">{title}</p>
+                <p>{body}</p>
+              </div>
+            ))}
+          </div>
+          
+          
           {/* Exempel på tillfällen */}
           <div className="space-y-4">
             <p className="font-bold">Exempel på tillfällen vi passar för</p>
