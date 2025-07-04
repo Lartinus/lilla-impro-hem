@@ -5,7 +5,8 @@ import { useAdminStats } from '@/hooks/useAdminStats';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { BarChart3, Users, Ticket, Mail, Settings, LogIn, ChevronDown, ChevronRight } from 'lucide-react';
+import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
+import { BarChart3, Users, Ticket, Mail, Settings, LogIn } from 'lucide-react';
 import Header from '@/components/Header';
 import LoginForm from '@/components/auth/LoginForm';
 import SignUpForm from '@/components/auth/SignUpForm';
@@ -16,6 +17,7 @@ import { InterestSignupManagement } from '@/components/admin/InterestSignupManag
 import { ShowManagement } from '@/components/admin/ShowManagement';
 import { VenueManagement } from '@/components/admin/VenueManagement';
 import { ActorManagement } from '@/components/admin/ActorManagement';
+import { AdminSidebar } from '@/components/admin/AdminSidebar';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -24,7 +26,7 @@ const AdminDashboard = () => {
   const [showSignUp, setShowSignUp] = React.useState(false);
   const [activeSection, setActiveSection] = React.useState('overview');
   const [expandedSections, setExpandedSections] = React.useState({
-    courses: false,
+    courses: true,
     shows: false
   });
 
@@ -101,286 +103,158 @@ const AdminDashboard = () => {
     );
   }
 
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'overview':
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Dashboard Översikt</CardTitle>
+              <CardDescription>
+                Snabb överblick över systemets status och aktivitet
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-12">
+                <BarChart3 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Dashboard kommer snart</h3>
+                <p className="text-muted-foreground">
+                  Detaljerad statistik och grafer kommer att implementeras här
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      case 'courses':
+        return <CourseManagement />;
+      case 'performers':
+        return <PerformerManagement />;
+      case 'interest':
+        return <InterestSignupManagement />;
+      case 'shows':
+        return <ShowManagement />;
+      case 'actors':
+        return <ActorManagement />;
+      case 'venues':
+        return <VenueManagement />;
+      case 'tickets':
+        return <TicketManagement />;
+      case 'discount-codes':
+        return (
+          <div className="text-center py-12">
+            <Ticket className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Rabattkoder kommer snart</h3>
+            <p className="text-muted-foreground">
+              Funktionalitet för att hantera rabattkoder kommer att implementeras här
+            </p>
+          </div>
+        );
+      case 'email':
+        return (
+          <div className="text-center py-12">
+            <Mail className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Email-hantering kommer snart</h3>
+            <p className="text-muted-foreground">
+              Funktionalitet för att hantera emails kommer att implementeras här
+            </p>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 py-8 pt-20">
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">Administratörspanel</h1>
-              <p className="text-muted-foreground mt-2">Hantera kurser, biljetter och kommunikation</p>
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full pt-16">
+          <AdminSidebar
+            activeSection={activeSection}
+            setActiveSection={setActiveSection}
+            expandedSections={expandedSections}
+            setExpandedSections={setExpandedSections}
+          />
+          
+          <SidebarInset className="flex-1">
+            <div className="flex h-12 items-center border-b px-4">
+              <SidebarTrigger />
+              <div className="ml-4 flex items-center gap-2">
+                <h1 className="text-lg font-semibold">Administratörspanel</h1>
+                <Badge variant="secondary" className="text-xs">
+                  <Settings className="w-3 h-3 mr-1" />
+                  Admin
+                </Badge>
+              </div>
             </div>
-            <Badge variant="secondary" className="text-sm">
-              <Settings className="w-4 h-4 mr-1" />
-              Admin
-            </Badge>
-          </div>
-        </div>
-
-        {/* Dashboard Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Totala Kursanmälningar</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {statsLoading ? '--' : stats?.totalCourseBookings || 0}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {statsLoading ? 'Läses in...' : 'Totalt antal anmälningar'}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Sålda Biljetter</CardTitle>
-              <Ticket className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {statsLoading ? '--' : stats?.soldTickets || 0}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {statsLoading ? 'Läses in...' : 'Antal sålda biljetter'}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Aktiva Kurser</CardTitle>
-              <BarChart3 className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {statsLoading ? '--' : stats?.activeCourses || 0}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {statsLoading ? 'Läses in...' : 'Antal aktiva kurser'}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Skickade Email</CardTitle>
-              <Mail className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">--</div>
-              <p className="text-xs text-muted-foreground">Kommande funktion</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content Layout */}
-        <div className="flex gap-6">
-          {/* Sidebar Navigation */}
-          <div className="w-64 space-y-4">
-            <Card>
-              <CardContent className="p-4">
-                <nav className="space-y-2">
-                  {/* Översikt */}
-                  <div>
-                    <Button
-                      variant={activeSection === 'overview' ? 'secondary' : 'ghost'}
-                      className="w-full justify-start"
-                      onClick={() => setActiveSection('overview')}
-                    >
-                      <BarChart3 className="w-4 h-4 mr-2" />
-                      Översikt
-                    </Button>
-                  </div>
-
-                  {/* Kurser Section */}
-                  <div className="space-y-1">
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-between"
-                      onClick={() => setExpandedSections(prev => ({
-                        ...prev,
-                        courses: !prev.courses
-                      }))}
-                    >
-                      <span className="flex items-center">
-                        <Users className="w-4 h-4 mr-2" />
-                        Kurser
-                      </span>
-                      {expandedSections.courses ? (
-                        <ChevronDown className="w-4 h-4" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4" />
-                      )}
-                    </Button>
-                    {expandedSections.courses && (
-                      <div className="ml-6 space-y-1">
-                        <Button
-                          variant={activeSection === 'courses' ? 'secondary' : 'ghost'}
-                          size="sm"
-                          className="w-full justify-start"
-                          onClick={() => setActiveSection('courses')}
-                        >
-                          Kurshantering
-                        </Button>
-                        <Button
-                          variant={activeSection === 'interest' ? 'secondary' : 'ghost'}
-                          size="sm"
-                          className="w-full justify-start"
-                          onClick={() => setActiveSection('interest')}
-                        >
-                          Intresse
-                        </Button>
-                        <Button
-                          variant={activeSection === 'performers' ? 'secondary' : 'ghost'}
-                          size="sm"
-                          className="w-full justify-start"
-                          onClick={() => setActiveSection('performers')}
-                        >
-                          Kursledare
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Föreställningar Section */}
-                  <div className="space-y-1">
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-between"
-                      onClick={() => setExpandedSections(prev => ({
-                        ...prev,
-                        shows: !prev.shows
-                      }))}
-                    >
-                      <span className="flex items-center">
-                        <Ticket className="w-4 h-4 mr-2" />
-                        Föreställningar
-                      </span>
-                      {expandedSections.shows ? (
-                        <ChevronDown className="w-4 h-4" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4" />
-                      )}
-                    </Button>
-                    {expandedSections.shows && (
-                      <div className="ml-6 space-y-1">
-                        <Button
-                          variant={activeSection === 'shows' ? 'secondary' : 'ghost'}
-                          size="sm"
-                          className="w-full justify-start"
-                          onClick={() => setActiveSection('shows')}
-                        >
-                          Föreställningar
-                        </Button>
-                        <Button
-                          variant={activeSection === 'actors' ? 'secondary' : 'ghost'}
-                          size="sm"
-                          className="w-full justify-start"
-                          onClick={() => setActiveSection('actors')}
-                        >
-                          Skådespelare
-                        </Button>
-                        <Button
-                          variant={activeSection === 'discount-codes' ? 'secondary' : 'ghost'}
-                          size="sm"
-                          className="w-full justify-start"
-                          onClick={() => setActiveSection('discount-codes')}
-                        >
-                          Rabattkoder
-                        </Button>
-                        <Button
-                          variant={activeSection === 'venues' ? 'secondary' : 'ghost'}
-                          size="sm"
-                          className="w-full justify-start"
-                          onClick={() => setActiveSection('venues')}
-                        >
-                          Platser
-                        </Button>
-                        <Button
-                          variant={activeSection === 'tickets' ? 'secondary' : 'ghost'}
-                          size="sm"
-                          className="w-full justify-start"
-                          onClick={() => setActiveSection('tickets')}
-                        >
-                          Biljetter
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Email Section */}
-                  <div>
-                    <Button
-                      variant={activeSection === 'email' ? 'secondary' : 'ghost'}
-                      className="w-full justify-start"
-                      onClick={() => setActiveSection('email')}
-                    >
-                      <Mail className="w-4 h-4 mr-2" />
-                      Email
-                    </Button>
-                  </div>
-                </nav>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Main Content Area */}
-          <div className="flex-1">
-            {activeSection === 'overview' && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Dashboard Översikt</CardTitle>
-                  <CardDescription>
-                    Snabb överblick över systemets status och aktivitet
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <BarChart3 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Dashboard kommer snart</h3>
-                    <p className="text-muted-foreground">
-                      Detaljerad statistik och grafer kommer att implementeras här
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {activeSection === 'courses' && <CourseManagement />}
-            {activeSection === 'performers' && <PerformerManagement />}
-            {activeSection === 'interest' && <InterestSignupManagement />}
-            {activeSection === 'shows' && <ShowManagement />}
-            {activeSection === 'actors' && <ActorManagement />}
-            {activeSection === 'venues' && <VenueManagement />}
-            {activeSection === 'tickets' && <TicketManagement />}
             
-            {activeSection === 'discount-codes' && (
-              <div className="text-center py-12">
-                <Ticket className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Rabattkoder kommer snart</h3>
-                <p className="text-muted-foreground">
-                  Funktionalitet för att hantera rabattkoder kommer att implementeras här
-                </p>
-              </div>
-            )}
+            <main className="flex-1 p-6">
+              {/* Dashboard Overview Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Totala Kursanmälningar</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      {statsLoading ? '--' : stats?.totalCourseBookings || 0}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {statsLoading ? 'Läses in...' : 'Totalt antal anmälningar'}
+                    </p>
+                  </CardContent>
+                </Card>
 
-            {activeSection === 'email' && (
-              <div className="text-center py-12">
-                <Mail className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Email-hantering kommer snart</h3>
-                <p className="text-muted-foreground">
-                  Funktionalitet för att hantera emails kommer att implementeras här
-                </p>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Sålda Biljetter</CardTitle>
+                    <Ticket className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      {statsLoading ? '--' : stats?.soldTickets || 0}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {statsLoading ? 'Läses in...' : 'Antal sålda biljetter'}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Aktiva Kurser</CardTitle>
+                    <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      {statsLoading ? '--' : stats?.activeCourses || 0}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {statsLoading ? 'Läses in...' : 'Antal aktiva kurser'}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Skickade Email</CardTitle>
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">--</div>
+                    <p className="text-xs text-muted-foreground">Kommande funktion</p>
+                  </CardContent>
+                </Card>
               </div>
-            )}
-          </div>
+
+              {/* Main Content */}
+              {renderContent()}
+            </main>
+          </SidebarInset>
         </div>
-      </main>
+      </SidebarProvider>
     </div>
   );
 };
