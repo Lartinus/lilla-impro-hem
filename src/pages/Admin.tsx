@@ -106,25 +106,7 @@ const AdminDashboard = () => {
   const renderContent = () => {
     switch (activeSection) {
       case 'overview':
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Dashboard Översikt</CardTitle>
-              <CardDescription>
-                Snabb överblick över systemets status och aktivitet
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12">
-                <BarChart3 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Dashboard kommer snart</h3>
-                <p className="text-muted-foreground">
-                  Detaljerad statistik och grafer kommer att implementeras här
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        );
+        return null; // Overview is now just the stats cards above
       case 'courses':
         return <CourseManagement />;
       case 'performers':
