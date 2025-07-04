@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 export interface AdminCourse {
   id: string;
   course_title: string;
+  subtitle?: string | null;
   start_date: string | null;
   end_date: string | null;
   max_participants: number | null;
@@ -12,13 +13,18 @@ export interface AdminCourse {
   created_at: string;
   instructor?: string;
   description?: string;
-  subtitle?: string;
   available: boolean;
   showButton: boolean;
   buttonText: string;
   practicalInfo?: string[];
   course_info?: string;
   practical_info?: string;
+  teacher?: {
+    id: string;
+    name: string;
+    image: string | null;
+    bio: string;
+  } | null;
 }
 
 export const useAdminCourses = () => {
@@ -33,17 +39,36 @@ export const useAdminCourses = () => {
 
       if (error) throw error;
 
+      // Get all performers for lookup
+      const { data: performers, error: performersError } = await supabase
+        .from('performers')
+        .select('*')
+        .eq('is_active', true);
+
+      if (performersError) throw performersError;
+
       // Format course instances to match the CourseCard interface
-      return (courseInstances || []).map(instance => ({
-        ...instance,
-        instructor: 'Kursledare från admin',
-        description: instance.course_info || `${instance.course_title} - skapat från administratörspanelen.`,
-        subtitle: instance.start_date ? `Startar ${new Date(instance.start_date).toLocaleDateString('sv-SE')}` : '',
-        available: true,
-        showButton: true,
-        buttonText: 'Anmäl dig',
-        practicalInfo: instance.practical_info ? [instance.practical_info] : []
-      }));
+      return (courseInstances || []).map(instance => {
+        // Find the instructor in performers by name
+        const instructor = performers?.find(p => p.name === (instance as any).instructor);
+        
+        return {
+          ...instance,
+          instructor: (instance as any).instructor || 'Kursledare från admin',
+          description: instance.course_info || `${instance.course_title} - skapat från administratörspanelen.`,
+          subtitle: instance.subtitle || (instance.start_date ? `Startar ${new Date(instance.start_date).toLocaleDateString('sv-SE')}` : ''),
+          available: true,
+          showButton: true,
+          buttonText: 'Anmäl dig',
+          practicalInfo: instance.practical_info ? [instance.practical_info] : [],
+          teacher: instructor ? {
+            id: instructor.id,
+            name: instructor.name,
+            image: instructor.image_url,
+            bio: instructor.bio || ''
+          } : null
+        };
+      });
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
   });

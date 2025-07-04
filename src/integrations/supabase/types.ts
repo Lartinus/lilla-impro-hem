@@ -167,6 +167,7 @@ export type Database = {
           max_participants: number | null
           practical_info: string | null
           start_date: string | null
+          subtitle: string | null
           table_name: string
         }
         Insert: {
@@ -179,6 +180,7 @@ export type Database = {
           max_participants?: number | null
           practical_info?: string | null
           start_date?: string | null
+          subtitle?: string | null
           table_name: string
         }
         Update: {
@@ -191,6 +193,7 @@ export type Database = {
           max_participants?: number | null
           practical_info?: string | null
           start_date?: string | null
+          subtitle?: string | null
           table_name?: string
         }
         Relationships: []
@@ -302,6 +305,36 @@ export type Database = {
           phone?: string | null
           requirements?: string
           type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      performers: {
+        Row: {
+          bio: string | null
+          created_at: string
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
           updated_at?: string
         }
         Relationships: []

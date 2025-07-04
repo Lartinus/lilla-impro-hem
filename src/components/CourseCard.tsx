@@ -2,6 +2,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import CourseBookingForm from '@/components/CourseBookingForm';
 import CourseLeaderInfo from '@/components/CourseLeaderInfo';
+import { PracticalInfo } from '@/components/PracticalInfo';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 import { ArrowRight } from 'lucide-react';
 
@@ -15,14 +16,22 @@ interface Teacher {
 interface Course {
   id: number | string;
   course_title: string;
-  subtitle: string;
+  subtitle?: string;
   description: string;
-  teacher: Teacher | null;
+  teacher?: {
+    id: string;
+    name: string;
+    image: string | null;
+    bio: string;
+  } | null;
   available: boolean;
   showButton: boolean;
   buttonText?: string;
   practicalInfo?: string[];
   maxParticipants?: number | null;
+  max_participants?: number | null;
+  start_date?: string | null;
+  practical_info?: string;
 }
 
 interface CourseCardProps {
@@ -67,12 +76,19 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         
         {course.teacher && (
           <CourseLeaderInfo courseLeader={{
-            id: course.teacher.id,
+            id: parseInt(course.teacher.id),
             name: course.teacher.name,
             image: course.teacher.image,
             bio: course.teacher.bio
           }} />
         )}
+        
+        {/* Practical Information */}
+        <PracticalInfo 
+          practicalInfoText={course.practical_info}
+          startDate={course.start_date}
+          maxParticipants={course.max_participants}
+        />
         
         <div className="flex-1"></div>
         

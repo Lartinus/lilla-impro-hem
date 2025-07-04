@@ -30,6 +30,7 @@ interface CourseInstance {
   course_info?: string | null;
   practical_info?: string | null;
   instructor?: string | null;
+  subtitle?: string | null;
 }
 
 interface CourseWithBookings extends CourseInstance {
@@ -42,6 +43,7 @@ type SortDirection = 'asc' | 'desc';
 interface NewCourseForm {
   courseType: string;
   customName: string;
+  subtitle: string;
   instructor: string;
   sessions: number;
   hoursPerSession: number;
@@ -62,6 +64,7 @@ export const CourseManagement = () => {
   const [newCourse, setNewCourse] = useState<NewCourseForm>({
     courseType: '',
     customName: '',
+    subtitle: '',
     instructor: '',
     sessions: 1,
     hoursPerSession: 2,
@@ -75,16 +78,18 @@ export const CourseManagement = () => {
 
   const queryClient = useQueryClient();
 
-  // Fetch performers from Strapi via edge function
+  // Fetch performers from local database
   const { data: performers } = useQuery({
     queryKey: ['performers'],
     queryFn: async () => {
-      const response = await supabase.functions.invoke('strapi-site-content', {
-        body: { type: 'performers' }
-      });
+      const { data, error } = await supabase
+        .from('performers')
+        .select('*')
+        .eq('is_active', true)
+        .order('name');
       
-      if (response.error) throw response.error;
-      return response.data?.data || [];
+      if (error) throw error;
+      return data || [];
     },
     retry: 1
   });
@@ -162,6 +167,7 @@ export const CourseManagement = () => {
                        formData.courseType === 'niv1' ? 'Nivå 1 - Scenarbete & Improv Comedy' :
                        formData.courseType === 'niv2' ? 'Nivå 2 - Långform improviserad komik' :
                        formData.courseType === 'houseteam' ? 'House Team & fortsättning' : course.course_title,
+          subtitle: formData.subtitle,
           start_date: formData.startDate?.toISOString().split('T')[0],
           max_participants: formData.maxParticipants,
           course_info: formData.courseInfo,
@@ -222,6 +228,7 @@ export const CourseManagement = () => {
         .from('course_instances')
         .insert({
           course_title: courseTitle,
+          subtitle: courseData.subtitle,
           table_name: tableName,
           start_date: courseData.startDate?.toISOString().split('T')[0],
           max_participants: courseData.maxParticipants,
@@ -304,6 +311,7 @@ export const CourseManagement = () => {
     setNewCourse({
       courseType: '',
       customName: '',
+      subtitle: '',
       instructor: '',
       sessions: 1,
       hoursPerSession: 2,
@@ -330,6 +338,7 @@ export const CourseManagement = () => {
     setNewCourse({
       courseType,
       customName: courseType === 'helgworkshop' ? course.course_title : '',
+      subtitle: course.subtitle || '',
       instructor: course.instructor || '',
       sessions: 1,
       hoursPerSession: 2,
@@ -471,6 +480,16 @@ export const CourseManagement = () => {
                 )}
 
                 <div className="grid gap-2">
+                  <Label htmlFor="subtitle">Undertitel</Label>
+                  <Input
+                    id="subtitle"
+                    value={newCourse.subtitle}
+                    onChange={(e) => setNewCourse({...newCourse, subtitle: e.target.value})}
+                    placeholder="T.ex. För rutinerade improvisatörer och nybörjare"
+                  />
+                </div>
+
+                <div className="grid gap-2">
                   <Label htmlFor="instructor">Kursledare</Label>
                   <Select 
                     value={newCourse.instructor} 
@@ -481,8 +500,8 @@ export const CourseManagement = () => {
                     </SelectTrigger>
                     <SelectContent>
                       {performers?.map((performer: any) => (
-                        <SelectItem key={performer.id} value={performer.attributes?.name || performer.name}>
-                          {performer.attributes?.name || performer.name}
+                        <SelectItem key={performer.id} value={performer.name}>
+                          {performer.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

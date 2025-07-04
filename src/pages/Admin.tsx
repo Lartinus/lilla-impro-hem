@@ -12,7 +12,7 @@ import LoginForm from '@/components/auth/LoginForm';
 import SignUpForm from '@/components/auth/SignUpForm';
 import { CourseManagement } from '@/components/admin/CourseManagement';
 import { TicketManagement } from '@/components/admin/TicketManagement';
-import { EmailManagement } from '@/components/admin/EmailManagement';
+import { PerformerManagement } from '@/components/admin/PerformerManagement';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -172,9 +172,10 @@ const AdminDashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Översikt</TabsTrigger>
             <TabsTrigger value="courses">Kurser</TabsTrigger>
+            <TabsTrigger value="performers">Kursledare</TabsTrigger>
             <TabsTrigger value="tickets">Biljetter</TabsTrigger>
             <TabsTrigger value="email">Email</TabsTrigger>
           </TabsList>
@@ -203,12 +204,22 @@ const AdminDashboard = () => {
             <CourseManagement />
           </TabsContent>
 
+          <TabsContent value="performers">
+            <PerformerManagement />
+          </TabsContent>
+
           <TabsContent value="tickets">
             <TicketManagement />
           </TabsContent>
 
           <TabsContent value="email">
-            <EmailManagement />
+            <div className="text-center py-12">
+              <Mail className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Email-hantering kommer snart</h3>
+              <p className="text-muted-foreground">
+                Funktionalitet för att hantera emails kommer att implementeras här
+              </p>
+            </div>
           </TabsContent>
         </Tabs>
       </main>
