@@ -40,12 +40,6 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
 
   const menuItems = [
     {
-      id: 'overview',
-      title: 'Översikt',
-      icon: BarChart3,
-      type: 'single' as const
-    },
-    {
       id: 'courses',
       title: 'Kurser',
       icon: Users,
