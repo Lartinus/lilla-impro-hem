@@ -172,6 +172,7 @@ export const CourseManagement = () => {
           max_participants: formData.maxParticipants,
           course_info: formData.courseInfo,
           practical_info: formData.practicalInfo,
+          instructor: formData.instructor,
         })
         .eq('id', course.id);
 
@@ -234,6 +235,7 @@ export const CourseManagement = () => {
           max_participants: courseData.maxParticipants,
           course_info: courseData.courseInfo,
           practical_info: courseData.practicalInfo,
+          instructor: courseData.instructor,
           is_active: true
         })
         .select()
@@ -636,7 +638,7 @@ export const CourseManagement = () => {
                   </Button>
                   <Button 
                     onClick={handleSubmit}
-                    disabled={(createCourseMutation.isPending || updateCourseMutation.isPending) || !newCourse.courseType || !newCourse.instructor || (!isEditMode && !newCourse.startDate)}
+                    disabled={(createCourseMutation.isPending || updateCourseMutation.isPending) || !newCourse.courseType || (newCourse.courseType === 'helgworkshop' && !newCourse.customName.trim())}
                   >
                     {(createCourseMutation.isPending || updateCourseMutation.isPending) ? 
                       (isEditMode ? 'Uppdaterar...' : 'Skapar...') : 

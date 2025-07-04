@@ -163,6 +163,7 @@ export type Database = {
           created_at: string
           end_date: string | null
           id: string
+          instructor: string | null
           is_active: boolean | null
           max_participants: number | null
           practical_info: string | null
@@ -176,6 +177,7 @@ export type Database = {
           created_at?: string
           end_date?: string | null
           id?: string
+          instructor?: string | null
           is_active?: boolean | null
           max_participants?: number | null
           practical_info?: string | null
@@ -189,6 +191,7 @@ export type Database = {
           created_at?: string
           end_date?: string | null
           id?: string
+          instructor?: string | null
           is_active?: boolean | null
           max_participants?: number | null
           practical_info?: string | null
