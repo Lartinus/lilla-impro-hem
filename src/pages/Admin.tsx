@@ -72,7 +72,7 @@ const AdminDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 pt-10">
           <div className="max-w-md mx-auto">
             <Card>
               <CardHeader className="text-center">
@@ -92,7 +92,7 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 pt-10">
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
