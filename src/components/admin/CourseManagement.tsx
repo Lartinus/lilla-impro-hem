@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -65,6 +65,96 @@ export const CourseManagement = () => {
     discountPrice: 0,
     additionalInfo: ''
   });
+
+  const queryClient = useQueryClient();
+
+  // Fetch performers from Strapi
+  const { data: performers } = useQuery({
+    queryKey: ['performers'],
+    queryFn: async () => {
+      const response = await fetch('https://lit-strapi-backend-6a2b6b4993a6.herokuapp.com/api/performers?populate=*');
+      const data = await response.json();
+      return data.data;
+    }
+  });
+
+  // Create course mutation
+  const createCourseMutation = useMutation({
+    mutationFn: async (courseData: NewCourseForm) => {
+      // Generate course title based on type
+      let courseTitle = '';
+      let tableName = '';
+      
+      switch (courseData.courseType) {
+        case 'niv1':
+          courseTitle = 'Nivå 1 - Scenarbete & Improv Comedy';
+          tableName = `course_niv_1_scenarbete_improv_comedy_${Date.now()}`;
+          break;
+        case 'niv2':
+          courseTitle = 'Nivå 2 - Långform improviserad komik';
+          tableName = `course_niv_2_langform_improviserad_komik_${Date.now()}`;
+          break;
+        case 'helgworkshop':
+          courseTitle = courseData.customName;
+          tableName = `course_helgworkshop_${courseData.customName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
+          break;
+        case 'houseteam':
+          courseTitle = 'House Team & fortsättning';
+          tableName = `course_house_team_fortsattning_${Date.now()}`;
+          break;
+      }
+
+      // Create course instance
+      const { data: courseInstance, error: courseError } = await supabase
+        .from('course_instances')
+        .insert({
+          course_title: courseTitle,
+          table_name: tableName,
+          start_date: courseData.startDate?.toISOString().split('T')[0],
+          max_participants: courseData.maxParticipants,
+          is_active: true
+        })
+        .select()
+        .single();
+
+      if (courseError) throw courseError;
+
+      // Create the booking table
+      await supabase.rpc('create_course_booking_table', {
+        table_name: tableName
+      });
+
+      return courseInstance;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+      setIsDialogOpen(false);
+      setNewCourse({
+        courseType: '',
+        customName: '',
+        instructor: '',
+        sessions: 1,
+        hoursPerSession: 2,
+        startDate: undefined,
+        maxParticipants: 12,
+        price: 0,
+        discountPrice: 0,
+        additionalInfo: ''
+      });
+      toast({
+        title: "Kurs skapad",
+        description: "Kursen har skapats framgångsrikt",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte skapa kurs: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
   const { data: courses, isLoading } = useQuery({
     queryKey: ['admin-courses'],
     queryFn: async (): Promise<CourseWithBookings[]> => {
@@ -225,12 +315,21 @@ export const CourseManagement = () => {
 
                 <div className="grid gap-2">
                   <Label htmlFor="instructor">Kursledare</Label>
-                  <Input
-                    id="instructor"
-                    value={newCourse.instructor}
-                    onChange={(e) => setNewCourse({...newCourse, instructor: e.target.value})}
-                    placeholder="Namn på kursledaren"
-                  />
+                  <Select 
+                    value={newCourse.instructor} 
+                    onValueChange={(value) => setNewCourse({...newCourse, instructor: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Välj kursledare" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {performers?.map((performer: any) => (
+                        <SelectItem key={performer.id} value={performer.attributes.name}>
+                          {performer.attributes.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -300,20 +399,30 @@ export const CourseManagement = () => {
                     <Label htmlFor="price">Pris (SEK)</Label>
                     <Input
                       id="price"
-                      type="number"
-                      min="0"
-                      value={newCourse.price}
-                      onChange={(e) => setNewCourse({...newCourse, price: parseInt(e.target.value) || 0})}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={newCourse.price === 0 ? '' : newCourse.price.toString()}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9]/g, '');
+                        setNewCourse({...newCourse, price: parseInt(value) || 0});
+                      }}
+                      placeholder="0"
                     />
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="discountPrice">Rabatterat pris (SEK)</Label>
                     <Input
                       id="discountPrice"
-                      type="number"
-                      min="0"
-                      value={newCourse.discountPrice}
-                      onChange={(e) => setNewCourse({...newCourse, discountPrice: parseInt(e.target.value) || 0})}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={newCourse.discountPrice === 0 ? '' : newCourse.discountPrice.toString()}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9]/g, '');
+                        setNewCourse({...newCourse, discountPrice: parseInt(value) || 0});
+                      }}
+                      placeholder="0"
                     />
                   </div>
                 </div>
@@ -332,14 +441,11 @@ export const CourseManagement = () => {
                   <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                     Avbryt
                   </Button>
-                  <Button onClick={() => {
-                    // TODO: Implement course creation
-                    toast({
-                      title: "Kursskapande",
-                      description: "Funktionen implementeras snart",
-                    });
-                  }}>
-                    Skapa kurs
+                  <Button 
+                    onClick={() => createCourseMutation.mutate(newCourse)}
+                    disabled={createCourseMutation.isPending || !newCourse.courseType || !newCourse.instructor || !newCourse.startDate}
+                  >
+                    {createCourseMutation.isPending ? 'Skapar...' : 'Skapa kurs'}
                   </Button>
                 </div>
               </div>
