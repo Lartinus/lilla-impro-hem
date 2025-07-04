@@ -449,11 +449,8 @@ export const CourseManagement = () => {
         })
       );
 
-      // Filter out helgworkshops & specialkurser
-      return coursesWithBookings.filter(course => 
-        !course.course_title.toLowerCase().includes('helgworkshop') &&
-        !course.course_title.toLowerCase().includes('specialkurs')
-      );
+      // Show all courses
+      return coursesWithBookings;
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
