@@ -9,6 +9,66 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_shows: {
+        Row: {
+          created_at: string
+          description: string | null
+          discount_price: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          max_tickets: number | null
+          regular_price: number
+          show_date: string
+          show_time: string
+          slug: string
+          sort_order: number | null
+          title: string
+          updated_at: string
+          venue: string
+          venue_address: string | null
+          venue_maps_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          discount_price?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          max_tickets?: number | null
+          regular_price?: number
+          show_date: string
+          show_time: string
+          slug: string
+          sort_order?: number | null
+          title: string
+          updated_at?: string
+          venue: string
+          venue_address?: string | null
+          venue_maps_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          discount_price?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          max_tickets?: number | null
+          regular_price?: number
+          show_date?: string
+          show_time?: string
+          slug?: string
+          sort_order?: number | null
+          title?: string
+          updated_at?: string
+          venue?: string
+          venue_address?: string | null
+          venue_maps_url?: string | null
+        }
+        Relationships: []
+      }
       course_bookings: {
         Row: {
           address: string | null
@@ -216,6 +276,45 @@ export type Database = {
         }
         Relationships: []
       }
+      discount_codes: {
+        Row: {
+          code: string
+          created_at: string
+          current_uses: number | null
+          discount_amount: number
+          discount_type: string
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          current_uses?: number | null
+          discount_amount: number
+          discount_type: string
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          current_uses?: number | null
+          discount_amount?: number
+          discount_type?: string
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           company: string | null
@@ -355,6 +454,45 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      show_performers: {
+        Row: {
+          created_at: string
+          id: string
+          performer_id: string
+          show_id: string
+          sort_order: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          performer_id: string
+          show_id: string
+          sort_order?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          performer_id?: string
+          show_id?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "show_performers_performer_id_fkey"
+            columns: ["performer_id"]
+            isOneToOne: false
+            referencedRelation: "performers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "show_performers_show_id_fkey"
+            columns: ["show_id"]
+            isOneToOne: false
+            referencedRelation: "admin_shows"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ticket_bookings: {
         Row: {
