@@ -46,7 +46,8 @@ interface NewCourseForm {
   maxParticipants: number;
   price: number;
   discountPrice: number;
-  additionalInfo: string;
+  courseInfo: string;
+  practicalInfo: string;
 }
 
 export const CourseManagement = () => {
@@ -63,7 +64,8 @@ export const CourseManagement = () => {
     maxParticipants: 12,
     price: 0,
     discountPrice: 0,
-    additionalInfo: ''
+    courseInfo: '',
+    practicalInfo: ''
   });
 
   const queryClient = useQueryClient();
@@ -201,7 +203,8 @@ export const CourseManagement = () => {
         maxParticipants: 12,
         price: 0,
         discountPrice: 0,
-        additionalInfo: ''
+        courseInfo: '',
+        practicalInfo: ''
       });
       toast({
         title: "Kurs skapad",
@@ -490,12 +493,24 @@ export const CourseManagement = () => {
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="additionalInfo">Ytterligare information</Label>
+                  <Label htmlFor="courseInfo">Kursinformation</Label>
                   <Textarea
-                    id="additionalInfo"
-                    value={newCourse.additionalInfo}
-                    onChange={(e) => setNewCourse({...newCourse, additionalInfo: e.target.value})}
-                    placeholder="Ev. extra information om kursen"
+                    id="courseInfo"
+                    value={newCourse.courseInfo}
+                    onChange={(e) => setNewCourse({...newCourse, courseInfo: e.target.value})}
+                    placeholder="Beskrivning av kursen, innehåll, mål, etc."
+                    rows={4}
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="practicalInfo">Praktisk information</Label>
+                  <Textarea
+                    id="practicalInfo"
+                    value={newCourse.practicalInfo}
+                    onChange={(e) => setNewCourse({...newCourse, practicalInfo: e.target.value})}
+                    placeholder="Tider, plats, vad man ska ta med sig, etc."
+                    rows={3}
                   />
                 </div>
 

@@ -17,6 +17,8 @@ export interface AdminCourse {
   showButton: boolean;
   buttonText: string;
   practicalInfo?: string[];
+  course_info?: string;
+  practical_info?: string;
 }
 
 export const useAdminCourses = () => {

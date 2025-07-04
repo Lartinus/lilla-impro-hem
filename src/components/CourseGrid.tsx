@@ -8,17 +8,17 @@ interface CourseGridProps {
 const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
   // Separate regular courses from fixed info courses
   const regularCourses = courses.filter(course => 
-    !course.title.includes("House teams") && 
-    !course.title.includes("fortsättning") &&
-    !course.title.includes("Helgworkshop") && 
-    !course.title.includes("specialkurs")
+    !course.course_title.includes("House teams") && 
+    !course.course_title.includes("fortsättning") &&
+    !course.course_title.includes("Helgworkshop") && 
+    !course.course_title.includes("specialkurs")
   );
   
   const fixedInfoCourses = courses.filter(course => 
-    course.title.includes("House teams") || 
-    course.title.includes("fortsättning") ||
-    course.title.includes("Helgworkshop") || 
-    course.title.includes("specialkurs")
+    course.course_title.includes("House teams") || 
+    course.course_title.includes("fortsättning") ||
+    course.course_title.includes("Helgworkshop") || 
+    course.course_title.includes("specialkurs")
   );
 
   const isOddNumber = regularCourses.length % 2 === 1;
