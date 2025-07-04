@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff } from 'lucide-react';
+import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,6 +27,9 @@ interface CourseInstance {
   max_participants: number | null;
   is_active: boolean;
   created_at: string;
+  course_info?: string | null;
+  practical_info?: string | null;
+  instructor?: string | null;
 }
 
 interface CourseWithBookings extends CourseInstance {
@@ -54,6 +57,8 @@ export const CourseManagement = () => {
   const [sortField, setSortField] = useState<SortField>('created_at');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingCourse, setEditingCourse] = useState<CourseWithBookings | null>(null);
   const [newCourse, setNewCourse] = useState<NewCourseForm>({
     courseType: '',
     customName: '',
@@ -145,6 +150,48 @@ export const CourseManagement = () => {
     }
   });
 
+  // Update course mutation
+  const updateCourseMutation = useMutation({
+    mutationFn: async (courseData: { course: CourseWithBookings; formData: NewCourseForm }) => {
+      const { course, formData } = courseData;
+      
+      const { error } = await supabase
+        .from('course_instances')
+        .update({
+          course_title: formData.courseType === 'helgworkshop' ? formData.customName : 
+                       formData.courseType === 'niv1' ? 'Nivå 1 - Scenarbete & Improv Comedy' :
+                       formData.courseType === 'niv2' ? 'Nivå 2 - Långform improviserad komik' :
+                       formData.courseType === 'houseteam' ? 'House Team & fortsättning' : course.course_title,
+          start_date: formData.startDate?.toISOString().split('T')[0],
+          max_participants: formData.maxParticipants,
+          course_info: formData.courseInfo,
+          practical_info: formData.practicalInfo,
+        })
+        .eq('id', course.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-courses-formatted'] });
+      setIsDialogOpen(false);
+      setIsEditMode(false);
+      setEditingCourse(null);
+      resetForm();
+      toast({
+        title: "Kurs uppdaterad",
+        description: "Kursen har uppdaterats framgångsrikt",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte uppdatera kurs: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
   const createCourseMutation = useMutation({
     mutationFn: async (courseData: NewCourseForm) => {
       // Generate course title based on type
@@ -198,19 +245,7 @@ export const CourseManagement = () => {
       queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
       queryClient.invalidateQueries({ queryKey: ['admin-courses-formatted'] });
       setIsDialogOpen(false);
-      setNewCourse({
-        courseType: '',
-        customName: '',
-        instructor: '',
-        sessions: 1,
-        hoursPerSession: 2,
-        startDate: undefined,
-        maxParticipants: 12,
-        price: 0,
-        discountPrice: 0,
-        courseInfo: '',
-        practicalInfo: ''
-      });
+      resetForm();
       toast({
         title: "Kurs skapad",
         description: "Kursen har skapats framgångsrikt",
@@ -264,6 +299,58 @@ export const CourseManagement = () => {
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
+
+  const resetForm = () => {
+    setNewCourse({
+      courseType: '',
+      customName: '',
+      instructor: '',
+      sessions: 1,
+      hoursPerSession: 2,
+      startDate: undefined,
+      maxParticipants: 12,
+      price: 0,
+      discountPrice: 0,
+      courseInfo: '',
+      practicalInfo: ''
+    });
+  };
+
+  const handleEditCourse = (course: CourseWithBookings) => {
+    setEditingCourse(course);
+    setIsEditMode(true);
+    
+    // Determine course type from title
+    let courseType = '';
+    if (course.course_title.includes('Nivå 1')) courseType = 'niv1';
+    else if (course.course_title.includes('Nivå 2')) courseType = 'niv2';
+    else if (course.course_title.includes('House Team')) courseType = 'houseteam';
+    else courseType = 'helgworkshop';
+
+    setNewCourse({
+      courseType,
+      customName: courseType === 'helgworkshop' ? course.course_title : '',
+      instructor: course.instructor || '',
+      sessions: 1,
+      hoursPerSession: 2,
+      startDate: course.start_date ? new Date(course.start_date) : undefined,
+      maxParticipants: course.max_participants || 12,
+      price: 0,
+      discountPrice: 0,
+      courseInfo: course.course_info || '',
+      practicalInfo: course.practical_info || ''
+    });
+    
+    setIsDialogOpen(true);
+  };
+
+  const handleSubmit = () => {
+    if (isEditMode && editingCourse) {
+      updateCourseMutation.mutate({ course: editingCourse, formData: newCourse });
+    } else {
+      createCourseMutation.mutate(newCourse);
+    }
+  };
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -350,7 +437,7 @@ export const CourseManagement = () => {
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle>Skapa ny kurs</DialogTitle>
+                <DialogTitle>{isEditMode ? 'Redigera kurs' : 'Skapa ny kurs'}</DialogTitle>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
@@ -520,14 +607,22 @@ export const CourseManagement = () => {
                 </div>
 
                 <div className="flex justify-end gap-2 pt-4">
-                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  <Button variant="outline" onClick={() => {
+                    setIsDialogOpen(false);
+                    setIsEditMode(false);
+                    setEditingCourse(null);
+                    resetForm();
+                  }}>
                     Avbryt
                   </Button>
                   <Button 
-                    onClick={() => createCourseMutation.mutate(newCourse)}
-                    disabled={createCourseMutation.isPending || !newCourse.courseType || !newCourse.instructor || !newCourse.startDate}
+                    onClick={handleSubmit}
+                    disabled={(createCourseMutation.isPending || updateCourseMutation.isPending) || !newCourse.courseType || !newCourse.instructor || (!isEditMode && !newCourse.startDate)}
                   >
-                    {createCourseMutation.isPending ? 'Skapar...' : 'Skapa kurs'}
+                    {(createCourseMutation.isPending || updateCourseMutation.isPending) ? 
+                      (isEditMode ? 'Uppdaterar...' : 'Skapar...') : 
+                      (isEditMode ? 'Uppdatera kurs' : 'Skapa kurs')
+                    }
                   </Button>
                 </div>
               </div>
@@ -581,7 +676,7 @@ export const CourseManagement = () => {
                 </TableHead>
                 <TableHead>Max antal</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="w-[200px]">Åtgärder</TableHead>
+                <TableHead className="w-[300px]">Åtgärder</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -605,6 +700,14 @@ export const CourseManagement = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleEditCourse(course)}
+                      >
+                        <Edit className="w-4 h-4 mr-1" />
+                        Redigera
+                      </Button>
                       <Button 
                         variant="outline" 
                         size="sm"
