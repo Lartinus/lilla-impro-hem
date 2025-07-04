@@ -5,7 +5,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 
 interface CourseInstance {
   id: string;
@@ -25,9 +36,35 @@ interface CourseWithBookings extends CourseInstance {
 type SortField = 'course_title' | 'start_date' | 'bookingCount' | 'created_at';
 type SortDirection = 'asc' | 'desc';
 
+interface NewCourseForm {
+  courseType: string;
+  customName: string;
+  instructor: string;
+  sessions: number;
+  hoursPerSession: number;
+  startDate: Date | undefined;
+  maxParticipants: number;
+  price: number;
+  discountPrice: number;
+  additionalInfo: string;
+}
+
 export const CourseManagement = () => {
   const [sortField, setSortField] = useState<SortField>('created_at');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newCourse, setNewCourse] = useState<NewCourseForm>({
+    courseType: '',
+    customName: '',
+    instructor: '',
+    sessions: 1,
+    hoursPerSession: 2,
+    startDate: undefined,
+    maxParticipants: 12,
+    price: 0,
+    discountPrice: 0,
+    additionalInfo: ''
+  });
   const { data: courses, isLoading } = useQuery({
     queryKey: ['admin-courses'],
     queryFn: async (): Promise<CourseWithBookings[]> => {
@@ -59,7 +96,11 @@ export const CourseManagement = () => {
         })
       );
 
-      return coursesWithBookings;
+      // Filter out helgworkshops & specialkurser
+      return coursesWithBookings.filter(course => 
+        !course.course_title.toLowerCase().includes('helgworkshop') &&
+        !course.course_title.toLowerCase().includes('specialkurs')
+      );
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
@@ -133,10 +174,178 @@ export const CourseManagement = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Kurshantering</CardTitle>
-        <CardDescription>
-          Översikt över alla kurser och antal anmälda deltagare
-        </CardDescription>
+        <div className="flex justify-between items-start">
+          <div>
+            <CardTitle>Kurshantering</CardTitle>
+            <CardDescription>
+              Översikt över alla kurser och antal anmälda deltagare
+            </CardDescription>
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                Lägg till ny kurs
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Skapa ny kurs</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="courseType">Kurstyp</Label>
+                  <Select 
+                    value={newCourse.courseType} 
+                    onValueChange={(value) => setNewCourse({...newCourse, courseType: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Välj kurstyp" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="niv1">Nivå 1 - Scenarbete & Improv Comedy</SelectItem>
+                      <SelectItem value="niv2">Nivå 2 - Långform improviserad komik</SelectItem>
+                      <SelectItem value="helgworkshop">Helgworkshop (eget namn)</SelectItem>
+                      <SelectItem value="houseteam">House Team & fortsättning</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {newCourse.courseType === 'helgworkshop' && (
+                  <div className="grid gap-2">
+                    <Label htmlFor="customName">Namn på helgworkshop</Label>
+                    <Input
+                      id="customName"
+                      value={newCourse.customName}
+                      onChange={(e) => setNewCourse({...newCourse, customName: e.target.value})}
+                      placeholder="T.ex. Comedy writing workshop"
+                    />
+                  </div>
+                )}
+
+                <div className="grid gap-2">
+                  <Label htmlFor="instructor">Kursledare</Label>
+                  <Input
+                    id="instructor"
+                    value={newCourse.instructor}
+                    onChange={(e) => setNewCourse({...newCourse, instructor: e.target.value})}
+                    placeholder="Namn på kursledaren"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="sessions">Antal tillfällen</Label>
+                    <Input
+                      id="sessions"
+                      type="number"
+                      min="1"
+                      value={newCourse.sessions}
+                      onChange={(e) => setNewCourse({...newCourse, sessions: parseInt(e.target.value) || 1})}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="hoursPerSession">Timmar per tillfälle</Label>
+                    <Input
+                      id="hoursPerSession"
+                      type="number"
+                      min="1"
+                      step="0.5"
+                      value={newCourse.hoursPerSession}
+                      onChange={(e) => setNewCourse({...newCourse, hoursPerSession: parseFloat(e.target.value) || 2})}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label>Startdatum</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "justify-start text-left font-normal",
+                          !newCourse.startDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {newCourse.startDate ? format(newCourse.startDate, "PPP") : <span>Välj datum</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={newCourse.startDate}
+                        onSelect={(date) => setNewCourse({...newCourse, startDate: date})}
+                        initialFocus
+                        className="pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="maxParticipants">Max deltagare</Label>
+                  <Input
+                    id="maxParticipants"
+                    type="number"
+                    min="1"
+                    value={newCourse.maxParticipants}
+                    onChange={(e) => setNewCourse({...newCourse, maxParticipants: parseInt(e.target.value) || 12})}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="price">Pris (SEK)</Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      min="0"
+                      value={newCourse.price}
+                      onChange={(e) => setNewCourse({...newCourse, price: parseInt(e.target.value) || 0})}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="discountPrice">Rabatterat pris (SEK)</Label>
+                    <Input
+                      id="discountPrice"
+                      type="number"
+                      min="0"
+                      value={newCourse.discountPrice}
+                      onChange={(e) => setNewCourse({...newCourse, discountPrice: parseInt(e.target.value) || 0})}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="additionalInfo">Ytterligare information</Label>
+                  <Textarea
+                    id="additionalInfo"
+                    value={newCourse.additionalInfo}
+                    onChange={(e) => setNewCourse({...newCourse, additionalInfo: e.target.value})}
+                    placeholder="Ev. extra information om kursen"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    Avbryt
+                  </Button>
+                  <Button onClick={() => {
+                    // TODO: Implement course creation
+                    toast({
+                      title: "Kursskapande",
+                      description: "Funktionen implementeras snart",
+                    });
+                  }}>
+                    Skapa kurs
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
       </CardHeader>
       <CardContent>
         {!courses || courses.length === 0 ? (
