@@ -236,16 +236,31 @@ export const ShowManagement = () => {
   const generateSlug = (title: string) => {
     return title
       .toLowerCase()
-      .replace(/[åä]/g, 'a')
-      .replace(/ö/g, 'o')
+      .replace(/[åäÅÄ]/g, 'a')
+      .replace(/[öÖ]/g, 'o')
       .replace(/[^a-z0-9]/g, '-')
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
   };
 
-  // Fetch performers
+  // Fetch venues
+  const { data: venues } = useQuery({
+    queryKey: ['venues'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('venues')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order');
+      
+      if (error) throw error;
+      return data || [];
+    }
+  });
+
+  // Fetch performers (actors, not course leaders)
   const { data: performers } = useQuery({
-    queryKey: ['performers'],
+    queryKey: ['performers-actors'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('performers')
@@ -712,12 +727,27 @@ export const ShowManagement = () => {
 
               <div>
                 <Label htmlFor="venue">Plats</Label>
-                <Input
+                <select
                   id="venue"
                   value={newShow.venue}
-                  onChange={(e) => setNewShow(prev => ({ ...prev, venue: e.target.value }))}
-                  placeholder="Metropole"
-                />
+                  onChange={(e) => {
+                    const selectedVenue = venues?.find(v => v.name === e.target.value);
+                    setNewShow(prev => ({
+                      ...prev,
+                      venue: e.target.value,
+                      venue_address: selectedVenue?.address || '',
+                      venue_maps_url: selectedVenue?.maps_url || ''
+                    }));
+                  }}
+                  className="w-full px-3 py-2 border border-input bg-background rounded-md z-50"
+                >
+                  <option value="">Välj plats...</option>
+                  {venues?.map((venue) => (
+                    <option key={venue.id} value={venue.name}>
+                      {venue.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -782,13 +812,14 @@ export const ShowManagement = () => {
               </div>
 
               <div>
-                <Label>Artister</Label>
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  {performers?.map((performer) => (
+                <Label>Skådespelare (max 12)</Label>
+                <div className="grid grid-cols-3 gap-2 mt-2 max-h-48 overflow-y-auto">
+                  {performers?.slice(0, 12).map((performer) => (
                     <label key={performer.id} className="flex items-center space-x-2">
                       <input
                         type="checkbox"
                         checked={newShow.performer_ids.includes(performer.id)}
+                        disabled={!newShow.performer_ids.includes(performer.id) && newShow.performer_ids.length >= 12}
                         onChange={(e) => {
                           if (e.target.checked) {
                             setNewShow(prev => ({
@@ -807,6 +838,9 @@ export const ShowManagement = () => {
                     </label>
                   ))}
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {newShow.performer_ids.length}/12 skådespelare valda
+                </p>
               </div>
 
               <div className="flex items-center space-x-2">
