@@ -33,9 +33,7 @@ const About = () => {
         <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
           
           {/* Om oss-info */}
-          <div className="space-y-6 bg-white" style={{
-          lineHeight: '1.3'
-        }}>
+          <div className="space-y-4 bg-white">
             <h2 className="mb-2">Om Lilla Improteatern</h2>
             <p className="text-left">Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy – och en stark vilja att skapa en plats där både skratten, hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron – och i viljan att bygga något nytt tillsammans.</p>
           </div>
