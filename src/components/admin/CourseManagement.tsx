@@ -31,6 +31,10 @@ interface CourseInstance {
   practical_info?: string | null;
   instructor?: string | null;
   subtitle?: string | null;
+  sessions?: number;
+  hours_per_session?: number;
+  price?: number;
+  discount_price?: number;
 }
 
 interface CourseWithBookings extends CourseInstance {
@@ -173,6 +177,10 @@ export const CourseManagement = () => {
           course_info: formData.courseInfo,
           practical_info: formData.practicalInfo,
           instructor: formData.instructor,
+          price: formData.price,
+          discount_price: formData.discountPrice,
+          sessions: formData.sessions,
+          hours_per_session: formData.hoursPerSession,
         })
         .eq('id', course.id);
 
@@ -236,6 +244,10 @@ export const CourseManagement = () => {
           course_info: courseData.courseInfo,
           practical_info: courseData.practicalInfo,
           instructor: courseData.instructor,
+          price: courseData.price,
+          discount_price: courseData.discountPrice,
+          sessions: courseData.sessions,
+          hours_per_session: courseData.hoursPerSession,
           is_active: true
         })
         .select()
@@ -342,12 +354,12 @@ export const CourseManagement = () => {
       customName: courseType === 'helgworkshop' ? course.course_title : '',
       subtitle: course.subtitle || '',
       instructor: course.instructor || '',
-      sessions: 1,
-      hoursPerSession: 2,
+      sessions: course.sessions || 1,
+      hoursPerSession: course.hours_per_session || 2,
       startDate: course.start_date ? new Date(course.start_date) : undefined,
       maxParticipants: course.max_participants || 12,
-      price: 0,
-      discountPrice: 0,
+      price: course.price || 0,
+      discountPrice: course.discount_price || 0,
       courseInfo: course.course_info || '',
       practicalInfo: course.practical_info || ''
     });

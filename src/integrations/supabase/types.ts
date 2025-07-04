@@ -48,42 +48,6 @@ export type Database = {
         }
         Relationships: []
       }
-      course_helgworkshop_workshop_i_clown_1751634685852: {
-        Row: {
-          address: string | null
-          city: string | null
-          created_at: string
-          email: string
-          id: string
-          message: string | null
-          name: string
-          phone: string
-          postal_code: string | null
-        }
-        Insert: {
-          address?: string | null
-          city?: string | null
-          created_at?: string
-          email: string
-          id?: string
-          message?: string | null
-          name: string
-          phone: string
-          postal_code?: string | null
-        }
-        Update: {
-          address?: string | null
-          city?: string | null
-          created_at?: string
-          email?: string
-          id?: string
-          message?: string | null
-          name?: string
-          phone?: string
-          postal_code?: string | null
-        }
-        Relationships: []
-      }
       course_helgworkshops_specialkurser_1751354357209: {
         Row: {
           address: string | null
@@ -161,12 +125,16 @@ export type Database = {
           course_info: string | null
           course_title: string
           created_at: string
+          discount_price: number | null
           end_date: string | null
+          hours_per_session: number | null
           id: string
           instructor: string | null
           is_active: boolean | null
           max_participants: number | null
           practical_info: string | null
+          price: number | null
+          sessions: number | null
           start_date: string | null
           subtitle: string | null
           table_name: string
@@ -175,12 +143,16 @@ export type Database = {
           course_info?: string | null
           course_title: string
           created_at?: string
+          discount_price?: number | null
           end_date?: string | null
+          hours_per_session?: number | null
           id?: string
           instructor?: string | null
           is_active?: boolean | null
           max_participants?: number | null
           practical_info?: string | null
+          price?: number | null
+          sessions?: number | null
           start_date?: string | null
           subtitle?: string | null
           table_name: string
@@ -189,12 +161,16 @@ export type Database = {
           course_info?: string | null
           course_title?: string
           created_at?: string
+          discount_price?: number | null
           end_date?: string | null
+          hours_per_session?: number | null
           id?: string
           instructor?: string | null
           is_active?: boolean | null
           max_participants?: number | null
           practical_info?: string | null
+          price?: number | null
+          sessions?: number | null
           start_date?: string | null
           subtitle?: string | null
           table_name?: string

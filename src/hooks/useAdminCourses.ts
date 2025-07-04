@@ -67,7 +67,7 @@ export const useAdminCourses = () => {
           teacher: instructor ? {
             id: instructor.id,
             name: instructor.name,
-            image: instructor.image_url,
+            image: instructor.image_url?.replace('public/', '/'),
             bio: instructor.bio || ''
           } : null
         };

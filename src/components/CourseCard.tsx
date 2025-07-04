@@ -32,6 +32,10 @@ interface Course {
   max_participants?: number | null;
   start_date?: string | null;
   practical_info?: string;
+  sessions?: number;
+  hours_per_session?: number;
+  price?: number;
+  discount_price?: number;
 }
 
 interface CourseCardProps {
@@ -88,6 +92,10 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           practicalInfoText={course.practical_info}
           startDate={course.start_date}
           maxParticipants={course.max_participants}
+          sessions={course.sessions}
+          hoursPerSession={course.hours_per_session}
+          price={course.price}
+          discountPrice={course.discount_price}
         />
         
         <div className="flex-1"></div>

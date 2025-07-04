@@ -55,11 +55,11 @@ export const PracticalInfo = ({
     }
     
     if (price && price > 0) {
-      items.push(`${price} kr (ordinarie)`);
+      items.push(`Ordinarie pris: ${price} kr`);
     }
     
     if (discountPrice && discountPrice > 0) {
-      items.push(`${discountPrice} kr (pensionär, student eller omtag)`);
+      items.push(`Rabatterat pris: ${discountPrice} kr (pensionär, student eller omtag)`);
     }
     
     if (additionalInfo) {
