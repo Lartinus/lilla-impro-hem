@@ -8,16 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Eye, EyeOff, Plus, Edit, Trash2, GripVertical, Calendar, MapPin, Users, Ticket } from 'lucide-react';
+import { Eye, EyeOff, Plus, Edit, Trash2, GripVertical, Calendar, MapPin, Ticket } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { format } from 'date-fns';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface AdminShow {
   id: string;
@@ -48,19 +46,6 @@ interface AdminShowWithPerformers extends AdminShow {
   }>;
 }
 
-interface DiscountCode {
-  id: string;
-  code: string;
-  discount_amount: number;
-  discount_type: 'fixed' | 'percentage';
-  max_uses?: number;
-  current_uses: number;
-  valid_from?: string | null;
-  valid_until?: string | null;
-  is_active: boolean;
-  created_at: string;
-}
-
 interface NewShowForm {
   title: string;
   slug: string;
@@ -76,16 +61,6 @@ interface NewShowForm {
   max_tickets: number;
   is_active: boolean;
   performer_ids: string[];
-}
-
-interface NewDiscountCodeForm {
-  code: string;
-  discount_amount: number;
-  discount_type: 'fixed' | 'percentage';
-  max_uses: number;
-  valid_from: string;
-  valid_until: string;
-  is_active: boolean;
 }
 
 // Sortable Row Component for Shows
@@ -189,12 +164,9 @@ function SortableShowRow({ show, onEdit, onToggleVisibility, onDelete }: {
 }
 
 export const ShowManagement = () => {
-  const [activeTab, setActiveTab] = useState('shows');
   const [isShowDialogOpen, setIsShowDialogOpen] = useState(false);
-  const [isCodeDialogOpen, setIsCodeDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingShow, setEditingShow] = useState<AdminShowWithPerformers | null>(null);
-  const [editingCode, setEditingCode] = useState<DiscountCode | null>(null);
   
   const [newShow, setNewShow] = useState<NewShowForm>({
     title: '',
@@ -211,16 +183,6 @@ export const ShowManagement = () => {
     max_tickets: 100,
     is_active: true,
     performer_ids: []
-  });
-
-  const [newCode, setNewCode] = useState<NewDiscountCodeForm>({
-    code: '',
-    discount_amount: 50,
-    discount_type: 'fixed',
-    max_uses: 100,
-    valid_from: '',
-    valid_until: '',
-    is_active: true
   });
 
   const queryClient = useQueryClient();
@@ -298,20 +260,6 @@ export const ShowManagement = () => {
         ...show,
         performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || []
       })) as AdminShowWithPerformers[];
-    }
-  });
-
-  // Fetch discount codes
-  const { data: discountCodes, isLoading: codesLoading } = useQuery({
-    queryKey: ['discount-codes'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('discount_codes')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return data || [];
     }
   });
 
@@ -418,40 +366,6 @@ export const ShowManagement = () => {
     }
   });
 
-  // Create discount code mutation
-  const createCodeMutation = useMutation({
-    mutationFn: async (codeData: NewDiscountCodeForm) => {
-      const { data, error } = await supabase
-        .from('discount_codes')
-        .insert([{
-          ...codeData,
-          current_uses: 0
-        }])
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['discount-codes'] });
-      setIsCodeDialogOpen(false);
-      setNewCode({
-        code: '',
-        discount_amount: 50,
-        discount_type: 'fixed',
-        max_uses: 100,
-        valid_from: '',
-        valid_until: '',
-        is_active: true
-      });
-      toast({
-        title: "Rabattkod skapad",
-        description: "Den nya rabattkoden har lagts till.",
-      });
-    }
-  });
-
   // Handle drag end for shows
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -510,146 +424,62 @@ export const ShowManagement = () => {
       <CardHeader>
         <CardTitle>Föreställningshantering</CardTitle>
         <CardDescription>
-          Hantera föreställningar och rabattkoder från admin-panelen
+          Hantera föreställningar från admin-panelen
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="shows">Föreställningar</TabsTrigger>
-            <TabsTrigger value="discount-codes">Rabattkoder</TabsTrigger>
-          </TabsList>
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-lg font-semibold">Föreställningar</h3>
+          <Button onClick={() => setIsShowDialogOpen(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Lägg till föreställning
+          </Button>
+        </div>
 
-          <TabsContent value="shows" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Föreställningar</h3>
-              <Button onClick={() => setIsShowDialogOpen(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Lägg till föreställning
-              </Button>
-            </div>
-
-            {showsLoading ? (
-              <div className="text-center py-8">Laddar föreställningar...</div>
-            ) : shows && shows.length > 0 ? (
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-              >
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-20">Ordning</TableHead>
-                      <TableHead>Titel</TableHead>
-                      <TableHead>Datum & Tid</TableHead>
-                      <TableHead>Plats</TableHead>
-                      <TableHead>Pris</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Åtgärder</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <SortableContext items={shows.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                      {shows.map((show) => (
-                        <SortableShowRow
-                          key={show.id}
-                          show={show}
-                          onEdit={handleEditShow}
-                          onToggleVisibility={handleToggleShowVisibility}
-                          onDelete={handleDeleteShow}
-                        />
-                      ))}
-                    </SortableContext>
-                  </TableBody>
-                </Table>
-              </DndContext>
-            ) : (
-              <div className="text-center py-8">
-                <Calendar className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Inga föreställningar</h3>
-                <p className="text-muted-foreground">
-                  Lägg till din första föreställning för att komma igång.
-                </p>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="discount-codes" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Rabattkoder</h3>
-              <Button onClick={() => setIsCodeDialogOpen(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Lägg till rabattkod
-              </Button>
-            </div>
-
-            {codesLoading ? (
-              <div className="text-center py-8">Laddar rabattkoder...</div>
-            ) : discountCodes && discountCodes.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Kod</TableHead>
-                    <TableHead>Rabatt</TableHead>
-                    <TableHead>Användningar</TableHead>
-                    <TableHead>Giltig från</TableHead>
-                    <TableHead>Giltig till</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Åtgärder</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {discountCodes.map((code) => (
-                    <TableRow key={code.id}>
-                      <TableCell className="font-mono font-medium">{code.code}</TableCell>
-                      <TableCell>
-                        {code.discount_type === 'percentage' 
-                          ? `${code.discount_amount}%` 
-                          : `${code.discount_amount}kr`
-                        }
-                      </TableCell>
-                      <TableCell>
-                        {code.current_uses} / {code.max_uses || '∞'}
-                      </TableCell>
-                      <TableCell>
-                        {code.valid_from ? new Date(code.valid_from).toLocaleDateString('sv-SE') : '-'}
-                      </TableCell>
-                      <TableCell>
-                        {code.valid_until ? new Date(code.valid_until).toLocaleDateString('sv-SE') : '-'}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={code.is_active ? "default" : "secondary"}>
-                          {code.is_active ? 'Aktiv' : 'Inaktiv'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
-                            <Edit className="w-4 h-4 mr-1" />
-                            Redigera
-                          </Button>
-                          <Button variant="destructive" size="sm">
-                            <Trash2 className="w-4 h-4 mr-1" />
-                            Radera
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
+        {showsLoading ? (
+          <div className="text-center py-8">Laddar föreställningar...</div>
+        ) : shows && shows.length > 0 ? (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-20">Ordning</TableHead>
+                  <TableHead>Titel</TableHead>
+                  <TableHead>Datum & Tid</TableHead>
+                  <TableHead>Plats</TableHead>
+                  <TableHead>Pris</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Åtgärder</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <SortableContext items={shows.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                  {shows.map((show) => (
+                    <SortableShowRow
+                      key={show.id}
+                      show={show}
+                      onEdit={handleEditShow}
+                      onToggleVisibility={handleToggleShowVisibility}
+                      onDelete={handleDeleteShow}
+                    />
                   ))}
-                </TableBody>
-              </Table>
-            ) : (
-              <div className="text-center py-8">
-                <Ticket className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Inga rabattkoder</h3>
-                <p className="text-muted-foreground">
-                  Skapa rabattkoder för att erbjuda specialpriser.
-                </p>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+                </SortableContext>
+              </TableBody>
+            </Table>
+          </DndContext>
+        ) : (
+          <div className="text-center py-8">
+            <Calendar className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Inga föreställningar</h3>
+            <p className="text-muted-foreground">
+              Lägg till din första föreställning för att komma igång.
+            </p>
+          </div>
+        )}
 
         {/* Show Dialog */}
         <Dialog open={isShowDialogOpen} onOpenChange={(open) => {
@@ -864,105 +694,6 @@ export const ShowManagement = () => {
                   disabled={createShowMutation.isPending}
                 >
                   {createShowMutation.isPending ? 'Sparar...' : (isEditMode ? 'Uppdatera' : 'Skapa')}
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Discount Code Dialog */}
-        <Dialog open={isCodeDialogOpen} onOpenChange={setIsCodeDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Lägg till rabattkod</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="code">Kod</Label>
-                <Input
-                  id="code"
-                  value={newCode.code}
-                  onChange={(e) => setNewCode(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
-                  placeholder="RABATT50"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="discount_amount">Rabattbelopp</Label>
-                  <Input
-                    id="discount_amount"
-                    type="number"
-                    value={newCode.discount_amount}
-                    onChange={(e) => setNewCode(prev => ({ ...prev, discount_amount: Number(e.target.value) }))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="discount_type">Typ</Label>
-                  <select
-                    id="discount_type"
-                    value={newCode.discount_type}
-                    onChange={(e) => setNewCode(prev => ({ ...prev, discount_type: e.target.value as 'fixed' | 'percentage' }))}
-                    className="w-full px-3 py-2 border border-input bg-background rounded-md"
-                  >
-                    <option value="fixed">Fast belopp (kr)</option>
-                    <option value="percentage">Procent (%)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="max_uses">Max användningar</Label>
-                <Input
-                  id="max_uses"
-                  type="number"
-                  value={newCode.max_uses}
-                  onChange={(e) => setNewCode(prev => ({ ...prev, max_uses: Number(e.target.value) }))}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="valid_from">Giltig från</Label>
-                  <Input
-                    id="valid_from"
-                    type="date"
-                    value={newCode.valid_from}
-                    onChange={(e) => setNewCode(prev => ({ ...prev, valid_from: e.target.value }))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="valid_until">Giltig till</Label>
-                  <Input
-                    id="valid_until"
-                    type="date"
-                    value={newCode.valid_until}
-                    onChange={(e) => setNewCode(prev => ({ ...prev, valid_until: e.target.value }))}
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="code_is_active"
-                  checked={newCode.is_active}
-                  onCheckedChange={(checked) => setNewCode(prev => ({ ...prev, is_active: checked }))}
-                />
-                <Label htmlFor="code_is_active">Aktiv rabattkod</Label>
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsCodeDialogOpen(false)}
-                >
-                  Avbryt
-                </Button>
-                <Button
-                  onClick={() => createCodeMutation.mutate(newCode)}
-                  disabled={createCodeMutation.isPending}
-                >
-                  {createCodeMutation.isPending ? 'Sparar...' : 'Skapa'}
                 </Button>
               </div>
             </div>

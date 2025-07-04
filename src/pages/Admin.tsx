@@ -18,6 +18,7 @@ import { ShowManagement } from '@/components/admin/ShowManagement';
 import { VenueManagement } from '@/components/admin/VenueManagement';
 import { ActorManagement } from '@/components/admin/ActorManagement';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { DiscountCodeManagement } from '@/components/admin/DiscountCodeManagement';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -140,15 +141,7 @@ const AdminDashboard = () => {
       case 'tickets':
         return <TicketManagement />;
       case 'discount-codes':
-        return (
-          <div className="text-center py-12">
-            <Ticket className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Rabattkoder kommer snart</h3>
-            <p className="text-muted-foreground">
-              Funktionalitet för att hantera rabattkoder kommer att implementeras här
-            </p>
-          </div>
-        );
+        return <DiscountCodeManagement />;
       case 'email':
         return (
           <div className="text-center py-12">
@@ -178,7 +171,7 @@ const AdminDashboard = () => {
           />
           
           <SidebarInset className="flex-1">
-            <div className="flex h-12 items-center border-b px-4">
+            <div className="flex h-12 items-center border-b px-4 sticky top-0 bg-background z-10">
               <SidebarTrigger />
               <div className="ml-4 flex items-center gap-2">
                 <h1 className="text-lg font-semibold">Administratörspanel</h1>
@@ -189,9 +182,9 @@ const AdminDashboard = () => {
               </div>
             </div>
             
-            <main className="flex-1 p-6">
+            <main className="flex-1 p-6 space-y-8">
               {/* Dashboard Overview Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Totala Kursanmälningar</CardTitle>
@@ -250,7 +243,9 @@ const AdminDashboard = () => {
               </div>
 
               {/* Main Content */}
-              {renderContent()}
+              <div>
+                {renderContent()}
+              </div>
             </main>
           </SidebarInset>
         </div>

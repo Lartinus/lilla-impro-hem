@@ -45,7 +45,7 @@ export const useAdminStats = () => {
       return {
         totalCourseBookings,
         soldTickets,
-        activeCourses: courseInstances?.length || 0
+        activeCourses: courseInstances?.filter(c => c.is_active).length || 0
       };
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
