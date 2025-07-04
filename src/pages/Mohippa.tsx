@@ -56,12 +56,12 @@ export default function Mohippa() {
               Vi tar med oss det vi älskar med improv comedy – värme, överraskning och lekfullhet –
               och skapar något som passar just er.
             </p>
-
-            <h2 className="-my-4 mb-2">Vad kan ni boka?</h2>
           </div>
-          
-          {/* Vad kan ni boka */}
-          <div className="space-y-4 border-3 border-red-800 p-4 -mt-6">
+
+          {/* Vad kan ni boka sektion */}
+          <div className="-mt-6">
+            <h2 className="mb-1">Vad kan ni boka?</h2>
+            <div className="space-y-4 border-3 border-red-800 p-4">
             {[
               ["Improshow", "En specialutformad improföreställning där vi inkluderar detaljer om t.ex. födelsedagsbarnet eller brudparet"],
               ["Workshop", "En lekfull och inkluderande introduktion i Improv Comedy, inga förkunskaper krävs"],
@@ -72,9 +72,10 @@ export default function Mohippa() {
                 <p>{body}</p>
               </div>
             ))}
+            </div>
           </div>
           
-          
+
           {/* Exempel på tillfällen */}
           <div className="space-y-4">
             <p className="font-bold">Exempel på tillfällen vi passar för</p>
