@@ -328,8 +328,8 @@ export const CourseManagement = () => {
                     </SelectTrigger>
                     <SelectContent>
                       {performers?.map((performer: any) => (
-                        <SelectItem key={performer.id} value={performer.attributes.name}>
-                          {performer.attributes.name}
+                        <SelectItem key={performer.id} value={performer.attributes?.name || performer.name}>
+                          {performer.attributes?.name || performer.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
