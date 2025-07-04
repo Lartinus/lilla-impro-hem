@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Eye, Ticket } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TicketPurchase {
   id: string;
@@ -24,6 +25,7 @@ interface TicketPurchase {
 }
 
 export const TicketManagement = () => {
+  const isMobile = useIsMobile();
   const { data: tickets, isLoading } = useQuery({
     queryKey: ['admin-tickets'],
     queryFn: async (): Promise<TicketPurchase[]> => {
@@ -85,6 +87,48 @@ export const TicketManagement = () => {
             <p className="text-muted-foreground">
               Inga biljetter har köpts än.
             </p>
+          </div>
+        ) : isMobile ? (
+          <div className="space-y-4">
+            {tickets.map((ticket) => (
+              <Card key={ticket.id} className="p-4">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{ticket.show_title}</h4>
+                    <div className="text-sm text-muted-foreground">
+                      {new Date(ticket.show_date).toLocaleDateString('sv-SE')}
+                    </div>
+                    <div className="mt-1">
+                      <div className="font-medium text-sm">{ticket.buyer_name}</div>
+                      <div className="text-xs text-muted-foreground">{ticket.buyer_email}</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-semibold">{ticket.total_amount} kr</div>
+                    <div className="mt-1">{getStatusBadge(ticket.payment_status)}</div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 mb-3">
+                  {ticket.regular_tickets > 0 && (
+                    <div className="text-sm">Ordinarie: {ticket.regular_tickets}</div>
+                  )}
+                  {ticket.discount_tickets > 0 && (
+                    <div className="text-sm">Rabatt: {ticket.discount_tickets}</div>
+                  )}
+                  <div className="text-sm">
+                    Kod: <code className="text-xs bg-muted px-2 py-1 rounded ml-1">
+                      {ticket.ticket_code}
+                    </code>
+                  </div>
+                </div>
+
+                <Button variant="outline" size="sm" className="w-full">
+                  <Eye className="w-4 h-4 mr-1" />
+                  Visa detaljer
+                </Button>
+              </Card>
+            ))}
           </div>
         ) : (
           <Table>

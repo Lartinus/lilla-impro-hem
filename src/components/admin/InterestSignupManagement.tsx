@@ -16,6 +16,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Eye, EyeOff, Plus, Edit, Trash2, GripVertical, Users } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface InterestSignup {
   id: string;
@@ -126,6 +127,7 @@ function SortableRow({ item, onEdit, onToggleVisibility, onDelete }: {
 }
 
 export const InterestSignupManagement = () => {
+  const isMobile = useIsMobile();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingItem, setEditingItem] = useState<InterestSignupWithSubmissions | null>(null);
@@ -497,6 +499,66 @@ export const InterestSignupManagement = () => {
             <p className="text-muted-foreground">
               Det finns för närvarande inga intresseanmälningar i systemet.
             </p>
+          </div>
+        ) : isMobile ? (
+          <div className="space-y-4">
+            {interestSignups.map((item, index) => (
+              <Card key={item.id} className="p-4">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs text-muted-foreground">#{item.sort_order || 0}</span>
+                      <Badge variant={item.is_visible ? "default" : "secondary"}>
+                        {item.is_visible ? 'Synlig' : 'Dold'}
+                      </Badge>
+                    </div>
+                    <h4 className="font-medium">{item.title}</h4>
+                    {item.subtitle && (
+                      <p className="text-sm text-muted-foreground">{item.subtitle}</p>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-semibold">{item.submissionCount}</div>
+                    <div className="text-xs text-muted-foreground">anmälda</div>
+                  </div>
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleEdit(item)}
+                  >
+                    <Edit className="w-4 h-4 mr-1" />
+                    Redigera
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => toggleVisibilityMutation.mutate(item)}
+                  >
+                    {item.is_visible ? (
+                      <EyeOff className="w-4 h-4 mr-1" />
+                    ) : (
+                      <Eye className="w-4 h-4 mr-1" />
+                    )}
+                    {item.is_visible ? 'Dölj' : 'Visa'}
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    size="sm"
+                    onClick={() => {
+                      if (confirm(`Är du säker på att du vill radera "${item.title}"? Detta kan inte ångras.`)) {
+                        deleteMutation.mutate(item);
+                      }
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Radera
+                  </Button>
+                </div>
+              </Card>
+            ))}
           </div>
         ) : (
           <DndContext

@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Performer {
   id: string;
@@ -29,6 +30,7 @@ interface PerformerForm {
 }
 
 export const PerformerManagement = () => {
+  const isMobile = useIsMobile();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingPerformer, setEditingPerformer] = useState<Performer | null>(null);
@@ -279,6 +281,74 @@ export const PerformerManagement = () => {
             <p className="text-muted-foreground">
               Lägg till kursledare och skådespelare för att kunna tilldela dem till kurser.
             </p>
+          </div>
+        ) : isMobile ? (
+          <div className="space-y-4">
+            {performers.map((performer) => (
+              <Card key={performer.id} className="p-4">
+                <div className="flex items-start gap-3 mb-3">
+                  {performer.image_url ? (
+                    <img 
+                      src={performer.image_url} 
+                      alt={performer.name}
+                      className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                      <User className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-medium">{performer.name}</h4>
+                      <Badge variant={performer.is_active ? "default" : "secondary"}>
+                        {performer.is_active ? 'Aktiv' : 'Inaktiv'}
+                      </Badge>
+                    </div>
+                    {performer.bio && (
+                      <p className="text-sm text-muted-foreground line-clamp-2">{performer.bio}</p>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleEdit(performer)}
+                  >
+                    <Edit className="w-4 h-4 mr-1" />
+                    Redigera
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => toggleStatusMutation.mutate(performer)}
+                    disabled={toggleStatusMutation.isPending}
+                  >
+                    {performer.is_active ? (
+                      <PowerOff className="w-4 h-4 mr-1" />
+                    ) : (
+                      <Power className="w-4 h-4 mr-1" />
+                    )}
+                    {performer.is_active ? 'Inaktivera' : 'Aktivera'}
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    size="sm"
+                    onClick={() => {
+                      if (confirm(`Är du säker på att du vill radera "${performer.name}"?`)) {
+                        deletePerformerMutation.mutate(performer.id);
+                      }
+                    }}
+                    disabled={deletePerformerMutation.isPending}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Radera
+                  </Button>
+                </div>
+              </Card>
+            ))}
           </div>
         ) : (
           <Table>

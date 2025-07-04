@@ -15,6 +15,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Plus, Edit, Trash2, GripVertical, MapPin, Power, PowerOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Venue {
   id: string;
@@ -123,6 +124,7 @@ function SortableVenueRow({ venue, onEdit, onToggleActive, onDelete }: {
 }
 
 export const VenueManagement = () => {
+  const isMobile = useIsMobile();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingVenue, setEditingVenue] = useState<Venue | null>(null);
@@ -314,36 +316,97 @@ export const VenueManagement = () => {
         {isLoading ? (
           <div className="text-center py-8">Laddar platser...</div>
         ) : venues && venues.length > 0 ? (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-20">Ordning</TableHead>
-                  <TableHead>Namn</TableHead>
-                  <TableHead>Adress</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Åtgärder</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <SortableContext items={venues.map(v => v.id)} strategy={verticalListSortingStrategy}>
-                  {venues.map((venue) => (
-                    <SortableVenueRow
-                      key={venue.id}
-                      venue={venue}
-                      onEdit={handleEditVenue}
-                      onToggleActive={handleToggleActive}
-                      onDelete={handleDeleteVenue}
-                    />
-                  ))}
-                </SortableContext>
-              </TableBody>
-            </Table>
-          </DndContext>
+          isMobile ? (
+            <div className="space-y-4">
+              {venues.map((venue) => (
+                <Card key={venue.id} className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs text-muted-foreground">#{venue.sort_order || 0}</span>
+                        <Badge variant={venue.is_active ? "default" : "secondary"}>
+                          {venue.is_active ? 'Aktiv' : 'Inaktiv'}
+                        </Badge>
+                      </div>
+                      <h4 className="font-medium">{venue.name}</h4>
+                      {venue.address && (
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                          <MapPin className="w-4 h-4" />
+                          {venue.address}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleEditVenue(venue)}
+                    >
+                      <Edit className="w-4 h-4 mr-1" />
+                      Redigera
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleToggleActive(venue)}
+                    >
+                      {venue.is_active ? (
+                        <PowerOff className="w-4 h-4 mr-1" />
+                      ) : (
+                        <Power className="w-4 h-4 mr-1" />
+                      )}
+                      {venue.is_active ? 'Inaktivera' : 'Aktivera'}
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={() => {
+                        if (confirm(`Är du säker på att du vill radera "${venue.name}"? Detta kan inte ångras.`)) {
+                          handleDeleteVenue(venue);
+                        }
+                      }}
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Radera
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-20">Ordning</TableHead>
+                    <TableHead>Namn</TableHead>
+                    <TableHead>Adress</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Åtgärder</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <SortableContext items={venues.map(v => v.id)} strategy={verticalListSortingStrategy}>
+                    {venues.map((venue) => (
+                      <SortableVenueRow
+                        key={venue.id}
+                        venue={venue}
+                        onEdit={handleEditVenue}
+                        onToggleActive={handleToggleActive}
+                        onDelete={handleDeleteVenue}
+                      />
+                    ))}
+                  </SortableContext>
+                </TableBody>
+              </Table>
+            </DndContext>
+          )
         ) : (
           <div className="text-center py-8">
             <MapPin className="mx-auto h-12 w-12 text-muted-foreground mb-4" />

@@ -16,6 +16,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Eye, EyeOff, Plus, Edit, Trash2, GripVertical, Calendar, MapPin, Ticket } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface AdminShow {
   id: string;
@@ -164,6 +165,7 @@ function SortableShowRow({ show, onEdit, onToggleVisibility, onDelete }: {
 }
 
 export const ShowManagement = () => {
+  const isMobile = useIsMobile();
   const [isShowDialogOpen, setIsShowDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingShow, setEditingShow] = useState<AdminShowWithPerformers | null>(null);
@@ -439,38 +441,107 @@ export const ShowManagement = () => {
         {showsLoading ? (
           <div className="text-center py-8">Laddar föreställningar...</div>
         ) : shows && shows.length > 0 ? (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-20">Ordning</TableHead>
-                  <TableHead>Titel</TableHead>
-                  <TableHead>Datum & Tid</TableHead>
-                  <TableHead>Plats</TableHead>
-                  <TableHead>Pris</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Åtgärder</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <SortableContext items={shows.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                  {shows.map((show) => (
-                    <SortableShowRow
-                      key={show.id}
-                      show={show}
-                      onEdit={handleEditShow}
-                      onToggleVisibility={handleToggleShowVisibility}
-                      onDelete={handleDeleteShow}
-                    />
-                  ))}
-                </SortableContext>
-              </TableBody>
-            </Table>
-          </DndContext>
+          isMobile ? (
+            <div className="space-y-4">
+              {shows.map((show) => (
+                <Card key={show.id} className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs text-muted-foreground">#{show.sort_order || 0}</span>
+                        <Badge variant={show.is_active ? "default" : "secondary"}>
+                          {show.is_active ? 'Aktiv' : 'Dold'}
+                        </Badge>
+                      </div>
+                      <h4 className="font-medium">{show.title}</h4>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                        <Calendar className="w-4 h-4" />
+                        {new Date(show.show_date).toLocaleDateString('sv-SE')} {show.show_time}
+                      </div>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <MapPin className="w-4 h-4" />
+                        {show.venue}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center gap-1 text-lg font-semibold">
+                        <Ticket className="w-4 h-4" />
+                        {show.regular_price}kr
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleEditShow(show)}
+                    >
+                      <Edit className="w-4 h-4 mr-1" />
+                      Redigera
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleToggleShowVisibility(show)}
+                    >
+                      {show.is_active ? (
+                        <EyeOff className="w-4 h-4 mr-1" />
+                      ) : (
+                        <Eye className="w-4 h-4 mr-1" />
+                      )}
+                      {show.is_active ? 'Dölj' : 'Visa'}
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={() => {
+                        if (confirm(`Är du säker på att du vill radera "${show.title}"? Detta kan inte ångras.`)) {
+                          handleDeleteShow(show);
+                        }
+                      }}
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Radera
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-20">Ordning</TableHead>
+                    <TableHead>Titel</TableHead>
+                    <TableHead>Datum & Tid</TableHead>
+                    <TableHead>Plats</TableHead>
+                    <TableHead>Pris</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Åtgärder</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <SortableContext items={shows.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                    {shows.map((show) => (
+                      <SortableShowRow
+                        key={show.id}
+                        show={show}
+                        onEdit={handleEditShow}
+                        onToggleVisibility={handleToggleShowVisibility}
+                        onDelete={handleDeleteShow}
+                      />
+                    ))}
+                  </SortableContext>
+                </TableBody>
+              </Table>
+            </DndContext>
+          )
         ) : (
           <div className="text-center py-8">
             <Calendar className="mx-auto h-12 w-12 text-muted-foreground mb-4" />

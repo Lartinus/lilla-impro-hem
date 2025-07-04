@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, Edit, Trash2, CreditCard } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DiscountCode {
   id: string;
@@ -38,6 +39,7 @@ interface NewDiscountCodeForm {
 }
 
 export const DiscountCodeManagement = () => {
+  const isMobile = useIsMobile();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingCode, setEditingCode] = useState<DiscountCode | null>(null);
@@ -206,72 +208,137 @@ export const DiscountCodeManagement = () => {
         {isLoading ? (
           <div className="text-center py-8">Laddar rabattkoder...</div>
         ) : discountCodes && discountCodes.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Kod</TableHead>
-                <TableHead>Rabatt</TableHead>
-                <TableHead>Använd/Max</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Giltig till</TableHead>
-                <TableHead>Åtgärder</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          isMobile ? (
+            <div className="space-y-4">
               {discountCodes.map((code) => (
-                <TableRow key={code.id}>
-                  <TableCell className="font-mono font-semibold">{code.code}</TableCell>
-                  <TableCell>
-                    {code.discount_type === 'percentage' 
-                      ? `${code.discount_amount}%` 
-                      : `${code.discount_amount}kr`
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {code.current_uses}/{code.max_uses || '∞'}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={code.is_active ? "default" : "secondary"}>
-                      {code.is_active ? 'Aktiv' : 'Inaktiv'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {code.valid_until 
-                      ? format(new Date(code.valid_until), 'yyyy-MM-dd')
-                      : 'Ingen gräns'
-                    }
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleEditCode(code)}
-                      >
-                        <Edit className="w-4 h-4 mr-1" />
-                        Redigera
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleToggleActive(code)}
-                      >
-                        {code.is_active ? 'Inaktivera' : 'Aktivera'}
-                      </Button>
-                      <Button 
-                        variant="destructive" 
-                        size="sm"
-                        onClick={() => handleDeleteCode(code)}
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        Radera
-                      </Button>
+                <Card key={code.id} className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <code className="font-mono font-semibold bg-muted px-2 py-1 rounded text-sm">
+                          {code.code}
+                        </code>
+                        <Badge variant={code.is_active ? "default" : "secondary"}>
+                          {code.is_active ? 'Aktiv' : 'Inaktiv'}
+                        </Badge>
+                      </div>
+                      <div className="text-sm text-muted-foreground space-y-1">
+                        <div>Användningar: {code.current_uses}/{code.max_uses || '∞'}</div>
+                        <div>
+                          Giltig till: {code.valid_until 
+                            ? format(new Date(code.valid_until), 'yyyy-MM-dd')
+                            : 'Ingen gräns'
+                          }
+                        </div>
+                      </div>
                     </div>
-                  </TableCell>
-                </TableRow>
+                    <div className="text-right">
+                      <div className="text-lg font-semibold">
+                        {code.discount_type === 'percentage' 
+                          ? `${code.discount_amount}%` 
+                          : `${code.discount_amount}kr`
+                        }
+                      </div>
+                      <div className="text-xs text-muted-foreground">rabatt</div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleEditCode(code)}
+                    >
+                      <Edit className="w-4 h-4 mr-1" />
+                      Redigera
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleToggleActive(code)}
+                    >
+                      {code.is_active ? 'Inaktivera' : 'Aktivera'}
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={() => handleDeleteCode(code)}
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Radera
+                    </Button>
+                  </div>
+                </Card>
               ))}
-            </TableBody>
-          </Table>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Kod</TableHead>
+                  <TableHead>Rabatt</TableHead>
+                  <TableHead>Använd/Max</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Giltig till</TableHead>
+                  <TableHead>Åtgärder</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {discountCodes.map((code) => (
+                  <TableRow key={code.id}>
+                    <TableCell className="font-mono font-semibold">{code.code}</TableCell>
+                    <TableCell>
+                      {code.discount_type === 'percentage' 
+                        ? `${code.discount_amount}%` 
+                        : `${code.discount_amount}kr`
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {code.current_uses}/{code.max_uses || '∞'}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={code.is_active ? "default" : "secondary"}>
+                        {code.is_active ? 'Aktiv' : 'Inaktiv'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {code.valid_until 
+                        ? format(new Date(code.valid_until), 'yyyy-MM-dd')
+                        : 'Ingen gräns'
+                      }
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleEditCode(code)}
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          Redigera
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleToggleActive(code)}
+                        >
+                          {code.is_active ? 'Inaktivera' : 'Aktivera'}
+                        </Button>
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => handleDeleteCode(code)}
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Radera
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )
         ) : (
           <div className="text-center py-8">
             <CreditCard className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
