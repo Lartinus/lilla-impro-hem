@@ -15,6 +15,7 @@ import Mohippa from "./pages/Mohippa";
 import NotFound from "./pages/NotFound";
 import TicketPreviewPage from "./pages/TicketPreviewPage";
 import CourseConfirmationPreviewPage from "./pages/CourseConfirmationPreviewPage";
+import AdminDashboard from "./pages/Admin";
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -52,6 +53,7 @@ const App = () => (
               <Route path="/shows/:slug" element={<ShowDetails />} />
               <Route path="/biljett" element={<TicketPreviewPage />} />
               <Route path="/kursanmälan" element={<CourseConfirmationPreviewPage />} />
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </PrefetchProvider>
