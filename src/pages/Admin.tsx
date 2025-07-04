@@ -18,6 +18,7 @@ import { VenueManagement } from '@/components/admin/VenueManagement';
 import { ActorManagement } from '@/components/admin/ActorManagement';
 import { AdminNavigation } from '@/components/admin/AdminNavigation';
 import { DiscountCodeManagement } from '@/components/admin/DiscountCodeManagement';
+import { ImageManagement } from '@/components/admin/ImageManagement';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -121,6 +122,8 @@ const AdminDashboard = () => {
         return <TicketManagement />;
       case 'discount-codes':
         return <DiscountCodeManagement />;
+      case 'images':
+        return <ImageManagement />;
       case 'email':
         return (
           <div className="text-center py-12">

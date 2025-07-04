@@ -12,7 +12,8 @@ import {
   Calendar,
   MapPin,
   CreditCard,
-  UserCircle
+  UserCircle,
+  ImageIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -64,6 +65,12 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
         { id: 'venues', title: 'Platser', icon: MapPin },
         { id: 'tickets', title: 'Biljetter', icon: Ticket },
       ]
+    },
+    {
+      id: 'images',
+      title: 'Bilder',
+      icon: ImageIcon,
+      type: 'single' as const
     },
     {
       id: 'email',
