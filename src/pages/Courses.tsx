@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import CourseGrid from '@/components/CourseGrid';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 import CourseInfoSection from '@/components/CourseInfoSection';
+import { InterestSignupSection } from '@/components/InterestSignupSection';
 import { useEffect } from 'react';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
@@ -48,6 +49,7 @@ const Courses = () => {
       <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
       <section className="py-8 px-0.5 md:px-4 pb-8 mt-0 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
         <CourseGrid courses={courses} practicalInfo={practicalInfo} />
+        <InterestSignupSection />
         <CourseInfoSection />
       </section>
     </div>

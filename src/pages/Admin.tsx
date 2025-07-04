@@ -13,6 +13,7 @@ import SignUpForm from '@/components/auth/SignUpForm';
 import { CourseManagement } from '@/components/admin/CourseManagement';
 import { TicketManagement } from '@/components/admin/TicketManagement';
 import { PerformerManagement } from '@/components/admin/PerformerManagement';
+import { InterestSignupManagement } from '@/components/admin/InterestSignupManagement';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -172,9 +173,10 @@ const AdminDashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview">Översikt</TabsTrigger>
             <TabsTrigger value="courses">Kurser</TabsTrigger>
+            <TabsTrigger value="interest">Intresseanmälan</TabsTrigger>
             <TabsTrigger value="performers">Kursledare</TabsTrigger>
             <TabsTrigger value="tickets">Biljetter</TabsTrigger>
             <TabsTrigger value="email">Email</TabsTrigger>
@@ -202,6 +204,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="courses">
             <CourseManagement />
+          </TabsContent>
+
+          <TabsContent value="interest">
+            <InterestSignupManagement />
           </TabsContent>
 
           <TabsContent value="performers">

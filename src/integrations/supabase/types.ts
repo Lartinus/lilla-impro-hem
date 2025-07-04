@@ -84,42 +84,6 @@ export type Database = {
         }
         Relationships: []
       }
-      course_house_teams_forts_ttning_1751294175035: {
-        Row: {
-          address: string | null
-          city: string | null
-          created_at: string
-          email: string
-          id: string
-          message: string | null
-          name: string
-          phone: string
-          postal_code: string | null
-        }
-        Insert: {
-          address?: string | null
-          city?: string | null
-          created_at?: string
-          email: string
-          id?: string
-          message?: string | null
-          name: string
-          phone: string
-          postal_code?: string | null
-        }
-        Update: {
-          address?: string | null
-          city?: string | null
-          created_at?: string
-          email?: string
-          id?: string
-          message?: string | null
-          name?: string
-          phone?: string
-          postal_code?: string | null
-        }
-        Relationships: []
-      }
       course_instances: {
         Row: {
           course_info: string | null
@@ -287,6 +251,77 @@ export type Database = {
           phone?: string | null
           requirements?: string
           type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      interest_signup_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          interest_signup_id: string
+          message: string | null
+          name: string
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          interest_signup_id: string
+          message?: string | null
+          name: string
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          interest_signup_id?: string
+          message?: string | null
+          name?: string
+          phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interest_signup_submissions_interest_signup_id_fkey"
+            columns: ["interest_signup_id"]
+            isOneToOne: false
+            referencedRelation: "interest_signups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      interest_signups: {
+        Row: {
+          created_at: string
+          id: string
+          information: string | null
+          is_visible: boolean
+          sort_order: number | null
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          information?: string | null
+          is_visible?: boolean
+          sort_order?: number | null
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          information?: string | null
+          is_visible?: boolean
+          sort_order?: number | null
+          subtitle?: string | null
+          title?: string
           updated_at?: string
         }
         Relationships: []
