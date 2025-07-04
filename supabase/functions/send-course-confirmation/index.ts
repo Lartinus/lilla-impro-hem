@@ -39,7 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
       console.log('Adding contact to Resend:', contactData);
       
       const contactResponse = await resend.contacts.create({
-        audienceId: process.env.RESEND_AUDIENCE_ID || 'default', // You'll need to set this
+        audienceId: Deno.env.get('RESEND_AUDIENCE_ID') || 'default',
         ...contactData
       });
 
@@ -49,7 +49,7 @@ const handler = async (req: Request): Promise<Response> => {
       if (contactResponse.data?.id) {
         try {
           await resend.contacts.update({
-            audienceId: process.env.RESEND_AUDIENCE_ID || 'default',
+            audienceId: Deno.env.get('RESEND_AUDIENCE_ID') || 'default',
             id: contactResponse.data.id,
             unsubscribed: false,
           });
