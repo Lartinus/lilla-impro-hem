@@ -7,8 +7,7 @@ import PerformersSection from '@/components/PerformersSection';
 import OtherShowsSection from '@/components/OtherShowsSection';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useOptimizedShows } from '@/hooks/useOptimizedStrapi';
-import { formatStrapiShow } from '@/utils/strapiHelpers';
+import { useAdminShows } from '@/hooks/useAdminShows';
 import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
 
 const ShowDetails = () => {
@@ -19,13 +18,43 @@ const ShowDetails = () => {
     window.scrollTo(0, 0);
   }, [slug]);
 
-  // Use optimized hooks for better performance
-  const { data: allShowsData, isLoading, error } = useOptimizedShows();
+  // Use admin shows hook
+  const { data: allShowsData, isLoading, error } = useAdminShows();
 
-  // Find the specific show by slug
-  const allShows = allShowsData?.data?.map(formatStrapiShow).filter(Boolean) || [];
-  const show = allShows.find(s => s.slug === slug);
-  const otherShows = allShows.filter(s => s.slug !== slug);
+  // Find the specific show by slug and format for components
+  const show = allShowsData?.find(s => s.slug === slug);
+  const otherShows = allShowsData?.filter(s => s.slug !== slug) || [];
+
+  // Format show for component compatibility
+  const formattedShow = show ? {
+    title: show.title,
+    slug: show.slug,
+    date: show.show_date + 'T' + show.show_time,
+    location: show.venue,
+    mapLink: show.venue_maps_url,
+    description: show.description,
+    ticketPrice: show.regular_price,
+    discountPrice: show.discount_price,
+    totalTickets: show.max_tickets || 100,
+    performers: show.performers.map(p => ({
+      id: parseInt(p.id.slice(-8), 16),
+      name: p.name,
+      image: p.image_url,
+      bio: p.bio || ''
+    })),
+    practicalInfo: show.venue_address ? [show.venue_address] : []
+  } : null;
+
+  const formattedOtherShows = otherShows.map(s => ({
+    id: parseInt(s.id.slice(-8), 16),
+    title: s.title,
+    date: s.show_date + 'T' + s.show_time,
+    time: s.show_time,
+    location: s.venue,
+    slug: s.slug,
+    image: s.image_url || '',
+    totalTickets: s.max_tickets || 100
+  }));
 
   if (isLoading) {
     return (
@@ -52,7 +81,7 @@ const ShowDetails = () => {
     );
   }
 
-  if (!show) {
+  if (!formattedShow) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
         <Header />
@@ -68,11 +97,6 @@ const ShowDetails = () => {
     );
   }
 
-  // Critical check: ensure we have totalTickets from Strapi
-  if (show.totalTickets === undefined || show.totalTickets === null) {
-    console.error(`❌ CRITICAL: Show "${show.title}" (${show.slug}) has no totalTickets configured in Strapi`);
-  }
-
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
       <Header />
@@ -83,18 +107,18 @@ const ShowDetails = () => {
         <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
           <div className="border-4 border-white shadow-lg bg-white rounded-none p-6 md:p-8">
             <ShowInfo 
-              title={show.title}
-              date={show.date}
-              location={show.location}
-              mapLink={show.mapLink}
-              description={show.description}
+              title={formattedShow.title}
+              date={formattedShow.date}
+              location={formattedShow.location}
+              mapLink={formattedShow.mapLink}
+              description={formattedShow.description}
             />
             
-            {show.practicalInfo && show.practicalInfo.length > 0 && (
+            {formattedShow.practicalInfo && formattedShow.practicalInfo.length > 0 && (
               <div className="mb-6">
                 <div className="text-content-primary font-bold mb-3">Praktisk information</div>
                 <div className="space-y-2">
-                  {show.practicalInfo.map((item, index) => (
+                  {formattedShow.practicalInfo.map((item, index) => (
                     <div key={index} className="flex items-start space-x-3">
                       <div className="w-2 h-2 bg-accent-color-primary rounded-full flex-shrink-0 mt-2"></div>
                       <p className="text-content-secondary text-base">{item}</p>
@@ -104,35 +128,25 @@ const ShowDetails = () => {
               </div>
             )}
             
-            <div className={show.performers && show.performers.length > 0 ? 'mb-8' : ''}>
-              {show.totalTickets !== undefined && show.totalTickets !== null ? (
-                <TicketPurchaseComplete
-                  onPurchase={() => {}} // Not used anymore, handled internally
-                  ticketPrice={show.ticketPrice}
-                  discountPrice={show.discountPrice}
-                  totalTickets={show.totalTickets}
-                  showSlug={show.slug}
-                  showTitle={show.title}
-                  showDate={show.date}
-                  showLocation={show.location}
-                />
-              ) : (
-                <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
-                  <h4 className="text-yellow-800 font-bold mb-2">Biljettkonfiguration saknas</h4>
-                  <p className="text-yellow-700 text-sm">
-                    Totalt antal biljetter har inte konfigurerats för denna föreställning i Strapi. 
-                    Kontakta administratören för att lösa detta problem.
-                  </p>
-                </div>
-              )}
+            <div className={formattedShow.performers && formattedShow.performers.length > 0 ? 'mb-8' : ''}>
+              <TicketPurchaseComplete
+                onPurchase={() => {}} // Not used anymore, handled internally
+                ticketPrice={formattedShow.ticketPrice}
+                discountPrice={formattedShow.discountPrice}
+                totalTickets={formattedShow.totalTickets}
+                showSlug={formattedShow.slug}
+                showTitle={formattedShow.title}
+                showDate={formattedShow.date}
+                showLocation={formattedShow.location}
+              />
             </div>
             
-            {show.performers && show.performers.length > 0 && (
-              <PerformersSection performers={show.performers} />
+            {formattedShow.performers && formattedShow.performers.length > 0 && (
+              <PerformersSection performers={formattedShow.performers} />
             )}
           </div>
           
-          <OtherShowsSection shows={otherShows} />
+          <OtherShowsSection shows={formattedOtherShows} />
         </div>
       </section>
     </div>

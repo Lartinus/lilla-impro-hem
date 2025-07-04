@@ -2,8 +2,7 @@
 import Header from '@/components/Header';
 import ShowCardSimple from '@/components/ShowCardSimple';
 import ShowCardSkeleton from '@/components/ShowCardSkeleton';
-import { useOptimizedShows } from '@/hooks/useOptimizedStrapi';
-import { formatStrapiShowSimple, sortShows } from '@/utils/strapiHelpers';
+import { useAdminShows, formatAdminShowForCard } from '@/hooks/useAdminShows';
 import { useEffect, useMemo, useState } from 'react';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
 import { useToast } from '@/hooks/use-toast';
@@ -18,7 +17,7 @@ const Shows = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data, isLoading, error, refetch } = useOptimizedShows();
+  const { data, isLoading, error, refetch } = useAdminShows();
 
   const handleRetry = async () => {
     console.log('Retrying shows fetch...');
@@ -47,45 +46,27 @@ const Shows = () => {
     if (!data) return [];
     
     try {
-      // Format shows and pass raw image object to OptimizedImage for proper URL handling
-      const formattedShows = data?.data ? data.data.map((show: any) => {
-        if (!show) return null;
-        const attrs = show.attributes ?? show;
-        if (!attrs) return null;
-
-        const loc = attrs.location;
-        const locationName = loc?.name ?? loc?.data?.attributes?.name ?? '';
-
-        // Pass the raw image object instead of manually constructing URL
-        return {
-          id: show.id,
-          title: attrs.titel ?? attrs.title,
-          date: attrs.datum ?? attrs.date,
-          time: attrs.time,
-          location: locationName,
-          slug: attrs.slug,
-          image: attrs.bild, // Pass raw Strapi image object
-          totalTickets: attrs.available_tickets, // Critical: Include totalTickets for sold out calculation
-        };
-      }).filter(Boolean) : [];
+      // Format admin shows for compatibility with ShowCardSimple
+      const formattedShows = data.map(show => formatAdminShowForCard(show));
       
-      const sortedShows = sortShows(formattedShows);
-      console.log('📊 Shows with totalTickets:', formattedShows.map(s => ({ slug: s.slug, totalTickets: s.totalTickets })));
-      return sortedShows;
+      console.log('📊 Admin shows:', formattedShows.map(s => ({ slug: s.slug, totalTickets: s.totalTickets })));
+      return formattedShows;
     } catch (err) {
-      console.error('Error formatting shows:', err);
+      console.error('Error formatting admin shows:', err);
       return [];
     }
   }, [data]);
 
-  // Extract image URLs for loading tracking - use getStrapiImageUrl for consistency
+  // Extract image URLs for loading tracking
   const imageUrls = useMemo(() => {
     const urls = shows.map(show => {
       if (!show.image) return null;
-      // Use getStrapiImageUrl to get the correct URL for tracking
-      return show.image?.data?.attributes?.url ? 
-        `https://reliable-chicken-da8c8aa37e.media.strapiapp.com${show.image.data.attributes.url}` : 
-        null;
+      // For admin shows, handle both direct URLs and Strapi format
+      const imageUrl = show.image?.data?.attributes?.url;
+      if (imageUrl) {
+        return imageUrl.startsWith('http') ? imageUrl : `https://reliable-chicken-da8c8aa37e.media.strapiapp.com${imageUrl}`;
+      }
+      return null;
     }).filter(Boolean) as string[];
     console.log('Shows: Extracted image URLs:', urls);
     return urls;
