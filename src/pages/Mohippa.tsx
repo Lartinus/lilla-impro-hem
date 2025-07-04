@@ -57,11 +57,11 @@ export default function Mohippa() {
               och skapar något som passar just er.
             </p>
 
-            <h2 className="-my-4">Vad kan ni boka?</h2>
+            <h2 className="-my-4 mb-2">Vad kan ni boka?</h2>
           </div>
           
           {/* Vad kan ni boka */}
-          <div className="space-y-4 border-3 border-red-800 p-4">
+          <div className="space-y-4 border-3 border-red-800 p-4 -mt-6">
             {[
               ["Improshow", "En specialutformad improföreställning där vi inkluderar detaljer om t.ex. födelsedagsbarnet eller brudparet"],
               ["Workshop", "En lekfull och inkluderande introduktion i Improv Comedy, inga förkunskaper krävs"],
