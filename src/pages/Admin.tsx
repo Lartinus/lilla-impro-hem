@@ -8,10 +8,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart3, Users, Ticket, Mail, Settings, LogIn } from 'lucide-react';
 import Header from '@/components/Header';
 import LoginForm from '@/components/auth/LoginForm';
+import SignUpForm from '@/components/auth/SignUpForm';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const { data: userRole, isLoading: roleLoading } = useUserRole();
+  const [showSignUp, setShowSignUp] = React.useState(false);
 
   // Loading state
   if (authLoading || roleLoading) {
@@ -33,14 +35,30 @@ const AdminDashboard = () => {
               <CardHeader className="text-center">
                 <CardTitle className="flex items-center justify-center gap-2">
                   <LogIn className="w-5 h-5" />
-                  Administratörsinloggning
+                  {showSignUp ? 'Skapa adminkonto' : 'Administratörsinloggning'}
                 </CardTitle>
                 <CardDescription>
-                  Logga in för att komma åt administratörspanelen
+                  {showSignUp 
+                    ? 'Registrera dig för att få tillgång till administratörspanelen'
+                    : 'Logga in för att komma åt administratörspanelen'
+                  }
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <LoginForm />
+              <CardContent className="space-y-4">
+                {showSignUp ? <SignUpForm /> : <LoginForm />}
+                
+                <div className="text-center">
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => setShowSignUp(!showSignUp)}
+                    className="text-sm"
+                  >
+                    {showSignUp 
+                      ? 'Har du redan ett konto? Logga in'
+                      : 'Inget konto? Registrera dig'
+                    }
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
