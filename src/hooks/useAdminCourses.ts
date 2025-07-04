@@ -36,13 +36,13 @@ export const useAdminCourses = () => {
       // Format course instances to match the CourseCard interface
       return (courseInstances || []).map(instance => ({
         ...instance,
-        instructor: 'Kursledare från admin', // We'll improve this later
-        description: `${instance.course_title} - skapat från administratörspanelen.`,
+        instructor: 'Kursledare från admin',
+        description: instance.course_info || `${instance.course_title} - skapat från administratörspanelen.`,
         subtitle: instance.start_date ? `Startar ${new Date(instance.start_date).toLocaleDateString('sv-SE')}` : '',
         available: true,
         showButton: true,
         buttonText: 'Anmäl dig',
-        practicalInfo: []
+        practicalInfo: instance.practical_info ? [instance.practical_info] : []
       }));
     },
     staleTime: 2 * 60 * 1000, // 2 minutes

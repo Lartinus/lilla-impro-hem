@@ -13,8 +13,8 @@ interface Teacher {
 }
 
 interface Course {
-  id: number;
-  title: string;
+  id: number | string;
+  course_title: string;
   subtitle: string;
   description: string;
   teacher: Teacher | null;
@@ -36,8 +36,8 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   const shouldShowPracticalInfo = hasCourseSpecificInfo;
 
   // Determine button behavior based on course title
-  const isHouseTeams = course.title.includes("House teams") || course.title.includes("fortsättning");
-  const isWorkshops = course.title.includes("Helgworkshop") || course.title.includes("specialkurs");
+  const isHouseTeams = course.course_title.includes("House teams") || course.course_title.includes("fortsättning");
+  const isWorkshops = course.course_title.includes("Helgworkshop") || course.course_title.includes("specialkurs");
   
   // Hide button for workshops course
   const shouldShowButton = course.showButton && !isWorkshops;
@@ -52,7 +52,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
       <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
         <div className="mb-3">
           <h2>
-            {course.title}
+            {course.course_title}
           </h2>
           {course.subtitle && (
             <p className="mt-1 font-bold text-xs">
@@ -92,7 +92,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         
         {shouldShowButton && (
           <CourseBookingForm 
-            courseTitle={course.title}
+            courseTitle={course.course_title}
             isAvailable={courseAvailability}
             showButton={shouldShowButton}
             buttonText={buttonText}

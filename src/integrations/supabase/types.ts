@@ -158,32 +158,38 @@ export type Database = {
       }
       course_instances: {
         Row: {
+          course_info: string | null
           course_title: string
           created_at: string
           end_date: string | null
           id: string
           is_active: boolean | null
           max_participants: number | null
+          practical_info: string | null
           start_date: string | null
           table_name: string
         }
         Insert: {
+          course_info?: string | null
           course_title: string
           created_at?: string
           end_date?: string | null
           id?: string
           is_active?: boolean | null
           max_participants?: number | null
+          practical_info?: string | null
           start_date?: string | null
           table_name: string
         }
         Update: {
+          course_info?: string | null
           course_title?: string
           created_at?: string
           end_date?: string | null
           id?: string
           is_active?: boolean | null
           max_participants?: number | null
+          practical_info?: string | null
           start_date?: string | null
           table_name?: string
         }

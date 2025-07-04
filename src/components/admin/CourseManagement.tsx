@@ -103,6 +103,7 @@ export const CourseManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-courses-formatted'] });
       toast({
         title: "Kurs raderad",
         description: "Kursen har raderats framgångsrikt",
@@ -129,6 +130,7 @@ export const CourseManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-courses-formatted'] });
       toast({
         title: "Status uppdaterad",
         description: "Kursstatus har ändrats framgångsrikt",
@@ -176,6 +178,8 @@ export const CourseManagement = () => {
           table_name: tableName,
           start_date: courseData.startDate?.toISOString().split('T')[0],
           max_participants: courseData.maxParticipants,
+          course_info: courseData.courseInfo,
+          practical_info: courseData.practicalInfo,
           is_active: true
         })
         .select()
@@ -192,6 +196,7 @@ export const CourseManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-courses-formatted'] });
       setIsDialogOpen(false);
       setNewCourse({
         courseType: '',
