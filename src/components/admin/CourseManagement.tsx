@@ -661,15 +661,16 @@ export const CourseManagement = () => {
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="instructor">Kursledare</Label>
+                  <Label htmlFor="instructor">Kursledare (valfritt)</Label>
                   <Select 
                     value={newCourse.instructor} 
                     onValueChange={(value) => setNewCourse({...newCourse, instructor: value})}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Välj kursledare" />
+                      <SelectValue placeholder="Välj kursledare (valfritt)" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="">Ingen kursledare</SelectItem>
                       {performers?.map((performer: any) => (
                         <SelectItem key={performer.id} value={performer.name}>
                           {performer.name}
@@ -681,24 +682,24 @@ export const CourseManagement = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="sessions">Antal tillfällen</Label>
+                    <Label htmlFor="sessions">Antal tillfällen (0 = dölj)</Label>
                     <Input
                       id="sessions"
                       type="number"
-                      min="1"
+                      min="0"
                       value={newCourse.sessions}
-                      onChange={(e) => setNewCourse({...newCourse, sessions: parseInt(e.target.value) || 1})}
+                      onChange={(e) => setNewCourse({...newCourse, sessions: parseInt(e.target.value) || 0})}
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="hoursPerSession">Timmar per tillfälle</Label>
+                    <Label htmlFor="hoursPerSession">Timmar per tillfälle (0 = dölj)</Label>
                     <Input
                       id="hoursPerSession"
                       type="number"
-                      min="1"
+                      min="0"
                       step="0.5"
                       value={newCourse.hoursPerSession}
-                      onChange={(e) => setNewCourse({...newCourse, hoursPerSession: parseFloat(e.target.value) || 2})}
+                      onChange={(e) => setNewCourse({...newCourse, hoursPerSession: parseFloat(e.target.value) || 0})}
                     />
                   </div>
                 </div>
@@ -731,13 +732,13 @@ export const CourseManagement = () => {
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="maxParticipants">Max deltagare</Label>
+                  <Label htmlFor="maxParticipants">Max deltagare (0 = dölj)</Label>
                   <Input
                     id="maxParticipants"
                     type="number"
-                    min="1"
+                    min="0"
                     value={newCourse.maxParticipants}
-                    onChange={(e) => setNewCourse({...newCourse, maxParticipants: parseInt(e.target.value) || 12})}
+                    onChange={(e) => setNewCourse({...newCourse, maxParticipants: parseInt(e.target.value) || 0})}
                   />
                 </div>
 

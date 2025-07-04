@@ -44,13 +44,15 @@ export const PracticalInfo = ({
     }
     
     // Default items if no practical info provided
-    items.push(`${sessions} tillfällen à ${hoursPerSession}h`);
+    if (sessions && sessions > 0 && hoursPerSession && hoursPerSession > 0) {
+      items.push(`${sessions} tillfällen à ${hoursPerSession}h`);
+    }
     
     if (startDate) {
       items.push(`Startdatum: ${formatDate(startDate)}`);
     }
     
-    if (maxParticipants) {
+    if (maxParticipants && maxParticipants > 0) {
       items.push(`Max ${maxParticipants} deltagare`);
     }
     
