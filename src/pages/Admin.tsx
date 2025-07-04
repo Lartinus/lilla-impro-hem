@@ -162,7 +162,7 @@ const AdminDashboard = () => {
       <Header />
       
       <SidebarProvider>
-        <div className="flex min-h-screen w-full pt-16">
+        <div className="flex min-h-screen w-full pt-20">
           <AdminSidebar
             activeSection={activeSection}
             setActiveSection={setActiveSection}
