@@ -59,7 +59,7 @@ export default function Mohippa() {
           </div>
 
           {/* Vad kan ni boka sektion */}
-          <div className="-mt-3">
+          <div>
             <h2 className="mb-4">Vad kan ni boka?</h2>
             <div className="space-y-4 border-3 border-red-800 p-4">
             {[
