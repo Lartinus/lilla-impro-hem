@@ -51,15 +51,16 @@ const ServiceBoxes = () => {
               </div>
               <div className="pt-6">
                 {service.link.startsWith('/') ? (
-                  <Link to={service.link} className="inline-block w-full">
-                    <Button variant="default" className="bg-red-700 text-theatre-text-primary hover:bg-red-800 px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all w-full text-left justify-start h-auto whitespace-normal">
-                      {service.cta} →
-                    </Button>
+                  <Link 
+                    to={service.link} 
+                    className="text-theatre-text-primary font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all block"
+                  >
+                    {service.cta} →
                   </Link>
                 ) : (
-                  <Button variant="default" className="bg-red-700 text-theatre-text-primary hover:bg-red-800 px-4 py-3 font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all w-full text-left justify-start h-auto whitespace-normal">
+                  <span className="text-theatre-text-primary font-light text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all cursor-pointer">
                     {service.cta} →
-                  </Button>
+                  </span>
                 )}
               </div>
             </div>
