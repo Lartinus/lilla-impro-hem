@@ -135,6 +135,7 @@ export type Database = {
           practical_info: string | null
           price: number | null
           sessions: number | null
+          sort_order: number | null
           start_date: string | null
           subtitle: string | null
           table_name: string
@@ -153,6 +154,7 @@ export type Database = {
           practical_info?: string | null
           price?: number | null
           sessions?: number | null
+          sort_order?: number | null
           start_date?: string | null
           subtitle?: string | null
           table_name: string
@@ -171,6 +173,7 @@ export type Database = {
           practical_info?: string | null
           price?: number | null
           sessions?: number | null
+          sort_order?: number | null
           start_date?: string | null
           subtitle?: string | null
           table_name?: string

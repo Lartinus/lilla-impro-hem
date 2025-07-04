@@ -5,15 +5,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, GripVertical, User } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
@@ -35,13 +38,14 @@ interface CourseInstance {
   hours_per_session?: number;
   price?: number;
   discount_price?: number;
+  sort_order?: number;
 }
 
 interface CourseWithBookings extends CourseInstance {
   bookingCount: number;
 }
 
-type SortField = 'course_title' | 'start_date' | 'bookingCount' | 'created_at';
+type SortField = 'course_title' | 'start_date' | 'bookingCount' | 'sort_order';
 type SortDirection = 'asc' | 'desc';
 
 interface NewCourseForm {
@@ -59,9 +63,102 @@ interface NewCourseForm {
   practicalInfo: string;
 }
 
+// Sortable Row Component
+function SortableRow({ course, onEdit, onToggleStatus, onDelete }: {
+  course: CourseWithBookings;
+  onEdit: (course: CourseWithBookings) => void;
+  onToggleStatus: (course: CourseWithBookings) => void;
+  onDelete: (course: CourseWithBookings) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: course.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <TableRow ref={setNodeRef} style={style} className={isDragging ? 'z-50' : ''}>
+      <TableCell>
+        <div className="flex items-center gap-2">
+          <button
+            className="cursor-grab hover:cursor-grabbing text-muted-foreground hover:text-foreground"
+            {...attributes}
+            {...listeners}
+          >
+            <GripVertical className="w-4 h-4" />
+          </button>
+          <span className="text-xs text-muted-foreground">#{course.sort_order || 0}</span>
+        </div>
+      </TableCell>
+      <TableCell className="font-medium">{course.course_title}</TableCell>
+      <TableCell>
+        {course.start_date ? new Date(course.start_date).toLocaleDateString('sv-SE') : '-'}
+      </TableCell>
+      <TableCell className="flex items-center gap-2">
+        <User className="w-4 h-4 text-muted-foreground" />
+        {course.instructor || 'Ingen kursledare'}
+      </TableCell>
+      <TableCell>
+        <span className="font-semibold">{course.bookingCount}</span>
+      </TableCell>
+      <TableCell>{course.max_participants || '-'}</TableCell>
+      <TableCell>
+        <Badge variant={course.is_active ? "default" : "secondary"}>
+          {course.is_active ? 'Aktiv' : 'Inaktiv'}
+        </Badge>
+      </TableCell>
+      <TableCell>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => onEdit(course)}
+          >
+            <Edit className="w-4 h-4 mr-1" />
+            Redigera
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => onToggleStatus(course)}
+          >
+            {course.is_active ? (
+              <PowerOff className="w-4 h-4 mr-1" />
+            ) : (
+              <Power className="w-4 h-4 mr-1" />
+            )}
+            {course.is_active ? 'Inaktivera' : 'Aktivera'}
+          </Button>
+          <Button 
+            variant="destructive" 
+            size="sm"
+            onClick={() => {
+              if (confirm(`Är du säker på att du vill radera kursen "${course.course_title}"? Detta kan inte ångras.`)) {
+                onDelete(course);
+              }
+            }}
+          >
+            <Trash2 className="w-4 h-4 mr-1" />
+            Radera
+          </Button>
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+}
+
 export const CourseManagement = () => {
-  const [sortField, setSortField] = useState<SortField>('created_at');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [sortField, setSortField] = useState<SortField>('sort_order');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingCourse, setEditingCourse] = useState<CourseWithBookings | null>(null);
@@ -81,6 +178,13 @@ export const CourseManagement = () => {
   });
 
   const queryClient = useQueryClient();
+  
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   // Fetch performers from local database
   const { data: performers } = useQuery({
@@ -98,7 +202,30 @@ export const CourseManagement = () => {
     retry: 1
   });
 
-  // Create course mutation
+  // Update sort order mutation
+  const updateSortOrderMutation = useMutation({
+    mutationFn: async (updates: { id: string, sort_order: number }[]) => {
+      const promises = updates.map(({ id, sort_order }) =>
+        supabase
+          .from('course_instances')
+          .update({ sort_order })
+          .eq('id', id)
+      );
+      
+      await Promise.all(promises);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte uppdatera sorteringsordning: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
   // Delete course mutation
   const deleteCourseMutation = useMutation({
     mutationFn: async (course: CourseWithBookings) => {
@@ -209,6 +336,15 @@ export const CourseManagement = () => {
 
   const createCourseMutation = useMutation({
     mutationFn: async (courseData: NewCourseForm) => {
+      // Get the highest sort_order and add 1
+      const { data: maxOrderData } = await supabase
+        .from('course_instances')
+        .select('sort_order')
+        .order('sort_order', { ascending: false })
+        .limit(1);
+      
+      const nextSortOrder = (maxOrderData?.[0]?.sort_order || 0) + 1;
+
       // Generate course title based on type
       let courseTitle = '';
       let tableName = '';
@@ -248,6 +384,7 @@ export const CourseManagement = () => {
           discount_price: courseData.discountPrice,
           sessions: courseData.sessions,
           hours_per_session: courseData.hoursPerSession,
+          sort_order: nextSortOrder,
           is_active: true
         })
         .select()
@@ -287,7 +424,7 @@ export const CourseManagement = () => {
       const { data: courseInstances, error } = await supabase
         .from('course_instances')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('sort_order', { ascending: true });
 
       if (error) throw error;
 
@@ -375,6 +512,25 @@ export const CourseManagement = () => {
     }
   };
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id && courses) {
+      const oldIndex = courses.findIndex(course => course.id === active.id);
+      const newIndex = courses.findIndex(course => course.id === over.id);
+      
+      const newOrder = arrayMove(courses, oldIndex, newIndex);
+      
+      // Update sort_order for all affected courses
+      const updates = newOrder.map((course, index) => ({
+        id: course.id,
+        sort_order: index + 1
+      }));
+      
+      updateSortOrderMutation.mutate(updates);
+    }
+  };
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -394,6 +550,11 @@ export const CourseManagement = () => {
   };
 
   const sortedCourses = courses ? [...courses].sort((a, b) => {
+    if (sortField === 'sort_order') {
+      // For sort_order, always use ascending order to maintain drag order
+      return (a.sort_order || 0) - (b.sort_order || 0);
+    }
+
     let aValue: string | number | Date;
     let bValue: string | number | Date;
 
@@ -409,10 +570,6 @@ export const CourseManagement = () => {
       case 'bookingCount':
         aValue = a.bookingCount;
         bValue = b.bookingCount;
-        break;
-      case 'created_at':
-        aValue = new Date(a.created_at);
-        bValue = new Date(b.created_at);
         break;
       default:
         return 0;
@@ -448,7 +605,7 @@ export const CourseManagement = () => {
           <div>
             <CardTitle>Kurshantering</CardTitle>
             <CardDescription>
-              Översikt över alla kurser och antal anmälda deltagare
+              Dra kurserna för att ändra ordning - kurser sorteras efter ordningsnummer på hemsidan
             </CardDescription>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -673,106 +830,78 @@ export const CourseManagement = () => {
             </p>
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>
-                  <Button 
-                    variant="ghost" 
-                    className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
-                    onClick={() => handleSort('course_title')}
-                  >
-                    Kurstitel
-                    <span className="ml-2">{getSortIcon('course_title')}</span>
-                  </Button>
-                </TableHead>
-                <TableHead>
-                  <Button 
-                    variant="ghost" 
-                    className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
-                    onClick={() => handleSort('start_date')}
-                  >
-                    Startdatum
-                    <span className="ml-2">{getSortIcon('start_date')}</span>
-                  </Button>
-                </TableHead>
-                <TableHead>Slutdatum</TableHead>
-                <TableHead>
-                  <Button 
-                    variant="ghost" 
-                    className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
-                    onClick={() => handleSort('bookingCount')}
-                  >
-                    Anmälda
-                    <span className="ml-2">{getSortIcon('bookingCount')}</span>
-                  </Button>
-                </TableHead>
-                <TableHead>Max antal</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="w-[300px]">Åtgärder</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sortedCourses.map((course) => (
-                <TableRow key={course.id}>
-                  <TableCell className="font-medium">{course.course_title}</TableCell>
-                  <TableCell>
-                    {course.start_date ? new Date(course.start_date).toLocaleDateString('sv-SE') : '-'}
-                  </TableCell>
-                  <TableCell>
-                    {course.end_date ? new Date(course.end_date).toLocaleDateString('sv-SE') : '-'}
-                  </TableCell>
-                  <TableCell>
-                    <span className="font-semibold">{course.bookingCount}</span>
-                  </TableCell>
-                  <TableCell>{course.max_participants || '-'}</TableCell>
-                  <TableCell>
-                    <Badge variant={course.is_active ? "default" : "secondary"}>
-                      {course.is_active ? 'Aktiv' : 'Inaktiv'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleEditCourse(course)}
-                      >
-                        <Edit className="w-4 h-4 mr-1" />
-                        Redigera
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => toggleStatusMutation.mutate(course)}
-                        disabled={toggleStatusMutation.isPending}
-                      >
-                        {course.is_active ? (
-                          <PowerOff className="w-4 h-4 mr-1" />
-                        ) : (
-                          <Power className="w-4 h-4 mr-1" />
-                        )}
-                        {course.is_active ? 'Inaktivera' : 'Aktivera'}
-                      </Button>
-                      <Button 
-                        variant="destructive" 
-                        size="sm"
-                        onClick={() => {
-                          if (confirm(`Är du säker på att du vill radera kursen "${course.course_title}"? Detta kan inte ångras.`)) {
-                            deleteCourseMutation.mutate(course);
-                          }
-                        }}
-                        disabled={deleteCourseMutation.isPending}
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        Radera
-                      </Button>
-                    </div>
-                  </TableCell>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>
+                    <Button 
+                      variant="ghost" 
+                      className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                      onClick={() => handleSort('sort_order')}
+                    >
+                      Ordning
+                      <span className="ml-2">{getSortIcon('sort_order')}</span>
+                    </Button>
+                  </TableHead>
+                  <TableHead>
+                    <Button 
+                      variant="ghost" 
+                      className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                      onClick={() => handleSort('course_title')}
+                    >
+                      Kurstitel
+                      <span className="ml-2">{getSortIcon('course_title')}</span>
+                    </Button>
+                  </TableHead>
+                  <TableHead>
+                    <Button 
+                      variant="ghost" 
+                      className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                      onClick={() => handleSort('start_date')}
+                    >
+                      Startdatum
+                      <span className="ml-2">{getSortIcon('start_date')}</span>
+                    </Button>
+                  </TableHead>
+                  <TableHead>Kursledare</TableHead>
+                  <TableHead>
+                    <Button 
+                      variant="ghost" 
+                      className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
+                      onClick={() => handleSort('bookingCount')}
+                    >
+                      Anmälda
+                      <span className="ml-2">{getSortIcon('bookingCount')}</span>
+                    </Button>
+                  </TableHead>
+                  <TableHead>Max antal</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="w-[300px]">Åtgärder</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                <SortableContext
+                  items={sortedCourses.map(course => course.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {sortedCourses.map((course) => (
+                    <SortableRow
+                      key={course.id}
+                      course={course}
+                      onEdit={handleEditCourse}
+                      onToggleStatus={course => toggleStatusMutation.mutate(course)}
+                      onDelete={course => deleteCourseMutation.mutate(course)}
+                    />
+                  ))}
+                </SortableContext>
+              </TableBody>
+            </Table>
+          </DndContext>
         )}
       </CardContent>
     </Card>
