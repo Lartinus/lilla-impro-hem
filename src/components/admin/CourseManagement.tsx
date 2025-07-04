@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus } from 'lucide-react';
+import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -83,6 +83,64 @@ export const CourseManagement = () => {
   });
 
   // Create course mutation
+  // Delete course mutation
+  const deleteCourseMutation = useMutation({
+    mutationFn: async (course: CourseWithBookings) => {
+      // Delete the booking table first
+      await supabase.rpc('drop_course_booking_table', {
+        table_name: course.table_name
+      });
+
+      // Delete the course instance
+      const { error } = await supabase
+        .from('course_instances')
+        .delete()
+        .eq('id', course.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+      toast({
+        title: "Kurs raderad",
+        description: "Kursen har raderats framgångsrikt",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte radera kurs: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Toggle course status mutation
+  const toggleStatusMutation = useMutation({
+    mutationFn: async (course: CourseWithBookings) => {
+      const { error } = await supabase
+        .from('course_instances')
+        .update({ is_active: !course.is_active })
+        .eq('id', course.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+      toast({
+        title: "Status uppdaterad",
+        description: "Kursstatus har ändrats framgångsrikt",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte ändra kursstatus: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
   const createCourseMutation = useMutation({
     mutationFn: async (courseData: NewCourseForm) => {
       // Generate course title based on type
@@ -503,7 +561,7 @@ export const CourseManagement = () => {
                 </TableHead>
                 <TableHead>Max antal</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Åtgärder</TableHead>
+                <TableHead className="w-[200px]">Åtgärder</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -526,10 +584,34 @@ export const CourseManagement = () => {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Button variant="outline" size="sm">
-                      <Eye className="w-4 h-4 mr-1" />
-                      Visa detaljer
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => toggleStatusMutation.mutate(course)}
+                        disabled={toggleStatusMutation.isPending}
+                      >
+                        {course.is_active ? (
+                          <PowerOff className="w-4 h-4 mr-1" />
+                        ) : (
+                          <Power className="w-4 h-4 mr-1" />
+                        )}
+                        {course.is_active ? 'Inaktivera' : 'Aktivera'}
+                      </Button>
+                      <Button 
+                        variant="destructive" 
+                        size="sm"
+                        onClick={() => {
+                          if (confirm(`Är du säker på att du vill radera kursen "${course.course_title}"? Detta kan inte ångras.`)) {
+                            deleteCourseMutation.mutate(course);
+                          }
+                        }}
+                        disabled={deleteCourseMutation.isPending}
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        Radera
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

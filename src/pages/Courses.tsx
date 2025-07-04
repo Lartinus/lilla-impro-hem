@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useOptimizedCourses, getApiPerformanceMetrics } from '@/hooks/useOptimizedStrapi';
 import { useSmartCourseSync } from '@/hooks/useSmartCourseSync';
 import { formatStrapiCourse, sortCourses } from '@/utils/strapiHelpers';
+import { useAdminCourses } from '@/hooks/useAdminCourses';
 import SimpleParallaxHero from "@/components/SimpleParallaxHero";
 import { useToast } from '@/hooks/use-toast';
 
@@ -21,6 +22,7 @@ const Courses = () => {
   }, []);
 
   const { data, isLoading, error, refetch } = useOptimizedCourses();
+  const { data: adminCourses, isLoading: adminLoading } = useAdminCourses();
 
   // Performance monitoring
   useEffect(() => {
@@ -77,17 +79,19 @@ const Courses = () => {
   console.log('Courses page - Loading:', isLoading);
 
   const courses = useMemo(() => {
-    if (!data) return [];
+    // Combine Strapi courses with admin courses
+    const strapiCourses = data?.data ? data.data.map(formatStrapiCourse).filter(Boolean) : [];
+    const adminCoursesFormatted = adminCourses || [];
     
     try {
-      const formattedCourses = data?.data ? data.data.map(formatStrapiCourse).filter(Boolean) : [];
-      const sortedCourses = sortCourses(formattedCourses);
+      const allCourses = [...strapiCourses, ...adminCoursesFormatted];
+      const sortedCourses = sortCourses(allCourses);
       return sortedCourses;
     } catch (err) {
       console.error('Error formatting courses:', err);
-      return [];
+      return adminCoursesFormatted; // Fallback to admin courses if Strapi fails
     }
-  }, [data]);
+  }, [data, adminCourses]);
 
   console.log('Formatted courses:', courses);
 
@@ -96,7 +100,7 @@ const Courses = () => {
   ];
 
   // Show enhanced loading state with skeletons
-  if (isLoading) {
+  if (isLoading && adminLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
         <Header />
