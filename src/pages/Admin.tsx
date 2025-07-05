@@ -19,6 +19,7 @@ import { ActorManagement } from '@/components/admin/ActorManagement';
 import { AdminNavigation } from '@/components/admin/AdminNavigation';
 import { DiscountCodeManagement } from '@/components/admin/DiscountCodeManagement';
 import { ImageManagement } from '@/components/admin/ImageManagement';
+import { EmailManagement } from '@/components/admin/EmailManagement';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -125,15 +126,7 @@ const AdminDashboard = () => {
       case 'images':
         return <ImageManagement />;
       case 'email':
-        return (
-          <div className="text-center py-12">
-            <Mail className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Email-hantering kommer snart</h3>
-            <p className="text-muted-foreground">
-              Funktionalitet för att hantera emails kommer att implementeras här
-            </p>
-          </div>
-        );
+        return <EmailManagement />;
       default:
         return null;
     }
