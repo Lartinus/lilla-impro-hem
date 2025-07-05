@@ -84,6 +84,8 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
       const newState = { courses: false, shows: false };
       if (!prev[groupId]) {
         newState[groupId] = true;
+        // Clear active section when opening a group
+        setActiveSection('');
       }
       return newState;
     });
