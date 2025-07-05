@@ -87,6 +87,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
   
   // New state for contact management
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
+  const [editingContact, setEditingContact] = useState<EmailContact | null>(null);
   const [contactForm, setContactForm] = useState({
     name: '',
     email: '',
@@ -433,26 +434,45 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
   // Create/save manual contact mutation
   const saveContactMutation = useMutation({
     mutationFn: async (contact: { name: string; email: string; phone: string }) => {
-      const { data, error } = await supabase
-        .from('email_contacts')
-        .insert({
-          name: contact.name,
-          email: contact.email.toLowerCase(),
-          phone: contact.phone,
-          source: 'manual'
-        })
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
+      if (editingContact) {
+        // Update existing contact
+        const { data, error } = await supabase
+          .from('email_contacts')
+          .update({
+            name: contact.name,
+            email: contact.email.toLowerCase(),
+            phone: contact.phone,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', editingContact.id)
+          .select()
+          .single();
+        if (error) throw error;
+        return data;
+      } else {
+        // Create new contact
+        const { data, error } = await supabase
+          .from('email_contacts')
+          .insert({
+            name: contact.name,
+            email: contact.email.toLowerCase(),
+            phone: contact.phone,
+            source: 'manual'
+          })
+          .select()
+          .single();
+        if (error) throw error;
+        return data;
+      }
     },
     onSuccess: () => {
       toast({
-        title: "Kontakt skapad!",
-        description: "Den nya kontakten har lagts till.",
+        title: editingContact ? "Kontakt uppdaterad!" : "Kontakt skapad!",
+        description: editingContact ? "Kontakten har uppdaterats." : "Den nya kontakten har lagts till.",
       });
       queryClient.invalidateQueries({ queryKey: ['email-contacts'] });
       setIsContactDialogOpen(false);
+      setEditingContact(null);
       setContactForm({ name: '', email: '', phone: '' });
     },
     onError: (error: any) => {
@@ -461,6 +481,31 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         description: error.message?.includes('duplicate key') 
           ? "En kontakt med denna e-postadress finns redan."
           : "Det gick inte att spara kontakten.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Delete contact mutation
+  const deleteContactMutation = useMutation({
+    mutationFn: async (contactId: string) => {
+      const { error } = await supabase
+        .from('email_contacts')
+        .delete()
+        .eq('id', contactId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Kontakt borttagen",
+        description: "Kontakten har tagits bort.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['email-contacts'] });
+    },
+    onError: () => {
+      toast({
+        title: "Fel vid borttagning",
+        description: "Det gick inte att ta bort kontakten.",
         variant: "destructive",
       });
     }
@@ -658,8 +703,18 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     saveContactMutation.mutate(contactForm);
   };
 
-  const openContactDialog = () => {
-    setContactForm({ name: '', email: '', phone: '' });
+  const openContactDialog = (contact?: EmailContact) => {
+    if (contact) {
+      setEditingContact(contact);
+      setContactForm({
+        name: contact.name || '',
+        email: contact.email,
+        phone: contact.phone || ''
+      });
+    } else {
+      setEditingContact(null);
+      setContactForm({ name: '', email: '', phone: '' });
+    }
     setIsContactDialogOpen(true);
   };
 
@@ -1117,36 +1172,72 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   <div className="mb-4 text-sm text-muted-foreground">
                     Totalt: {emailContacts?.length || 0} kontakter
                   </div>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Namn</TableHead>
-                        <TableHead>E-post</TableHead>
-                        <TableHead>Telefon</TableHead>
-                        <TableHead>Källa</TableHead>
-                        <TableHead>Datum</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {emailContacts?.map((contact) => (
-                        <TableRow key={contact.id}>
-                          <TableCell className="font-medium">
-                            {contact.name || 'Okänt namn'}
-                          </TableCell>
-                          <TableCell>{contact.email}</TableCell>
-                          <TableCell>{contact.phone || '-'}</TableCell>
-                          <TableCell>
-                            <Badge variant="outline">
-                              {getSourceLabel(contact.source)}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            {new Date(contact.created_at).toLocaleDateString('sv-SE')}
-                          </TableCell>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Namn</TableHead>
+                          <TableHead>E-post</TableHead>
+                          <TableHead>Telefon</TableHead>
+                          <TableHead>Källa</TableHead>
+                          <TableHead>Datum</TableHead>
+                          <TableHead className="w-24">Åtgärder</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {emailContacts?.map((contact) => (
+                          <TableRow key={contact.id}>
+                            <TableCell className="font-medium">
+                              {contact.name || 'Okänt namn'}
+                            </TableCell>
+                            <TableCell>{contact.email}</TableCell>
+                            <TableCell>{contact.phone || '-'}</TableCell>
+                            <TableCell>
+                              <Badge variant="outline">
+                                {getSourceLabel(contact.source)}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {new Date(contact.created_at).toLocaleDateString('sv-SE')}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => openContactDialog(contact)}
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </Button>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="sm">
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Ta bort kontakt</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Är du säker på att du vill ta bort {contact.name || contact.email}? 
+                                        Detta kan inte ångras.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                      <AlertDialogAction 
+                                        onClick={() => deleteContactMutation.mutate(contact.id)}
+                                      >
+                                        Ta bort
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
                 </div>
               )}
             </CardContent>
@@ -1422,9 +1513,11 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Lägg till ny kontakt</DialogTitle>
+            <DialogTitle>
+              {editingContact ? 'Redigera kontakt' : 'Lägg till ny kontakt'}
+            </DialogTitle>
             <DialogDescription>
-              Lägg till en kontakt manuellt
+              {editingContact ? 'Redigera kontaktuppgifter' : 'Lägg till en kontakt manuellt'}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -1464,7 +1557,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                 onClick={handleSaveContact} 
                 disabled={saveContactMutation.isPending}
               >
-                {saveContactMutation.isPending ? 'Sparar...' : 'Spara kontakt'}
+                {saveContactMutation.isPending ? 'Sparar...' : (editingContact ? 'Uppdatera kontakt' : 'Spara kontakt')}
               </Button>
             </div>
           </div>
