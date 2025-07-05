@@ -199,21 +199,34 @@ export const EmailManagement = () => {
   const { data: emailGroups, isLoading: emailGroupsLoading } = useQuery({
     queryKey: ['email-groups'],
     queryFn: async (): Promise<EmailGroup[]> => {
-      const { data, error } = await supabase
+      // First get all groups
+      const { data: groups, error: groupsError } = await supabase
         .from('email_groups')
-        .select(`
-          *,
-          email_group_members!inner(contact_id)
-        `)
+        .select('*')
         .eq('is_active', true)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      
-      return data?.map(group => ({
-        ...group,
-        member_count: group.email_group_members?.length || 0
-      })) || [];
+      if (groupsError) throw groupsError;
+      if (!groups) return [];
+
+      // Then get member counts for each group
+      const groupsWithCounts = await Promise.all(
+        groups.map(async (group) => {
+          const { count, error: countError } = await supabase
+            .from('email_group_members')
+            .select('*', { count: 'exact', head: true })
+            .eq('group_id', group.id);
+
+          if (countError) {
+            console.warn(`Failed to get count for group ${group.id}:`, countError);
+            return { ...group, member_count: 0 };
+          }
+
+          return { ...group, member_count: count || 0 };
+        })
+      );
+
+      return groupsWithCounts;
     },
     staleTime: 2 * 60 * 1000,
   });
