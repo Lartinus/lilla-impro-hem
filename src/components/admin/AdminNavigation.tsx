@@ -1,8 +1,4 @@
 import React from 'react';
-import { 
-  ChevronDown,
-  ChevronRight
-} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -93,41 +89,27 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
       {/* Main Navigation Bar */}
       <Card className="overflow-hidden">
         <CardContent className="p-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="flex flex-wrap gap-2 justify-center">
             {menuItems.map((item) => (
-              <div key={item.id} className="text-center">
-                <Button
-                  variant={
-                    (item.type === 'single' && activeSection === item.id) ||
-                    (item.type === 'group' && item.expanded) 
-                      ? "default" 
-                      : "ghost"
+              <Button
+                key={item.id}
+                variant={
+                  (item.type === 'single' && activeSection === item.id) ||
+                  (item.type === 'group' && item.expanded) 
+                    ? "default" 
+                    : "ghost"
+                }
+                onClick={() => {
+                  if (item.type === 'single') {
+                    handleSelectSingle(item.id);
+                  } else {
+                    handleToggleGroup(item.id as 'courses' | 'shows');
                   }
-                  onClick={() => {
-                    if (item.type === 'single') {
-                      handleSelectSingle(item.id);
-                    } else {
-                      handleToggleGroup(item.id as 'courses' | 'shows');
-                    }
-                  }}
-                  className={`w-full h-16 flex flex-col gap-2 justify-center transition-all duration-200 ${
-                    item.type === 'group' && item.expanded 
-                      ? 'rounded-b-none border-b-0' 
-                      : ''
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">{item.title}</span>
-                    {item.type === 'group' && (
-                      item.expanded ? (
-                        <ChevronDown className="w-4 h-4 transition-transform duration-200" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4 transition-transform duration-200" />
-                      )
-                    )}
-                  </div>
-                </Button>
-              </div>
+                }}
+                className="px-6 py-2 text-sm font-medium transition-all duration-200"
+              >
+                {item.title}
+              </Button>
             ))}
           </div>
         </CardContent>
