@@ -1,18 +1,7 @@
 import React from 'react';
 import { 
   ChevronDown,
-  ChevronRight,
-  BookOpen,
-  UserCheck,
-  Heart,
-  Calendar,
-  MapPin,
-  CreditCard,
-  UserCircle,
-  ImageIcon,
-  Users,
-  Ticket,
-  Mail
+  ChevronRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -41,39 +30,35 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
     {
       id: 'courses',
       title: 'Kurser',
-      icon: Users,
       type: 'group' as const,
       expanded: expandedSections.courses,
       children: [
-        { id: 'courses', title: 'Kurshantering', icon: BookOpen },
-        { id: 'interest', title: 'Intresse', icon: Heart },
-        { id: 'performers', title: 'Kursledare', icon: UserCheck },
+        { id: 'courses', title: 'Kurshantering' },
+        { id: 'interest', title: 'Intresse' },
+        { id: 'performers', title: 'Kursledare' },
       ]
     },
     {
       id: 'shows',
       title: 'Föreställningar',
-      icon: Ticket,
       type: 'group' as const,
       expanded: expandedSections.shows,
       children: [
-        { id: 'shows', title: 'Föreställningar', icon: Calendar },
-        { id: 'actors', title: 'Skådespelare', icon: UserCircle },
-        { id: 'discount-codes', title: 'Rabattkoder', icon: CreditCard },
-        { id: 'venues', title: 'Platser', icon: MapPin },
-        { id: 'tickets', title: 'Biljetter', icon: Ticket },
+        { id: 'shows', title: 'Föreställningar' },
+        { id: 'actors', title: 'Skådespelare' },
+        { id: 'discount-codes', title: 'Rabattkoder' },
+        { id: 'venues', title: 'Platser' },
+        { id: 'tickets', title: 'Biljetter' },
       ]
     },
     {
       id: 'images',
       title: 'Bilder',
-      icon: ImageIcon,
       type: 'single' as const
     },
     {
       id: 'email',
       title: 'Email',
-      icon: Mail,
       type: 'single' as const
     }
   ];
@@ -154,19 +139,17 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
               key={`${item.id}-submenu`} 
               className="border-t bg-muted/30 animate-accordion-down"
             >
-              <div className="p-6">
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="px-6 py-4">
+                <div className="flex flex-wrap gap-2 justify-center">
                   {item.children?.map((child) => (
-                    <div key={child.id} className="text-center">
-                      <Button
-                        variant={activeSection === child.id ? "secondary" : "ghost"}
-                        onClick={() => setActiveSection(child.id)}
-                        className="w-full h-12 flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105"
-                      >
-                        <child.icon className="w-4 h-4" />
-                        <span className="text-sm">{child.title}</span>
-                      </Button>
-                    </div>
+                    <Button
+                      key={child.id}
+                      variant={activeSection === child.id ? "default" : "ghost"}
+                      onClick={() => setActiveSection(child.id)}
+                      className="px-6 py-2 text-sm font-medium transition-all duration-200"
+                    >
+                      {child.title}
+                    </Button>
                   ))}
                 </div>
               </div>
