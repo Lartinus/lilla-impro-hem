@@ -119,8 +119,7 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete }: {
             </div>
             <div>
               <span className="text-muted-foreground">Kursledare:</span>
-              <div className="flex items-center gap-1">
-                <User className="w-3 h-3" />
+              <div>
                 {course.instructor || 'Ej satt'}
               </div>
             </div>
@@ -216,8 +215,7 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete }: {
       <TableCell>
         {course.start_date ? new Date(course.start_date).toLocaleDateString('sv-SE') : '-'}
       </TableCell>
-      <TableCell className="flex items-center gap-2">
-        <User className="w-4 h-4 text-muted-foreground" />
+      <TableCell>
         {course.instructor || 'Ingen kursledare'}
       </TableCell>
       <TableCell>
@@ -951,17 +949,17 @@ export const CourseManagement = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>
+                    <TableHead className="w-16">
                       <Button 
                         variant="ghost" 
                         className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
                         onClick={() => handleSort('sort_order')}
                       >
-                        Ordning
+                        #
                         <span className="ml-2">{getSortIcon('sort_order')}</span>
                       </Button>
                     </TableHead>
-                    <TableHead>
+                    <TableHead className="w-96">
                       <Button 
                         variant="ghost" 
                         className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
@@ -982,15 +980,8 @@ export const CourseManagement = () => {
                       </Button>
                     </TableHead>
                     <TableHead>Kursledare</TableHead>
-                    <TableHead>
-                      <Button 
-                        variant="ghost" 
-                        className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
-                        onClick={() => handleSort('bookingCount')}
-                      >
-                        Anmälda
-                        <span className="ml-2">{getSortIcon('bookingCount')}</span>
-                      </Button>
+                    <TableHead className="w-20">
+                      Anmälda
                     </TableHead>
                     <TableHead>Max antal</TableHead>
                     <TableHead>Status</TableHead>
