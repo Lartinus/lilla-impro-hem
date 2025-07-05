@@ -89,6 +89,12 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
     });
   };
 
+  const handleSelectSingle = (sectionId: string) => {
+    // Close all expanded groups when selecting a single section
+    setExpandedSections({ courses: false, shows: false });
+    setActiveSection(sectionId);
+  };
+
   return (
     <div className="space-y-1">
       {/* Main Navigation Bar */}
@@ -106,7 +112,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
                   }
                   onClick={() => {
                     if (item.type === 'single') {
-                      setActiveSection(item.id);
+                      handleSelectSingle(item.id);
                     } else {
                       handleToggleGroup(item.id as 'courses' | 'shows');
                     }
