@@ -26,11 +26,11 @@ const AdminDashboard = () => {
   const { data: userRole, isLoading: roleLoading } = useUserRole();
   const { data: stats, isLoading: statsLoading } = useAdminStats();
   const [showSignUp, setShowSignUp] = React.useState(false);
-  const [activeSection, setActiveSection] = React.useState('courses');
+  const [activeSection, setActiveSection] = React.useState('send');
   const [expandedSections, setExpandedSections] = React.useState({
-    courses: true,
+    courses: false,
     shows: false,
-    email: false
+    email: true
   });
 
   // Loading state
@@ -126,8 +126,12 @@ const AdminDashboard = () => {
         return <DiscountCodeManagement />;
       case 'images':
         return <ImageManagement />;
-      case 'email':
-        return <EmailManagement />;
+      case 'send':
+      case 'groups':
+      case 'contacts':
+      case 'import':
+      case 'templates':
+        return <EmailManagement activeTab={activeSection} />;
       default:
         return null;
     }

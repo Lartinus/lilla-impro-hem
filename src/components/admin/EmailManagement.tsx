@@ -55,7 +55,11 @@ interface RecipientGroup {
   description?: string;
 }
 
-export const EmailManagement = () => {
+interface EmailManagementProps {
+  activeTab?: string;
+}
+
+export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 'send' }) => {
   const [selectedRecipients, setSelectedRecipients] = useState<string>('');
   const [emailSubject, setEmailSubject] = useState('');
   const [emailContent, setEmailContent] = useState('');
@@ -641,14 +645,8 @@ export const EmailManagement = () => {
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="send" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="send">Skicka meddelande</TabsTrigger>
-          <TabsTrigger value="groups">Mottagargrupper</TabsTrigger>
-          <TabsTrigger value="contacts">Alla kontakter</TabsTrigger>
-          <TabsTrigger value="import">Importera</TabsTrigger>
-          <TabsTrigger value="templates">Email-mallar</TabsTrigger>
-        </TabsList>
+      <Tabs value={activeTab} className="w-full">
+        {/* Remove TabsList - navigation handled by AdminNavigation */}
 
         {/* Send Email Tab */}
         <TabsContent value="send">
