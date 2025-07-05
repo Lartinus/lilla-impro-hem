@@ -79,6 +79,7 @@ export const EmailManagement = () => {
   });
   const [selectedCourseForImport, setSelectedCourseForImport] = useState<string>('');
   const [selectedGroupForImport, setSelectedGroupForImport] = useState<string>('');
+  const [viewingGroupMembers, setViewingGroupMembers] = useState<string | null>(null);
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -230,6 +231,53 @@ export const EmailManagement = () => {
       return data || [];
     },
     staleTime: 2 * 60 * 1000,
+  });
+
+  // Fetch group members when viewing a specific group
+  const { data: groupMembers, isLoading: membersLoading } = useQuery({
+    queryKey: ['group-members', viewingGroupMembers],
+    queryFn: async (): Promise<EmailContact[]> => {
+      if (!viewingGroupMembers) return [];
+      
+      const { data, error } = await supabase
+        .from('email_group_members')
+        .select(`
+          email_contacts (*)
+        `)
+        .eq('group_id', viewingGroupMembers);
+
+      if (error) throw error;
+      return data?.map(member => member.email_contacts).filter(Boolean) || [];
+    },
+    enabled: !!viewingGroupMembers,
+    staleTime: 1 * 60 * 1000,
+  });
+
+  // Remove member from group mutation
+  const removeMemberMutation = useMutation({
+    mutationFn: async ({ groupId, contactId }: { groupId: string; contactId: string }) => {
+      const { error } = await supabase
+        .from('email_group_members')
+        .delete()
+        .eq('group_id', groupId)
+        .eq('contact_id', contactId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Medlem borttagen",
+        description: "Kontakten har tagits bort från gruppen.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['group-members', viewingGroupMembers] });
+      queryClient.invalidateQueries({ queryKey: ['email-groups'] });
+    },
+    onError: () => {
+      toast({
+        title: "Fel vid borttagning",
+        description: "Det gick inte att ta bort medlemmen.",
+        variant: "destructive",
+      });
+    }
   });
 
   // Sync contacts mutation
@@ -688,7 +736,99 @@ export const EmailManagement = () => {
 
         {/* Groups Tab */}
         <TabsContent value="groups">
-          <Card>
+          {viewingGroupMembers ? (
+            // Group Members View
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setViewingGroupMembers(null)}
+                    >
+                      ← Tillbaka
+                    </Button>
+                    <Users className="w-5 h-5" />
+                    Gruppmedlemmar
+                  </div>
+                </CardTitle>
+                <CardDescription>
+                  Hantera medlemmar i gruppen
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {membersLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="mb-4 text-sm text-muted-foreground">
+                      Totalt: {groupMembers?.length || 0} medlemmar
+                    </div>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Namn</TableHead>
+                          <TableHead>E-post</TableHead>
+                          <TableHead>Telefon</TableHead>
+                          <TableHead>Källa</TableHead>
+                          <TableHead className="w-20">Åtgärder</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {groupMembers?.map((contact) => (
+                          <TableRow key={contact.id}>
+                            <TableCell className="font-medium">
+                              {contact.name || 'Okänt namn'}
+                            </TableCell>
+                            <TableCell>{contact.email}</TableCell>
+                            <TableCell>{contact.phone || '-'}</TableCell>
+                            <TableCell>
+                              <Badge variant="outline">
+                                {getSourceLabel(contact.source)}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="ghost" size="sm">
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Ta bort från grupp</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Är du säker på att du vill ta bort {contact.name || contact.email} från gruppen?
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => removeMemberMutation.mutate({
+                                        groupId: viewingGroupMembers,
+                                        contactId: contact.id
+                                      })}
+                                    >
+                                      Ta bort
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            // Groups Overview
+            <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -732,14 +872,21 @@ export const EmailManagement = () => {
                                 <Badge variant="outline" className="px-3 py-1">
                                   {group.member_count || 0} medlemmar
                                 </Badge>
-                                <div className="flex gap-1">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => openGroupDialog(group)}
-                                  >
-                                    <Edit className="w-4 h-4" />
-                                  </Button>
+                                 <div className="flex gap-1">
+                                   <Button
+                                     variant="ghost"
+                                     size="sm"
+                                     onClick={() => setViewingGroupMembers(group.id)}
+                                   >
+                                     <Eye className="w-4 h-4" />
+                                   </Button>
+                                   <Button
+                                     variant="ghost"
+                                     size="sm"
+                                     onClick={() => openGroupDialog(group)}
+                                   >
+                                     <Edit className="w-4 h-4" />
+                                   </Button>
                                   <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                       <Button variant="ghost" size="sm">
@@ -801,6 +948,7 @@ export const EmailManagement = () => {
               )}
             </CardContent>
           </Card>
+          )}
         </TabsContent>
 
         {/* Contacts Tab */}
