@@ -22,7 +22,9 @@ interface EmailTemplate {
   subject: string;
   content: string;
   description?: string;
+  is_active?: boolean;
   created_at?: string;
+  updated_at?: string;
 }
 
 interface EmailGroup {
@@ -597,42 +599,20 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     },
   });
 
-  // Mock email templates - in a real app these would come from database
-  const { data: emailTemplates = [] } = useQuery({
+  // Fetch email templates from database
+  const { data: emailTemplates = [], isLoading: templatesLoading } = useQuery({
     queryKey: ['email-templates'],
     queryFn: async (): Promise<EmailTemplate[]> => {
-      // In a real implementation, fetch from database
-      return [
-        {
-          id: 'welcome',
-          name: 'Välkomstmejl',
-          subject: 'Välkommen till [KURSNAMN]!',
-          content: 'Hej [NAMN]!\n\nVälkommen till kursen [KURSNAMN]. Vi ser fram emot att träffa dig!\n\nMed vänliga hälsningar,\nLIT-teamet',
-          description: 'Standardmejl för att välkomna nya kursdeltagare'
-        },
-        {
-          id: 'practical_info',
-          name: 'Praktisk information',
-          subject: 'Praktisk information inför [KURSNAMN]',
-          content: 'Hej [NAMN]!\n\nHär kommer praktisk information inför kursstarten:\n\n- Plats: [PLATS]\n- Tid: [TID]\n- Ta med: [UTRUSTNING]\n\nVi ses snart!\n\nLIT-teamet',
-          description: 'Mall för praktisk information inför kursstart'
-        },
-        {
-          id: 'reminder',
-          name: 'Påminnelse',
-          subject: 'Påminnelse: [KURSNAMN] startar snart!',
-          content: 'Hej [NAMN]!\n\nEn påminnelse om att [KURSNAMN] startar [DATUM].\n\nVi ser fram emot att träffa dig!\n\nLIT-teamet',
-          description: 'Påminnelsemejl inför kursstart'
-        },
-        {
-          id: 'show_reminder',
-          name: 'Föreställningspåminnelse',
-          subject: 'Imorgon är det dags - [FÖRESTÄLLNING]!',
-          content: 'Hej [NAMN]!\n\nImorgon är det dags för [FÖRESTÄLLNING]!\n\n- Tid: [TID]\n- Plats: [PLATS]\n- Adress: [ADRESS]\n\nVi ser fram emot att träffa dig!\n\nLIT-teamet',
-          description: 'Påminnelse inför föreställning'
-        }
-      ];
-    }
+      const { data, error } = await supabase
+        .from('email_templates')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 5 * 60 * 1000,
   });
 
   const handleSendEmail = async () => {
@@ -704,20 +684,52 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     }
 
     try {
-      // TODO: Save to database
-      toast({
-        title: "Mall sparad!",
-        description: "Email-mallen har sparats.",
-      });
+      if (editingTemplate) {
+        // Update existing template
+        const { error } = await supabase
+          .from('email_templates')
+          .update({
+            name: templateForm.name,
+            subject: templateForm.subject,
+            content: templateForm.content,
+            description: templateForm.description || null,
+          })
+          .eq('id', editingTemplate.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Mall uppdaterad!",
+          description: "Email-mallen har uppdaterats.",
+        });
+      } else {
+        // Create new template
+        const { error } = await supabase
+          .from('email_templates')
+          .insert({
+            name: templateForm.name,
+            subject: templateForm.subject,
+            content: templateForm.content,
+            description: templateForm.description || null,
+          });
+
+        if (error) throw error;
+
+        toast({
+          title: "Mall skapad!",
+          description: "Email-mallen har skapats.",
+        });
+      }
       
       setIsTemplateDialogOpen(false);
       setEditingTemplate(null);
       setTemplateForm({ name: '', subject: '', content: '', description: '' });
       queryClient.invalidateQueries({ queryKey: ['email-templates'] });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Template save error:', error);
       toast({
         title: "Fel vid sparning",
-        description: "Det gick inte att spara mallen.",
+        description: error.message || "Det gick inte att spara mallen.",
         variant: "destructive",
       });
     }
@@ -741,16 +753,23 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
 
   const handleDeleteTemplate = async (templateId: string) => {
     try {
-      // TODO: Delete from database
+      const { error } = await supabase
+        .from('email_templates')
+        .update({ is_active: false })
+        .eq('id', templateId);
+
+      if (error) throw error;
+
       toast({
         title: "Mall borttagen",
         description: "Email-mallen har tagits bort.",
       });
       queryClient.invalidateQueries({ queryKey: ['email-templates'] });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Template delete error:', error);
       toast({
         title: "Fel vid borttagning",
-        description: "Det gick inte att ta bort mallen.",
+        description: error.message || "Det gick inte att ta bort mallen.",
         variant: "destructive",
       });
     }
