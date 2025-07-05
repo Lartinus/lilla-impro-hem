@@ -357,6 +357,21 @@ export const EmailManagement = () => {
     }
   });
 
+  // Fetch course instances for import
+  const { data: courseInstances } = useQuery({
+    queryKey: ['course-instances-for-import'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('course_instances')
+        .select('*')
+        .eq('is_active', true)
+        .order('course_title');
+
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
   // Mock email templates - in a real app these would come from database
   const { data: emailTemplates = [] } = useQuery({
     queryKey: ['email-templates'],
@@ -875,19 +890,27 @@ export const EmailManagement = () => {
                     <SelectValue placeholder="Välj en kurs" />
                   </SelectTrigger>
                   <SelectContent>
-                    {recipientGroups
-                      ?.filter(group => group.type === 'course')
-                      .map((group) => (
-                        <SelectItem key={group.id} value={group.id}>
-                          {group.name} ({group.count} deltagare)
-                        </SelectItem>
-                      ))}
+                    {courseInstances?.map((course) => (
+                      <SelectItem key={course.table_name} value={course.table_name}>
+                        {course.course_title}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="group-select">Välj målgrupp</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="group-select">Välj målgrupp</Label>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => openGroupDialog()}
+                  >
+                    <Plus className="w-3 h-3 mr-1" />
+                    Ny grupp
+                  </Button>
+                </div>
                 <Select value={selectedGroupForImport} onValueChange={setSelectedGroupForImport}>
                   <SelectTrigger>
                     <SelectValue placeholder="Välj grupp att importera till" />
