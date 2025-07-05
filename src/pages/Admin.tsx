@@ -29,7 +29,8 @@ const AdminDashboard = () => {
   const [activeSection, setActiveSection] = React.useState('courses');
   const [expandedSections, setExpandedSections] = React.useState({
     courses: true,
-    shows: false
+    shows: false,
+    email: false
   });
 
   // Loading state

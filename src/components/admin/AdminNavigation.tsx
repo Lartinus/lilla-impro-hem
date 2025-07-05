@@ -8,10 +8,12 @@ interface AdminNavigationProps {
   expandedSections: {
     courses: boolean;
     shows: boolean;
+    email: boolean;
   };
   setExpandedSections: React.Dispatch<React.SetStateAction<{
     courses: boolean;
     shows: boolean;
+    email: boolean;
   }>>;
 }
 
@@ -55,14 +57,18 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
     {
       id: 'email',
       title: 'Email',
-      type: 'single' as const
+      type: 'group' as const,
+      expanded: expandedSections.email,
+      children: [
+        { id: 'email', title: 'Email Management' },
+      ]
     }
   ];
 
-  const handleToggleGroup = (groupId: 'courses' | 'shows') => {
+  const handleToggleGroup = (groupId: 'courses' | 'shows' | 'email') => {
     setExpandedSections(prev => {
       // Close all groups first, then open the clicked one if it was closed
-      const newState = { courses: false, shows: false };
+      const newState = { courses: false, shows: false, email: false };
       if (!prev[groupId]) {
         newState[groupId] = true;
         // Set active section to first child when opening a group
@@ -80,7 +86,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
 
   const handleSelectSingle = (sectionId: string) => {
     // Close all expanded groups when selecting a single section
-    setExpandedSections({ courses: false, shows: false });
+    setExpandedSections({ courses: false, shows: false, email: false });
     setActiveSection(sectionId);
   };
 
@@ -89,27 +95,32 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
       {/* Main Navigation Bar */}
       <Card className="overflow-hidden">
         <CardContent className="p-6">
-          <div className="flex flex-wrap gap-2 justify-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {menuItems.map((item) => (
-              <Button
-                key={item.id}
-                variant={
-                  (item.type === 'single' && activeSection === item.id) ||
-                  (item.type === 'group' && item.expanded) 
-                    ? "default" 
-                    : "ghost"
-                }
-                onClick={() => {
-                  if (item.type === 'single') {
-                    handleSelectSingle(item.id);
-                  } else {
-                    handleToggleGroup(item.id as 'courses' | 'shows');
+              <div key={item.id} className="text-center">
+                <Button
+                  variant={
+                    (item.type === 'single' && activeSection === item.id) ||
+                    (item.type === 'group' && item.expanded) 
+                      ? "default" 
+                      : "ghost"
                   }
-                }}
-                className="px-6 py-2 text-sm font-medium transition-all duration-200"
-              >
-                {item.title}
-              </Button>
+                  onClick={() => {
+                    if (item.type === 'single') {
+                      handleSelectSingle(item.id);
+                    } else {
+                      handleToggleGroup(item.id as 'courses' | 'shows' | 'email');
+                    }
+                  }}
+                  className={`w-full h-16 flex flex-col gap-2 justify-center transition-all duration-200 ${
+                    item.type === 'group' && item.expanded 
+                      ? 'rounded-b-none border-b-0' 
+                      : ''
+                  }`}
+                >
+                  <span className="text-sm font-medium">{item.title}</span>
+                </Button>
+              </div>
             ))}
           </div>
         </CardContent>
