@@ -783,6 +783,13 @@ export type Database = {
         Args: { table_name: string }
         Returns: number
       }
+      get_course_participants: {
+        Args: { table_name: string }
+        Returns: {
+          email: string
+          name: string
+        }[]
+      }
       has_role: {
         Args: {
           _user_id: string

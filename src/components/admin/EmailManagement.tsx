@@ -647,12 +647,27 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
 
     setIsLoading(true);
     try {
-      // TODO: Implement actual email sending through edge function
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const { data, error } = await supabase.functions.invoke('send-bulk-email', {
+        body: {
+          recipientGroup: selectedRecipients,
+          subject: emailSubject,
+          content: emailContent
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      const { sent, total, errors } = data;
       
       toast({
         title: "Email skickat!",
-        description: `Mejlet har skickats till den valda mottagargruppen.`,
+        description: `Mejlet har skickats till ${sent} av ${total} mottagare.${errors && errors.length > 0 ? ` ${errors.length} mejl kunde inte skickas.` : ''}`,
       });
       
       // Reset form
@@ -660,10 +675,11 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       setEmailContent('');
       setSelectedRecipients('');
       setSelectedTemplate('');
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Email sending error:', error);
       toast({
         title: "Fel vid skickning",
-        description: "Det gick inte att skicka mejlet. Försök igen.",
+        description: error.message || "Det gick inte att skicka mejlet. Försök igen.",
         variant: "destructive",
       });
     } finally {
