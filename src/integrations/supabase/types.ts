@@ -309,6 +309,105 @@ export type Database = {
         }
         Relationships: []
       }
+      email_contacts: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          metadata: Json | null
+          name: string | null
+          phone: string | null
+          source: string | null
+          source_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          metadata?: Json | null
+          name?: string | null
+          phone?: string | null
+          source?: string | null
+          source_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          metadata?: Json | null
+          name?: string | null
+          phone?: string | null
+          source?: string | null
+          source_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      email_group_members: {
+        Row: {
+          added_at: string
+          contact_id: string
+          group_id: string
+          id: string
+        }
+        Insert: {
+          added_at?: string
+          contact_id: string
+          group_id: string
+          id?: string
+        }
+        Update: {
+          added_at?: string
+          contact_id?: string
+          group_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_group_members_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "email_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "email_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "email_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_groups: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           company: string | null
@@ -691,6 +790,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      import_course_to_group: {
+        Args: { course_table_name: string; target_group_id: string }
+        Returns: number
+      }
       insert_course_booking: {
         Args: {
           table_name: string
@@ -711,6 +814,10 @@ export type Database = {
       is_valid_phone: {
         Args: { phone: string }
         Returns: boolean
+      }
+      sync_email_contacts: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       table_exists: {
         Args: { table_name: string }

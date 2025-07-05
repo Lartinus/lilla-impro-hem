@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Mail, Send, Users, Ticket, FileText, Plus, Edit, Trash2, Eye, Heart } from 'lucide-react';
+import { Mail, Send, Users, Ticket, FileText, Plus, Edit, Trash2, Eye, Heart, Download, Upload, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 
@@ -23,6 +23,28 @@ interface EmailTemplate {
   content: string;
   description?: string;
   created_at?: string;
+}
+
+interface EmailGroup {
+  id: string;
+  name: string;
+  description?: string;
+  is_active: boolean;
+  member_count?: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface EmailContact {
+  id: string;
+  email: string;
+  name?: string;
+  phone?: string;
+  source: string;
+  source_id?: string;
+  metadata?: any;
+  created_at: string;
+  updated_at: string;
 }
 
 interface RecipientGroup {
@@ -47,6 +69,17 @@ export const EmailManagement = () => {
     content: '',
     description: ''
   });
+  
+  // New state for group management
+  const [isGroupDialogOpen, setIsGroupDialogOpen] = useState(false);
+  const [editingGroup, setEditingGroup] = useState<EmailGroup | null>(null);
+  const [groupForm, setGroupForm] = useState({
+    name: '',
+    description: ''
+  });
+  const [selectedCourseForImport, setSelectedCourseForImport] = useState<string>('');
+  const [selectedGroupForImport, setSelectedGroupForImport] = useState<string>('');
+  
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -159,6 +192,169 @@ export const EmailManagement = () => {
       return groups;
     },
     staleTime: 5 * 60 * 1000,
+  });
+
+  // Fetch email groups from database
+  const { data: emailGroups, isLoading: emailGroupsLoading } = useQuery({
+    queryKey: ['email-groups'],
+    queryFn: async (): Promise<EmailGroup[]> => {
+      const { data, error } = await supabase
+        .from('email_groups')
+        .select(`
+          *,
+          email_group_members(count)
+        `)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      return data?.map(group => ({
+        ...group,
+        member_count: group.email_group_members?.length || 0
+      })) || [];
+    },
+    staleTime: 2 * 60 * 1000,
+  });
+
+  // Fetch all email contacts
+  const { data: emailContacts, isLoading: contactsLoading } = useQuery({
+    queryKey: ['email-contacts'],
+    queryFn: async (): Promise<EmailContact[]> => {
+      const { data, error } = await supabase
+        .from('email_contacts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 2 * 60 * 1000,
+  });
+
+  // Sync contacts mutation
+  const syncContactsMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc('sync_email_contacts');
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (syncedCount) => {
+      toast({
+        title: "Kontakter synkroniserade!",
+        description: `${syncedCount} kontakter har uppdaterats.`,
+      });
+      queryClient.invalidateQueries({ queryKey: ['email-contacts'] });
+    },
+    onError: () => {
+      toast({
+        title: "Synkronisering misslyckades",
+        description: "Det gick inte att synkronisera kontakterna.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Import course to group mutation
+  const importCourseToGroupMutation = useMutation({
+    mutationFn: async ({ courseTableName, groupId }: { courseTableName: string; groupId: string }) => {
+      const { data, error } = await supabase.rpc('import_course_to_group', {
+        course_table_name: courseTableName,
+        target_group_id: groupId
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (importedCount) => {
+      toast({
+        title: "Import lyckades!",
+        description: `${importedCount} kontakter har importerats till gruppen.`,
+      });
+      queryClient.invalidateQueries({ queryKey: ['email-groups'] });
+      queryClient.invalidateQueries({ queryKey: ['email-contacts'] });
+      setSelectedCourseForImport('');
+      setSelectedGroupForImport('');
+    },
+    onError: () => {
+      toast({
+        title: "Import misslyckades",
+        description: "Det gick inte att importera kontakterna.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Create/update group mutation
+  const saveGroupMutation = useMutation({
+    mutationFn: async (group: Partial<EmailGroup> & { name: string }) => {
+      if (editingGroup) {
+        const { data, error } = await supabase
+          .from('email_groups')
+          .update({
+            name: group.name,
+            description: group.description,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', editingGroup.id)
+          .select()
+          .single();
+        if (error) throw error;
+        return data;
+      } else {
+        const { data, error } = await supabase
+          .from('email_groups')
+          .insert({
+            name: group.name,
+            description: group.description
+          })
+          .select()
+          .single();
+        if (error) throw error;
+        return data;
+      }
+    },
+    onSuccess: () => {
+      toast({
+        title: editingGroup ? "Grupp uppdaterad!" : "Grupp skapad!",
+        description: editingGroup ? "Gruppen har uppdaterats." : "Den nya gruppen har skapats.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['email-groups'] });
+      setIsGroupDialogOpen(false);
+      setEditingGroup(null);
+      setGroupForm({ name: '', description: '' });
+    },
+    onError: () => {
+      toast({
+        title: "Fel vid sparning",
+        description: "Det gick inte att spara gruppen.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Delete group mutation
+  const deleteGroupMutation = useMutation({
+    mutationFn: async (groupId: string) => {
+      const { error } = await supabase
+        .from('email_groups')
+        .update({ is_active: false })
+        .eq('id', groupId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Grupp borttagen",
+        description: "Gruppen har tagits bort.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['email-groups'] });
+    },
+    onError: () => {
+      toast({
+        title: "Fel vid borttagning",
+        description: "Det gick inte att ta bort gruppen.",
+        variant: "destructive",
+      });
+    }
   });
 
   // Mock email templates - in a real app these would come from database
@@ -314,12 +510,67 @@ export const EmailManagement = () => {
     }
   };
 
+  const openGroupDialog = (group?: EmailGroup) => {
+    if (group) {
+      setEditingGroup(group);
+      setGroupForm({
+        name: group.name,
+        description: group.description || ''
+      });
+    } else {
+      setEditingGroup(null);
+      setGroupForm({ name: '', description: '' });
+    }
+    setIsGroupDialogOpen(true);
+  };
+
+  const handleSaveGroup = async () => {
+    if (!groupForm.name) {
+      toast({
+        title: "Namn krävs",
+        description: "Gruppens namn är obligatoriskt.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    saveGroupMutation.mutate(groupForm);
+  };
+
+  const handleImportCourseToGroup = async () => {
+    if (!selectedCourseForImport || !selectedGroupForImport) {
+      toast({
+        title: "Obligatoriska fält saknas",
+        description: "Välj både kurs och målgrupp för import.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    importCourseToGroupMutation.mutate({
+      courseTableName: selectedCourseForImport,
+      groupId: selectedGroupForImport
+    });
+  };
+
+  const getSourceLabel = (source: string) => {
+    switch (source) {
+      case 'course': return 'Kurs';
+      case 'ticket': return 'Biljett';
+      case 'interest': return 'Intresse';
+      case 'manual': return 'Manuell';
+      default: return source;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="send" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="send">Skicka meddelande</TabsTrigger>
           <TabsTrigger value="groups">Mottagargrupper</TabsTrigger>
+          <TabsTrigger value="contacts">Alla kontakter</TabsTrigger>
+          <TabsTrigger value="import">Importera</TabsTrigger>
           <TabsTrigger value="templates">Email-mallar</TabsTrigger>
         </TabsList>
 
@@ -424,44 +675,254 @@ export const EmailManagement = () => {
         <TabsContent value="groups">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                Mottagargrupper
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  Mottagargrupper
+                </div>
+                <Button onClick={() => openGroupDialog()}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Ny grupp
+                </Button>
               </CardTitle>
               <CardDescription>
-                Översikt över alla tillgängliga mottagargrupper
+                Hantera alla dina mottagargrupper
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {groupsLoading ? (
+              {groupsLoading || emailGroupsLoading ? (
                 <div className="flex items-center justify-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {recipientGroups?.map((group) => {
-                    const IconComponent = getGroupIcon(group.type);
-                    return (
-                      <Card key={group.id} className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <IconComponent className="w-5 h-5 text-muted-foreground" />
-                            <div>
-                              <h4 className="font-semibold">{group.name}</h4>
-                              {group.description && (
-                                <p className="text-sm text-muted-foreground">{group.description}</p>
-                              )}
+                <div className="space-y-6">
+                  {/* Custom Groups */}
+                  {emailGroups && emailGroups.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">Egna grupper</h3>
+                      <div className="space-y-3">
+                        {emailGroups.map((group) => (
+                          <Card key={group.id} className="p-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <Users className="w-5 h-5 text-muted-foreground" />
+                                <div>
+                                  <h4 className="font-semibold">{group.name}</h4>
+                                  {group.description && (
+                                    <p className="text-sm text-muted-foreground">{group.description}</p>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <Badge variant="outline" className="px-3 py-1">
+                                  {group.member_count || 0} medlemmar
+                                </Badge>
+                                <div className="flex gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => openGroupDialog(group)}
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button variant="ghost" size="sm">
+                                        <Trash2 className="w-4 h-4" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Ta bort grupp</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Är du säker på att du vill ta bort gruppen "{group.name}"?
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => deleteGroupMutation.mutate(group.id)}>
+                                          Ta bort
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                          <Badge variant="outline" className="text-lg px-3 py-1">
-                            {group.count} personer
-                          </Badge>
-                        </div>
-                      </Card>
-                    );
-                  })}
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Automatic Groups */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-3">Automatiska grupper</h3>
+                    <div className="space-y-3">
+                      {recipientGroups?.map((group) => {
+                        const IconComponent = getGroupIcon(group.type);
+                        return (
+                          <Card key={group.id} className="p-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <IconComponent className="w-5 h-5 text-muted-foreground" />
+                                <div>
+                                  <h4 className="font-semibold">{group.name}</h4>
+                                  {group.description && (
+                                    <p className="text-sm text-muted-foreground">{group.description}</p>
+                                  )}
+                                </div>
+                              </div>
+                              <Badge variant="outline" className="px-3 py-1">
+                                {group.count} personer
+                              </Badge>
+                            </div>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Contacts Tab */}
+        <TabsContent value="contacts">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  Alla kontakter
+                </div>
+                <Button 
+                  onClick={() => syncContactsMutation.mutate()}
+                  disabled={syncContactsMutation.isPending}
+                >
+                  <RefreshCw className={`w-4 h-4 mr-2 ${syncContactsMutation.isPending ? 'animate-spin' : ''}`} />
+                  Synkronisera
+                </Button>
+              </CardTitle>
+              <CardDescription>
+                Alla dina kontakter från kurser, biljetter och intresseanmälningar
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {contactsLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              ) : (
+                <div>
+                  <div className="mb-4 text-sm text-muted-foreground">
+                    Totalt: {emailContacts?.length || 0} kontakter
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Namn</TableHead>
+                        <TableHead>E-post</TableHead>
+                        <TableHead>Telefon</TableHead>
+                        <TableHead>Källa</TableHead>
+                        <TableHead>Datum</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {emailContacts?.map((contact) => (
+                        <TableRow key={contact.id}>
+                          <TableCell className="font-medium">
+                            {contact.name || 'Okänt namn'}
+                          </TableCell>
+                          <TableCell>{contact.email}</TableCell>
+                          <TableCell>{contact.phone || '-'}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {getSourceLabel(contact.source)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {new Date(contact.created_at).toLocaleDateString('sv-SE')}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Import Tab */}
+        <TabsContent value="import">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Upload className="w-5 h-5" />
+                Importera kontakter
+              </CardTitle>
+              <CardDescription>
+                Importera kontakter från kurser till dina grupper
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="course-select">Välj kurs att importera från</Label>
+                <Select value={selectedCourseForImport} onValueChange={setSelectedCourseForImport}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Välj en kurs" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {recipientGroups
+                      ?.filter(group => group.type === 'course')
+                      .map((group) => (
+                        <SelectItem key={group.id} value={group.id}>
+                          {group.name} ({group.count} deltagare)
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="group-select">Välj målgrupp</Label>
+                <Select value={selectedGroupForImport} onValueChange={setSelectedGroupForImport}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Välj grupp att importera till" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {emailGroups?.map((group) => (
+                      <SelectItem key={group.id} value={group.id}>
+                        {group.name} ({group.member_count || 0} medlemmar)
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Button
+                onClick={handleImportCourseToGroup}
+                disabled={
+                  !selectedCourseForImport || 
+                  !selectedGroupForImport || 
+                  importCourseToGroupMutation.isPending
+                }
+                className="w-full"
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                {importCourseToGroupMutation.isPending ? 'Importerar...' : 'Importera kontakter'}
+              </Button>
+
+              <div className="p-4 bg-muted/50 rounded-md">
+                <h4 className="font-medium mb-2">Information</h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Kontakter som redan finns uppdateras med ny information</li>
+                  <li>• Inga dubbletter skapas - samma email-adress = samma kontakt</li>
+                  <li>• Kontakter läggs till i den valda gruppen</li>
+                </ul>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -602,6 +1063,49 @@ export const EmailManagement = () => {
               </Button>
               <Button onClick={handleSaveTemplate}>
                 {editingTemplate ? 'Uppdatera' : 'Skapa'} mall
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Group Dialog */}
+      <Dialog open={isGroupDialogOpen} onOpenChange={setIsGroupDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {editingGroup ? 'Redigera grupp' : 'Skapa ny grupp'}
+            </DialogTitle>
+            <DialogDescription>
+              Skapa eller redigera en mottagargrupp
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="group-name">Namn</Label>
+              <Input
+                id="group-name"
+                value={groupForm.name}
+                onChange={(e) => setGroupForm(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="T.ex. Vårterminens deltagare"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="group-description">Beskrivning (valfritt)</Label>
+              <Textarea
+                id="group-description"
+                value={groupForm.description}
+                onChange={(e) => setGroupForm(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Beskriv vad denna grupp används till"
+                rows={3}
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsGroupDialogOpen(false)}>
+                Avbryt
+              </Button>
+              <Button onClick={handleSaveGroup} disabled={saveGroupMutation.isPending}>
+                {saveGroupMutation.isPending ? 'Sparar...' : (editingGroup ? 'Uppdatera' : 'Skapa')} grupp
               </Button>
             </div>
           </div>
