@@ -1,9 +1,5 @@
 import React from 'react';
 import { 
-  BarChart3, 
-  Users, 
-  Ticket, 
-  Mail,
   ChevronDown,
   ChevronRight,
   BookOpen,
@@ -13,11 +9,13 @@ import {
   MapPin,
   CreditCard,
   UserCircle,
-  ImageIcon
+  ImageIcon,
+  Users,
+  Ticket,
+  Mail
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface AdminNavigationProps {
   activeSection: string;
@@ -88,61 +86,69 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {menuItems.map((item) => (
-        <Card key={item.id} className="overflow-hidden">
-          <CardContent className="p-0">
-            {item.type === 'single' ? (
-              <Button
-                variant={activeSection === item.id ? "default" : "ghost"}
-                onClick={() => setActiveSection(item.id)}
-                className="w-full h-16 flex flex-col gap-2 rounded-none justify-center"
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="text-sm font-medium">{item.title}</span>
-              </Button>
-            ) : (
-              <Collapsible
-                open={item.expanded}
-                onOpenChange={() => handleToggleGroup(item.id as 'courses' | 'shows')}
-              >
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="w-full h-16 flex items-center justify-between p-4 rounded-none"
-                  >
-                    <div className="flex flex-col items-center gap-2">
-                      <item.icon className="w-5 h-5" />
-                      <span className="text-sm font-medium">{item.title}</span>
-                    </div>
-                    {item.expanded ? (
-                      <ChevronDown className="w-4 h-4" />
-                    ) : (
-                      <ChevronRight className="w-4 h-4" />
+    <div className="space-y-4">
+      {/* Main Navigation Bar */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {menuItems.map((item) => (
+              <div key={item.id} className="text-center">
+                <Button
+                  variant={
+                    (item.type === 'single' && activeSection === item.id) ||
+                    (item.type === 'group' && item.expanded) 
+                      ? "default" 
+                      : "ghost"
+                  }
+                  onClick={() => {
+                    if (item.type === 'single') {
+                      setActiveSection(item.id);
+                    } else {
+                      handleToggleGroup(item.id as 'courses' | 'shows');
+                    }
+                  }}
+                  className="w-full h-16 flex flex-col gap-2 justify-center"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">{item.title}</span>
+                    {item.type === 'group' && (
+                      item.expanded ? (
+                        <ChevronDown className="w-4 h-4" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4" />
+                      )
                     )}
-                  </Button>
-                </CollapsibleTrigger>
-                
-                <CollapsibleContent className="border-t">
-                  <div className="grid grid-cols-1 gap-0">
-                    {item.children?.map((child) => (
-                      <Button
-                        key={child.id}
-                        variant={activeSection === child.id ? "secondary" : "ghost"}
-                        onClick={() => setActiveSection(child.id)}
-                        className="h-12 flex items-center gap-3 justify-start px-4 rounded-none border-b last:border-b-0"
-                      >
-                        <child.icon className="w-4 h-4" />
-                        <span className="text-sm">{child.title}</span>
-                      </Button>
-                    ))}
                   </div>
-                </CollapsibleContent>
-              </Collapsible>
-            )}
-          </CardContent>
-        </Card>
-      ))}
+                </Button>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Submenu Bars */}
+      {menuItems.map((item) => 
+        item.type === 'group' && item.expanded && (
+          <Card key={`${item.id}-submenu`}>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                {item.children?.map((child) => (
+                  <div key={child.id} className="text-center">
+                    <Button
+                      variant={activeSection === child.id ? "secondary" : "ghost"}
+                      onClick={() => setActiveSection(child.id)}
+                      className="w-full h-12 flex items-center justify-center gap-2"
+                    >
+                      <child.icon className="w-4 h-4" />
+                      <span className="text-sm">{child.title}</span>
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )
+      )}
     </div>
   );
 };
