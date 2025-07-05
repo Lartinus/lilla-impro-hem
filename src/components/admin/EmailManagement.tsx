@@ -203,7 +203,7 @@ export const EmailManagement = () => {
         .from('email_groups')
         .select(`
           *,
-          email_group_members(count)
+          email_group_members!inner(contact_id)
         `)
         .eq('is_active', true)
         .order('created_at', { ascending: false });
@@ -750,9 +750,49 @@ export const EmailManagement = () => {
                       ← Tillbaka
                     </Button>
                     <Users className="w-5 h-5" />
-                    Gruppmedlemmar
+                    Redigera grupp
                   </div>
                 </CardTitle>
+                <CardDescription>
+                  Redigera gruppinformation och hantera medlemmar
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {/* Group Information Editor */}
+                <div className="mb-6 p-4 border rounded-lg bg-muted/20">
+                  <h3 className="text-lg font-semibold mb-4">Gruppinformation</h3>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-group-name">Namn</Label>
+                      <Input
+                        id="edit-group-name"
+                        value={groupForm.name}
+                        onChange={(e) => setGroupForm(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="Gruppnamn"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-group-description">Beskrivning (valfritt)</Label>
+                      <Textarea
+                        id="edit-group-description"
+                        value={groupForm.description}
+                        onChange={(e) => setGroupForm(prev => ({ ...prev, description: e.target.value }))}
+                        placeholder="Beskrivning av gruppen"
+                        rows={2}
+                      />
+                    </div>
+                    <Button 
+                      onClick={handleSaveGroup} 
+                      disabled={saveGroupMutation.isPending}
+                      size="sm"
+                    >
+                      {saveGroupMutation.isPending ? 'Sparar...' : 'Spara ändringar'}
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+              <CardHeader>
+                <CardTitle>Medlemmar</CardTitle>
                 <CardDescription>
                   Hantera medlemmar i gruppen
                 </CardDescription>
@@ -876,14 +916,17 @@ export const EmailManagement = () => {
                                    <Button
                                      variant="ghost"
                                      size="sm"
-                                     onClick={() => setViewingGroupMembers(group.id)}
-                                   >
-                                     <Eye className="w-4 h-4" />
-                                   </Button>
-                                   <Button
-                                     variant="ghost"
-                                     size="sm"
-                                     onClick={() => openGroupDialog(group)}
+                                     onClick={() => {
+                                       const groupToEdit = emailGroups?.find(g => g.id === group.id);
+                                       if (groupToEdit) {
+                                         setGroupForm({
+                                           name: groupToEdit.name,
+                                           description: groupToEdit.description || ''
+                                         });
+                                         setEditingGroup(groupToEdit);
+                                       }
+                                       setViewingGroupMembers(group.id);
+                                     }}
                                    >
                                      <Edit className="w-4 h-4" />
                                    </Button>
