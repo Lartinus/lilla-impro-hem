@@ -60,7 +60,11 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
       type: 'group' as const,
       expanded: expandedSections.email,
       children: [
-        { id: 'email', title: 'Email Management' },
+        { id: 'email', title: 'Skicka meddelande' },
+        { id: 'groups', title: 'Mottagargrupper' },
+        { id: 'contacts', title: 'Alla kontakter' },
+        { id: 'import', title: 'Importera' },
+        { id: 'templates', title: 'Email-mallar' },
       ]
     }
   ];
