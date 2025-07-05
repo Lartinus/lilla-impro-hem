@@ -79,16 +79,20 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
   ];
 
   const handleToggleGroup = (groupId: 'courses' | 'shows') => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [groupId]: !prev[groupId]
-    }));
+    setExpandedSections(prev => {
+      // Close all groups first, then open the clicked one if it was closed
+      const newState = { courses: false, shows: false };
+      if (!prev[groupId]) {
+        newState[groupId] = true;
+      }
+      return newState;
+    });
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-1">
       {/* Main Navigation Bar */}
-      <Card>
+      <Card className="overflow-hidden">
         <CardContent className="p-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {menuItems.map((item) => (
@@ -107,15 +111,19 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
                       handleToggleGroup(item.id as 'courses' | 'shows');
                     }
                   }}
-                  className="w-full h-16 flex flex-col gap-2 justify-center"
+                  className={`w-full h-16 flex flex-col gap-2 justify-center transition-all duration-200 ${
+                    item.type === 'group' && item.expanded 
+                      ? 'rounded-b-none border-b-0' 
+                      : ''
+                  }`}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{item.title}</span>
                     {item.type === 'group' && (
                       item.expanded ? (
-                        <ChevronDown className="w-4 h-4" />
+                        <ChevronDown className="w-4 h-4 transition-transform duration-200" />
                       ) : (
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronRight className="w-4 h-4 transition-transform duration-200" />
                       )
                     )}
                   </div>
@@ -124,31 +132,34 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
             ))}
           </div>
         </CardContent>
-      </Card>
-
-      {/* Submenu Bars */}
-      {menuItems.map((item) => 
-        item.type === 'group' && item.expanded && (
-          <Card key={`${item.id}-submenu`}>
-            <CardContent className="p-6">
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                {item.children?.map((child) => (
-                  <div key={child.id} className="text-center">
-                    <Button
-                      variant={activeSection === child.id ? "secondary" : "ghost"}
-                      onClick={() => setActiveSection(child.id)}
-                      className="w-full h-12 flex items-center justify-center gap-2"
-                    >
-                      <child.icon className="w-4 h-4" />
-                      <span className="text-sm">{child.title}</span>
-                    </Button>
-                  </div>
-                ))}
+        
+        {/* Submenu directly attached */}
+        {menuItems.map((item) => 
+          item.type === 'group' && item.expanded && (
+            <div 
+              key={`${item.id}-submenu`} 
+              className="border-t bg-muted/30 animate-accordion-down"
+            >
+              <div className="p-6">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  {item.children?.map((child) => (
+                    <div key={child.id} className="text-center">
+                      <Button
+                        variant={activeSection === child.id ? "secondary" : "ghost"}
+                        onClick={() => setActiveSection(child.id)}
+                        className="w-full h-12 flex items-center justify-center gap-2 transition-all duration-200 hover:scale-105"
+                      >
+                        <child.icon className="w-4 h-4" />
+                        <span className="text-sm">{child.title}</span>
+                      </Button>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        )
-      )}
+            </div>
+          )
+        )}
+      </Card>
     </div>
   );
 };
