@@ -891,6 +891,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                     <SelectValue placeholder="Välj mottagargrupp" />
                   </SelectTrigger>
                   <SelectContent>
+                    {/* Automatiskt skapade grupper */}
                     {recipientGroups?.map((group) => {
                       const IconComponent = getGroupIcon(group.type);
                       return (
@@ -907,6 +908,21 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                         </SelectItem>
                       );
                     })}
+                    
+                    {/* Manuellt skapade grupper */}
+                    {emailGroups?.map((group) => (
+                      <SelectItem key={`manual_${group.id}`} value={`manual_${group.id}`}>
+                        <div className="flex items-center justify-between w-full">
+                          <span className="flex items-center gap-2">
+                            <Users className="w-4 h-4" />
+                            {group.name}
+                          </span>
+                          <Badge variant="secondary" className="ml-2">
+                            {group.member_count || 0}
+                          </Badge>
+                        </div>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
