@@ -94,6 +94,10 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     phone: ''
   });
   
+  // State for adding members to groups
+  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
+  const [selectedContactsToAdd, setSelectedContactsToAdd] = useState<string[]>([]);
+  
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -511,6 +515,73 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     }
   });
 
+  // Add members to group mutation
+  const addMembersToGroupMutation = useMutation({
+    mutationFn: async ({ groupId, contactIds }: { groupId: string; contactIds: string[] }) => {
+      const membersToAdd = contactIds.map(contactId => ({
+        group_id: groupId,
+        contact_id: contactId
+      }));
+
+      const { error } = await supabase
+        .from('email_group_members')
+        .insert(membersToAdd);
+      if (error) throw error;
+      
+      return contactIds.length;
+    },
+    onSuccess: (addedCount) => {
+      toast({
+        title: "Medlemmar tillagda!",
+        description: `${addedCount} kontakt${addedCount > 1 ? 'er' : ''} har lagts till i gruppen.`,
+      });
+      queryClient.invalidateQueries({ queryKey: ['group-members', viewingGroupMembers] });
+      queryClient.invalidateQueries({ queryKey: ['email-groups'] });
+      queryClient.invalidateQueries({ queryKey: ['available-contacts', viewingGroupMembers] });
+      setIsAddMemberDialogOpen(false);
+      setSelectedContactsToAdd([]);
+    },
+    onError: () => {
+      toast({
+        title: "Fel vid tilläggning",
+        description: "Det gick inte att lägga till medlemmarna.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Fetch contacts not in current group
+  const { data: availableContacts, isLoading: availableContactsLoading } = useQuery({
+    queryKey: ['available-contacts', viewingGroupMembers],
+    queryFn: async (): Promise<EmailContact[]> => {
+      if (!viewingGroupMembers) return [];
+      
+      // Get all contacts
+      const { data: allContacts, error: contactsError } = await supabase
+        .from('email_contacts')
+        .select('*')
+        .order('name');
+      
+      if (contactsError) throw contactsError;
+      if (!allContacts) return [];
+
+      // Get current group members
+      const { data: currentMembers, error: membersError } = await supabase
+        .from('email_group_members')
+        .select('contact_id')
+        .eq('group_id', viewingGroupMembers);
+        
+      if (membersError) throw membersError;
+      
+      const memberContactIds = new Set(currentMembers?.map(m => m.contact_id) || []);
+      
+      // Return contacts not in the group
+      return allContacts.filter(contact => !memberContactIds.has(contact.id));
+    },
+    enabled: !!viewingGroupMembers && isAddMemberDialogOpen,
+    staleTime: 1 * 60 * 1000,
+  });
+
   // Fetch course instances for import
   const { data: courseInstances } = useQuery({
     queryKey: ['course-instances-for-import'],
@@ -716,6 +787,30 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       setContactForm({ name: '', email: '', phone: '' });
     }
     setIsContactDialogOpen(true);
+  };
+
+  const handleAddMembersToGroup = async () => {
+    if (!viewingGroupMembers || selectedContactsToAdd.length === 0) {
+      toast({
+        title: "Inga kontakter valda",
+        description: "Välj minst en kontakt att lägga till.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    addMembersToGroupMutation.mutate({
+      groupId: viewingGroupMembers,
+      contactIds: selectedContactsToAdd
+    });
+  };
+
+  const toggleContactSelection = (contactId: string) => {
+    setSelectedContactsToAdd(prev => 
+      prev.includes(contactId) 
+        ? prev.filter(id => id !== contactId)
+        : [...prev, contactId]
+    );
   };
 
   const openGroupDialog = (group?: EmailGroup) => {
@@ -930,12 +1025,21 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   </div>
                 </div>
               </CardContent>
-              <CardHeader>
-                <CardTitle>Medlemmar</CardTitle>
-                <CardDescription>
-                  Hantera medlemmar i gruppen
-                </CardDescription>
-              </CardHeader>
+               <CardHeader>
+                 <CardTitle className="flex items-center justify-between">
+                   <span>Medlemmar</span>
+                   <Button 
+                     onClick={() => setIsAddMemberDialogOpen(true)}
+                     size="sm"
+                   >
+                     <Plus className="w-4 h-4 mr-2" />
+                     Lägg till medlemmar
+                   </Button>
+                 </CardTitle>
+                 <CardDescription>
+                   Hantera medlemmar i gruppen
+                 </CardDescription>
+               </CardHeader>
               <CardContent>
                 {membersLoading ? (
                   <div className="flex items-center justify-center py-8">
@@ -1558,6 +1662,104 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                 disabled={saveContactMutation.isPending}
               >
                 {saveContactMutation.isPending ? 'Sparar...' : (editingContact ? 'Uppdatera kontakt' : 'Spara kontakt')}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Members Dialog */}
+      <Dialog open={isAddMemberDialogOpen} onOpenChange={setIsAddMemberDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Lägg till medlemmar i grupp</DialogTitle>
+            <DialogDescription>
+              Välj kontakter att lägga till som medlemmar i gruppen
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            {availableContactsLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            ) : availableContacts && availableContacts.length > 0 ? (
+              <div>
+                <div className="mb-4 text-sm text-muted-foreground">
+                  {availableContacts.length} tillgängliga kontakter (klicka för att välja)
+                </div>
+                <div className="max-h-96 overflow-y-auto border rounded-lg">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-12"></TableHead>
+                        <TableHead>Namn</TableHead>
+                        <TableHead>E-post</TableHead>
+                        <TableHead>Telefon</TableHead>
+                        <TableHead>Källa</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {availableContacts.map((contact) => (
+                        <TableRow 
+                          key={contact.id}
+                          className={`cursor-pointer hover:bg-muted/50 ${
+                            selectedContactsToAdd.includes(contact.id) ? 'bg-muted' : ''
+                          }`}
+                          onClick={() => toggleContactSelection(contact.id)}
+                        >
+                          <TableCell>
+                            <input
+                              type="checkbox"
+                              checked={selectedContactsToAdd.includes(contact.id)}
+                              onChange={() => toggleContactSelection(contact.id)}
+                              className="rounded"
+                            />
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {contact.name || 'Okänt namn'}
+                          </TableCell>
+                          <TableCell>{contact.email}</TableCell>
+                          <TableCell>{contact.phone || '-'}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {getSourceLabel(contact.source)}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                
+                {selectedContactsToAdd.length > 0 && (
+                  <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+                    <p className="text-sm">
+                      <strong>{selectedContactsToAdd.length}</strong> kontakt{selectedContactsToAdd.length > 1 ? 'er' : ''} vald{selectedContactsToAdd.length > 1 ? 'a' : ''}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">Inga tillgängliga kontakter att lägga till.</p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Alla kontakter är redan medlemmar i denna grupp.
+                </p>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsAddMemberDialogOpen(false)}>
+                Avbryt
+              </Button>
+              <Button 
+                onClick={handleAddMembersToGroup}
+                disabled={selectedContactsToAdd.length === 0 || addMembersToGroupMutation.isPending}
+              >
+                {addMembersToGroupMutation.isPending 
+                  ? 'Lägger till...' 
+                  : `Lägg till ${selectedContactsToAdd.length > 0 ? selectedContactsToAdd.length : ''} medlem${selectedContactsToAdd.length !== 1 ? 'mar' : ''}`
+                }
               </Button>
             </div>
           </div>
