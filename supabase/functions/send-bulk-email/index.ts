@@ -187,7 +187,7 @@ const handler = async (req: Request): Promise<Response> => {
           const personalizedContent = content.replace(/\[NAMN\]/g, recipient.name || 'Vän');
           
           return resend.emails.send({
-            from: "LIT - Luleå Improvisationsteater <noreply@improteatern.se>",
+            from: "Lilla Improteatern <noreply@improteatern.se>",
             to: [recipient.email],
             subject: subject,
             html: personalizedContent.replace(/\n/g, '<br>'),
