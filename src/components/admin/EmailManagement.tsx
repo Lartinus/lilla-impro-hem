@@ -85,6 +85,14 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
   const [selectedGroupForImport, setSelectedGroupForImport] = useState<string>('');
   const [viewingGroupMembers, setViewingGroupMembers] = useState<string | null>(null);
   
+  // New state for contact management
+  const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
+  
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -422,6 +430,42 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     }
   });
 
+  // Create/save manual contact mutation
+  const saveContactMutation = useMutation({
+    mutationFn: async (contact: { name: string; email: string; phone: string }) => {
+      const { data, error } = await supabase
+        .from('email_contacts')
+        .insert({
+          name: contact.name,
+          email: contact.email.toLowerCase(),
+          phone: contact.phone,
+          source: 'manual'
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Kontakt skapad!",
+        description: "Den nya kontakten har lagts till.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['email-contacts'] });
+      setIsContactDialogOpen(false);
+      setContactForm({ name: '', email: '', phone: '' });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Fel vid sparning",
+        description: error.message?.includes('duplicate key') 
+          ? "En kontakt med denna e-postadress finns redan."
+          : "Det gick inte att spara kontakten.",
+        variant: "destructive",
+      });
+    }
+  });
+
   // Fetch course instances for import
   const { data: courseInstances } = useQuery({
     queryKey: ['course-instances-for-import'],
@@ -588,6 +632,35 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       case 'all': return Mail;
       default: return Users;
     }
+  };
+
+  const handleSaveContact = async () => {
+    if (!contactForm.name || !contactForm.email) {
+      toast({
+        title: "Obligatoriska fält saknas",
+        description: "Namn och e-postadress är obligatoriska.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(contactForm.email)) {
+      toast({
+        title: "Ogiltig e-postadress",
+        description: "Vänligen ange en giltig e-postadress.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    saveContactMutation.mutate(contactForm);
+  };
+
+  const openContactDialog = () => {
+    setContactForm({ name: '', email: '', phone: '' });
+    setIsContactDialogOpen(true);
   };
 
   const openGroupDialog = (group?: EmailGroup) => {
@@ -1014,13 +1087,21 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   <Users className="w-5 h-5" />
                   Alla kontakter
                 </div>
-                <Button 
-                  onClick={() => syncContactsMutation.mutate()}
-                  disabled={syncContactsMutation.isPending}
-                >
-                  <RefreshCw className={`w-4 h-4 mr-2 ${syncContactsMutation.isPending ? 'animate-spin' : ''}`} />
-                  Synkronisera
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    onClick={() => openContactDialog()}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Lägg till kontakt
+                  </Button>
+                  <Button 
+                    onClick={() => syncContactsMutation.mutate()}
+                    disabled={syncContactsMutation.isPending}
+                  >
+                    <RefreshCw className={`w-4 h-4 mr-2 ${syncContactsMutation.isPending ? 'animate-spin' : ''}`} />
+                    Synkronisera
+                  </Button>
+                </div>
               </CardTitle>
               <CardDescription>
                 Alla dina kontakter från kurser, biljetter och intresseanmälningar
@@ -1331,6 +1412,59 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
               </Button>
               <Button onClick={handleSaveGroup} disabled={saveGroupMutation.isPending}>
                 {saveGroupMutation.isPending ? 'Sparar...' : (editingGroup ? 'Uppdatera' : 'Skapa')} grupp
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Contact Dialog */}
+      <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Lägg till ny kontakt</DialogTitle>
+            <DialogDescription>
+              Lägg till en kontakt manuellt
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="contact-name">Namn *</Label>
+              <Input
+                id="contact-name"
+                value={contactForm.name}
+                onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="Förnamn Efternamn"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="contact-email">E-postadress *</Label>
+              <Input
+                id="contact-email"
+                type="email"
+                value={contactForm.email}
+                onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
+                placeholder="exempel@email.com"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="contact-phone">Telefonnummer</Label>
+              <Input
+                id="contact-phone"
+                value={contactForm.phone}
+                onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
+                placeholder="070-123 45 67"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsContactDialogOpen(false)}>
+                Avbryt
+              </Button>
+              <Button 
+                onClick={handleSaveContact} 
+                disabled={saveContactMutation.isPending}
+              >
+                {saveContactMutation.isPending ? 'Sparar...' : 'Spara kontakt'}
               </Button>
             </div>
           </div>
