@@ -57,19 +57,11 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
     {
       id: 'email',
       title: 'Email',
-      type: 'group' as const,
-      expanded: expandedSections.email,
-      children: [
-        { id: 'email', title: 'Skicka meddelande' },
-        { id: 'groups', title: 'Mottagargrupper' },
-        { id: 'contacts', title: 'Alla kontakter' },
-        { id: 'import', title: 'Importera' },
-        { id: 'templates', title: 'Email-mallar' },
-      ]
+      type: 'single' as const
     }
   ];
 
-  const handleToggleGroup = (groupId: 'courses' | 'shows' | 'email') => {
+  const handleToggleGroup = (groupId: 'courses' | 'shows') => {
     setExpandedSections(prev => {
       // Close all groups first, then open the clicked one if it was closed
       const newState = { courses: false, shows: false, email: false };
@@ -113,7 +105,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
                     if (item.type === 'single') {
                       handleSelectSingle(item.id);
                     } else {
-                      handleToggleGroup(item.id as 'courses' | 'shows' | 'email');
+                      handleToggleGroup(item.id as 'courses' | 'shows');
                     }
                   }}
                   className={`w-full h-16 flex flex-col gap-2 justify-center transition-all duration-200 ${
