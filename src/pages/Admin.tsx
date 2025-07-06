@@ -165,40 +165,28 @@ const AdminDashboard = () => {
                   <div className="text-2xl font-bold mb-1">
                     {statsLoading ? '--' : stats?.avgCourseParticipants || 0}
                   </div>
-                  <p className="text-sm font-medium mb-1">Genomsnitt antal kursdeltagare</p>
-                  <p className="text-xs text-muted-foreground">
-                    {statsLoading ? 'Läses in...' : 'Genomsnitt antal kursdeltagare'}
-                  </p>
+                  <p className="text-sm font-medium">Genomsnitt antal kursdeltagare</p>
                 </div>
 
                 <div className="text-center">
                   <div className="text-2xl font-bold mb-1">
                     {statsLoading ? '--' : stats?.avgSoldTicketsPerShow || 0}
                   </div>
-                  <p className="text-sm font-medium mb-1">Genomsnitt antal sålda biljetter</p>
-                  <p className="text-xs text-muted-foreground">
-                    {statsLoading ? 'Läses in...' : 'Genomsnitt antal sålda biljetter'}
-                  </p>
+                  <p className="text-sm font-medium">Genomsnitt antal sålda biljetter</p>
                 </div>
 
                 <div className="text-center">
                   <div className="text-2xl font-bold mb-1">
                     {statsLoading ? '--' : stats?.activeCourses || 0}
                   </div>
-                  <p className="text-sm font-medium mb-1">Aktiva kurser</p>
-                  <p className="text-xs text-muted-foreground">
-                    {statsLoading ? 'Läses in...' : 'Aktiva kurser'}
-                  </p>
+                  <p className="text-sm font-medium">Aktiva kurser</p>
                 </div>
 
                 <div className="text-center">
                   <div className="text-2xl font-bold mb-1">
                     {statsLoading ? '--' : (stats?.nextShowDate ? new Date(stats.nextShowDate).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' }) : '--')}
                   </div>
-                  <p className="text-sm font-medium mb-1">Nästa föreställning</p>
-                  <p className="text-xs text-muted-foreground">
-                    {statsLoading ? 'Läses in...' : 'Nästa föreställning'}
-                  </p>
+                  <p className="text-sm font-medium">Nästa föreställning</p>
                 </div>
               </div>
             </CardContent>
