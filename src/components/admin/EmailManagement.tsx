@@ -389,7 +389,18 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       const { data, error } = await supabase
         .from('email_group_members')
         .select(`
-          email_contacts (*)
+          contact_id,
+          email_contacts!email_group_members_contact_id_fkey (
+            id,
+            email,
+            name,
+            phone,
+            source,
+            source_id,
+            metadata,
+            created_at,
+            updated_at
+          )
         `)
         .eq('group_id', viewingGroupMembers);
 
