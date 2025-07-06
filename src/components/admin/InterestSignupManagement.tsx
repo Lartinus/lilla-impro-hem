@@ -14,7 +14,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Eye, EyeOff, Plus, Edit, Trash2, GripVertical, Users } from 'lucide-react';
+import { Eye, EyeOff, Plus, Edit, Trash2, GripVertical, Users, UserX } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -33,6 +33,16 @@ interface InterestSignupWithSubmissions extends InterestSignup {
   submissionCount: number;
 }
 
+interface InterestSubmission {
+  id: string;
+  interest_signup_id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  message?: string | null;
+  created_at: string;
+}
+
 interface NewInterestSignupForm {
   title: string;
   subtitle: string;
@@ -41,11 +51,12 @@ interface NewInterestSignupForm {
 }
 
 // Sortable Row Component
-function SortableRow({ item, onEdit, onToggleVisibility, onDelete }: {
+function SortableRow({ item, onEdit, onToggleVisibility, onDelete, onViewSubmissions }: {
   item: InterestSignupWithSubmissions;
   onEdit: (item: InterestSignupWithSubmissions) => void;
   onToggleVisibility: (item: InterestSignupWithSubmissions) => void;
   onDelete: (item: InterestSignupWithSubmissions) => void;
+  onViewSubmissions: (item: InterestSignupWithSubmissions) => void;
 }) {
   const {
     attributes,
@@ -91,6 +102,15 @@ function SortableRow({ item, onEdit, onToggleVisibility, onDelete }: {
           <Button 
             variant="outline" 
             size="sm"
+            onClick={() => onViewSubmissions(item)}
+            disabled={item.submissionCount === 0}
+          >
+            <Users className="w-4 h-4 mr-1" />
+            Visa anmälningar ({item.submissionCount})
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
             onClick={() => onEdit(item)}
           >
             <Edit className="w-4 h-4 mr-1" />
@@ -131,6 +151,9 @@ export const InterestSignupManagement = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingItem, setEditingItem] = useState<InterestSignupWithSubmissions | null>(null);
+  const [isSubmissionsDialogOpen, setIsSubmissionsDialogOpen] = useState(false);
+  const [selectedSubmissions, setSelectedSubmissions] = useState<InterestSubmission[]>([]);
+  const [selectedInterest, setSelectedInterest] = useState<InterestSignupWithSubmissions | null>(null);
   const [newItem, setNewItem] = useState<NewInterestSignupForm>({
     title: '',
     subtitle: '',
@@ -337,6 +360,36 @@ export const InterestSignupManagement = () => {
     }
   });
 
+  // Delete submission mutation
+  const deleteSubmissionMutation = useMutation({
+    mutationFn: async (submissionId: string) => {
+      const { error } = await supabase
+        .from('interest_signup_submissions')
+        .delete()
+        .eq('id', submissionId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['interest-signups'] });
+      // Refresh the submissions dialog if open
+      if (selectedInterest) {
+        handleViewSubmissions(selectedInterest);
+      }
+      toast({
+        title: "Anmälan raderad",
+        description: "Personens anmälan har raderats framgångsrikt",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte radera anmälan: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
   const resetForm = () => {
     setNewItem({
       title: '',
@@ -356,6 +409,28 @@ export const InterestSignupManagement = () => {
       is_visible: item.is_visible
     });
     setIsDialogOpen(true);
+  };
+
+  const handleViewSubmissions = async (item: InterestSignupWithSubmissions) => {
+    try {
+      const { data: submissions, error } = await supabase
+        .from('interest_signup_submissions')
+        .select('*')
+        .eq('interest_signup_id', item.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setSelectedSubmissions(submissions || []);
+      setSelectedInterest(item);
+      setIsSubmissionsDialogOpen(true);
+    } catch (error: any) {
+      toast({
+        title: "Fel",
+        description: `Kunde inte hämta anmälningar: ${error.message}`,
+        variant: "destructive"
+      });
+    }
   };
 
   const handleSubmit = () => {
@@ -527,6 +602,15 @@ export const InterestSignupManagement = () => {
                   <Button 
                     variant="outline" 
                     size="sm"
+                    onClick={() => handleViewSubmissions(item)}
+                    disabled={item.submissionCount === 0}
+                  >
+                    <Users className="w-4 h-4 mr-1" />
+                    Visa anmälningar ({item.submissionCount})
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
                     onClick={() => handleEdit(item)}
                   >
                     <Edit className="w-4 h-4 mr-1" />
@@ -574,7 +658,7 @@ export const InterestSignupManagement = () => {
                   <TableHead>Undertitel</TableHead>
                   <TableHead>Anmälda</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead className="w-[300px]">Åtgärder</TableHead>
+                  <TableHead className="w-[400px]">Åtgärder</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -589,6 +673,7 @@ export const InterestSignupManagement = () => {
                       onEdit={handleEdit}
                       onToggleVisibility={item => toggleVisibilityMutation.mutate(item)}
                       onDelete={item => deleteMutation.mutate(item)}
+                      onViewSubmissions={handleViewSubmissions}
                     />
                   ))}
                 </SortableContext>
@@ -597,6 +682,75 @@ export const InterestSignupManagement = () => {
           </DndContext>
         )}
       </CardContent>
+
+      {/* Submissions Dialog */}
+      <Dialog open={isSubmissionsDialogOpen} onOpenChange={setIsSubmissionsDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle>
+              Anmälningar för: {selectedInterest?.title}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto">
+            {selectedSubmissions.length === 0 ? (
+              <div className="text-center py-8">
+                <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Inga anmälningar</h3>
+                <p className="text-muted-foreground">
+                  Det finns inga anmälningar för denna intresseanmälan ännu.
+                </p>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Namn</TableHead>
+                    <TableHead>E-post</TableHead>
+                    <TableHead>Telefon</TableHead>
+                    <TableHead>Meddelande</TableHead>
+                    <TableHead>Anmäld</TableHead>
+                    <TableHead>Åtgärder</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {selectedSubmissions.map((submission) => (
+                    <TableRow key={submission.id}>
+                      <TableCell className="font-medium">{submission.name}</TableCell>
+                      <TableCell>{submission.email}</TableCell>
+                      <TableCell>{submission.phone || '-'}</TableCell>
+                      <TableCell className="max-w-xs">
+                        {submission.message ? (
+                          <div className="truncate" title={submission.message}>
+                            {submission.message}
+                          </div>
+                        ) : '-'}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(submission.created_at).toLocaleDateString('sv-SE')}
+                      </TableCell>
+                      <TableCell>
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => {
+                            if (confirm(`Är du säker på att du vill ta bort ${submission.name}s anmälan? Detta kan inte ångras.`)) {
+                              deleteSubmissionMutation.mutate(submission.id);
+                            }
+                          }}
+                          disabled={deleteSubmissionMutation.isPending}
+                        >
+                          <UserX className="w-4 h-4 mr-1" />
+                          Ta bort
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
