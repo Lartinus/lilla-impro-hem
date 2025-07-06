@@ -44,7 +44,9 @@ const OptimizedImage = ({
     
     // For callback consistency, construct the original URL pattern
     const callbackUrl = src?.data?.attributes?.url ? 
-      `https://reliable-chicken-da8c8aa37e.media.strapiapp.com${src.data.attributes.url}` : 
+      (src.data.attributes.url.startsWith('http') ? 
+        src.data.attributes.url : // Use as-is if already a full URL (Supabase)
+        `https://reliable-chicken-da8c8aa37e.media.strapiapp.com${src.data.attributes.url}`) : // Prefix only if relative (Strapi)
       processedUrl;
     
     return { 

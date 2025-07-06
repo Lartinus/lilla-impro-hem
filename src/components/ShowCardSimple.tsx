@@ -62,11 +62,6 @@ const ShowCardSimple = ({
 
   console.log(`  - isSoldOut: ${isSoldOut} (totalTickets: ${show.totalTickets}, available: ${availableTickets}, loading: ${isLoading})`);
 
-  // Get the image URL for onImageLoad callback
-  const imageUrl = show.image?.data?.attributes?.url ? 
-    `https://reliable-chicken-da8c8aa37e.media.strapiapp.com${show.image.data.attributes.url}` : 
-    null;
-
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none overflow-hidden relative">
       <CardContent className="p-0">
@@ -77,12 +72,7 @@ const ShowCardSimple = ({
             alt={show.title} 
             className="w-full h-48 md:h-56 object-cover" 
             preferredSize="medium"
-            onLoad={() => {
-              // Call onImageLoad with the constructed URL for tracking consistency
-              if (onImageLoad && imageUrl) {
-                onImageLoad(imageUrl);
-              }
-            }}
+            onLoad={onImageLoad} // Let OptimizedImage handle the URL callback directly
           />
         )}
 
