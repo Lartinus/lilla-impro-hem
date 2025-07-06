@@ -251,67 +251,29 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         }
       }
 
-      // Get interest signups - only visible ones with actual submissions, count unique emails
-      // DON'T create groups here - they are created automatically by triggers
-      const { data: interestSignups } = await supabase
-        .from('interest_signup_submissions')
-        .select('interest_signup_id, email, interest_signups!inner(title, is_visible)')
-        .eq('interest_signups.is_visible', true);
+      // Get interest groups directly from the database
+      const { data: interestGroups } = await supabase
+        .from('email_groups')
+        .select(`
+          id,
+          name,
+          description,
+          email_group_members(count)
+        `)
+        .like('name', 'Intresse:%')
+        .eq('is_active', true);
 
-      if (interestSignups && interestSignups.length > 0) {
-        const interestGroups = new Map();
-        interestSignups.forEach(submission => {
-          // Only process if we have valid data
-          const title = submission.interest_signups?.title;
-          const signupId = submission.interest_signup_id;
-          const email = submission.email;
-          
-          if (title && signupId && email) {
-            const key = `interest_${signupId}`;
-            if (interestGroups.has(key)) {
-              const existing = interestGroups.get(key);
-              // Use Set to count unique emails only
-              existing.emails.add(email.toLowerCase());
-              interestGroups.set(key, { 
-                ...existing, 
-                count: existing.emails.size 
-              });
-            } else {
-              const emailSet = new Set([email.toLowerCase()]);
-              interestGroups.set(key, { 
-                title, 
-                count: emailSet.size, 
-                id: signupId, 
-                emails: emailSet 
-              });
-            }
-          }
+      if (interestGroups && interestGroups.length > 0) {
+        interestGroups.forEach(group => {
+          const memberCount = group.email_group_members?.length || 0;
+          groups.push({
+            id: `interest_${group.id}`,
+            name: group.name,
+            count: memberCount,
+            type: 'interest',
+            description: group.description || `Personer som intresseanmält sig`
+          });
         });
-
-        // Only add groups that actually exist in the database and have valid submissions
-        for (const [key, group] of interestGroups) {
-          if (group.count > 0 && group.title && group.id) {
-            // Check if the group actually exists in the database
-            const groupName = `Intresse: ${group.title}`;
-            const { data: existingGroup } = await supabase
-              .from('email_groups')
-              .select('id')
-              .eq('name', groupName)
-              .eq('is_active', true)
-              .single();
-            
-            // Only add if the group exists in the database
-            if (existingGroup) {
-              groups.push({
-                id: key,
-                name: groupName,
-                count: group.count,
-                type: 'interest',
-                description: `Personer som intresseanmält sig till ${group.title}`
-              });
-            }
-          }
-        }
       }
 
       // Get unique ticket buyers
