@@ -1,6 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { supabase } from "../_shared/supabase.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -26,6 +27,21 @@ const handler = async (req: Request): Promise<Response> => {
     const { name, email, courseTitle, isAvailable }: ConfirmationEmailRequest = await req.json();
 
     console.log(`Processing course confirmation for ${email} - course: ${courseTitle}`);
+
+    // Get the email template from database
+    const { data: template, error: templateError } = await supabase
+      .from('email_templates')
+      .select('*')
+      .eq('name', 'Kursbekräftelse - AUTO')
+      .eq('is_active', true)
+      .single();
+
+    if (templateError || !template) {
+      console.error('Could not fetch email template:', templateError);
+      throw new Error('Email template not found');
+    }
+
+    console.log('Using email template:', template.name);
 
     // First, try to add contact to Resend
     try {
@@ -65,130 +81,83 @@ const handler = async (req: Request): Promise<Response> => {
       // This could happen if contact already exists or other API issues
     }
 
-    const subject = isAvailable 
-      ? `Bekräftelse av kursbokning - ${courseTitle}`
-      : `Bekräftelse av intresseanmälan - ${courseTitle}`;
+    // Personalize the template content
+    let personalizedContent = template.content
+      .replace(/\[NAMN\]/g, name)
+      .replace(/\[KURSNAMN\]/g, courseTitle);
+    
+    let personalizedSubject = template.subject
+      .replace(/\[NAMN\]/g, name)
+      .replace(/\[KURSNAMN\]/g, courseTitle);
 
-    // Table-based email template for better compatibility
-    const emailContent = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>${subject}</title>
-      </head>
-      <body style="margin: 0; padding: 0; background-color: #f4f4f4;">
-        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px 0;">
-          <tr>
-            <td align="center">
-              <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <!-- Header -->
-                <tr>
-                  <td style="background-color: #d32f2f; padding: 30px 40px; border-bottom: 3px solid #b71c1c;">
-                    <h1 style="color: #ffffff; margin: 0; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; text-align: center;">
-                      Lilla Improteatern
-                    </h1>
-                  </td>
-                </tr>
-                
-                <!-- Subject -->
-                <tr>
-                  <td style="padding: 30px 40px 20px; background-color: #ffffff;">
-                    <h2 style="color: #d32f2f; margin: 0; font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; text-align: center;">
-                      ${subject}
-                    </h2>
-                  </td>
-                </tr>
-                
-                <!-- Content -->
-                <tr>
-                  <td style="padding: 0 40px 30px; background-color: #ffffff;">
-                    <table width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td style="padding: 15px 0;">
-                          <p style="margin: 0; color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-                            ${isAvailable ? 
-                              `Tack för din kursbokning, <strong>${name}</strong>!` : 
-                              `Tack för din intresseanmälan, <strong>${name}</strong>!`
-                            }
-                          </p>
-                        </td>
-                      </tr>
-                      
-                      <tr>
-                        <td style="padding: 15px 0;">
-                          <p style="margin: 0; color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-                            ${isAvailable ? 
-                              `Vi har tagit emot din bokning för kursen <strong>${courseTitle}</strong>.` : 
-                              `Vi har tagit emot din intresseanmälan för <strong>${courseTitle}</strong>.`
-                            }
-                          </p>
-                        </td>
-                      </tr>
-                      
-                      <tr>
-                        <td style="padding: 15px 0;">
-                          <p style="margin: 0; color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-                            ${isAvailable ? 
-                              "Vi kommer att kontakta dig snart med mer information om kursen, inklusive tid, plats och praktiska detaljer." : 
-                              "Vi kommer att kontakta dig så snart det finns lediga platser eller när nästa kurs planeras."
-                            }
-                          </p>
-                        </td>
-                      </tr>
-                      
-                      <tr>
-                        <td style="padding: 15px 0;">
-                          <p style="margin: 0; color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-                            ${isAvailable ? 
-                              "Vi ser fram emot att träffa dig på kursen!" : 
-                              "Tack för ditt intresse!"
-                            }
-                          </p>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-                
-                <!-- Footer -->
-                <tr>
-                  <td style="background-color: #f9f9f9; padding: 30px 40px; border-top: 1px solid #eeeeee;">
-                    <table width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td style="text-align: center;">
-                          <p style="margin: 0 0 10px 0; color: #666666; font-family: Arial, sans-serif; font-size: 14px;">
-                            Med vänliga hälsningar,<br>
-                            <strong style="color: #d32f2f;">Lilla Improteatern</strong>
-                          </p>
-                          <p style="margin: 0; color: #999999; font-family: Arial, sans-serif; font-size: 12px;">
-                            Besök oss på <a href="https://improteatern.se" style="color: #d32f2f; text-decoration: none;">improteatern.se</a>
-                          </p>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </body>
-      </html>
-    `;
+    // Create styled HTML email (same style as bulk emails)
+    const isPlainText = !template.content.includes('<') && !template.content.includes('>');
+    
+    let htmlContent;
+    if (isPlainText) {
+      // Convert plain text to styled HTML
+      const textWithBreaks = personalizedContent.replace(/\n/g, '<br>');
+      htmlContent = `
+        <div style="
+          font-family: Arial, sans-serif; 
+          line-height: 1.6; 
+          color: #333;
+          background-color: #fff;
+          max-width: 600px;
+          margin: 20px auto;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          padding: 30px;
+        ">
+          <div style="
+            border-bottom: 2px solid #d32f2f; 
+            padding-bottom: 20px; 
+            margin-bottom: 30px;
+          ">
+            <h2 style="
+              color: #d32f2f; 
+              margin: 0 0 10px 0;
+              font-size: 24px;
+            ">
+              ${personalizedSubject}
+            </h2>
+          </div>
+          
+          <div style="margin-bottom: 30px;">
+            ${textWithBreaks}
+          </div>
+          
+          <div style="
+            border-top: 1px solid #eee; 
+            padding-top: 20px;
+            color: #666;
+            font-size: 14px;
+          ">
+            <p style="margin: 0;">
+              Med vänliga hälsningar,<br />
+              <strong>Lilla Improteatern</strong>
+            </p>
+          </div>
+        </div>
+      `;
+    } else {
+      // Use HTML content as is
+      htmlContent = personalizedContent;
+    }
 
     // Send the email
-    console.log('Sending confirmation email...');
+    console.log('Sending confirmation email using template:', template.name);
     const emailResponse = await resend.emails.send({
       from: "Lilla Improteatern <noreply@improteatern.se>",
       to: [email],
-      subject,
-      html: emailContent,
+      subject: personalizedSubject,
+      html: htmlContent,
+      text: personalizedContent, // Keep plain text version for fallback
       tags: [
         { name: 'type', value: 'course-confirmation' },
         { name: 'course', value: courseTitle.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() },
-        { name: 'available', value: isAvailable ? 'yes' : 'no' }
+        { name: 'available', value: isAvailable ? 'yes' : 'no' },
+        { name: 'template', value: template.name }
       ]
     });
 
