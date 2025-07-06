@@ -21,9 +21,21 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Always expect action from URL params for GET requests
-    const url = new URL(req.url);
-    const action = url.searchParams.get("action") || "list";
+    // Get action from request body or URL params
+    let action = 'list';
+    let body = null;
+    
+    if (req.method === 'POST') {
+      try {
+        body = await req.json();
+        action = body.action || 'list';
+      } catch {
+        // If no body, default to list
+      }
+    } else {
+      const url = new URL(req.url);
+      action = url.searchParams.get("action") || "list";
+    }
 
     // Check if user is admin
     const authHeader = req.headers.get('Authorization');
@@ -90,11 +102,11 @@ const handler = async (req: Request): Promise<Response> => {
     if (action === 'delete-user') {
       let userId;
       
-      if (req.method === 'GET') {
-        userId = url.searchParams.get('userId');
-      } else {
-        const body = await req.json();
+      if (body && body.userId) {
         userId = body.userId;
+      } else {
+        const url = new URL(req.url);
+        userId = url.searchParams.get('userId');
       }
       
       if (!userId) {

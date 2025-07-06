@@ -28,7 +28,7 @@ export const UserManagement = () => {
     queryKey: ['admin-users'],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke('admin-user-management', {
-        method: 'GET'
+        body: { action: 'list' }
       });
 
       if (error) throw error;
