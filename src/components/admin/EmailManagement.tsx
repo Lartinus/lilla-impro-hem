@@ -1390,15 +1390,17 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                       type: 'automatic' as const,
                       isAllContacts: group.id === 'all_contacts'
                     })),
-                    // Then map custom groups
-                    ...(emailGroups || []).map(group => ({
-                      id: group.id,
-                      name: group.name,
-                      description: group.description,
-                      count: group.member_count || 0,
-                      type: 'custom' as const,
-                      isAllContacts: false
-                    }))
+                    // Then map custom groups (exclude interest groups since they're already in recipientGroups)
+                    ...(emailGroups || [])
+                      .filter(group => !group.name.startsWith('Intresse:'))
+                      .map(group => ({
+                        id: group.id,
+                        name: group.name,
+                        description: group.description,
+                        count: group.member_count || 0,
+                        type: 'custom' as const,
+                        isAllContacts: false
+                      }))
                   ].map((group) => (
                     <Card key={group.id} className="p-4">
                       <div className="flex items-center justify-between">
