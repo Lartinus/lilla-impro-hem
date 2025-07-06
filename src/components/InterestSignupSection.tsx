@@ -53,11 +53,20 @@ export const InterestSignupSection = () => {
       resetForm();
     },
     onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte skicka anmälan: ${error.message}`,
-        variant: "destructive"
-      });
+      // Handle duplicate submissions gracefully
+      if (error.message?.includes('unique_email_per_interest') || error.message?.includes('duplicate key')) {
+        toast({
+          title: "Du har redan anmält dig",
+          description: "Du har redan anmält intresse för denna aktivitet.",
+          variant: "default"
+        });
+      } else {
+        toast({
+          title: "Fel",
+          description: `Kunde inte skicka anmälan: ${error.message}`,
+          variant: "destructive"
+        });
+      }
     }
   });
 

@@ -251,10 +251,10 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         }
       }
 
-      // Get interest signups - only visible ones with actual submissions
+      // Get interest signups - only visible ones with actual submissions, count unique emails
       const { data: interestSignups } = await supabase
         .from('interest_signup_submissions')
-        .select('interest_signup_id, interest_signups!inner(title, is_visible)')
+        .select('interest_signup_id, email, interest_signups!inner(title, is_visible)')
         .eq('interest_signups.is_visible', true);
 
       if (interestSignups && interestSignups.length > 0) {
@@ -263,14 +263,26 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
           // Only process if we have valid data
           const title = submission.interest_signups?.title;
           const signupId = submission.interest_signup_id;
+          const email = submission.email;
           
-          if (title && signupId) {
+          if (title && signupId && email) {
             const key = `interest_${signupId}`;
             if (interestGroups.has(key)) {
               const existing = interestGroups.get(key);
-              interestGroups.set(key, { ...existing, count: existing.count + 1 });
+              // Use Set to count unique emails only
+              existing.emails.add(email.toLowerCase());
+              interestGroups.set(key, { 
+                ...existing, 
+                count: existing.emails.size 
+              });
             } else {
-              interestGroups.set(key, { title, count: 1, id: signupId });
+              const emailSet = new Set([email.toLowerCase()]);
+              interestGroups.set(key, { 
+                title, 
+                count: emailSet.size, 
+                id: signupId, 
+                emails: emailSet 
+              });
             }
           }
         });
