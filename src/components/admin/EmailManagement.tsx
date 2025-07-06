@@ -548,6 +548,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         description: "Gruppen har tagits bort.",
       });
       queryClient.invalidateQueries({ queryKey: ['email-groups'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-email-recipients'] });
     },
     onError: () => {
       toast({
