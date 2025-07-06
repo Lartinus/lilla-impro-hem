@@ -21,8 +21,16 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const url = new URL(req.url);
-    const action = url.searchParams.get("action");
+    let action;
+    
+    // Check if action is in URL params or request body
+    if (req.method === "GET") {
+      const url = new URL(req.url);
+      action = url.searchParams.get("action");
+    } else {
+      const body = await req.json();
+      action = body.action;
+    }
 
     // Check if user is admin
     const authHeader = req.headers.get('Authorization');
