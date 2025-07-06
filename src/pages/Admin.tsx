@@ -20,6 +20,7 @@ import { AdminNavigation } from '@/components/admin/AdminNavigation';
 import { DiscountCodeManagement } from '@/components/admin/DiscountCodeManagement';
 import { ImageManagement } from '@/components/admin/ImageManagement';
 import { EmailManagement } from '@/components/admin/EmailManagement';
+import { UserManagement } from '@/components/admin/UserManagement';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -124,6 +125,8 @@ const AdminDashboard = () => {
         return <TicketManagement />;
       case 'discount-codes':
         return <DiscountCodeManagement />;
+      case 'users':
+        return <UserManagement />;
       case 'images':
         return <ImageManagement />;
       case 'send':

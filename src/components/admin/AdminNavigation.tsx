@@ -50,6 +50,11 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
       ]
     },
     {
+      id: 'users',
+      title: 'Användare',
+      type: 'single' as const
+    },
+    {
       id: 'images',
       title: 'Bilder',
       type: 'single' as const
@@ -99,7 +104,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
       {/* Main Navigation Bar */}
       <Card className="overflow-hidden">
         <CardContent className="p-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
             {menuItems.map((item) => (
               <div key={item.id} className="text-center">
                 <Button
