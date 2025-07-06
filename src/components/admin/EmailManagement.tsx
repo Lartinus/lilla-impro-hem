@@ -1480,28 +1480,25 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                                     <AlertDialogHeader>
                                       <AlertDialogTitle>Ta bort grupp</AlertDialogTitle>
                                       <AlertDialogDescription>
-                                        Är du säker på att du vill ta bort gruppen "{group.name}"? Detta kommer att ta bort hela intresseanmälan och all data kommer att försvinna permanent.
+                                        Är du säker på att du vill ta bort gruppen "{group.name}"? 
+                                        {group.id.startsWith('interest_') 
+                                          ? 'Detta kommer att dölja gruppen från listan, men intresseanmälningarna kommer att bevaras.' 
+                                          : 'Denna åtgärd kan inte ångras.'
+                                        }
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                       <AlertDialogCancel>Avbryt</AlertDialogCancel>
                                       <AlertDialogAction onClick={() => {
                                         if (group.id.startsWith('interest_')) {
-                                          // Extract interest signup ID from group ID
-                                          const interestSignupId = group.id.replace('interest_', '');
+                                          // Extract email group ID from group ID
+                                          const emailGroupId = group.id.replace('interest_', '');
                                           
-                                          // Validate that we have a proper UUID
-                                          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-                                          if (uuidRegex.test(interestSignupId)) {
-                                            deleteInterestSignupMutation.mutate(interestSignupId);
-                                          } else {
-                                            console.error('Invalid UUID extracted from group ID:', group.id, 'extracted:', interestSignupId);
-                                            toast({
-                                              title: "Fel vid borttagning",
-                                              description: "Ogiltigt ID-format för intresseanmälan.",
-                                              variant: "destructive"
-                                            });
-                                          }
+                                          // Use deleteGroupMutation to deactivate the email group
+                                          deleteGroupMutation.mutate(emailGroupId);
+                                        } else {
+                                          // For other automatic groups, use the appropriate mutation
+                                          deleteGroupMutation.mutate(group.id);
                                         }
                                       }}>
                                         Ta bort
