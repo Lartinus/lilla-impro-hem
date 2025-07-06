@@ -563,6 +563,31 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     }
   });
 
+  // Delete interest signup mutation
+  const deleteInterestSignupMutation = useMutation({
+    mutationFn: async (interestSignupId: string) => {
+      const { error } = await supabase
+        .from('interest_signups')
+        .update({ is_visible: false })
+        .eq('id', interestSignupId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Intresseanmälan borttagen",
+        description: "Intresseanmälan har tagits bort.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['admin-email-recipients'] });
+    },
+    onError: () => {
+      toast({
+        title: "Fel vid borttagning",
+        description: "Det gick inte att ta bort intresseanmälan.",
+        variant: "destructive",
+      });
+    }
+  });
+
   // Create/save manual contact mutation
   const saveContactMutation = useMutation({
     mutationFn: async (contact: { name: string; email: string; phone: string }) => {
@@ -1435,19 +1460,51 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                             </div>
                           )}
                           {group.type === 'automatic' && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              disabled={!group.isAllContacts}
-                              onClick={() => {
-                                if (group.isAllContacts) {
-                                  // Handle editing for "Alla kontakter" if needed
-                                  console.log('Edit all contacts');
-                                }
-                              }}
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
+                            <div className="flex gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                disabled={!group.isAllContacts}
+                                onClick={() => {
+                                  if (group.isAllContacts) {
+                                    // Handle editing for "Alla kontakter" if needed
+                                    console.log('Edit all contacts');
+                                  }
+                                }}
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              {/* Allow deletion of automatic groups except "Alla kontakter" and "Alla biljettköpare" */}
+                              {group.id !== 'all_contacts' && group.id !== 'all_ticket_buyers' && (
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="sm">
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Ta bort grupp</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Är du säker på att du vill ta bort gruppen "{group.name}"? Detta kommer att ta bort hela intresseanmälan och all data kommer att försvinna permanent.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => {
+                                        if (group.id.startsWith('interest_')) {
+                                          // Extract interest signup ID from group ID
+                                          const interestSignupId = group.id.replace('interest_', '');
+                                          deleteInterestSignupMutation.mutate(interestSignupId);
+                                        }
+                                      }}>
+                                        Ta bort
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              )}
+                            </div>
                           )}
                         </div>
                       </div>
