@@ -251,34 +251,41 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         }
       }
 
-      // Get interest signups - only visible ones
+      // Get interest signups - only visible ones with actual submissions
       const { data: interestSignups } = await supabase
         .from('interest_signup_submissions')
         .select('interest_signup_id, interest_signups!inner(title, is_visible)')
         .eq('interest_signups.is_visible', true);
 
-      if (interestSignups) {
+      if (interestSignups && interestSignups.length > 0) {
         const interestGroups = new Map();
         interestSignups.forEach(submission => {
+          // Only process if we have valid data
           const title = submission.interest_signups?.title;
-          if (title) {
-            const key = `interest_${submission.interest_signup_id}`;
+          const signupId = submission.interest_signup_id;
+          
+          if (title && signupId) {
+            const key = `interest_${signupId}`;
             if (interestGroups.has(key)) {
-              interestGroups.set(key, interestGroups.get(key) + 1);
+              const existing = interestGroups.get(key);
+              interestGroups.set(key, { ...existing, count: existing.count + 1 });
             } else {
-              interestGroups.set(key, { title, count: 1, id: submission.interest_signup_id });
+              interestGroups.set(key, { title, count: 1, id: signupId });
             }
           }
         });
 
+        // Only add groups that have valid submissions
         interestGroups.forEach((group, key) => {
-          groups.push({
-            id: key,
-            name: `Intresse: ${group.title}`,
-            count: group.count,
-            type: 'interest',
-            description: `Personer som intresseanmält sig till ${group.title}`
-          });
+          if (group.count > 0 && group.title && group.id) {
+            groups.push({
+              id: key,
+              name: `Intresse: ${group.title}`,
+              count: group.count,
+              type: 'interest',
+              description: `Personer som intresseanmält sig till ${group.title}`
+            });
+          }
         });
       }
 
@@ -1493,7 +1500,19 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                                         if (group.id.startsWith('interest_')) {
                                           // Extract interest signup ID from group ID
                                           const interestSignupId = group.id.replace('interest_', '');
-                                          deleteInterestSignupMutation.mutate(interestSignupId);
+                                          
+                                          // Validate that we have a proper UUID
+                                          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+                                          if (uuidRegex.test(interestSignupId)) {
+                                            deleteInterestSignupMutation.mutate(interestSignupId);
+                                          } else {
+                                            console.error('Invalid UUID extracted from group ID:', group.id, 'extracted:', interestSignupId);
+                                            toast({
+                                              title: "Fel vid borttagning",
+                                              description: "Ogiltigt ID-format för intresseanmälan.",
+                                              variant: "destructive"
+                                            });
+                                          }
                                         }
                                       }}>
                                         Ta bort
