@@ -167,7 +167,7 @@ const AdminDashboard = () => {
                   </div>
                   <p className="text-sm font-medium mb-1">Genomsnitt antal kursdeltagare</p>
                   <p className="text-xs text-muted-foreground">
-                    {statsLoading ? 'Läses in...' : 'Deltagare per kurs i snitt'}
+                    {statsLoading ? 'Läses in...' : 'Genomsnitt antal kursdeltagare'}
                   </p>
                 </div>
 
@@ -175,9 +175,9 @@ const AdminDashboard = () => {
                   <div className="text-2xl font-bold mb-1">
                     {statsLoading ? '--' : stats?.avgSoldTicketsPerShow || 0}
                   </div>
-                  <p className="text-sm font-medium mb-1">Genomsnitt sålda biljetter</p>
+                  <p className="text-sm font-medium mb-1">Genomsnitt antal sålda biljetter</p>
                   <p className="text-xs text-muted-foreground">
-                    {statsLoading ? 'Läses in...' : 'Biljetter per föreställning i snitt'}
+                    {statsLoading ? 'Läses in...' : 'Genomsnitt antal sålda biljetter'}
                   </p>
                 </div>
 
@@ -185,9 +185,9 @@ const AdminDashboard = () => {
                   <div className="text-2xl font-bold mb-1">
                     {statsLoading ? '--' : stats?.activeCourses || 0}
                   </div>
-                  <p className="text-sm font-medium mb-1">Aktiva Kurser</p>
+                  <p className="text-sm font-medium mb-1">Aktiva kurser</p>
                   <p className="text-xs text-muted-foreground">
-                    {statsLoading ? 'Läses in...' : 'Antal aktiva kurser'}
+                    {statsLoading ? 'Läses in...' : 'Aktiva kurser'}
                   </p>
                 </div>
 
@@ -197,7 +197,7 @@ const AdminDashboard = () => {
                   </div>
                   <p className="text-sm font-medium mb-1">Nästa föreställning</p>
                   <p className="text-xs text-muted-foreground">
-                    {statsLoading ? 'Läses in...' : 'Datum för nästa show'}
+                    {statsLoading ? 'Läses in...' : 'Nästa föreställning'}
                   </p>
                 </div>
               </div>
