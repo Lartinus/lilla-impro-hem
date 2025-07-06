@@ -967,15 +967,6 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     }
   };
 
-  const getGroupIcon = (type: string) => {
-    switch (type) {
-      case 'course': return Users;
-      case 'tickets': return Ticket;
-      case 'interest': return Heart;
-      case 'all': return Mail;
-      default: return Users;
-    }
-  };
 
   const handleSaveContact = async () => {
     if (!contactForm.name || !contactForm.email) {
@@ -1119,32 +1110,23 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   </SelectTrigger>
                   <SelectContent>
                     {/* Automatiskt skapade grupper */}
-                    {recipientGroups?.map((group) => {
-                      const IconComponent = getGroupIcon(group.type);
-                      return (
-                        <SelectItem key={group.id} value={group.id}>
-                          <div className="flex items-center justify-between w-full">
-                            <span className="flex items-center gap-2">
-                              <IconComponent className="w-4 h-4" />
-                              {group.name}
-                            </span>
-                            <Badge variant="secondary" className="ml-2">
-                              {group.count}
-                            </Badge>
-                          </div>
-                        </SelectItem>
-                      );
-                    })}
+                    {recipientGroups?.map((group) => (
+                      <SelectItem key={group.id} value={group.id}>
+                        <div className="flex items-center justify-between w-full">
+                          <span className="font-satoshi">{group.name}</span>
+                          <Badge variant="secondary" className="ml-2 font-satoshi">
+                            {group.count}
+                          </Badge>
+                        </div>
+                      </SelectItem>
+                    ))}
                     
                     {/* Manuellt skapade grupper */}
                     {emailGroups?.map((group) => (
                       <SelectItem key={`manual_${group.id}`} value={`manual_${group.id}`}>
                         <div className="flex items-center justify-between w-full">
-                          <span className="flex items-center gap-2">
-                            <Users className="w-4 h-4" />
-                            {group.name}
-                          </span>
-                          <Badge variant="secondary" className="ml-2">
+                          <span className="font-satoshi">{group.name}</span>
+                          <Badge variant="secondary" className="ml-2 font-satoshi">
                             {group.member_count || 0}
                           </Badge>
                         </div>
@@ -1376,103 +1358,101 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                 </div>
               ) : (
-                <div className="space-y-6">
-                  {/* Custom Groups */}
-                  {emailGroups && emailGroups.length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-semibold mb-3">Egna grupper</h3>
-                      <div className="space-y-3">
-                        {emailGroups.map((group) => (
-                          <Card key={group.id} className="p-4">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <Users className="w-5 h-5 text-muted-foreground" />
-                                <div>
-                                  <h4 className="font-semibold">{group.name}</h4>
-                                  {group.description && (
-                                    <p className="text-sm text-muted-foreground">{group.description}</p>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <Badge variant="outline" className="px-3 py-1">
-                                  {group.member_count || 0} medlemmar
-                                </Badge>
-                                 <div className="flex gap-1">
-                                   <Button
-                                     variant="ghost"
-                                     size="sm"
-                                     onClick={() => {
-                                       const groupToEdit = emailGroups?.find(g => g.id === group.id);
-                                       if (groupToEdit) {
-                                         setGroupForm({
-                                           name: groupToEdit.name,
-                                           description: groupToEdit.description || ''
-                                         });
-                                         setEditingGroup(groupToEdit);
-                                       }
-                                       setViewingGroupMembers(group.id);
-                                     }}
-                                   >
-                                     <Edit className="w-4 h-4" />
-                                   </Button>
-                                  <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                      <Button variant="ghost" size="sm">
-                                        <Trash2 className="w-4 h-4" />
-                                      </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                      <AlertDialogHeader>
-                                        <AlertDialogTitle>Ta bort grupp</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                          Är du säker på att du vill ta bort gruppen "{group.name}"?
-                                        </AlertDialogDescription>
-                                      </AlertDialogHeader>
-                                      <AlertDialogFooter>
-                                        <AlertDialogCancel>Avbryt</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => deleteGroupMutation.mutate(group.id)}>
-                                          Ta bort
-                                        </AlertDialogAction>
-                                      </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                  </AlertDialog>
-                                </div>
-                              </div>
+                <div className="space-y-3">
+                  {/* Combine all groups without separation */}
+                  {[
+                    // Map automatic groups first
+                    ...(recipientGroups || []).map(group => ({
+                      id: group.id,
+                      name: group.name,
+                      description: group.description,
+                      count: group.count,
+                      type: 'automatic' as const,
+                      isAllContacts: group.id === 'all_contacts'
+                    })),
+                    // Then map custom groups
+                    ...(emailGroups || []).map(group => ({
+                      id: group.id,
+                      name: group.name,
+                      description: group.description,
+                      count: group.member_count || 0,
+                      type: 'custom' as const,
+                      isAllContacts: false
+                    }))
+                  ].map((group) => (
+                    <Card key={group.id} className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-satoshi font-semibold text-base">{group.name}</h4>
+                          {group.description && (
+                            <p className="font-satoshi text-sm text-muted-foreground mt-1">{group.description}</p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Badge variant="outline" className="px-3 py-1 font-satoshi">
+                            {group.count} {group.type === 'automatic' ? 'personer' : 'medlemmar'}
+                          </Badge>
+                          {group.type === 'custom' && (
+                            <div className="flex gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  const groupToEdit = emailGroups?.find(g => g.id === group.id);
+                                  if (groupToEdit) {
+                                    setGroupForm({
+                                      name: groupToEdit.name,
+                                      description: groupToEdit.description || ''
+                                    });
+                                    setEditingGroup(groupToEdit);
+                                  }
+                                  setViewingGroupMembers(group.id);
+                                }}
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="ghost" size="sm">
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Ta bort grupp</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Är du säker på att du vill ta bort gruppen "{group.name}"?
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => deleteGroupMutation.mutate(group.id)}>
+                                      Ta bort
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
                             </div>
-                          </Card>
-                        ))}
+                          )}
+                          {group.type === 'automatic' && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              disabled={!group.isAllContacts}
+                              onClick={() => {
+                                if (group.isAllContacts) {
+                                  // Handle editing for "Alla kontakter" if needed
+                                  console.log('Edit all contacts');
+                                }
+                              }}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
-
-                  {/* Automatic Groups */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">Automatiska grupper</h3>
-                    <div className="space-y-3">
-                      {recipientGroups?.map((group) => {
-                        const IconComponent = getGroupIcon(group.type);
-                        return (
-                          <Card key={group.id} className="p-4">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <IconComponent className="w-5 h-5 text-muted-foreground" />
-                                <div>
-                                  <h4 className="font-semibold">{group.name}</h4>
-                                  {group.description && (
-                                    <p className="text-sm text-muted-foreground">{group.description}</p>
-                                  )}
-                                </div>
-                              </div>
-                              <Badge variant="outline" className="px-3 py-1">
-                                {group.count} personer
-                              </Badge>
-                            </div>
-                          </Card>
-                        );
-                      })}
-                    </div>
-                  </div>
+                    </Card>
+                  ))}
                 </div>
               )}
             </CardContent>
