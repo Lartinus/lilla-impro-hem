@@ -251,10 +251,11 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         }
       }
 
-      // Get interest signups
+      // Get interest signups - only visible ones
       const { data: interestSignups } = await supabase
         .from('interest_signup_submissions')
-        .select('interest_signup_id, interest_signups(title)');
+        .select('interest_signup_id, interest_signups!inner(title, is_visible)')
+        .eq('interest_signups.is_visible', true);
 
       if (interestSignups) {
         const interestGroups = new Map();
