@@ -36,7 +36,7 @@ const AdminDashboard = () => {
   // Loading state
   if (authLoading || roleLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center font-satoshi">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
     );
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
   // Show login form if not authenticated
   if (!user) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background font-satoshi">
         <Header />
         <main className="container mx-auto px-4 py-8 pt-10">
           <div className="max-w-md mx-auto">
@@ -88,7 +88,7 @@ const AdminDashboard = () => {
   // Show access denied if not admin
   if (userRole !== 'admin') {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background font-satoshi">
         <Header />
         <main className="container mx-auto px-4 py-8 pt-10">
           <div className="max-w-md mx-auto">
@@ -138,7 +138,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background font-satoshi">
       <Header />
       
       <main className="container mx-auto px-4 py-8 pt-20">
