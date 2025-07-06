@@ -251,8 +251,6 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         }
       }
 
-      console.log('=== DEBUG: Starting to fetch email groups ===');
-      
       // Get interest groups directly from the database with proper member count
       const { data: interestGroups } = await supabase
         .from('email_groups')
@@ -265,12 +263,9 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         .like('name', 'Intresse:%')
         .eq('is_active', true);
 
-      console.log('=== DEBUG: Raw interest groups from DB:', interestGroups);
-
       if (interestGroups && interestGroups.length > 0) {
         interestGroups.forEach(group => {
           const memberCount = Array.isArray(group.email_group_members) ? group.email_group_members.length : 0;
-          console.log(`=== DEBUG: Adding group "${group.name}" with ${memberCount} members ===`);
           groups.push({
             id: `interest_${group.id}`,
             name: group.name,
@@ -280,8 +275,6 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
           });
         });
       }
-
-      console.log('=== DEBUG: Final groups array:', groups);
 
       // Get unique ticket buyers
       const { data: ticketBuyers } = await supabase
