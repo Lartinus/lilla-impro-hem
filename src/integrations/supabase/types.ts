@@ -784,6 +784,10 @@ export type Database = {
         Args: { table_name: string }
         Returns: undefined
       }
+      create_interest_group_if_not_exists: {
+        Args: { signup_title: string }
+        Returns: string
+      }
       create_ticket_booking: {
         Args: {
           show_slug_param: string
@@ -811,6 +815,15 @@ export type Database = {
       get_available_tickets_with_bookings: {
         Args: { show_slug_param: string; total_tickets: number }
         Returns: number
+      }
+      get_contact_activities: {
+        Args: { contact_email: string }
+        Returns: {
+          activity_type: string
+          activity_title: string
+          activity_date: string
+          details: Json
+        }[]
       }
       get_course_booking_count: {
         Args: { table_name: string }

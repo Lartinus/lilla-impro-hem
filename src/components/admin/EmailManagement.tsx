@@ -12,9 +12,10 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Mail, Send, Users, Ticket, FileText, Plus, Edit, Trash2, Eye, Heart, Download, Upload, RefreshCw } from 'lucide-react';
+import { Mail, Send, Users, Ticket, FileText, Plus, Edit, Trash2, Eye, Heart, Download, Upload, RefreshCw, Calendar, User, MessageSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
+import { useContactActivities, ContactActivity } from '@/hooks/useContactActivities';
 
 interface EmailTemplate {
   id: string;
@@ -61,6 +62,116 @@ interface EmailManagementProps {
   activeTab?: string;
 }
 
+// Component to show summary of contact activities
+const ContactActivitySummary: React.FC<{ email: string }> = ({ email }) => {
+  const { data: activities, isLoading } = useContactActivities(email);
+
+  if (isLoading) {
+    return <span className="text-xs text-muted-foreground">Läser in...</span>;
+  }
+
+  if (!activities || activities.length === 0) {
+    return <span className="text-xs text-muted-foreground">Inga aktiviteter</span>;
+  }
+
+  const courseCount = activities.filter(a => a.activity_type === 'course').length;
+  const interestCount = activities.filter(a => a.activity_type === 'interest').length;
+  const ticketCount = activities.filter(a => a.activity_type === 'ticket').length;
+
+  const badges = [];
+  if (courseCount > 0) badges.push(`${courseCount} kurs${courseCount > 1 ? 'er' : ''}`);
+  if (interestCount > 0) badges.push(`${interestCount} intresse`);
+  if (ticketCount > 0) badges.push(`${ticketCount} biljett${ticketCount > 1 ? 'er' : ''}`);
+
+  return (
+    <div className="flex flex-wrap gap-1">
+      {badges.map((badge, index) => (
+        <Badge key={index} variant="secondary" className="text-xs">
+          {badge}
+        </Badge>
+      ))}
+    </div>
+  );
+};
+
+// Component to show detailed contact activities
+const ContactActivitiesDetail: React.FC<{ email: string }> = ({ email }) => {
+  const { data: activities, isLoading } = useContactActivities(email);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!activities || activities.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-muted-foreground">Inga aktiviteter registrerade</p>
+      </div>
+    );
+  }
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'course':
+        return <Users className="w-4 h-4 text-blue-600" />;
+      case 'interest':
+        return <Heart className="w-4 h-4 text-pink-600" />;
+      case 'ticket':
+        return <Ticket className="w-4 h-4 text-green-600" />;
+      default:
+        return <Calendar className="w-4 h-4 text-gray-600" />;
+    }
+  };
+
+  const getActivityLabel = (type: string) => {
+    switch (type) {
+      case 'course':
+        return 'Kurs';
+      case 'interest':
+        return 'Intresseanmälan';
+      case 'ticket':
+        return 'Biljett';
+      default:
+        return type;
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      {activities.map((activity, index) => (
+        <div key={index} className="flex items-start gap-3 p-3 border rounded-lg">
+          {getActivityIcon(activity.activity_type)}
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <Badge variant="outline" className="text-xs">
+                {getActivityLabel(activity.activity_type)}
+              </Badge>
+              <span className="text-xs text-muted-foreground">
+                {new Date(activity.activity_date).toLocaleDateString('sv-SE')}
+              </span>
+            </div>
+            <h4 className="font-medium">{activity.activity_title}</h4>
+            {activity.details?.message && (
+              <p className="text-sm text-muted-foreground mt-1">
+                "{activity.details.message}"
+              </p>
+            )}
+            {activity.activity_type === 'ticket' && activity.details && (
+              <div className="text-xs text-muted-foreground mt-1">
+                {activity.details.total_tickets} biljetter • {activity.details.show_location} • {activity.details.total_amount} kr
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 'send' }) => {
   const [selectedRecipients, setSelectedRecipients] = useState<string>('');
   const [emailSubject, setEmailSubject] = useState('');
@@ -99,6 +210,10 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
   // State for adding members to groups
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
   const [selectedContactsToAdd, setSelectedContactsToAdd] = useState<string[]>([]);
+  
+  // State for viewing contact details
+  const [viewingContactDetails, setViewingContactDetails] = useState<EmailContact | null>(null);
+  const [isContactDetailsDialogOpen, setIsContactDetailsDialogOpen] = useState(false);
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -1400,8 +1515,9 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                           <TableHead>E-post</TableHead>
                           <TableHead>Telefon</TableHead>
                           <TableHead>Källa</TableHead>
+                          <TableHead>Aktiviteter</TableHead>
                           <TableHead>Datum</TableHead>
-                          <TableHead className="w-24">Åtgärder</TableHead>
+                          <TableHead className="w-32">Åtgärder</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -1418,10 +1534,23 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                               </Badge>
                             </TableCell>
                             <TableCell>
+                              <ContactActivitySummary email={contact.email} />
+                            </TableCell>
+                            <TableCell>
                               {new Date(contact.created_at).toLocaleDateString('sv-SE')}
                             </TableCell>
                             <TableCell>
                               <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    setViewingContactDetails(contact);
+                                    setIsContactDetailsDialogOpen(true);
+                                  }}
+                                >
+                                  <Eye className="w-4 h-4" />
+                                </Button>
                                 <Button
                                   variant="ghost"
                                   size="sm"
@@ -1899,6 +2028,72 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                 }
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Contact Details Dialog */}
+      <Dialog open={isContactDetailsDialogOpen} onOpenChange={setIsContactDetailsDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <User className="w-5 h-5" />
+              Kontaktdetaljer - {viewingContactDetails?.name || viewingContactDetails?.email}
+            </DialogTitle>
+            <DialogDescription>
+              Detaljerad information om kontakten och alla aktiviteter
+            </DialogDescription>
+          </DialogHeader>
+          
+          {viewingContactDetails && (
+            <div className="space-y-6 py-4">
+              {/* Contact Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
+                <div>
+                  <Label className="text-sm font-medium">Namn</Label>
+                  <p>{viewingContactDetails.name || 'Okänt namn'}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">E-post</Label>
+                  <p>{viewingContactDetails.email}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Telefon</Label>
+                  <p>{viewingContactDetails.phone || '-'}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Källa</Label>
+                  <Badge variant="outline">
+                    {getSourceLabel(viewingContactDetails.source)}
+                  </Badge>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Skapad</Label>
+                  <p>{new Date(viewingContactDetails.created_at).toLocaleDateString('sv-SE')}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Uppdaterad</Label>
+                  <p>{new Date(viewingContactDetails.updated_at).toLocaleDateString('sv-SE')}</p>
+                </div>
+              </div>
+
+              {/* Activities */}
+              <div>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Aktiviteter
+                </h3>
+                <div className="max-h-96 overflow-y-auto">
+                  <ContactActivitiesDetail email={viewingContactDetails.email} />
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div className="flex justify-end pt-4 border-t">
+            <Button variant="outline" onClick={() => setIsContactDetailsDialogOpen(false)}>
+              Stäng
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
