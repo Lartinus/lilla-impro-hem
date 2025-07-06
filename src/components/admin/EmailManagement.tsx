@@ -1463,8 +1463,11 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => {
-                                  // Open a view/edit dialog for automatic groups
-                                  setViewingGroupMembers(group.id);
+                                  // Extract the real group ID for interest groups
+                                  const realGroupId = group.id.startsWith('interest_') 
+                                    ? group.id.replace('interest_', '') 
+                                    : group.id;
+                                  setViewingGroupMembers(realGroupId);
                                 }}
                               >
                                 <Edit className="w-4 h-4" />
