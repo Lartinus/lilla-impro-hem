@@ -38,11 +38,11 @@ export const useImageLoader = (imageUrls: string[]) => {
 
   // Reset loaded images when imageUrls change significantly
   useEffect(() => {
-    const urlsString = imageUrls.sort().join(',');
+    const urlsString = [...imageUrls].sort().join(',');
     console.log('useImageLoader: URL change detected, resetting loaded images. New URLs:', urlsString);
     setLoadedImages(new Set());
     setAllImagesLoaded(imageUrls.length === 0);
-  }, [imageUrls.sort().join(',')]);
+  }, [[...imageUrls].sort().join(',')]);
 
   return {
     handleImageLoad,
