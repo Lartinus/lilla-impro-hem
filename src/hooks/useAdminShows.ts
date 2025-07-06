@@ -31,10 +31,28 @@ export const useAdminShows = () => {
   return useQuery({
     queryKey: ['admin-shows-public'],
     queryFn: async () => {
+      console.log('🎭 Fetching admin shows...');
+      
       const { data, error } = await supabase
         .from('admin_shows')
         .select(`
-          *,
+          id,
+          title,
+          slug, 
+          image_url,
+          show_date,
+          show_time,
+          venue,
+          venue_address,
+          venue_maps_url,
+          description,
+          regular_price,
+          discount_price,
+          max_tickets,
+          is_active,
+          sort_order,
+          created_at,
+          updated_at,
           show_performers (
             actors (
               id,
@@ -47,12 +65,20 @@ export const useAdminShows = () => {
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
       
-      if (error) throw error;
+      console.log('🎭 Admin shows query result:', { data, error });
       
-      return (data || []).map(show => ({
+      if (error) {
+        console.error('❌ Error fetching admin shows:', error);
+        throw error;
+      }
+      
+      const formattedData = (data || []).map(show => ({
         ...show,
         performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || []
       })) as AdminShow[];
+      
+      console.log('🎭 Formatted admin shows:', formattedData);
+      return formattedData;
     }
   });
 };
