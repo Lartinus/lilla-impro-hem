@@ -685,7 +685,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     },
     onSuccess: (addedCount) => {
       toast({
-        title: "Medlemmar tillagda!",
+        title: "Personer tillagda!",
         description: `${addedCount} kontakt${addedCount > 1 ? 'er' : ''} har lagts till i gruppen.`,
       });
       queryClient.invalidateQueries({ queryKey: ['group-members', viewingGroupMembers] });
@@ -697,7 +697,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     onError: () => {
       toast({
         title: "Fel vid tilläggning",
-        description: "Det gick inte att lägga till medlemmarna.",
+        description: "Det gick inte att lägga till personerna.",
         variant: "destructive",
       });
     }
@@ -1238,7 +1238,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   </div>
                 </CardTitle>
                 <CardDescription>
-                  Redigera gruppinformation och hantera medlemmar
+                  Redigera gruppinformation och hantera personer
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -1277,17 +1277,17 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
               </CardContent>
                <CardHeader>
                  <CardTitle className="flex items-center justify-between">
-                   <span>Medlemmar</span>
+                   <span>Personer</span>
                    <Button 
                      onClick={() => setIsAddMemberDialogOpen(true)}
                      size="sm"
                    >
                      <Plus className="w-4 h-4 mr-2" />
-                     Lägg till medlemmar
+                      Lägg till personer
                    </Button>
                  </CardTitle>
                  <CardDescription>
-                   Hantera medlemmar i gruppen
+                   Hantera personer i gruppen
                  </CardDescription>
                </CardHeader>
               <CardContent>
@@ -1298,7 +1298,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                 ) : (
                   <div>
                     <div className="mb-4 text-sm text-muted-foreground">
-                      Totalt: {groupMembers?.length || 0} medlemmar
+                      Totalt: {groupMembers?.length || 0} personer
                     </div>
                     <Table>
                       <TableHeader>
@@ -1415,7 +1415,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                         </div>
                         <div className="flex items-center gap-3">
                           <Badge variant="outline" className="px-3 py-1 font-satoshi">
-                            {group.count} {group.type === 'automatic' ? 'personer' : 'medlemmar'}
+                            {group.count} personer
                           </Badge>
                           {group.type === 'custom' && (
                             <div className="flex gap-1">
@@ -1464,12 +1464,9 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                disabled={!group.isAllContacts}
                                 onClick={() => {
-                                  if (group.isAllContacts) {
-                                    // Handle editing for "Alla kontakter" if needed
-                                    console.log('Edit all contacts');
-                                  }
+                                  // Open a view/edit dialog for automatic groups
+                                  setViewingGroupMembers(group.id);
                                 }}
                               >
                                 <Edit className="w-4 h-4" />
@@ -1690,7 +1687,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   <SelectContent>
                     {emailGroups?.map((group) => (
                       <SelectItem key={group.id} value={group.id}>
-                        {group.name} ({group.member_count || 0} medlemmar)
+                        {group.name} ({group.member_count || 0} personer)
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -1986,9 +1983,9 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       <Dialog open={isAddMemberDialogOpen} onOpenChange={setIsAddMemberDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Lägg till medlemmar i grupp</DialogTitle>
+            <DialogTitle>Lägg till personer i grupp</DialogTitle>
             <DialogDescription>
-              Välj kontakter att lägga till som medlemmar i gruppen
+              Välj kontakter att lägga till som personer i gruppen
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -2057,7 +2054,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
               <div className="text-center py-8">
                 <p className="text-muted-foreground">Inga tillgängliga kontakter att lägga till.</p>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Alla kontakter är redan medlemmar i denna grupp.
+                  Alla kontakter är redan personer i denna grupp.
                 </p>
               </div>
             )}
