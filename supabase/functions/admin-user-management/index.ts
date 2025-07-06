@@ -21,16 +21,9 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    let action;
-    
-    // Check if action is in URL params or request body
-    if (req.method === "GET") {
-      const url = new URL(req.url);
-      action = url.searchParams.get("action");
-    } else {
-      const body = await req.json();
-      action = body.action;
-    }
+    // Always expect action from URL params for GET requests
+    const url = new URL(req.url);
+    const action = url.searchParams.get("action") || "list";
 
     // Check if user is admin
     const authHeader = req.headers.get('Authorization');
@@ -95,7 +88,14 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     if (action === 'delete-user') {
-      const { userId } = await req.json();
+      let userId;
+      
+      if (req.method === 'GET') {
+        userId = url.searchParams.get('userId');
+      } else {
+        const body = await req.json();
+        userId = body.userId;
+      }
       
       if (!userId) {
         throw new Error('User ID is required');

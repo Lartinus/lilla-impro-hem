@@ -13,7 +13,7 @@ interface User {
   id: string;
   email: string;
   created_at: string;
-  confirmed_at?: string;
+  email_confirmed_at?: string;
   role?: 'admin' | 'staff' | 'user' | null;
 }
 
@@ -27,28 +27,12 @@ export const UserManagement = () => {
   const { data: users, isLoading } = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
-      // Get user roles
-      const { data: userRoles, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('user_id, role, created_at');
+      const { data, error } = await supabase.functions.invoke('admin-user-management', {
+        method: 'GET'
+      });
 
-      if (rolesError) {
-        console.error('Error fetching user roles:', rolesError);
-        throw rolesError;
-      }
-
-      // For now, we'll work with the users we have role data for
-      // In a real app, you'd need server-side admin access to get all auth users
-      const usersWithRoles: User[] = userRoles?.map(roleData => ({
-        id: roleData.user_id,
-        email: roleData.user_id === '3cbdcbe2-4f38-4287-aaef-3c5199a3e30c' 
-          ? 'david@davidrosenqvist.se' 
-          : `användare-${roleData.user_id.slice(0, 8)}...`, // Placeholder for other users
-        created_at: roleData.created_at || new Date().toISOString(),
-        role: roleData.role
-      })) || [];
-
-      return usersWithRoles;
+      if (error) throw error;
+      return data.users || [];
     },
     staleTime: 30 * 1000, // 30 seconds
   });
@@ -110,15 +94,12 @@ export const UserManagement = () => {
     }
   });
 
-  // Kick user (delete from auth.users) - simplified for now
+  // Kick user (delete from auth.users)
   const kickUserMutation = useMutation({
     mutationFn: async (userId: string) => {
-      // For now, just remove from user_roles table
-      // In production, you'd use admin API to actually delete the user
-      const { error } = await supabase
-        .from('user_roles')
-        .delete()
-        .eq('user_id', userId);
+      const { data, error } = await supabase.functions.invoke('admin-user-management', {
+        body: { action: 'delete-user', userId }
+      });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -275,8 +256,8 @@ export const UserManagement = () => {
                     <p className="font-medium">{user.email}</p>
                     <p className="text-sm text-muted-foreground">
                       Registrerad: {new Date(user.created_at).toLocaleDateString('sv-SE')}
-                      {user.confirmed_at && (
-                        <span className="ml-2">• Bekräftad: {new Date(user.confirmed_at).toLocaleDateString('sv-SE')}</span>
+                      {user.email_confirmed_at && (
+                        <span className="ml-2">• Bekräftad: {new Date(user.email_confirmed_at).toLocaleDateString('sv-SE')}</span>
                       )}
                     </p>
                   </div>
@@ -328,8 +309,8 @@ export const UserManagement = () => {
                       <p className="font-medium">{user.email}</p>
                       <p className="text-sm text-muted-foreground">
                         Registrerad: {new Date(user.created_at).toLocaleDateString('sv-SE')}
-                        {user.confirmed_at && (
-                          <span className="ml-2">• Bekräftad: {new Date(user.confirmed_at).toLocaleDateString('sv-SE')}</span>
+                        {user.email_confirmed_at && (
+                          <span className="ml-2">• Bekräftad: {new Date(user.email_confirmed_at).toLocaleDateString('sv-SE')}</span>
                         )}
                       </p>
                     </div>
