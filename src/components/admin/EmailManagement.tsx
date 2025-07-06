@@ -751,6 +751,72 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     setIsTemplateDialogOpen(true);
   };
 
+  // Function to create styled HTML email content like the CourseConfirmationPreview
+  const getStyledEmailContent = (content: string, subject: string = '') => {
+    // Replace placeholders with example values for preview
+    const previewContent = content
+      .replace(/\[NAMN\]/g, 'Anna Andersson')
+      .replace(/\[KURSNAMN\]/g, 'Niv 2 - Långform improviserad komik')
+      .replace(/\[DATUM\]/g, '15 januari 2024')
+      .replace(/\[TID\]/g, '19:00')
+      .replace(/\[PLATS\]/g, 'Lilla Improteatern');
+
+    // If content contains HTML tags, wrap it in styled container
+    const isPlainText = !content.includes('<') && !content.includes('>');
+    
+    if (isPlainText) {
+      // Convert plain text to HTML with line breaks
+      const htmlContent = previewContent.replace(/\n/g, '<br>');
+      
+      return `
+        <div style="
+          font-family: Arial, sans-serif; 
+          line-height: 1.6; 
+          color: #333;
+          background-color: #fff;
+          max-width: 600px;
+          margin: 20px auto;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          padding: 30px;
+        ">
+          <div style="
+            border-bottom: 2px solid #d32f2f; 
+            padding-bottom: 20px; 
+            margin-bottom: 30px;
+          ">
+            <h2 style="
+              color: #d32f2f; 
+              margin: 0 0 10px 0;
+              font-size: 24px;
+            ">
+              ${subject || 'Email från Lilla Improteatern'}
+            </h2>
+          </div>
+          
+          <div style="margin-bottom: 30px;">
+            ${htmlContent}
+          </div>
+          
+          <div style="
+            border-top: 1px solid #eee; 
+            padding-top: 20px;
+            color: #666;
+            font-size: 14px;
+          ">
+            <p style="margin: 0;">
+              Med vänliga hälsningar,<br />
+              <strong>Lilla Improteatern</strong>
+            </p>
+          </div>
+        </div>
+      `;
+    } else {
+      // Return HTML content as is
+      return previewContent;
+    }
+  };
+
   const handleDeleteTemplate = async (templateId: string) => {
     try {
       const { error } = await supabase
@@ -1602,12 +1668,24 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                 id="template-content"
                 value={templateForm.content}
                 onChange={(e) => setTemplateForm(prev => ({ ...prev, content: e.target.value }))}
-                placeholder="Email-innehåll..."
+                placeholder="Email-innehåll (HTML stöds)..."
                 rows={10}
+                className="font-mono text-sm"
               />
-              <p className="text-sm text-muted-foreground">
-                Använd variabler som [NAMN], [KURSNAMN], [DATUM] etc.
-              </p>
+              <div className="text-sm text-muted-foreground space-y-1">
+                <p>Du kan använda HTML-taggar för styling. Tillgängliga placeholders:</p>
+                <div className="bg-muted p-2 rounded text-xs">
+                  <code>[NAMN]</code> - Mottagarens namn
+                </div>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Förhandsvisning</Label>
+              <div className="border rounded p-4 bg-muted/50 max-h-64 overflow-y-auto">
+                <div dangerouslySetInnerHTML={{ 
+                  __html: getStyledEmailContent(templateForm.content, templateForm.subject) 
+                }} />
+              </div>
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setIsTemplateDialogOpen(false)}>

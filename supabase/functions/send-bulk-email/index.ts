@@ -184,14 +184,69 @@ const handler = async (req: Request): Promise<Response> => {
       try {
         const emailPromises = batch.map(async (recipient) => {
           // Personalize content by replacing [NAMN] with recipient name
-          const personalizedContent = content.replace(/\[NAMN\]/g, recipient.name || 'Vän');
+          let personalizedContent = content.replace(/\[NAMN\]/g, recipient.name || 'Vän');
+          
+          // Check if content is plain text or HTML
+          const isPlainText = !content.includes('<') && !content.includes('>');
+          
+          let htmlContent;
+          if (isPlainText) {
+            // Create styled HTML email for plain text content
+            const textWithBreaks = personalizedContent.replace(/\n/g, '<br>');
+            htmlContent = `
+              <div style="
+                font-family: Arial, sans-serif; 
+                line-height: 1.6; 
+                color: #333;
+                background-color: #fff;
+                max-width: 600px;
+                margin: 20px auto;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 30px;
+              ">
+                <div style="
+                  border-bottom: 2px solid #d32f2f; 
+                  padding-bottom: 20px; 
+                  margin-bottom: 30px;
+                ">
+                  <h2 style="
+                    color: #d32f2f; 
+                    margin: 0 0 10px 0;
+                    font-size: 24px;
+                  ">
+                    ${subject}
+                  </h2>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                  ${textWithBreaks}
+                </div>
+                
+                <div style="
+                  border-top: 1px solid #eee; 
+                  padding-top: 20px;
+                  color: #666;
+                  font-size: 14px;
+                ">
+                  <p style="margin: 0;">
+                    Med vänliga hälsningar,<br />
+                    <strong>Lilla Improteatern</strong>
+                  </p>
+                </div>
+              </div>
+            `;
+          } else {
+            // Use HTML content as is
+            htmlContent = personalizedContent;
+          }
           
           return resend.emails.send({
             from: "Lilla Improteatern <noreply@improteatern.se>",
             to: [recipient.email],
             subject: subject,
-            html: personalizedContent.replace(/\n/g, '<br>'),
-            text: personalizedContent,
+            html: htmlContent,
+            text: personalizedContent, // Keep plain text version for fallback
           });
         });
 

@@ -70,4 +70,25 @@ Vi ser fram emot att träffa dig!
 
 LIT-teamet',
   'Påminnelse inför föreställning'
+),
+(
+  'Stilad välkomstmall (HTML)',
+  'Välkommen till [KURSNAMN]!',
+  '<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <p>Hej <strong>[NAMN]</strong>!</p>
+    
+    <p>Välkommen till kursen <em>[KURSNAMN]</em>!</p>
+    
+    <div style="background-color: #f8f9fa; padding: 15px; border-left: 4px solid #d32f2f; margin: 20px 0;">
+      <h3 style="margin-top: 0; color: #d32f2f;">Viktigt att veta:</h3>
+      <ul>
+        <li>Kom i bekväma kläder</li>
+        <li>Ta med vattenflaska</li>
+        <li>Kom 15 minuter före kursstart</li>
+      </ul>
+    </div>
+    
+    <p>Vi ser fram emot att träffa dig!</p>
+  </div>',
+  'Exempel på stilad HTML-mall med färger och layout'
 );
