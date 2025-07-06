@@ -350,6 +350,76 @@ export const ShowManagement = () => {
     }
   });
 
+  // Update show with all fields mutation
+  const updateFullShowMutation = useMutation({
+    mutationFn: async ({ id, showData }: { id: string; showData: NewShowForm }) => {
+      const { performer_ids, ...showFields } = showData;
+      
+      // Update show data
+      const { error: showError } = await supabase
+        .from('admin_shows')
+        .update(showFields)
+        .eq('id', id);
+
+      if (showError) throw showError;
+
+      // Update performers - remove old ones and add new ones
+      const { error: deleteError } = await supabase
+        .from('show_performers')
+        .delete()
+        .eq('show_id', id);
+
+      if (deleteError) throw deleteError;
+
+      // Add new performers
+      if (performer_ids.length > 0) {
+        const { error: performerError } = await supabase
+          .from('show_performers')
+          .insert(
+            performer_ids.map(actorId => ({
+              show_id: id,
+              actor_id: actorId
+            }))
+          );
+
+        if (performerError) throw performerError;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
+      setIsShowDialogOpen(false);
+      setIsEditMode(false);
+      setEditingShow(null);
+      setNewShow({
+        title: '',
+        slug: '',
+        image_url: '',
+        show_date: '',
+        show_time: '19:00',
+        venue: 'Metropole',
+        venue_address: '',
+        venue_maps_url: '',
+        description: '',
+        regular_price: 300,
+        discount_price: 250,
+        max_tickets: 100,
+        is_active: true,
+        performer_ids: []
+      });
+      toast({
+        title: "Föreställning uppdaterad",
+        description: "Ändringarna har sparats.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: "Kunde inte uppdatera föreställningen. Försök igen.",
+        variant: "destructive",
+      });
+    }
+  });
+
   // Delete show mutation
   const deleteShowMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -761,10 +831,16 @@ export const ShowManagement = () => {
                   Avbryt
                 </Button>
                 <Button
-                  onClick={() => createShowMutation.mutate(newShow)}
-                  disabled={createShowMutation.isPending}
+                  onClick={() => {
+                    if (isEditMode && editingShow) {
+                      updateFullShowMutation.mutate({ id: editingShow.id, showData: newShow });
+                    } else {
+                      createShowMutation.mutate(newShow);
+                    }
+                  }}
+                  disabled={createShowMutation.isPending || updateFullShowMutation.isPending}
                 >
-                  {createShowMutation.isPending ? 'Sparar...' : (isEditMode ? 'Uppdatera' : 'Skapa')}
+                  {(createShowMutation.isPending || updateFullShowMutation.isPending) ? 'Sparar...' : (isEditMode ? 'Uppdatera' : 'Skapa')}
                 </Button>
               </div>
             </div>

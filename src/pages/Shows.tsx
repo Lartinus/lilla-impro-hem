@@ -61,10 +61,11 @@ const Shows = () => {
   const imageUrls = useMemo(() => {
     const urls = shows.map(show => {
       if (!show.image) return null;
-      // For admin shows, handle both direct URLs and Strapi format
+      // For admin shows, handle Supabase storage URLs directly
       const imageUrl = show.image?.data?.attributes?.url;
       if (imageUrl) {
-        return imageUrl.startsWith('http') ? imageUrl : `https://reliable-chicken-da8c8aa37e.media.strapiapp.com${imageUrl}`;
+        // Return the URL as-is since Supabase storage URLs are already complete
+        return imageUrl;
       }
       return null;
     }).filter(Boolean) as string[];

@@ -68,7 +68,7 @@ export const formatAdminShowForCard = (show: AdminShow) => ({
   image: show.image_url ? {
     data: {
       attributes: {
-        url: show.image_url.startsWith('http') ? show.image_url.replace(/^https?:\/\/[^\/]+/, '') : show.image_url
+        url: show.image_url // Keep full URL for Supabase storage images
       }
     }
   } : null,
