@@ -369,13 +369,24 @@ export const InterestSignupManagement = () => {
         .eq('id', submissionId);
 
       if (error) throw error;
+      return submissionId; // Return the ID for use in onSuccess
     },
-    onSuccess: () => {
+    onSuccess: (deletedSubmissionId) => {
       queryClient.invalidateQueries({ queryKey: ['interest-signups'] });
-      // Refresh the submissions dialog if open
+      
+      // Remove the deleted submission from the current list
+      setSelectedSubmissions(prev => 
+        prev.filter(submission => submission.id !== deletedSubmissionId)
+      );
+      
+      // Also update the selected interest count
       if (selectedInterest) {
-        handleViewSubmissions(selectedInterest);
+        setSelectedInterest(prev => prev ? {
+          ...prev,
+          submissionCount: Math.max(0, prev.submissionCount - 1)
+        } : null);
       }
+      
       toast({
         title: "Anmälan raderad",
         description: "Personens anmälan har raderats framgångsrikt",
