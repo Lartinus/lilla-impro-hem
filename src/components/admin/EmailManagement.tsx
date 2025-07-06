@@ -251,21 +251,21 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         }
       }
 
-      // Get interest groups directly from the database
+      // Get interest groups directly from the database with proper member count
       const { data: interestGroups } = await supabase
         .from('email_groups')
         .select(`
           id,
           name,
           description,
-          email_group_members(count)
+          email_group_members(contact_id)
         `)
         .like('name', 'Intresse:%')
         .eq('is_active', true);
 
       if (interestGroups && interestGroups.length > 0) {
         interestGroups.forEach(group => {
-          const memberCount = group.email_group_members?.length || 0;
+          const memberCount = Array.isArray(group.email_group_members) ? group.email_group_members.length : 0;
           groups.push({
             id: `interest_${group.id}`,
             name: group.name,
