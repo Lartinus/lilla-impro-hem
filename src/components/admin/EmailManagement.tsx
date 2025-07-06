@@ -252,6 +252,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       }
 
       // Get interest signups - only visible ones with actual submissions, count unique emails
+      // DON'T create groups here - they are created automatically by triggers
       const { data: interestSignups } = await supabase
         .from('interest_signup_submissions')
         .select('interest_signup_id, email, interest_signups!inner(title, is_visible)')
@@ -287,18 +288,30 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
           }
         });
 
-        // Only add groups that have valid submissions
-        interestGroups.forEach((group, key) => {
+        // Only add groups that actually exist in the database and have valid submissions
+        for (const [key, group] of interestGroups) {
           if (group.count > 0 && group.title && group.id) {
-            groups.push({
-              id: key,
-              name: `Intresse: ${group.title}`,
-              count: group.count,
-              type: 'interest',
-              description: `Personer som intresseanmält sig till ${group.title}`
-            });
+            // Check if the group actually exists in the database
+            const groupName = `Intresse: ${group.title}`;
+            const { data: existingGroup } = await supabase
+              .from('email_groups')
+              .select('id')
+              .eq('name', groupName)
+              .eq('is_active', true)
+              .single();
+            
+            // Only add if the group exists in the database
+            if (existingGroup) {
+              groups.push({
+                id: key,
+                name: groupName,
+                count: group.count,
+                type: 'interest',
+                description: `Personer som intresseanmält sig till ${group.title}`
+              });
+            }
           }
-        });
+        }
       }
 
       // Get unique ticket buyers
