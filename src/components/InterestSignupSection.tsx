@@ -43,6 +43,23 @@ export const InterestSignupSection = () => {
         });
 
       if (error) throw error;
+
+      // Send confirmation email
+      const signup = interestSignups?.find(s => s.id === data.signupId);
+      if (signup) {
+        try {
+          await supabase.functions.invoke('send-interest-confirmation', {
+            body: {
+              name: data.formData.name,
+              email: data.formData.email,
+              interestTitle: signup.title
+            }
+          });
+        } catch (emailError) {
+          console.error('Failed to send confirmation email:', emailError);
+          // Don't fail the whole operation if email fails
+        }
+      }
     },
     onSuccess: () => {
       toast({
