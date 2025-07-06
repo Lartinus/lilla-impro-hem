@@ -1625,7 +1625,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
 
       {/* Template Dialog */}
       <Dialog open={isTemplateDialogOpen} onOpenChange={setIsTemplateDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {editingTemplate ? 'Redigera mall' : 'Skapa ny mall'}
@@ -1634,60 +1634,68 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
               Skapa eller redigera en email-mall
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="template-name">Namn</Label>
-              <Input
-                id="template-name"
-                value={templateForm.name}
-                onChange={(e) => setTemplateForm(prev => ({ ...prev, name: e.target.value }))}
-                placeholder="T.ex. Välkomstmejl"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="template-description">Beskrivning (valfritt)</Label>
-              <Input
-                id="template-description"
-                value={templateForm.description}
-                onChange={(e) => setTemplateForm(prev => ({ ...prev, description: e.target.value }))}
-                placeholder="kort beskrivning av mallen"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="template-subject">Ämne</Label>
-              <Input
-                id="template-subject"
-                value={templateForm.subject}
-                onChange={(e) => setTemplateForm(prev => ({ ...prev, subject: e.target.value }))}
-                placeholder="Ämnesrad för mejlet"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="template-content">Innehåll</Label>
-              <Textarea
-                id="template-content"
-                value={templateForm.content}
-                onChange={(e) => setTemplateForm(prev => ({ ...prev, content: e.target.value }))}
-                placeholder="Email-innehåll (HTML stöds)..."
-                rows={10}
-                className="font-mono text-sm"
-              />
-              <div className="text-sm text-muted-foreground space-y-1">
-                <p>Du kan använda HTML-taggar för styling. Tillgängliga placeholders:</p>
-                <div className="bg-muted p-2 rounded text-xs">
-                  <code>[NAMN]</code> - Mottagarens namn
+          <div className="space-y-6 py-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left Column - Form */}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="template-name">Namn</Label>
+                  <Input
+                    id="template-name"
+                    value={templateForm.name}
+                    onChange={(e) => setTemplateForm(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="T.ex. Välkomstmejl"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="template-description">Beskrivning (valfritt)</Label>
+                  <Input
+                    id="template-description"
+                    value={templateForm.description}
+                    onChange={(e) => setTemplateForm(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="kort beskrivning av mallen"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="template-subject">Ämne</Label>
+                  <Input
+                    id="template-subject"
+                    value={templateForm.subject}
+                    onChange={(e) => setTemplateForm(prev => ({ ...prev, subject: e.target.value }))}
+                    placeholder="Ämnesrad för mejlet"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="template-content">Innehåll</Label>
+                  <Textarea
+                    id="template-content"
+                    value={templateForm.content}
+                    onChange={(e) => setTemplateForm(prev => ({ ...prev, content: e.target.value }))}
+                    placeholder="Email-innehåll (HTML stöds)..."
+                    rows={12}
+                    className="font-mono text-sm resize-none"
+                  />
+                  <div className="text-sm text-muted-foreground space-y-1">
+                    <p>Du kan använda HTML-taggar för styling. Tillgängliga placeholders:</p>
+                    <div className="bg-muted p-2 rounded text-xs">
+                      <code>[NAMN]</code> - Mottagarens namn
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Right Column - Preview */}
+              <div className="space-y-2">
+                <Label>Förhandsvisning</Label>
+                <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
+                  <div dangerouslySetInnerHTML={{ 
+                    __html: getStyledEmailContent(templateForm.content, templateForm.subject) 
+                  }} />
                 </div>
               </div>
             </div>
-            <div className="space-y-2">
-              <Label>Förhandsvisning</Label>
-              <div className="border rounded p-4 bg-muted/50 max-h-64 overflow-y-auto">
-                <div dangerouslySetInnerHTML={{ 
-                  __html: getStyledEmailContent(templateForm.content, templateForm.subject) 
-                }} />
-              </div>
-            </div>
-            <div className="flex justify-end gap-2">
+            
+            <div className="flex justify-end gap-2 pt-4 border-t">
               <Button variant="outline" onClick={() => setIsTemplateDialogOpen(false)}>
                 Avbryt
               </Button>
