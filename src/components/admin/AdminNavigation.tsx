@@ -198,6 +198,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
                         }
                       `}
                     >
+                      <child.icon className="w-4 h-4" />
                       <span className="truncate">
                         {child.title}
                       </span>

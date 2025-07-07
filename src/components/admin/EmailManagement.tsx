@@ -1114,8 +1114,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         <TabsContent value="send">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Mail className="w-5 h-5" />
+              <CardTitle>
                 Skicka email
               </CardTitle>
               <CardDescription>
