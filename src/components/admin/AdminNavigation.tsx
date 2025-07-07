@@ -171,14 +171,6 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
                   item.type === 'group' && item.expanded ? 'rotate-180' : ''
                 }`} 
               />
-              {item.children && (
-                <Badge 
-                  variant="secondary" 
-                  className="ml-1 h-5 px-1.5 text-xs bg-background/20 text-inherit border-0 hidden sm:inline-flex"
-                >
-                  {item.children.length}
-                </Badge>
-              )}
             </Button>
           ))}
         </div>
