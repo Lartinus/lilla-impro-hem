@@ -203,16 +203,13 @@ export const PerformerManagement = () => {
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-start">
-          <div>
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+          <div className="flex-1">
             <CardTitle>Kursledare & Skådespelare</CardTitle>
-            <CardDescription>
-              Hantera kursledare och skådespelare som kan tilldelas kurser
-            </CardDescription>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button className="w-full sm:w-auto">
                 <Plus className="w-4 h-4 mr-2" />
                 Lägg till kursledare
               </Button>
@@ -273,7 +270,13 @@ export const PerformerManagement = () => {
           </Dialog>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        <div className="bg-muted/30 p-4 rounded-lg border border-border/40">
+          <p className="text-sm text-muted-foreground">
+            Hantera kursledare och skådespelare som kan tilldelas kurser
+          </p>
+        </div>
+        
         {!performers || performers.length === 0 ? (
           <div className="text-center py-8">
             <User className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
