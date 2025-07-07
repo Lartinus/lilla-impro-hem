@@ -1359,8 +1359,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
             <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
+                <div>
                   Mottagargrupper
                 </div>
                 <Button onClick={() => openGroupDialog()}>
@@ -1528,8 +1527,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
           <Card>
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
+                <CardTitle>
                   Alla kontakter
                 </CardTitle>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
@@ -1654,8 +1652,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         <TabsContent value="import">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Upload className="w-5 h-5" />
+              <CardTitle>
                 Importera kontakter
               </CardTitle>
               <CardDescription>
@@ -1735,8 +1732,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <FileText className="w-5 h-5" />
+                <div>
                   Email-mallar
                 </div>
                 <Button onClick={() => openTemplateDialog()}>
