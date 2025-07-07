@@ -197,7 +197,7 @@ export const UserManagement = () => {
           <CardContent>
             <div className="space-y-3">
               {pendingUsers.map((user) => (
-                <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div key={user.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 border rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
                       <Mail className="w-4 h-4" />
@@ -209,22 +209,25 @@ export const UserManagement = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                     {getRoleBadge(user.role)}
-                    <Button
-                      onClick={() => handleAction(user, 'approve')}
-                      size="sm"
-                      className="ml-2"
-                    >
-                      Godkänn som admin
-                    </Button>
-                    <Button
-                      onClick={() => handleAction(user, 'kick')}
-                      variant="destructive"
-                      size="sm"
-                    >
-                      Kasta ut
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                      <Button
+                        onClick={() => handleAction(user, 'approve')}
+                        size="sm"
+                        className="w-full sm:w-auto"
+                      >
+                        Godkänn som admin
+                      </Button>
+                      <Button
+                        onClick={() => handleAction(user, 'kick')}
+                        variant="destructive"
+                        size="sm"
+                        className="w-full sm:w-auto"
+                      >
+                        Kasta ut
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -247,7 +250,7 @@ export const UserManagement = () => {
         <CardContent>
           <div className="space-y-3">
             {adminUsers.map((user) => (
-              <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+              <div key={user.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 border rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
                     <Shield className="w-4 h-4 text-red-600" />
@@ -262,22 +265,26 @@ export const UserManagement = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                   {getRoleBadge(user.role)}
-                  <Button
-                    onClick={() => handleAction(user, 'remove')}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Ta bort admin
-                  </Button>
-                  <Button
-                    onClick={() => handleAction(user, 'kick')}
-                    variant="destructive"
-                    size="sm"
-                  >
-                    Kasta ut
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <Button
+                      onClick={() => handleAction(user, 'remove')}
+                      variant="outline"
+                      size="sm"
+                      className="w-full sm:w-auto"
+                    >
+                      Ta bort admin
+                    </Button>
+                    <Button
+                      onClick={() => handleAction(user, 'kick')}
+                      variant="destructive"
+                      size="sm"
+                      className="w-full sm:w-auto"
+                    >
+                      Kasta ut
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -300,7 +307,7 @@ export const UserManagement = () => {
           <CardContent>
             <div className="space-y-3">
               {regularUsers.map((user) => (
-                <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div key={user.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 border rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
                       <Users className="w-4 h-4" />
@@ -315,12 +322,13 @@ export const UserManagement = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                     {getRoleBadge(user.role)}
                     <Button
                       onClick={() => handleAction(user, 'kick')}
                       variant="destructive"
                       size="sm"
+                      className="w-full sm:w-auto"
                     >
                       Kasta ut
                     </Button>
