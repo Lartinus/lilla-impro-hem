@@ -128,9 +128,13 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
   return (
     <div className="bg-gradient-to-r from-background to-muted/30 border-b border-border/40 shadow-sm relative">
       <div className="container mx-auto px-4 sm:px-6 relative">
-        {/* Scroll fade indicators */}
-        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent pointer-events-none z-10 md:hidden"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none z-10 md:hidden"></div>
+        {/* Scroll indicators */}
+        <div className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-1 pointer-events-none z-10 md:hidden">
+          <ChevronDown className="w-3 h-3 -rotate-90 text-muted-foreground" />
+        </div>
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-1 pointer-events-none z-10 md:hidden">
+          <ChevronDown className="w-3 h-3 rotate-90 text-muted-foreground" />
+        </div>
         
         {/* Main Navigation */}
         <div className="flex items-center justify-start sm:justify-center space-x-1 py-3 overflow-x-auto pb-safe scrollbar-hide relative"
