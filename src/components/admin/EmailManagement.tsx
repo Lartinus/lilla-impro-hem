@@ -1855,7 +1855,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                         const imageHtml = `<img src="${url}" alt="Bild från bildbiblioteket" style="max-width: 100%; height: auto; border-radius: 8px; margin: 10px 0;" />`;
                         setTemplateForm(prev => ({ 
                           ...prev, 
-                          content: prev.content + '\n\n' + imageHtml 
+                          content: imageHtml + '\n\n' + prev.content
                         }));
                       }}
                       triggerClassName="h-8 px-3 text-sm"
