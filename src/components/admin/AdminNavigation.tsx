@@ -153,7 +153,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
                 }
               }}
                className={`
-                 relative px-4 sm:px-6 py-3 h-12 flex flex-col sm:flex-row items-center 
+                 relative px-4 sm:px-6 py-2 sm:py-3 h-auto flex flex-col sm:flex-row items-center 
                  gap-1 sm:gap-3 text-xs sm:text-sm font-medium min-w-0 flex-shrink-0
                  transition-all duration-200 rounded-lg group hover:scale-105
                  ${isGroupActive(item) ? 
