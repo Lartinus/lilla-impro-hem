@@ -23,6 +23,8 @@ interface EmailTemplate {
   name: string;
   subject: string;
   content: string;
+  title?: string;
+  background_image?: string;
   description?: string;
   is_active?: boolean;
   created_at?: string;
@@ -185,6 +187,8 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     name: '',
     subject: '',
     content: '',
+    title: '',
+    background_image: '',
     description: ''
   });
   
@@ -871,7 +875,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       
       setIsTemplateDialogOpen(false);
       setEditingTemplate(null);
-      setTemplateForm({ name: '', subject: '', content: '', description: '' });
+      setTemplateForm({ name: '', subject: '', content: '', title: '', background_image: '', description: '' });
       queryClient.invalidateQueries({ queryKey: ['email-templates'] });
     } catch (error: any) {
       console.error('Template save error:', error);
@@ -890,11 +894,13 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         name: template.name,
         subject: template.subject,
         content: template.content,
+        title: template.title || '',
+        background_image: template.background_image || '',
         description: template.description || ''
       });
     } else {
       setEditingTemplate(null);
-      setTemplateForm({ name: '', subject: '', content: '', description: '' });
+      setTemplateForm({ name: '', subject: '', content: '', title: '', background_image: '', description: '' });
     }
     setIsTemplateDialogOpen(true);
   };
