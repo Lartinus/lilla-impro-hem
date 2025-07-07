@@ -909,8 +909,8 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     setIsTemplateDialogOpen(true);
   };
 
-  // Function to create styled HTML email content like the CourseConfirmationPreview
-  const getStyledEmailContent = (content: string, subject: string = '') => {
+  // Function to create styled HTML email content with new template design
+  const getStyledEmailContent = (content: string, subject: string = '', title: string = '', backgroundImage: string = '') => {
     // Replace placeholders with example values for preview
     const previewContent = content
       .replace(/\[NAMN\]/g, 'Anna Andersson')
@@ -919,38 +919,70 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       .replace(/\[TID\]/g, '19:00')
       .replace(/\[PLATS\]/g, 'Lilla Improteatern');
 
-    // If content contains HTML tags, wrap it in styled container
+    // Create the new template design with background and title
     const isPlainText = !content.includes('<') && !content.includes('>');
+    const hasBackground = backgroundImage && backgroundImage.trim() !== '';
+    const hasTitle = title && title.trim() !== '';
     
+    let htmlContent;
     if (isPlainText) {
-      // Convert plain text to HTML with line breaks
-      const htmlContent = previewContent.replace(/\n/g, '<br>');
-      
-      return `
+      htmlContent = previewContent.replace(/\n/g, '<br>');
+    } else {
+      htmlContent = previewContent;
+    }
+    
+    return `
+      <div style="
+        font-family: Arial, sans-serif; 
+        line-height: 1.6; 
+        color: #333;
+        ${hasBackground ? `
+          background-image: url('${backgroundImage}');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          min-height: 500px;
+          padding: 40px 20px;
+        ` : `
+          background-color: #f5f5f5;
+          padding: 40px 20px;
+        `}
+      ">
         <div style="
-          font-family: Arial, sans-serif; 
-          line-height: 1.6; 
-          color: #333;
           background-color: #fff;
           max-width: 600px;
-          margin: 20px auto;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          padding: 30px;
+          margin: 0 auto;
+          border-radius: 16px;
+          padding: 40px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          ${hasBackground ? 'backdrop-filter: blur(2px);' : ''}
         ">
-          <div style="
-            border-bottom: 2px solid #d32f2f; 
-            padding-bottom: 20px; 
-            margin-bottom: 30px;
-          ">
-            <h2 style="
-              color: #d32f2f; 
-              margin: 0 0 10px 0;
-              font-size: 24px;
+          ${hasTitle ? `
+            <h1 style="
+              color: #333; 
+              margin: 0 0 30px 0;
+              font-size: 32px;
+              font-weight: bold;
+              text-align: center;
+              line-height: 1.2;
             ">
-              ${subject || 'Email från Lilla Improteatern'}
-            </h2>
-          </div>
+              ${title}
+            </h1>
+          ` : `
+            <div style="
+              border-bottom: 2px solid #d32f2f; 
+              padding-bottom: 20px; 
+              margin-bottom: 30px;
+            ">
+              <h2 style="
+                color: #d32f2f; 
+                margin: 0 0 10px 0;
+                font-size: 24px;
+              ">
+                ${subject || 'Email från Lilla Improteatern'}
+              </h2>
+            </div>
+          `}
           
           <div style="margin-bottom: 30px;">
             ${htmlContent}
@@ -968,11 +1000,8 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
             </p>
           </div>
         </div>
-      `;
-    } else {
-      // Return HTML content as is
-      return previewContent;
-    }
+      </div>
+    `;
   };
 
   const handleDeleteTemplate = async (templateId: string) => {
@@ -1913,7 +1942,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                 <Label>Förhandsvisning</Label>
                 <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
                   <div dangerouslySetInnerHTML={{ 
-                    __html: getStyledEmailContent(templateForm.content, templateForm.subject) 
+                    __html: getStyledEmailContent(templateForm.content, templateForm.subject, templateForm.title, templateForm.background_image) 
                   }} />
                 </div>
               </div>
