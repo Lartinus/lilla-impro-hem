@@ -114,43 +114,47 @@ export const InterestSignupSection = () => {
   }
 
   return (
-    <>
-      {interestSignups.map((signup) => (
-        <Card 
-          key={signup.id} 
-          className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col"
-        >
-          <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
-            <div className="mb-3">
-              <h2>
-                {signup.title}
-              </h2>
-              {signup.subtitle && (
-                <p className="mt-1 font-bold text-xs">
-                  {signup.subtitle}
-                </p>
-              )}
-            </div>
-            
-            {signup.information && (
-              <div 
-                className="mb-4 text-base body-text mt-0 flex-1 [&>p]:mb-0.5 [&>p]:mt-0 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0 [&>*:first-child]:mt-0"
-                dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(signup.information) }}
-              />
-            )}
-            
-            <div className="mt-auto pt-4">
-              <Button 
-                onClick={() => openDialog(signup.id)}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                Anmäl intresse
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+    <section className="py-8 px-0.5 md:px-4">
+      <div className="md:max-w-5xl md:mx-auto">
+        <div className="grid md:grid-cols-2 gap-6 mx-[12px] md:mx-0">
+          {interestSignups.map((signup) => (
+            <Card 
+              key={signup.id} 
+              className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col"
+            >
+              <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
+                <div className="mb-3">
+                  <h2>
+                    {signup.title}
+                  </h2>
+                  {signup.subtitle && (
+                    <p className="mt-1 font-bold text-xs">
+                      {signup.subtitle}
+                    </p>
+                  )}
+                </div>
+                
+                {signup.information && (
+                  <div 
+                    className="mb-4 text-base body-text mt-0 flex-1 [&>p]:mb-0.5 [&>p]:mt-0 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0 [&>*:first-child]:mt-0"
+                    dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(signup.information) }}
+                  />
+                )}
+                
+                <div className="mt-auto pt-4">
+                  <Button 
+                    onClick={() => openDialog(signup.id)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    Anmäl intresse
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
 
       <Dialog open={isDialogOpen} onOpenChange={(open) => {
         setIsDialogOpen(open);
@@ -221,6 +225,6 @@ export const InterestSignupSection = () => {
           </form>
         </DialogContent>
       </Dialog>
-    </>
+    </section>
   );
 };
