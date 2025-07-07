@@ -17,7 +17,7 @@ const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
   }
 
   return (
-    <div className="flex flex-wrap gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
+    <div className="grid md:grid-cols-2 gap-6 mb-6 mx-[12px] md:mx-0 md:max-w-5xl md:mx-auto">
       {courses.map((course, index) => (
         <CourseCard 
           key={course.id || index} 
