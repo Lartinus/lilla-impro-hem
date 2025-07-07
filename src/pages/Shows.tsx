@@ -8,6 +8,8 @@ import SimpleParallaxHero from "@/components/SimpleParallaxHero";
 import { useToast } from '@/hooks/use-toast';
 import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
 import { useImageLoader } from '@/hooks/useImageLoader';
+import { Button } from '@/components/ui/button';
+import { Calendar, Heart, Mail } from 'lucide-react';
 
 const Shows = () => {
   const [retryCount, setRetryCount] = useState(0);
@@ -137,8 +139,28 @@ const Shows = () => {
               />
             ))
           ) : (
-            <div className="col-span-2 text-center text-white text-xl">
-              Vi har inga föreställningar planerade just nu! Kom gärna tillbaka senare eller följ oss i våra kanaler för info om framtida föreställningar.
+            <div className="col-span-2 flex justify-center">
+              <div className="bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-sm border border-border/30 rounded-xl p-8 max-w-lg text-center shadow-lg">
+                <div className="mb-6">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-primary/20 rounded-full flex items-center justify-center">
+                    <Calendar className="w-8 h-8 text-primary" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-foreground mb-2">Inga föreställningar just nu</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Vi har inga föreställningar planerade just nu. Kom gärna tillbaka senare eller följ oss i våra kanaler för info om framtida föreställningar.
+                  </p>
+                </div>
+                <div className="flex flex-wrap justify-center gap-3">
+                  <Button variant="outline" size="sm" className="bg-background/50 hover:bg-background/70">
+                    <Heart className="w-4 h-4 mr-2" />
+                    Följ oss
+                  </Button>
+                  <Button variant="outline" size="sm" className="bg-background/50 hover:bg-background/70">
+                    <Mail className="w-4 h-4 mr-2" />
+                    Nyhetsbrev
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
         </div>
