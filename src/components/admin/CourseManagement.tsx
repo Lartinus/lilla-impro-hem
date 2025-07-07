@@ -742,7 +742,7 @@ export const CourseManagement = () => {
                 Lägg till ny kurs
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{isEditMode ? 'Redigera kurs' : 'Skapa ny kurs'}</DialogTitle>
               </DialogHeader>
@@ -931,6 +931,7 @@ export const CourseManagement = () => {
                     onChange={(e) => setNewCourse({...newCourse, courseInfo: e.target.value})}
                     placeholder="Beskrivning av kursen, innehåll, mål, etc."
                     rows={4}
+                    className="resize-y min-h-[100px] max-h-[200px] overflow-y-auto"
                   />
                 </div>
 
@@ -942,6 +943,7 @@ export const CourseManagement = () => {
                     onChange={(e) => setNewCourse({...newCourse, practicalInfo: e.target.value})}
                     placeholder="Tider, plats, vad man ska ta med sig, etc."
                     rows={3}
+                    className="resize-y min-h-[80px] max-h-[150px] overflow-y-auto"
                   />
                 </div>
 
