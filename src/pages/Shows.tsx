@@ -140,7 +140,7 @@ const Shows = () => {
             ))
           ) : (
             <div className="col-span-2 flex justify-center">
-              <div className="bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-sm border border-border/30 rounded-xl p-8 max-w-lg text-center shadow-lg">
+              <div className="bg-background/95 backdrop-blur-md border border-border/50 rounded-xl p-8 max-w-lg text-center shadow-2xl">
                 <div className="mb-6">
                   <div className="w-16 h-16 mx-auto mb-4 bg-primary/20 rounded-full flex items-center justify-center">
                     <Calendar className="w-8 h-8 text-primary" />
