@@ -193,52 +193,61 @@ const handler = async (req: Request): Promise<Response> => {
           if (isPlainText) {
             // Create styled HTML email for plain text content
             const textWithBreaks = personalizedContent.replace(/\n/g, '<br>');
-            htmlContent = `
+            htmlContent = createStyledEmailTemplate(subject, textWithBreaks);
+          } else {
+            // Use HTML content but wrap in template
+            htmlContent = createStyledEmailTemplate(subject, personalizedContent);
+          }
+
+          function createStyledEmailTemplate(subjectText: string, contentText: string) {
+            return `
               <div style="
                 font-family: Arial, sans-serif; 
                 line-height: 1.6; 
                 color: #333;
-                background-color: #fff;
-                max-width: 600px;
-                margin: 20px auto;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                padding: 30px;
+                background-color: #f5f5f5;
+                padding: 40px 20px;
               ">
                 <div style="
-                  border-bottom: 2px solid #d32f2f; 
-                  padding-bottom: 20px; 
-                  margin-bottom: 30px;
+                  background-color: #fff;
+                  max-width: 600px;
+                  margin: 0 auto;
+                  border-radius: 16px;
+                  padding: 40px;
+                  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
                 ">
-                  <h2 style="
-                    color: #d32f2f; 
-                    margin: 0 0 10px 0;
-                    font-size: 24px;
+                  <div style="
+                    border-bottom: 2px solid #d32f2f; 
+                    padding-bottom: 20px; 
+                    margin-bottom: 30px;
                   ">
-                    ${subject}
-                  </h2>
-                </div>
-                
-                <div style="margin-bottom: 30px;">
-                  ${textWithBreaks}
-                </div>
-                
-                <div style="
-                  border-top: 1px solid #eee; 
-                  padding-top: 20px;
-                  color: #666;
-                  font-size: 14px;
-                ">
-                  <p style="margin: 0;">
-                    Med vänliga hälsningar,<br />
-                    <strong>Lilla Improteatern</strong>
-                  </p>
+                    <h2 style="
+                      color: #d32f2f; 
+                      margin: 0 0 10px 0;
+                      font-size: 24px;
+                    ">
+                      ${subjectText}
+                    </h2>
+                  </div>
+                  
+                  <div style="margin-bottom: 30px;">
+                    ${contentText}
+                  </div>
+                  
+                  <div style="
+                    border-top: 1px solid #eee; 
+                    padding-top: 20px;
+                    color: #666;
+                    font-size: 14px;
+                  ">
+                    <p style="margin: 0;">
+                      Med vänliga hälsningar,<br />
+                      <strong>Lilla Improteatern</strong>
+                    </p>
+                  </div>
                 </div>
               </div>
             `;
-          } else {
-            // Use HTML content as is
-            htmlContent = personalizedContent;
           }
           
           return resend.emails.send({

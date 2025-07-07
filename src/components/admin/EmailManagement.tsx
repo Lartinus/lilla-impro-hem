@@ -844,6 +844,8 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
             name: templateForm.name,
             subject: templateForm.subject,
             content: templateForm.content,
+            title: templateForm.title || null,
+            background_image: templateForm.background_image || null,
             description: templateForm.description || null,
           })
           .eq('id', editingTemplate.id);
@@ -862,6 +864,8 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
             name: templateForm.name,
             subject: templateForm.subject,
             content: templateForm.content,
+            title: templateForm.title || null,
+            background_image: templateForm.background_image || null,
             description: templateForm.description || null,
           });
 
@@ -1854,18 +1858,37 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="template-title">Titel (valfritt)</Label>
+                  <Input
+                    id="template-title"
+                    value={templateForm.title}
+                    onChange={(e) => setTemplateForm(prev => ({ ...prev, title: e.target.value }))}
+                    placeholder="Stor titel som visas överst i mejlet"
+                  />
+                </div>
+                <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="template-content">Innehåll</Label>
+                    <Label htmlFor="template-background">Bakgrundsbild (valfritt)</Label>
                     <ImagePicker
                       onSelect={(url) => {
-                        const imageHtml = `<img src="${url}" alt="Bild från bildbiblioteket" style="max-width: 100%; height: auto; border-radius: 8px; margin: 10px 0;" />`;
                         setTemplateForm(prev => ({ 
                           ...prev, 
-                          content: imageHtml + '\n\n' + prev.content
+                          background_image: url
                         }));
                       }}
                       triggerClassName="h-8 px-3 text-sm"
                     />
+                  </div>
+                  <Input
+                    id="template-background"
+                    value={templateForm.background_image}
+                    onChange={(e) => setTemplateForm(prev => ({ ...prev, background_image: e.target.value }))}
+                    placeholder="URL till bakgrundsbild"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="template-content">Innehåll</Label>
                   </div>
                   <Textarea
                     id="template-content"
@@ -1876,10 +1899,10 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                     className="font-mono text-sm resize-none"
                   />
                   <div className="text-sm text-muted-foreground space-y-1">
-                    <p>Du kan använda HTML-taggar för styling. Tillgängliga placeholders:</p>
+                    <p>Skriv email-innehållet i HTML. Tillgängliga placeholders:</p>
                     <div className="bg-muted p-2 rounded text-xs space-y-1">
                       <div><code>[NAMN]</code> - Mottagarens namn</div>
-                      <div><code>&lt;img src="URL"&gt;</code> - Bilder (använd knappen ovan för att välja från bildbiblioteket)</div>
+                      <div>Bakgrundsbild och titel läggs automatiskt till när mejlet skickas</div>
                     </div>
                   </div>
                 </div>

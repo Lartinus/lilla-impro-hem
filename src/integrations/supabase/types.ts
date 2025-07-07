@@ -436,6 +436,7 @@ export type Database = {
       }
       email_templates: {
         Row: {
+          background_image: string | null
           content: string
           created_at: string
           description: string | null
@@ -443,9 +444,11 @@ export type Database = {
           is_active: boolean
           name: string
           subject: string
+          title: string | null
           updated_at: string
         }
         Insert: {
+          background_image?: string | null
           content: string
           created_at?: string
           description?: string | null
@@ -453,9 +456,11 @@ export type Database = {
           is_active?: boolean
           name: string
           subject: string
+          title?: string | null
           updated_at?: string
         }
         Update: {
+          background_image?: string | null
           content?: string
           created_at?: string
           description?: string | null
@@ -463,6 +468,7 @@ export type Database = {
           is_active?: boolean
           name?: string
           subject?: string
+          title?: string | null
           updated_at?: string
         }
         Relationships: []

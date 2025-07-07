@@ -97,52 +97,86 @@ const handler = async (req: Request): Promise<Response> => {
     if (isPlainText) {
       // Convert plain text to styled HTML
       const textWithBreaks = personalizedContent.replace(/\n/g, '<br>');
-      htmlContent = `
+      htmlContent = createStyledEmailTemplate(personalizedSubject, textWithBreaks, template.title, template.background_image);
+    } else {
+      // Use HTML content but wrap in template
+      htmlContent = createStyledEmailTemplate(personalizedSubject, personalizedContent, template.title, template.background_image);
+    }
+
+    function createStyledEmailTemplate(subject: string, content: string, title?: string, backgroundImage?: string) {
+      const hasBackground = backgroundImage && backgroundImage.trim() !== '';
+      
+      return `
         <div style="
           font-family: Arial, sans-serif; 
           line-height: 1.6; 
           color: #333;
-          background-color: #fff;
-          max-width: 600px;
-          margin: 20px auto;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          padding: 30px;
+          ${hasBackground ? `
+            background-image: url('${backgroundImage}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 600px;
+            padding: 40px 20px;
+          ` : `
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+          `}
         ">
           <div style="
-            border-bottom: 2px solid #d32f2f; 
-            padding-bottom: 20px; 
-            margin-bottom: 30px;
+            background-color: #fff;
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            ${hasBackground ? 'backdrop-filter: blur(2px);' : ''}
           ">
-            <h2 style="
-              color: #d32f2f; 
-              margin: 0 0 10px 0;
-              font-size: 24px;
+            ${title ? `
+              <h1 style="
+                color: #333; 
+                margin: 0 0 30px 0;
+                font-size: 32px;
+                font-weight: bold;
+                text-align: center;
+                line-height: 1.2;
+              ">
+                ${title}
+              </h1>
+            ` : `
+              <div style="
+                border-bottom: 2px solid #d32f2f; 
+                padding-bottom: 20px; 
+                margin-bottom: 30px;
+              ">
+                <h2 style="
+                  color: #d32f2f; 
+                  margin: 0 0 10px 0;
+                  font-size: 24px;
+                ">
+                  ${subject}
+                </h2>
+              </div>
+            `}
+            
+            <div style="margin-bottom: 30px;">
+              ${content}
+            </div>
+            
+            <div style="
+              border-top: 1px solid #eee; 
+              padding-top: 20px;
+              color: #666;
+              font-size: 14px;
             ">
-              ${personalizedSubject}
-            </h2>
-          </div>
-          
-          <div style="margin-bottom: 30px;">
-            ${textWithBreaks}
-          </div>
-          
-          <div style="
-            border-top: 1px solid #eee; 
-            padding-top: 20px;
-            color: #666;
-            font-size: 14px;
-          ">
-            <p style="margin: 0;">
-              Med vänliga hälsningar,<br />
-              <strong>Lilla Improteatern</strong>
-            </p>
+              <p style="margin: 0;">
+                Med vänliga hälsningar,<br />
+                <strong>Lilla Improteatern</strong>
+              </p>
+            </div>
           </div>
         </div>
       `;
-    } else {
-      // Use HTML content as is
-      htmlContent = personalizedContent;
     }
 
     // Send the email
