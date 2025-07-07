@@ -12,10 +12,11 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Mail, Send, Users, Ticket, FileText, Plus, Edit, Trash2, Eye, Heart, Download, Upload, RefreshCw, Calendar, User, MessageSquare } from 'lucide-react';
+import { Mail, Send, Users, Ticket, FileText, Plus, Edit, Trash2, Eye, Heart, Download, Upload, RefreshCw, Calendar, User, MessageSquare, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 import { useContactActivities, ContactActivity } from '@/hooks/useContactActivities';
+import { ImagePicker } from './ImagePicker';
 
 interface EmailTemplate {
   id: string;
@@ -1847,7 +1848,19 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="template-content">Innehåll</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="template-content">Innehåll</Label>
+                    <ImagePicker
+                      onSelect={(url) => {
+                        const imageHtml = `<img src="${url}" alt="Bild från bildbiblioteket" style="max-width: 100%; height: auto; border-radius: 8px; margin: 10px 0;" />`;
+                        setTemplateForm(prev => ({ 
+                          ...prev, 
+                          content: prev.content + '\n\n' + imageHtml 
+                        }));
+                      }}
+                      triggerClassName="h-8 px-3 text-sm"
+                    />
+                  </div>
                   <Textarea
                     id="template-content"
                     value={templateForm.content}
@@ -1858,8 +1871,9 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   />
                   <div className="text-sm text-muted-foreground space-y-1">
                     <p>Du kan använda HTML-taggar för styling. Tillgängliga placeholders:</p>
-                    <div className="bg-muted p-2 rounded text-xs">
-                      <code>[NAMN]</code> - Mottagarens namn
+                    <div className="bg-muted p-2 rounded text-xs space-y-1">
+                      <div><code>[NAMN]</code> - Mottagarens namn</div>
+                      <div><code>&lt;img src="URL"&gt;</code> - Bilder (använd knappen ovan för att välja från bildbiblioteket)</div>
                     </div>
                   </div>
                 </div>
