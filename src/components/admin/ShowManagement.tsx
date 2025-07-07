@@ -515,8 +515,7 @@ export const ShowManagement = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
-          <h3 className="text-lg font-semibold">Föreställningar</h3>
+        <div className="flex justify-end items-center mb-6">
           <Button 
             onClick={() => setIsShowDialogOpen(true)}
             className="w-full sm:w-auto"

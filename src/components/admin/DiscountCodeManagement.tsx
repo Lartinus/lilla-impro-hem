@@ -187,8 +187,7 @@ export const DiscountCodeManagement = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-lg font-semibold">Rabattkoder</h3>
+        <div className="flex justify-end items-center mb-6">
           <Button onClick={() => {
             setIsEditMode(false);
             setEditingCode(null);
