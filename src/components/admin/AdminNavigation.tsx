@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 interface AdminNavigationProps {
   activeSection: string;
@@ -101,37 +102,44 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
 
   return (
     <div className="space-y-1">
-      {/* Main Navigation Bar */}
-      <Card className="overflow-hidden">
-        <CardContent className="p-6">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+      {/* Main Navigation Toggle Bar */}
+      <Card className="overflow-hidden bg-muted/20">
+        <CardContent className="p-2">
+          <ToggleGroup 
+            type="single" 
+            value={
+              menuItems.find(item => 
+                (item.type === 'single' && activeSection === item.id) ||
+                (item.type === 'group' && item.expanded)
+              )?.id || ''
+            }
+            className="w-full justify-start bg-background/50 rounded-lg p-1 gap-1"
+          >
             {menuItems.map((item) => (
-              <div key={item.id} className="text-center">
-                <Button
-                  variant={
-                    (item.type === 'single' && activeSection === item.id) ||
-                    (item.type === 'group' && item.expanded) 
-                      ? "default" 
-                      : "ghost"
+              <ToggleGroupItem
+                key={item.id}
+                value={item.id}
+                onClick={() => {
+                  if (item.type === 'single') {
+                    handleSelectSingle(item.id);
+                  } else {
+                    handleToggleGroup(item.id as 'courses' | 'shows' | 'email');
                   }
-                  onClick={() => {
-                    if (item.type === 'single') {
-                      handleSelectSingle(item.id);
-                    } else {
-                      handleToggleGroup(item.id as 'courses' | 'shows' | 'email');
-                    }
-                  }}
-                  className={`w-full h-16 flex flex-col gap-2 justify-center transition-all duration-200 ${
-                    item.type === 'group' && item.expanded 
-                      ? 'rounded-b-none border-b-0' 
-                      : ''
-                  }`}
-                >
-                  <span className="text-sm font-medium">{item.title}</span>
-                </Button>
-              </div>
+                }}
+                className={`
+                  flex-1 h-12 px-4 text-sm font-medium transition-all duration-200 
+                  bg-muted/40 hover:bg-muted/60 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground
+                  border border-border/40 hover:border-border/60 data-[state=on]:border-primary
+                  ${item.type === 'group' && item.expanded 
+                    ? 'rounded-b-none border-b-0 data-[state=on]:rounded-b-none' 
+                    : 'rounded-md'
+                  }
+                `}
+              >
+                {item.title}
+              </ToggleGroupItem>
             ))}
-          </div>
+          </ToggleGroup>
         </CardContent>
         
         {/* Submenu directly attached */}
