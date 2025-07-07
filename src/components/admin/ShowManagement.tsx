@@ -223,6 +223,20 @@ export const ShowManagement = () => {
     }
   });
 
+  // Handle venue selection - auto-populate address and maps URL
+  const handleVenueChange = (venueName: string) => {
+    setNewShow(prev => ({ ...prev, venue: venueName }));
+    
+    const selectedVenue = venues?.find(v => v.name === venueName);
+    if (selectedVenue) {
+      setNewShow(prev => ({
+        ...prev,
+        venue_address: selectedVenue.address || '',
+        venue_maps_url: selectedVenue.maps_url || ''
+      }));
+    }
+  };
+
   // Fetch actors (for shows, not course leaders)
   const { data: actors } = useQuery({
     queryKey: ['actors'],
