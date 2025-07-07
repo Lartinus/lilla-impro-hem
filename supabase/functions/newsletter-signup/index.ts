@@ -20,6 +20,15 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Check if RESEND_API_KEY is configured
+    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    if (!resendApiKey) {
+      console.error("RESEND_API_KEY is not configured");
+      throw new Error("Email-tjänsten är inte korrekt konfigurerad");
+    }
+
+    console.log("RESEND_API_KEY found, proceeding with signup");
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
@@ -96,7 +105,7 @@ const handler = async (req: Request): Promise<Response> => {
     const confirmationUrl = `https://gcimnsbeexkkqragmdzo.supabase.co/functions/v1/newsletter-confirm?token=${confirmationToken}`;
     
     const emailResponse = await resend.emails.send({
-      from: "Lilla Improvinsen <noreply@lillaimprovteatern.se>",
+      from: "Lilla Improvinsen <onboarding@resend.dev>",
       to: [cleanEmail],
       subject: "Bekräfta din prenumeration på vårt nyhetsbrev",
       html: `

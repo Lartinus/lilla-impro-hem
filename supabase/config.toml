@@ -74,6 +74,9 @@ redirect_uri = ""
 
 [functions]
 
+[functions.manual-confirm]
+verify_jwt = false
+
 [functions.newsletter-signup]
 verify_jwt = false
 
