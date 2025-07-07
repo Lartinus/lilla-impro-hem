@@ -151,7 +151,7 @@ const AdminDashboard = () => {
               <h1 className="text-3xl font-bold text-foreground">Administratörspanel</h1>
               <p className="text-muted-foreground mt-2">Hantera kurser, biljetter och kommunikation</p>
             </div>
-            <Badge variant="secondary" className="text-sm">
+            <Badge variant="secondary" className="text-sm flex items-center">
               <Settings className="w-4 h-4 mr-1" />
               Admin
             </Badge>

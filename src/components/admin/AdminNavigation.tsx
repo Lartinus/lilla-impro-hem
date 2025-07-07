@@ -139,7 +139,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
         </div>
         
         {/* Main Navigation */}
-        <div className="flex items-center justify-start sm:justify-center space-x-1 py-3 overflow-x-auto pb-safe scrollbar-hide relative"
+        <div className="flex items-center justify-start sm:justify-center space-x-1 py-3 overflow-x-auto pb-safe scrollbar-hide relative items-center"
              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {menuItems.map((item) => (
             <Button
