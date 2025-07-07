@@ -166,13 +166,11 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
               <span className="text-xs sm:text-sm truncate max-w-16 sm:max-w-none text-center sm:text-left">
                 {item.title}
               </span>
-              {item.type === 'group' && (
-                <ChevronDown 
-                  className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-200 ${
-                    item.expanded ? 'rotate-180' : ''
-                  }`} 
-                />
-              )}
+              <ChevronDown 
+                className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-200 ${
+                  item.type === 'group' && item.expanded ? 'rotate-180' : ''
+                }`} 
+              />
               {item.children && (
                 <Badge 
                   variant="secondary" 
