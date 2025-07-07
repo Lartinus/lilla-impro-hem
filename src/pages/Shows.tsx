@@ -10,9 +10,11 @@ import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
 import { useImageLoader } from '@/hooks/useImageLoader';
 import { Button } from '@/components/ui/button';
 import { Calendar, Heart, Mail } from 'lucide-react';
+import { NewsletterSignupModal } from '@/components/NewsletterSignupModal';
 
 const Shows = () => {
   const [retryCount, setRetryCount] = useState(0);
+  const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -155,7 +157,12 @@ const Shows = () => {
                     <Heart className="w-4 h-4 mr-2" />
                     Följ oss
                   </Button>
-                  <Button variant="outline" size="sm" className="bg-background/50 hover:bg-background/70">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="bg-background/50 hover:bg-background/70"
+                    onClick={() => setNewsletterModalOpen(true)}
+                  >
                     <Mail className="w-4 h-4 mr-2" />
                     Nyhetsbrev
                   </Button>
@@ -165,6 +172,11 @@ const Shows = () => {
           )}
         </div>
       </section>
+
+      <NewsletterSignupModal 
+        open={newsletterModalOpen} 
+        onOpenChange={setNewsletterModalOpen} 
+      />
     </div>
   );
 };

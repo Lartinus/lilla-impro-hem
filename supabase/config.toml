@@ -73,5 +73,15 @@ secret = ""
 redirect_uri = ""
 
 [functions]
+
+[functions.newsletter-signup]
+verify_jwt = false
+
+[functions.newsletter-confirm]
+verify_jwt = false
+
+[functions.newsletter-unsubscribe]
+verify_jwt = false
+
 [functions.send-course-confirmation]
 verify_jwt = false
