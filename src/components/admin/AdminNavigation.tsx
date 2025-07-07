@@ -1,7 +1,24 @@
 import React from 'react';
+import { 
+  BookOpen, 
+  Calendar, 
+  Mail, 
+  Users, 
+  Image, 
+  ChevronDown,
+  Heart,
+  UserCheck,
+  Ticket,
+  UserCircle,
+  CreditCard,
+  MapPin,
+  Send,
+  UserPlus,
+  Contact,
+  FileText
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Badge } from '@/components/ui/badge';
 
 interface AdminNavigationProps {
   activeSection: string;
@@ -29,65 +46,67 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
     {
       id: 'courses',
       title: 'Kurser',
+      icon: BookOpen,
       type: 'group' as const,
       expanded: expandedSections.courses,
       children: [
-        { id: 'courses', title: 'Kurshantering' },
-        { id: 'interest', title: 'Intresse' },
-        { id: 'performers', title: 'Kursledare' },
+        { id: 'courses', title: 'Kurshantering', icon: BookOpen },
+        { id: 'interest', title: 'Intresse', icon: Heart },
+        { id: 'performers', title: 'Kursledare', icon: UserCheck },
       ]
     },
     {
       id: 'shows',
       title: 'Föreställningar',
+      icon: Calendar,
       type: 'group' as const,
       expanded: expandedSections.shows,
       children: [
-        { id: 'shows', title: 'Föreställningar' },
-        { id: 'actors', title: 'Skådespelare' },
-        { id: 'discount-codes', title: 'Rabattkoder' },
-        { id: 'venues', title: 'Platser' },
-        { id: 'tickets', title: 'Biljetter' },
+        { id: 'shows', title: 'Föreställningar', icon: Calendar },
+        { id: 'actors', title: 'Skådespelare', icon: UserCircle },
+        { id: 'discount-codes', title: 'Rabattkoder', icon: CreditCard },
+        { id: 'venues', title: 'Platser', icon: MapPin },
+        { id: 'tickets', title: 'Biljetter', icon: Ticket },
       ]
     },
     {
       id: 'users',
       title: 'Användare',
+      icon: Users,
       type: 'single' as const
     },
     {
       id: 'images',
       title: 'Bilder',
+      icon: Image,
       type: 'single' as const
     },
     {
       id: 'email',
       title: 'Email',
+      icon: Mail,
       type: 'group' as const,
       expanded: expandedSections.email,
       children: [
-        { id: 'send', title: 'Skicka meddelande' },
-        { id: 'groups', title: 'Mottagargrupper' },
-        { id: 'contacts', title: 'Alla kontakter' },
-        { id: 'import', title: 'Importera' },
-        { id: 'templates', title: 'Email-mallar' },
+        { id: 'send', title: 'Skicka meddelande', icon: Send },
+        { id: 'groups', title: 'Mottagargrupper', icon: UserPlus },
+        { id: 'contacts', title: 'Alla kontakter', icon: Contact },
+        { id: 'import', title: 'Importera', icon: FileText },
+        { id: 'templates', title: 'Email-mallar', icon: Mail },
       ]
     }
   ];
 
   const handleToggleGroup = (groupId: 'courses' | 'shows' | 'email') => {
     setExpandedSections(prev => {
-      // Close all groups first, then open the clicked one if it was closed
       const newState = { courses: false, shows: false, email: false };
       if (!prev[groupId]) {
         newState[groupId] = true;
-        // Set active section to first child when opening a group
         const targetGroup = menuItems.find(item => item.id === groupId);
         if (targetGroup && targetGroup.children && targetGroup.children.length > 0) {
           setActiveSection(targetGroup.children[0].id);
         }
       } else {
-        // Clear active section when closing a group
         setActiveSection('');
       }
       return newState;
@@ -95,72 +114,89 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
   };
 
   const handleSelectSingle = (sectionId: string) => {
-    // Close all expanded groups when selecting a single section
     setExpandedSections({ courses: false, shows: false, email: false });
     setActiveSection(sectionId);
   };
 
+  const isGroupActive = (item: any) => {
+    if (item.type === 'single') {
+      return activeSection === item.id;
+    }
+    return item.children?.some((child: any) => child.id === activeSection);
+  };
+
   return (
-    <div className="space-y-1">
-      {/* Main Navigation Toggle Bar */}
-      <Card className="overflow-hidden bg-muted/20">
-        <CardContent className="p-2">
-          <ToggleGroup 
-            type="single" 
-            value={
-              menuItems.find(item => 
-                (item.type === 'single' && activeSection === item.id) ||
-                (item.type === 'group' && item.expanded)
-              )?.id || ''
-            }
-            className="w-full justify-start bg-background/50 rounded-lg p-1"
-          >
-            {menuItems.map((item, index) => (
-              <ToggleGroupItem
-                key={item.id}
-                value={item.id}
-                onClick={() => {
-                  if (item.type === 'single') {
-                    handleSelectSingle(item.id);
-                  } else {
-                    handleToggleGroup(item.id as 'courses' | 'shows' | 'email');
-                  }
-                }}
-                className={`
-                  flex-1 h-12 px-4 text-sm font-medium transition-all duration-200 
-                  bg-muted/40 hover:bg-muted/60 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground
-                  border-y border-border/40 hover:border-border/60 data-[state=on]:border-primary
-                  ${index === 0 ? 'border-l rounded-l-md' : '-ml-px'}
-                  ${index === menuItems.length - 1 ? 'border-r rounded-r-md' : ''}
-                  ${item.type === 'group' && item.expanded 
-                    ? 'border-b-0 rounded-b-none data-[state=on]:rounded-b-none' 
-                    : ''
-                  }
-                `}
-              >
-                {item.title}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </CardContent>
-        
-        {/* Submenu directly attached */}
+    <div className="bg-gradient-to-r from-background to-muted/30 border-b border-border/40 shadow-sm">
+      <div className="container mx-auto px-6">
+        {/* Main Navigation */}
+        <div className="flex items-center justify-center space-x-1 py-3">
+          {menuItems.map((item) => (
+            <Button
+              key={item.id}
+              variant={isGroupActive(item) ? "default" : "ghost"}
+              onClick={() => {
+                if (item.type === 'single') {
+                  handleSelectSingle(item.id);
+                } else {
+                  handleToggleGroup(item.id as 'courses' | 'shows' | 'email');
+                }
+              }}
+              className={`
+                relative px-6 py-3 h-auto flex items-center gap-3 text-sm font-medium 
+                transition-all duration-200 rounded-lg group hover:scale-105
+                ${isGroupActive(item) ? 
+                  'bg-primary text-primary-foreground shadow-lg shadow-primary/25' : 
+                  'hover:bg-muted/60'
+                }
+              `}
+            >
+              <item.icon className="w-4 h-4" />
+              <span>{item.title}</span>
+              {item.type === 'group' && (
+                <ChevronDown 
+                  className={`w-4 h-4 transition-transform duration-200 ${
+                    item.expanded ? 'rotate-180' : ''
+                  }`} 
+                />
+              )}
+              {item.children && (
+                <Badge 
+                  variant="secondary" 
+                  className="ml-1 h-5 px-1.5 text-xs bg-background/20 text-inherit border-0"
+                >
+                  {item.children.length}
+                </Badge>
+              )}
+            </Button>
+          ))}
+        </div>
+
+        {/* Submenu */}
         {menuItems.map((item) => 
           item.type === 'group' && item.expanded && (
             <div 
               key={`${item.id}-submenu`} 
-              className="border-t bg-muted/30 animate-accordion-down"
+              className="pb-4 animate-accordion-down"
             >
-              <div className="px-6 py-4">
-                <div className="flex flex-wrap gap-2 justify-center">
+              <div className="bg-muted/20 rounded-lg p-4 border border-border/30">
+                <div className="flex flex-wrap items-center justify-center gap-2">
                   {item.children?.map((child) => (
                     <Button
                       key={child.id}
-                      variant={activeSection === child.id ? "default" : "ghost"}
+                      variant={activeSection === child.id ? "default" : "outline"}
+                      size="sm"
                       onClick={() => setActiveSection(child.id)}
-                      className="px-6 py-2 text-sm font-medium transition-all duration-200"
+                      className={`
+                        flex items-center gap-2 px-4 py-2 text-sm font-medium 
+                        transition-all duration-200 hover:scale-105
+                        ${activeSection === child.id ? 
+                          'bg-primary text-primary-foreground shadow-md' : 
+                          'bg-background/50 hover:bg-background border-border/60'
+                        }
+                      `}
                     >
-                      {child.title}
+                      <child.icon className="w-4 h-4" />
+                      <span>{child.title}</span>
                     </Button>
                   ))}
                 </div>
@@ -168,7 +204,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
             </div>
           )
         )}
-      </Card>
+      </div>
     </div>
   );
 };
