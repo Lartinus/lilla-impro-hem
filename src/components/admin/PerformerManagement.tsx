@@ -186,7 +186,7 @@ export const PerformerManagement = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Kursledare & Skådespelare</CardTitle>
+          <CardTitle>Kursledare</CardTitle>
           <CardDescription>Läser in...</CardDescription>
         </CardHeader>
         <CardContent>
@@ -205,7 +205,7 @@ export const PerformerManagement = () => {
       <CardHeader>
         <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
           <div className="flex-1">
-            <CardTitle>Kursledare & Skådespelare</CardTitle>
+            <CardTitle>Kursledare</CardTitle>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
@@ -273,7 +273,7 @@ export const PerformerManagement = () => {
       <CardContent className="space-y-4">
         <div className="bg-muted/30 p-4 rounded-lg border border-border/40">
           <p className="text-sm text-muted-foreground">
-            Hantera kursledare och skådespelare som kan tilldelas kurser
+            Hantera kursledare som kan tilldelas kurser
           </p>
         </div>
         
@@ -282,7 +282,7 @@ export const PerformerManagement = () => {
             <User className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">Inga kursledare hittades</h3>
             <p className="text-muted-foreground">
-              Lägg till kursledare och skådespelare för att kunna tilldela dem till kurser.
+             Lägg till kursledare för att kunna tilldela dem till kurser.
             </p>
           </div>
         ) : isMobile ? (
