@@ -735,25 +735,6 @@ export const ShowManagement = () => {
                 </select>
               </div>
 
-              <div>
-                <Label htmlFor="venue_address">Adress</Label>
-                <Input
-                  id="venue_address"
-                  value={newShow.venue_address}
-                  onChange={(e) => setNewShow(prev => ({ ...prev, venue_address: e.target.value }))}
-                  placeholder="Gata 123, Stockholm"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="venue_maps_url">Google Maps-länk</Label>
-                <Input
-                  id="venue_maps_url"
-                  value={newShow.venue_maps_url}
-                  onChange={(e) => setNewShow(prev => ({ ...prev, venue_maps_url: e.target.value }))}
-                  placeholder="https://maps.google.com/..."
-                />
-              </div>
 
               <div>
                 <Label htmlFor="description">Beskrivning</Label>
