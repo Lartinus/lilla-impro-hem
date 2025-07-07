@@ -10,29 +10,33 @@ interface CourseLeader {
 }
 
 interface CourseLeaderInfoProps {
-  courseLeader: CourseLeader;
+  courseLeaders: CourseLeader[];
 }
 
-export default function CourseLeaderInfo({ courseLeader }: CourseLeaderInfoProps) {
+export default function CourseLeaderInfo({ courseLeaders }: CourseLeaderInfoProps) {
   return (
     <div className="mb-6">
       <h4 className="mb-2">Kursledare</h4>
       <div className="rounded-none border-3 border-red-800 p-4">
-        <div className="flex flex-col lg:flex-row items-start space-y-4 lg:space-y-0 lg:space-x-4">
-          <OptimizedImage
-            src={courseLeader.image}
-            alt={courseLeader.name}
-            className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0 lg:mx-0"
-            fallbackText="Ingen bild"
-            preferredSize="small"
-          />
-          <div className="flex-1 min-w-0">
-            <p className="font-bold text-sm">{courseLeader.name}</p>
-            <div
-              className="leading-relaxed break-words [&>p]:text-[14px] 4md:[&>p]:text-[14px]"
-              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(courseLeader.bio) }}
-            />
-          </div>
+        <div className="space-y-6">
+          {courseLeaders.map((courseLeader, index) => (
+            <div key={courseLeader.id} className="flex flex-col lg:flex-row items-start space-y-4 lg:space-y-0 lg:space-x-4">
+              <OptimizedImage
+                src={courseLeader.image}
+                alt={courseLeader.name}
+                className="w-32 h-32 rounded-none object-cover object-top flex-shrink-0 lg:mx-0"
+                fallbackText="Ingen bild"
+                preferredSize="small"
+              />
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm">{courseLeader.name}</p>
+                <div
+                  className="leading-relaxed break-words [&>p]:text-[14px] 4md:[&>p]:text-[14px]"
+                  dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(courseLeader.bio) }}
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

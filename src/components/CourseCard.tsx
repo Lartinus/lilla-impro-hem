@@ -86,24 +86,21 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         
         {/* Show all teachers */}
         {course.teachers && course.teachers.length > 0 ? (
-          course.teachers.map((teacher, index) => (
-            <CourseLeaderInfo 
-              key={teacher.id}
-              courseLeader={{
-                id: parseInt(teacher.id),
-                name: teacher.name,
-                image: teacher.image,
-                bio: teacher.bio
-              }} 
-            />
-          ))
+          <CourseLeaderInfo 
+            courseLeaders={course.teachers.map(teacher => ({
+              id: parseInt(teacher.id),
+              name: teacher.name,
+              image: teacher.image,
+              bio: teacher.bio
+            }))} 
+          />
         ) : course.teacher ? (
-          <CourseLeaderInfo courseLeader={{
+          <CourseLeaderInfo courseLeaders={[{
             id: parseInt(course.teacher.id),
             name: course.teacher.name,
             image: course.teacher.image,
             bio: course.teacher.bio
-          }} />
+          }]} />
         ) : null}
         
         {/* Practical Information */}
