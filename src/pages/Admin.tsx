@@ -146,12 +146,12 @@ const AdminDashboard = () => {
       
       <main className="container mx-auto px-4 py-8 pt-20">
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between">
             <div>
               <h1 className="text-3xl font-bold text-foreground">Administratörspanel</h1>
               <p className="text-muted-foreground mt-2">Hantera kurser, biljetter och kommunikation</p>
             </div>
-            <Badge variant="secondary" className="text-sm flex items-center">
+            <Badge variant="secondary" className="text-sm flex items-center mt-1">
               <Settings className="w-4 h-4 mr-1" />
               Admin
             </Badge>
