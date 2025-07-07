@@ -153,6 +153,8 @@ export type Database = {
           hours_per_session: number | null
           id: string
           instructor: string | null
+          instructor_id_1: string | null
+          instructor_id_2: string | null
           is_active: boolean | null
           max_participants: number | null
           practical_info: string | null
@@ -172,6 +174,8 @@ export type Database = {
           hours_per_session?: number | null
           id?: string
           instructor?: string | null
+          instructor_id_1?: string | null
+          instructor_id_2?: string | null
           is_active?: boolean | null
           max_participants?: number | null
           practical_info?: string | null
@@ -191,6 +195,8 @@ export type Database = {
           hours_per_session?: number | null
           id?: string
           instructor?: string | null
+          instructor_id_1?: string | null
+          instructor_id_2?: string | null
           is_active?: boolean | null
           max_participants?: number | null
           practical_info?: string | null
@@ -201,7 +207,22 @@ export type Database = {
           subtitle?: string | null
           table_name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "course_instances_instructor_id_1_fkey"
+            columns: ["instructor_id_1"]
+            isOneToOne: false
+            referencedRelation: "performers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_instances_instructor_id_2_fkey"
+            columns: ["instructor_id_2"]
+            isOneToOne: false
+            referencedRelation: "performers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       course_niv_1_scenarbete_improv_comedy_1749454350362: {
         Row: {

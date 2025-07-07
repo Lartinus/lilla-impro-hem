@@ -33,6 +33,8 @@ interface CourseInstance {
   course_info?: string | null;
   practical_info?: string | null;
   instructor?: string | null;
+  instructor_id_1?: string | null;
+  instructor_id_2?: string | null;
   subtitle?: string | null;
   sessions?: number;
   hours_per_session?: number;
@@ -52,7 +54,8 @@ interface NewCourseForm {
   courseType: string;
   customName: string;
   subtitle: string;
-  instructor: string;
+  instructor1: string;
+  instructor2: string;
   sessions: number;
   hoursPerSession: number;
   startDate: Date | undefined;
@@ -64,11 +67,12 @@ interface NewCourseForm {
 }
 
 // Mobile Course Card Component
-function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete }: {
+function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, performers }: {
   course: CourseWithBookings;
   onEdit: (course: CourseWithBookings) => void;
   onToggleStatus: (course: CourseWithBookings) => void;
   onDelete: (course: CourseWithBookings) => void;
+  performers?: any[];
 }) {
   const {
     attributes,
@@ -120,7 +124,13 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete }: {
             <div>
               <span className="text-muted-foreground">Kursledare:</span>
               <div>
-                {course.instructor || 'Ej satt'}
+                {/* Visa båda kursledarna om de finns */}
+                {(() => {
+                  const instructor1 = performers?.find(p => p.id === course.instructor_id_1);
+                  const instructor2 = performers?.find(p => p.id === course.instructor_id_2);
+                  const instructors = [instructor1?.name, instructor2?.name].filter(Boolean);
+                  return instructors.length > 0 ? instructors.join(', ') : 'Ej satt';
+                })()}
               </div>
             </div>
             <div>
@@ -176,11 +186,12 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete }: {
 }
 
 // Sortable Row Component
-function SortableRow({ course, onEdit, onToggleStatus, onDelete }: {
+function SortableRow({ course, onEdit, onToggleStatus, onDelete, performers }: {
   course: CourseWithBookings;
   onEdit: (course: CourseWithBookings) => void;
   onToggleStatus: (course: CourseWithBookings) => void;
   onDelete: (course: CourseWithBookings) => void;
+  performers?: any[];
 }) {
   const {
     attributes,
@@ -216,7 +227,13 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete }: {
         {course.start_date ? new Date(course.start_date).toLocaleDateString('sv-SE') : '-'}
       </TableCell>
       <TableCell>
-        {course.instructor || 'Ingen kursledare'}
+        {/* Visa båda kursledarna om de finns */}
+        {(() => {
+          const instructor1 = performers?.find(p => p.id === course.instructor_id_1);
+          const instructor2 = performers?.find(p => p.id === course.instructor_id_2);
+          const instructors = [instructor1?.name, instructor2?.name].filter(Boolean);
+          return instructors.length > 0 ? instructors.join(', ') : 'Ingen kursledare';
+        })()}
       </TableCell>
       <TableCell>
         <span className="font-semibold">{course.bookingCount}</span>
@@ -277,7 +294,8 @@ export const CourseManagement = () => {
     courseType: '',
     customName: '',
     subtitle: '',
-    instructor: '',
+    instructor1: '',
+    instructor2: '',
     sessions: 1,
     hoursPerSession: 2,
     startDate: undefined,
@@ -414,7 +432,8 @@ export const CourseManagement = () => {
           max_participants: formData.maxParticipants,
           course_info: formData.courseInfo,
           practical_info: formData.practicalInfo,
-          instructor: formData.instructor,
+          instructor_id_1: formData.instructor1 ? performers?.find(p => p.id === formData.instructor1)?.id || null : null,
+          instructor_id_2: formData.instructor2 ? performers?.find(p => p.id === formData.instructor2)?.id || null : null,
           price: formData.price,
           discount_price: formData.discountPrice,
           sessions: formData.sessions,
@@ -490,7 +509,8 @@ export const CourseManagement = () => {
           max_participants: courseData.maxParticipants,
           course_info: courseData.courseInfo,
           practical_info: courseData.practicalInfo,
-          instructor: courseData.instructor,
+          instructor_id_1: courseData.instructor1 ? performers?.find(p => p.id === courseData.instructor1)?.id || null : null,
+          instructor_id_2: courseData.instructor2 ? performers?.find(p => p.id === courseData.instructor2)?.id || null : null,
           price: courseData.price,
           discount_price: courseData.discountPrice,
           sessions: courseData.sessions,
@@ -571,7 +591,8 @@ export const CourseManagement = () => {
       courseType: '',
       customName: '',
       subtitle: '',
-      instructor: '',
+      instructor1: '',
+      instructor2: '',
       sessions: 1,
       hoursPerSession: 2,
       startDate: undefined,
@@ -598,7 +619,8 @@ export const CourseManagement = () => {
       courseType,
       customName: courseType === 'helgworkshop' ? course.course_title : '',
       subtitle: course.subtitle || '',
-      instructor: course.instructor || 'none',
+      instructor1: course.instructor_id_1 || '',
+      instructor2: course.instructor_id_2 || '',
       sessions: course.sessions || 1,
       hoursPerSession: course.hours_per_session || 2,
       startDate: course.start_date ? new Date(course.start_date) : undefined,
@@ -764,24 +786,46 @@ export const CourseManagement = () => {
                   />
                 </div>
 
-                <div className="grid gap-2">
-                  <Label htmlFor="instructor">Kursledare (valfritt)</Label>
-                  <Select 
-                    value={newCourse.instructor} 
-                    onValueChange={(value) => setNewCourse({...newCourse, instructor: value === 'none' ? '' : value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Välj kursledare (valfritt)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Ingen kursledare</SelectItem>
-                      {performers?.map((performer: any) => (
-                        <SelectItem key={performer.id} value={performer.name}>
-                          {performer.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="instructor1">Kursledare 1 (valfritt)</Label>
+                    <Select 
+                      value={newCourse.instructor1} 
+                      onValueChange={(value) => setNewCourse({...newCourse, instructor1: value === 'none' ? '' : value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Välj första kursledare (valfritt)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Ingen kursledare</SelectItem>
+                        {performers?.map((performer: any) => (
+                          <SelectItem key={performer.id} value={performer.id}>
+                            {performer.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="instructor2">Kursledare 2 (valfritt)</Label>
+                    <Select 
+                      value={newCourse.instructor2} 
+                      onValueChange={(value) => setNewCourse({...newCourse, instructor2: value === 'none' ? '' : value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Välj andra kursledare (valfritt)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Ingen kursledare</SelectItem>
+                        {performers?.map((performer: any) => (
+                          <SelectItem key={performer.id} value={performer.id}>
+                            {performer.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -1000,6 +1044,7 @@ export const CourseManagement = () => {
                       <SortableRow
                         key={course.id}
                         course={course}
+                        performers={performers}
                         onEdit={handleEditCourse}
                         onToggleStatus={course => toggleStatusMutation.mutate(course)}
                         onDelete={course => deleteCourseMutation.mutate(course)}
@@ -1020,6 +1065,7 @@ export const CourseManagement = () => {
                   <MobileCourseCard
                     key={course.id}
                     course={course}
+                    performers={performers}
                     onEdit={handleEditCourse}
                     onToggleStatus={course => toggleStatusMutation.mutate(course)}
                     onDelete={course => deleteCourseMutation.mutate(course)}
