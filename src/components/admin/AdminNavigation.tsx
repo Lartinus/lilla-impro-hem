@@ -126,10 +126,10 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
   };
 
   return (
-    <div className="bg-gradient-to-r from-background to-muted/30 border-b border-border/40 shadow-sm overflow-x-auto">
+    <div className="bg-gradient-to-r from-background to-muted/30 border-b border-border/40 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6">
         {/* Main Navigation */}
-        <div className="flex items-center justify-start sm:justify-center space-x-1 py-3 overflow-x-auto pb-safe">
+        <div className="flex items-center justify-start sm:justify-center space-x-1 py-3 overflow-x-auto pb-safe scrollbar-hide">
           {menuItems.map((item) => (
             <Button
               key={item.id}

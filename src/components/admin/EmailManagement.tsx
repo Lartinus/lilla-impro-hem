@@ -1528,14 +1528,15 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         <TabsContent value="contacts">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <CardTitle className="flex items-center gap-2">
                   <Users className="w-5 h-5" />
                   Alla kontakter
-                </div>
-                <div className="flex items-center gap-2">
+                </CardTitle>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                   <Button 
                     onClick={() => openContactDialog()}
+                    className="w-full sm:w-auto"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Lägg till kontakt
@@ -1543,12 +1544,13 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   <Button 
                     onClick={() => syncContactsMutation.mutate()}
                     disabled={syncContactsMutation.isPending}
+                    className="w-full sm:w-auto"
                   >
                     <RefreshCw className={`w-4 h-4 mr-2 ${syncContactsMutation.isPending ? 'animate-spin' : ''}`} />
                     Synkronisera
                   </Button>
                 </div>
-              </CardTitle>
+              </div>
               <CardDescription>
                 Alla dina kontakter från kurser, biljetter och intresseanmälningar
               </CardDescription>
