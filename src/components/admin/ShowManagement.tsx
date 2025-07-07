@@ -515,7 +515,7 @@ export const ShowManagement = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex justify-end items-center mb-6">
+        <div className="flex justify-start items-center mb-6">
           <Button 
             onClick={() => setIsShowDialogOpen(true)}
             className="w-full sm:w-auto"
