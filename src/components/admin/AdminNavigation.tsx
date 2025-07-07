@@ -129,7 +129,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
     <div className="bg-gradient-to-r from-background to-muted/30 border-b border-border/40 shadow-sm overflow-x-auto">
       <div className="container mx-auto px-4 sm:px-6">
         {/* Main Navigation */}
-        <div className="flex items-center justify-start sm:justify-center space-x-1 py-3 min-w-max sm:min-w-0">
+        <div className="flex items-center justify-start sm:justify-center space-x-1 py-3 overflow-x-auto pb-safe">
           {menuItems.map((item) => (
             <Button
               key={item.id}
@@ -142,20 +142,22 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
                 }
               }}
               className={`
-                relative px-3 sm:px-6 py-3 h-auto flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-medium 
-                transition-all duration-200 rounded-lg group hover:scale-105 whitespace-nowrap
+                relative px-4 sm:px-6 py-2 sm:py-3 h-auto flex flex-col sm:flex-row items-center 
+                gap-1 sm:gap-3 text-xs sm:text-sm font-medium min-w-0 flex-shrink-0
+                transition-all duration-200 rounded-lg group hover:scale-105
                 ${isGroupActive(item) ? 
                   'bg-primary text-primary-foreground shadow-lg shadow-primary/25' : 
                   'hover:bg-muted/60'
                 }
               `}
             >
-              <item.icon className="w-4 h-4" />
-              <span className="hidden sm:inline">{item.title}</span>
-              <span className="sm:hidden">{item.title.charAt(0)}</span>
+              <item.icon className="w-5 h-5 sm:w-4 sm:h-4" />
+              <span className="text-xs sm:text-sm truncate max-w-16 sm:max-w-none text-center sm:text-left">
+                {item.title}
+              </span>
               {item.type === 'group' && (
                 <ChevronDown 
-                  className={`w-4 h-4 transition-transform duration-200 ${
+                  className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-200 ${
                     item.expanded ? 'rotate-180' : ''
                   }`} 
                 />
@@ -196,9 +198,10 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
                         }
                       `}
                     >
-                      <child.icon className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span className="hidden sm:inline">{child.title}</span>
-                      <span className="sm:hidden text-xs">{child.title.split(' ')[0]}</span>
+                      <child.icon className="w-4 h-4" />
+                      <span className="truncate">
+                        {child.title}
+                      </span>
                     </Button>
                   ))}
                 </div>
