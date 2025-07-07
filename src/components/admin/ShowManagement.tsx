@@ -514,10 +514,13 @@ export const ShowManagement = () => {
           Hantera föreställningar från admin-panelen
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="flex justify-between items-center mb-6">
+      <CardContent className="space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
           <h3 className="text-lg font-semibold">Föreställningar</h3>
-          <Button onClick={() => setIsShowDialogOpen(true)}>
+          <Button 
+            onClick={() => setIsShowDialogOpen(true)}
+            className="w-full sm:w-auto"
+          >
             <Plus className="w-4 h-4 mr-2" />
             Lägg till föreställning
           </Button>
@@ -527,53 +530,62 @@ export const ShowManagement = () => {
           <div className="text-center py-8">Laddar föreställningar...</div>
         ) : shows && shows.length > 0 ? (
           isMobile ? (
-            <div className="space-y-4">
+            <div className="space-y-6">
               {shows.map((show) => (
-                <Card key={show.id} className="p-4">
-                  <div className="flex items-start justify-between mb-3">
+                <Card key={show.id} className="p-4 sm:p-6 border-2 border-border/50 hover:border-border transition-colors">
+                  <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs text-muted-foreground">#{show.sort_order || 0}</span>
-                        <Badge variant={show.is_active ? "default" : "secondary"}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-medium text-muted-foreground bg-muted/50 px-2 py-1 rounded">
+                          #{show.sort_order || 0}
+                        </span>
+                        <Badge 
+                          variant={show.is_active ? "default" : "secondary"}
+                          className="text-xs"
+                        >
                           {show.is_active ? 'Aktiv' : 'Dold'}
                         </Badge>
                       </div>
-                      <h4 className="font-medium">{show.title}</h4>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                        <Calendar className="w-4 h-4" />
-                        {new Date(show.show_date).toLocaleDateString('sv-SE')} {show.show_time}
-                      </div>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <MapPin className="w-4 h-4" />
-                        {show.venue}
+                      <h4 className="font-semibold text-base mb-3">{show.title}</h4>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Calendar className="w-4 h-4 flex-shrink-0" />
+                          <span>{new Date(show.show_date).toLocaleDateString('sv-SE')} {show.show_time}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <MapPin className="w-4 h-4 flex-shrink-0" />
+                          <span>{show.venue}</span>
+                        </div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="flex items-center gap-1 text-lg font-semibold">
+                      <div className="flex items-center justify-end gap-1 text-lg font-semibold bg-primary/10 px-3 py-2 rounded-lg">
                         <Ticket className="w-4 h-4" />
-                        {show.regular_price}kr
+                        <span>{show.regular_price}kr</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-border/50">
                     <Button 
                       variant="outline" 
                       size="sm"
                       onClick={() => handleEditShow(show)}
+                      className="w-full justify-center"
                     >
-                      <Edit className="w-4 h-4 mr-1" />
+                      <Edit className="w-4 h-4 mr-2" />
                       Redigera
                     </Button>
                     <Button 
                       variant="outline" 
                       size="sm"
                       onClick={() => handleToggleShowVisibility(show)}
+                      className="w-full justify-center"
                     >
                       {show.is_active ? (
-                        <EyeOff className="w-4 h-4 mr-1" />
+                        <EyeOff className="w-4 h-4 mr-2" />
                       ) : (
-                        <Eye className="w-4 h-4 mr-1" />
+                        <Eye className="w-4 h-4 mr-2" />
                       )}
                       {show.is_active ? 'Dölj' : 'Visa'}
                     </Button>
@@ -585,8 +597,9 @@ export const ShowManagement = () => {
                           handleDeleteShow(show);
                         }
                       }}
+                      className="w-full justify-center"
                     >
-                      <Trash2 className="w-4 h-4 mr-1" />
+                      <Trash2 className="w-4 h-4 mr-2" />
                       Radera
                     </Button>
                   </div>
@@ -628,10 +641,10 @@ export const ShowManagement = () => {
             </DndContext>
           )
         ) : (
-          <div className="text-center py-8">
-            <Calendar className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Inga föreställningar</h3>
-            <p className="text-muted-foreground">
+          <div className="text-center py-12">
+            <Calendar className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
+            <h3 className="text-xl font-semibold mb-3">Inga föreställningar</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
               Lägg till din första föreställning för att komma igång.
             </p>
           </div>
