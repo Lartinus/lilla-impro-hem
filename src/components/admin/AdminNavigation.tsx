@@ -113,9 +113,9 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
                 (item.type === 'group' && item.expanded)
               )?.id || ''
             }
-            className="w-full justify-start bg-background/50 rounded-lg p-1 gap-1"
+            className="w-full justify-start bg-background/50 rounded-lg p-1"
           >
-            {menuItems.map((item) => (
+            {menuItems.map((item, index) => (
               <ToggleGroupItem
                 key={item.id}
                 value={item.id}
@@ -129,10 +129,12 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
                 className={`
                   flex-1 h-12 px-4 text-sm font-medium transition-all duration-200 
                   bg-muted/40 hover:bg-muted/60 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground
-                  border border-border/40 hover:border-border/60 data-[state=on]:border-primary
+                  border-y border-border/40 hover:border-border/60 data-[state=on]:border-primary
+                  ${index === 0 ? 'border-l rounded-l-md' : '-ml-px'}
+                  ${index === menuItems.length - 1 ? 'border-r rounded-r-md' : ''}
                   ${item.type === 'group' && item.expanded 
-                    ? 'rounded-b-none border-b-0 data-[state=on]:rounded-b-none' 
-                    : 'rounded-md'
+                    ? 'border-b-0 rounded-b-none data-[state=on]:rounded-b-none' 
+                    : ''
                   }
                 `}
               >
