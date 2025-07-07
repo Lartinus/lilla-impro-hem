@@ -6,6 +6,8 @@ import {
   Users, 
   Image, 
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Heart,
   UserCheck,
   Ticket,
@@ -129,11 +131,11 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
     <div className="bg-gradient-to-r from-background to-muted/30 border-b border-border/40 shadow-sm relative">
       <div className="container mx-auto px-4 sm:px-6 relative">
         {/* Scroll indicators */}
-        <div className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-1 pointer-events-none z-10 md:hidden">
-          <ChevronDown className="w-3 h-3 -rotate-90 text-muted-foreground" />
+        <div className="absolute left-1 top-1/2 -translate-y-1/2 text-muted-foreground/60 pointer-events-none z-10 md:hidden">
+          <ChevronLeft className="w-4 h-4" />
         </div>
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/80 rounded-full p-1 pointer-events-none z-10 md:hidden">
-          <ChevronDown className="w-3 h-3 rotate-90 text-muted-foreground" />
+        <div className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground/60 pointer-events-none z-10 md:hidden">
+          <ChevronRight className="w-4 h-4" />
         </div>
         
         {/* Main Navigation */}
