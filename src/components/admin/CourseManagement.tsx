@@ -701,8 +701,8 @@ export const CourseManagement = () => {
     setIsParticipantsDialogOpen(true);
     
     try {
-      const { data, error } = await supabase.rpc('get_course_participants', {
-        table_name: course.table_name
+      const { data, error } = await supabase.functions.invoke('get-course-participants', {
+        body: { table_name: course.table_name }
       });
 
       if (error) {
@@ -714,7 +714,7 @@ export const CourseManagement = () => {
         });
         setParticipants([]);
       } else {
-        setParticipants(data || []);
+        setParticipants(data?.participants || []);
       }
     } catch (error) {
       console.error('Error fetching participants:', error);
