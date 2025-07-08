@@ -14,6 +14,7 @@ interface BulkEmailRequest {
   recipientGroup: string;
   subject: string;
   content: string;
+  templateId?: string;
 }
 
 interface EmailContact {
@@ -28,9 +29,25 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { recipientGroup, subject, content }: BulkEmailRequest = await req.json();
+    const { recipientGroup, subject, content, templateId }: BulkEmailRequest = await req.json();
 
     console.log('Processing bulk email request for group:', recipientGroup);
+
+    // Get template if templateId is provided
+    let template = null;
+    if (templateId) {
+      const { data: templateData, error: templateError } = await supabase
+        .from('email_templates')
+        .select('*')
+        .eq('id', templateId)
+        .eq('is_active', true)
+        .single();
+
+      if (!templateError && templateData) {
+        template = templateData;
+        console.log('Using template:', template.name);
+      }
+    }
 
     // Get recipients based on group type
     let recipients: EmailContact[] = [];
@@ -183,67 +200,116 @@ const handler = async (req: Request): Promise<Response> => {
     for (const batch of batches) {
       try {
         const emailPromises = batch.map(async (recipient) => {
+          // Determine what content and subject to use
+          let finalContent = content;
+          let finalSubject = subject;
+          
+          // If template is provided, use template content and subject unless overridden
+          if (template) {
+            finalContent = content || template.content;
+            finalSubject = subject || template.subject;
+          }
+          
           // Personalize content by replacing [NAMN] with recipient name
-          let personalizedContent = content.replace(/\[NAMN\]/g, recipient.name || 'Vän');
+          let personalizedContent = finalContent.replace(/\[NAMN\]/g, recipient.name || 'Vän');
           
           // Check if content is plain text or HTML
-          const isPlainText = !content.includes('<') && !content.includes('>');
+          const isPlainText = !finalContent.includes('<') && !finalContent.includes('>');
           
           let htmlContent;
           if (isPlainText) {
             // Create styled HTML email for plain text content
             const textWithBreaks = personalizedContent.replace(/\n/g, '<br>');
-            htmlContent = createStyledEmailTemplate(subject, textWithBreaks);
+            htmlContent = createStyledEmailTemplate(finalSubject, textWithBreaks, template);
           } else {
             // Use HTML content but wrap in template
-            htmlContent = createStyledEmailTemplate(subject, personalizedContent);
+            htmlContent = createStyledEmailTemplate(finalSubject, personalizedContent, template);
           }
 
-          function createStyledEmailTemplate(subjectText: string, contentText: string) {
+          function createStyledEmailTemplate(subjectText: string, contentText: string, templateData: any = null) {
+            const hasBackground = templateData?.background_image && templateData.background_image.trim() !== '';
+            const hasTitle = templateData?.title && templateData.title.trim() !== '';
+            const finalTitleSize = templateData?.title_size || '32';
+            
             return `
               <div style="
                 font-family: Arial, sans-serif; 
                 line-height: 1.6; 
                 color: #333;
                 background-color: #f5f5f5;
-                padding: 40px 20px;
+                padding: 0;
               ">
+                ${hasBackground ? `
+                  <div style="
+                    height: 300px;
+                    background-image: url('${templateData.background_image}');
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    margin: 0;
+                  "></div>
+                ` : ''}
+                
                 <div style="
-                  background-color: #fff;
                   max-width: 600px;
-                  margin: 0 auto;
-                  border-radius: 16px;
-                  padding: 40px;
-                  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                  margin: ${hasBackground ? '-60px auto 40px auto' : '40px auto'};
+                  position: relative;
+                  z-index: 10;
                 ">
                   <div style="
-                    border-bottom: 2px solid #d32f2f; 
-                    padding-bottom: 20px; 
-                    margin-bottom: 30px;
+                    background-color: #fff;
+                    border-radius: 16px;
+                    padding: 40px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
                   ">
-                    <h2 style="
-                      color: #d32f2f; 
-                      margin: 0 0 10px 0;
-                      font-size: 24px;
+                    ${hasTitle ? `
+                      <h1 style="
+                        color: #333; 
+                        margin: 0 0 20px 0;
+                        font-size: ${finalTitleSize}px;
+                        font-weight: bold;
+                        text-align: center;
+                        line-height: 1.2;
+                      ">
+                        ${templateData.title}
+                      </h1>
+                      <div style="
+                        width: 60px;
+                        height: 3px;
+                        background-color: #333;
+                        margin: 0 auto 30px auto;
+                      "></div>
+                    ` : `
+                      <div style="
+                        border-bottom: 2px solid #d32f2f; 
+                        padding-bottom: 20px; 
+                        margin-bottom: 30px;
+                      ">
+                        <h2 style="
+                          color: #d32f2f; 
+                          margin: 0 0 10px 0;
+                          font-size: 24px;
+                        ">
+                          ${subjectText}
+                        </h2>
+                      </div>
+                    `}
+                    
+                    <div style="margin-bottom: 30px;">
+                      ${contentText}
+                    </div>
+                    
+                    <div style="
+                      border-top: 1px solid #eee; 
+                      padding-top: 20px;
+                      color: #666;
+                      font-size: 14px;
                     ">
-                      ${subjectText}
-                    </h2>
-                  </div>
-                  
-                  <div style="margin-bottom: 30px;">
-                    ${contentText}
-                  </div>
-                  
-                  <div style="
-                    border-top: 1px solid #eee; 
-                    padding-top: 20px;
-                    color: #666;
-                    font-size: 14px;
-                  ">
-                    <p style="margin: 0;">
-                      Med vänliga hälsningar,<br />
-                      <strong>Lilla Improteatern</strong>
-                    </p>
+                      <p style="margin: 0;">
+                        Med vänliga hälsningar,<br />
+                        <strong>Lilla Improteatern</strong>
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -253,7 +319,7 @@ const handler = async (req: Request): Promise<Response> => {
           return resend.emails.send({
             from: "Lilla Improteatern <noreply@improteatern.se>",
             to: [recipient.email],
-            subject: subject,
+            subject: finalSubject,
             html: htmlContent,
             text: personalizedContent, // Keep plain text version for fallback
           });

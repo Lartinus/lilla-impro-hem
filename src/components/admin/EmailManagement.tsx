@@ -785,7 +785,8 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         body: {
           recipientGroup: selectedRecipients,
           subject: emailSubject,
-          content: emailContent
+          content: emailContent,
+          templateId: selectedTemplate || null
         }
       });
 
@@ -1256,6 +1257,22 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                 <p className="text-sm text-muted-foreground">
                   Du kan använda följande variabler: [NAMN], [KURSNAMN], [FÖRESTÄLLNING], [DATUM], [TID], [PLATS], [ADRESS]
                 </p>
+              </div>
+
+              {/* Email Preview */}
+              <div className="space-y-2">
+                <Label>Förhandsvisning</Label>
+                <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
+                  {emailContent ? (
+                    <div dangerouslySetInnerHTML={{ 
+                      __html: getStyledEmailContent(emailContent, emailSubject) 
+                    }} />
+                  ) : (
+                    <div className="text-muted-foreground text-center py-8">
+                      Skriv ett meddelande för att se förhandsvisningen
+                    </div>
+                  )}
+                </div>
               </div>
 
               <Button 
