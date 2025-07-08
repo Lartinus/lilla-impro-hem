@@ -139,7 +139,7 @@ export const NewsletterSignupModal: React.FC<NewsletterSignupModalProps> = ({
           </form>
         ) : (
           <div className="text-center py-6">
-            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+            <CheckCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">Tack för din registrering!</h3>
             <p className="text-muted-foreground mb-6">
               Vi har skickat en bekräftelse till <strong>{email}</strong>. 

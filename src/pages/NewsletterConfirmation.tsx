@@ -53,7 +53,7 @@ const NewsletterConfirmation = () => {
       case 'loading':
         return <Loader2 className="w-16 h-16 text-muted-foreground animate-spin" />;
       case 'success':
-        return <CheckCircle className="w-16 h-16 text-green-600" />;
+        return <CheckCircle className="w-16 h-16 text-red-600" />;
       case 'already_confirmed':
         return <Mail className="w-16 h-16 text-blue-600" />;
       case 'error':
@@ -120,8 +120,8 @@ const NewsletterConfirmation = () => {
 
               {status === 'success' && (
                 <div className="space-y-4">
-                  <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <div className="flex items-center justify-center gap-2 text-green-700 dark:text-green-400">
+                  <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                    <div className="flex items-center justify-center gap-2 text-red-700 dark:text-red-400">
                       <Mail className="w-5 h-5" />
                       <span className="font-medium">
                         Du kommer nu att få våra nyhetsbrev och information om kommande föreställningar och kurser.
