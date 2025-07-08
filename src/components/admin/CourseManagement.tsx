@@ -154,38 +154,38 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewPart
 
           <div className="flex flex-col gap-2 pt-2">
             {/* Första raden - Primära åtgärder */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 min-w-0">
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => onViewParticipants(course)}
-                className="flex-1"
+                className="flex-1 min-w-0 text-xs px-2"
               >
-                <Users className="w-4 h-4 mr-1" />
-                Deltagare ({course.bookingCount})
+                <Users className="w-3 h-3 mr-1 flex-shrink-0" />
+                <span className="truncate">Deltagare ({course.bookingCount})</span>
               </Button>
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => onEdit(course)}
-                className="flex-1"
+                className="flex-1 min-w-0 text-xs px-2"
               >
-                <Edit className="w-4 h-4 mr-1" />
-                Redigera
+                <Edit className="w-3 h-3 mr-1 flex-shrink-0" />
+                <span className="truncate">Redigera</span>
               </Button>
             </div>
             
             {/* Andra raden - Sekundära åtgärder */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 min-w-0">
               {showCompleted && onRestore && (
                 <Button 
                   variant="outline" 
                   size="sm"
                   onClick={() => onRestore(course)}
-                  className="flex-1"
+                  className="flex-1 min-w-0 text-xs px-2"
                 >
-                  <RotateCcw className="w-4 h-4 mr-1" />
-                  Återställ till aktiv
+                  <RotateCcw className="w-3 h-3 mr-1 flex-shrink-0" />
+                  <span className="truncate">Återställ</span>
                 </Button>
               )}
               {!showCompleted && (
@@ -193,14 +193,14 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewPart
                   variant="outline" 
                   size="sm"
                   onClick={() => onToggleStatus(course)}
-                  className="flex-1"
+                  className="flex-1 min-w-0 text-xs px-2"
                 >
                   {course.is_active ? (
-                    <PowerOff className="w-4 h-4 mr-1" />
+                    <PowerOff className="w-3 h-3 mr-1 flex-shrink-0" />
                   ) : (
-                    <Power className="w-4 h-4 mr-1" />
+                    <Power className="w-3 h-3 mr-1 flex-shrink-0" />
                   )}
-                  {course.is_active ? 'Inaktivera' : 'Aktivera'}
+                  <span className="truncate">{course.is_active ? 'Inaktivera' : 'Aktivera'}</span>
                 </Button>
               )}
               {!showCompleted && onMarkCompleted && (
@@ -208,10 +208,10 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewPart
                   variant="outline" 
                   size="sm"
                   onClick={() => onMarkCompleted(course)}
-                  className="flex-1"
+                  className="flex-1 min-w-0 text-xs px-2"
                 >
-                  <Archive className="w-4 h-4 mr-1" />
-                  Markera som genomförd
+                  <Archive className="w-3 h-3 mr-1 flex-shrink-0" />
+                  <span className="truncate">Genomförd</span>
                 </Button>
               )}
               <Button 
@@ -222,9 +222,9 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewPart
                     onDelete(course);
                   }
                 }}
-                className={showCompleted ? (onRestore ? "" : "flex-1") : ""}
+                className={`min-w-0 px-2 ${showCompleted ? (onRestore ? "w-10" : "flex-1") : "w-10"}`}
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-3 h-3 flex-shrink-0" />
               </Button>
             </div>
           </div>
@@ -300,38 +300,38 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipa
       <TableCell>
         <div className="space-y-2">
           {/* Första raden - Primära åtgärder */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 min-w-0">
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => onViewParticipants(course)}
-              className="flex-1"
+              className="flex-1 min-w-0 text-xs px-2"
             >
-              <Users className="w-4 h-4 mr-1" />
-              Deltagare ({course.bookingCount})
+              <Users className="w-3 h-3 mr-1 flex-shrink-0" />
+              <span className="truncate">Deltagare ({course.bookingCount})</span>
             </Button>
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => onEdit(course)}
-              className="flex-1"
+              className="flex-1 min-w-0 text-xs px-2"
             >
-              <Edit className="w-4 h-4 mr-1" />
-              Redigera
+              <Edit className="w-3 h-3 mr-1 flex-shrink-0" />
+              <span className="truncate">Redigera</span>
             </Button>
           </div>
           
           {/* Andra raden - Sekundära åtgärder */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 min-w-0">
             {showCompleted && onRestore && (
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => onRestore(course)}
-                className="flex-1"
+                className="flex-1 min-w-0 text-xs px-2"
               >
-                <RotateCcw className="w-4 h-4 mr-1" />
-                Återställ till aktiv
+                <RotateCcw className="w-3 h-3 mr-1 flex-shrink-0" />
+                <span className="truncate">Återställ</span>
               </Button>
             )}
             {!showCompleted && (
@@ -339,14 +339,14 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipa
                 variant="outline" 
                 size="sm"
                 onClick={() => onToggleStatus(course)}
-                className="flex-1"
+                className="flex-1 min-w-0 text-xs px-2"
               >
                 {course.is_active ? (
-                  <PowerOff className="w-4 h-4 mr-1" />
+                  <PowerOff className="w-3 h-3 mr-1 flex-shrink-0" />
                 ) : (
-                  <Power className="w-4 h-4 mr-1" />
+                  <Power className="w-3 h-3 mr-1 flex-shrink-0" />
                 )}
-                {course.is_active ? 'Inaktivera' : 'Aktivera'}
+                <span className="truncate">{course.is_active ? 'Inaktivera' : 'Aktivera'}</span>
               </Button>
             )}
             {!showCompleted && onMarkCompleted && (
@@ -354,10 +354,10 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipa
                 variant="outline" 
                 size="sm"
                 onClick={() => onMarkCompleted(course)}
-                className="flex-1"
+                className="flex-1 min-w-0 text-xs px-2"
               >
-                <Archive className="w-4 h-4 mr-1" />
-                Markera som genomförd
+                <Archive className="w-3 h-3 mr-1 flex-shrink-0" />
+                <span className="truncate">Genomförd</span>
               </Button>
             )}
             <Button 
@@ -368,10 +368,9 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipa
                   onDelete(course);
                 }
               }}
-              className={showCompleted ? (onRestore ? "" : "flex-1") : ""}
+              className={`min-w-0 px-2 ${showCompleted ? (onRestore ? "w-10" : "flex-1") : "w-10"}`}
             >
-              <Trash2 className="w-4 h-4 mr-1" />
-              Radera
+              <Trash2 className="w-3 h-3 flex-shrink-0" />
             </Button>
           </div>
         </div>
