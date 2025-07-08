@@ -27,11 +27,11 @@ const AdminDashboard = () => {
   const { data: userRole, isLoading: roleLoading } = useUserRole();
   const { data: stats, isLoading: statsLoading } = useAdminStats();
   const [showSignUp, setShowSignUp] = React.useState(false);
-  const [activeSection, setActiveSection] = React.useState('send');
+  const [activeSection, setActiveSection] = React.useState('courses');
   const [expandedSections, setExpandedSections] = React.useState({
-    courses: false,
+    courses: true,
     shows: false,
-    email: true
+    email: false
   });
 
   const handleSignOut = async () => {

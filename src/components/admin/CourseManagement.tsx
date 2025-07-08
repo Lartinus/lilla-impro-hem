@@ -72,13 +72,15 @@ interface NewCourseForm {
 }
 
 // Mobile Course Card Component
-function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, performers }: {
+function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, onMarkCompleted, performers, showCompleted }: {
   course: CourseWithBookings;
   onEdit: (course: CourseWithBookings) => void;
   onToggleStatus: (course: CourseWithBookings) => void;
   onDelete: (course: CourseWithBookings) => void;
   onViewParticipants: (course: CourseWithBookings) => void;
+  onMarkCompleted?: (course: CourseWithBookings) => void;
   performers?: any[];
+  showCompleted: boolean;
 }) {
   const {
     attributes,
@@ -168,19 +170,32 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewPart
               <Edit className="w-4 h-4 mr-1" />
               Redigera
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => onToggleStatus(course)}
-              className="flex-1 min-w-0"
-            >
-              {course.is_active ? (
-                <PowerOff className="w-4 h-4 mr-1" />
-              ) : (
-                <Power className="w-4 h-4 mr-1" />
-              )}
-              {course.is_active ? 'Inaktivera' : 'Aktivera'}
-            </Button>
+            {!showCompleted && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onToggleStatus(course)}
+                className="flex-1 min-w-0"
+              >
+                {course.is_active ? (
+                  <PowerOff className="w-4 h-4 mr-1" />
+                ) : (
+                  <Power className="w-4 h-4 mr-1" />
+                )}
+                {course.is_active ? 'Inaktivera' : 'Aktivera'}
+              </Button>
+            )}
+            {!showCompleted && onMarkCompleted && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onMarkCompleted(course)}
+                className="flex-1 min-w-0"
+              >
+                <Archive className="w-4 h-4 mr-1" />
+                Markera som genomförd
+              </Button>
+            )}
             <Button 
               variant="destructive" 
               size="sm"
@@ -201,13 +216,15 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewPart
 }
 
 // Sortable Row Component
-function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, performers }: {
+function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, onMarkCompleted, performers, showCompleted }: {
   course: CourseWithBookings;
   onEdit: (course: CourseWithBookings) => void;
   onToggleStatus: (course: CourseWithBookings) => void;
   onDelete: (course: CourseWithBookings) => void;
   onViewParticipants: (course: CourseWithBookings) => void;
+  onMarkCompleted?: (course: CourseWithBookings) => void;
   performers?: any[];
+  showCompleted: boolean;
 }) {
   const {
     attributes,
@@ -278,18 +295,30 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipa
             <Edit className="w-4 h-4 mr-1" />
             Redigera
           </Button>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => onToggleStatus(course)}
-          >
-            {course.is_active ? (
-              <PowerOff className="w-4 h-4 mr-1" />
-            ) : (
-              <Power className="w-4 h-4 mr-1" />
-            )}
-            {course.is_active ? 'Inaktivera' : 'Aktivera'}
-          </Button>
+          {!showCompleted && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => onToggleStatus(course)}
+            >
+              {course.is_active ? (
+                <PowerOff className="w-4 h-4 mr-1" />
+              ) : (
+                <Power className="w-4 h-4 mr-1" />
+              )}
+              {course.is_active ? 'Inaktivera' : 'Aktivera'}
+            </Button>
+          )}
+          {!showCompleted && onMarkCompleted && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => onMarkCompleted(course)}
+            >
+              <Archive className="w-4 h-4 mr-1" />
+              Markera som genomförd
+            </Button>
+          )}
           <Button 
             variant="destructive" 
             size="sm"
@@ -442,6 +471,32 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     }
   });
 
+  // Mark course as completed mutation
+  const markCompletedMutation = useMutation({
+    mutationFn: async (course: CourseWithBookings) => {
+      const { error } = await supabase
+        .from('course_instances')
+        .update({ completed_at: new Date().toISOString() })
+        .eq('id', course.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+      toast({
+        title: "Kurs markerad som genomförd",
+        description: "Kursen har flyttats till arkivet",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte markera kurs som genomförd: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
   // Update course mutation
   const updateCourseMutation = useMutation({
     mutationFn: async (courseData: { course: CourseWithBookings; formData: NewCourseForm }) => {
@@ -577,12 +632,20 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
   });
 
   const { data: courses, isLoading } = useQuery({
-    queryKey: ['admin-courses'],
+    queryKey: ['admin-courses', showCompleted],
     queryFn: async (): Promise<CourseWithBookings[]> => {
-      const { data: courseInstances, error } = await supabase
+      let query = supabase
         .from('course_instances')
         .select('*')
         .order('sort_order', { ascending: true });
+
+      if (showCompleted) {
+        query = query.not('completed_at', 'is', null);
+      } else {
+        query = query.is('completed_at', null);
+      }
+
+      const { data: courseInstances, error } = await query;
 
       if (error) throw error;
 
@@ -819,8 +882,8 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Kurshantering</CardTitle>
-          <CardDescription>Läser in kurser...</CardDescription>
+          <CardTitle>{showCompleted ? 'Genomförda kurser' : 'Aktiva kurser'}</CardTitle>
+          <CardDescription>{showCompleted ? 'Läser in genomförda kurser...' : 'Läser in aktiva kurser...'}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -838,15 +901,16 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       <CardHeader>
         <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
           <div className="flex-1">
-            <CardTitle>Kurshantering</CardTitle>
+            <CardTitle>{showCompleted ? 'Genomförda kurser' : 'Aktiva kurser'}</CardTitle>
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="w-full sm:w-auto">
-                <Plus className="w-4 h-4 mr-2" />
-                Lägg till ny kurs
-              </Button>
-            </DialogTrigger>
+          {!showCompleted && (
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="w-full sm:w-auto">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Lägg till ny kurs
+                </Button>
+              </DialogTrigger>
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{isEditMode ? 'Redigera kurs' : 'Skapa ny kurs'}</DialogTitle>
@@ -868,7 +932,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                       <SelectItem value="houseteam">House Team & fortsättning</SelectItem>
                     </SelectContent>
                   </Select>
-
+                </div>
                 {newCourse.courseType === 'helgworkshop' && (
                   <div className="grid gap-2">
                     <Label htmlFor="customName">Namn på helgworkshop</Label>
@@ -1070,11 +1134,11 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                       (isEditMode ? 'Uppdatera kurs' : 'Skapa kurs')
                     }
                   </Button>
+                 </div>
                 </div>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -1152,10 +1216,12 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                         key={course.id}
                         course={course}
                         performers={performers}
+                        showCompleted={showCompleted}
                         onEdit={handleEditCourse}
                         onToggleStatus={course => toggleStatusMutation.mutate(course)}
                         onDelete={course => deleteCourseMutation.mutate(course)}
                         onViewParticipants={handleViewParticipants}
+                        onMarkCompleted={course => markCompletedMutation.mutate(course)}
                       />
                     ))}
                   </SortableContext>
@@ -1174,10 +1240,12 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                     key={course.id}
                     course={course}
                     performers={performers}
+                    showCompleted={showCompleted}
                     onEdit={handleEditCourse}
                     onToggleStatus={course => toggleStatusMutation.mutate(course)}
                     onDelete={course => deleteCourseMutation.mutate(course)}
                     onViewParticipants={handleViewParticipants}
+                    onMarkCompleted={course => markCompletedMutation.mutate(course)}
                   />
                 ))}
               </SortableContext>

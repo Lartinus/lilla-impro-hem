@@ -145,6 +145,7 @@ export type Database = {
       }
       course_instances: {
         Row: {
+          completed_at: string | null
           course_info: string | null
           course_title: string
           created_at: string
@@ -166,6 +167,7 @@ export type Database = {
           table_name: string
         }
         Insert: {
+          completed_at?: string | null
           course_info?: string | null
           course_title: string
           created_at?: string
@@ -187,6 +189,7 @@ export type Database = {
           table_name: string
         }
         Update: {
+          completed_at?: string | null
           course_info?: string | null
           course_title?: string
           created_at?: string

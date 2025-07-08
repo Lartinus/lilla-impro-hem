@@ -254,9 +254,9 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
 
   // Fetch shows
   const { data: shows, isLoading: showsLoading } = useQuery({
-    queryKey: ['admin-shows'],
+    queryKey: ['admin-shows', showCompleted],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('admin_shows')
         .select(`
           *,
@@ -268,9 +268,19 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
               image_url
             )
           )
-        `)
-        .order('sort_order', { ascending: true });
+        `);
+
+      if (showCompleted) {
+        // Show past shows
+        query = query.lt('show_date', new Date().toISOString().split('T')[0]);
+      } else {
+        // Show current and future shows
+        query = query.gte('show_date', new Date().toISOString().split('T')[0]);
+      }
+
+      query = query.order('sort_order', { ascending: true });
       
+      const { data, error } = await query;
       if (error) throw error;
       
       return (data || []).map(show => ({
@@ -509,21 +519,23 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Föreställningshantering</CardTitle>
+        <CardTitle>{showCompleted ? 'Genomförda föreställningar' : 'Aktiva föreställningar'}</CardTitle>
         <CardDescription>
-          Hantera föreställningar från admin-panelen
+          {showCompleted ? 'Arkiv med föreställningar som redan genomförts' : 'Hantera kommande och pågående föreställningar'}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex justify-start items-center mb-6">
-          <Button 
-            onClick={() => setIsShowDialogOpen(true)}
-            className="w-full sm:w-auto"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Lägg till föreställning
-          </Button>
-        </div>
+        {!showCompleted && (
+          <div className="flex justify-start items-center mb-6">
+            <Button 
+              onClick={() => setIsShowDialogOpen(true)}
+              className="w-full sm:w-auto"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Lägg till föreställning
+            </Button>
+          </div>
+        )}
 
         {showsLoading ? (
           <div className="text-center py-8">Laddar föreställningar...</div>
