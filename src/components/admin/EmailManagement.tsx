@@ -869,6 +869,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
             title: templateForm.title || null,
             background_image: templateForm.background_image || null,
             title_size: templateForm.title_size || null,
+            image_position: templateForm.image_position || null,
             description: templateForm.description || null,
           })
           .eq('id', editingTemplate.id);
@@ -890,6 +891,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
             title: templateForm.title || null,
             background_image: templateForm.background_image || null,
             title_size: templateForm.title_size || null,
+            image_position: templateForm.image_position || null,
             description: templateForm.description || null,
           });
 
@@ -936,7 +938,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
   };
 
   // Function to create styled HTML email content with new template design
-  const getStyledEmailContent = (content: string, subject: string = '', title: string = '', backgroundImage: string = '', titleSize: string = '32') => {
+  const getStyledEmailContent = (content: string, subject: string = '', title: string = '', backgroundImage: string = '', titleSize: string = '32', imagePosition: string = 'top') => {
     // Replace placeholders with example values for preview
     const previewContent = content
       .replace(/\[NAMN\]/g, 'Anna Andersson')
@@ -964,8 +966,9 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         color: #333;
         background-color: #f5f5f5;
         padding: 0;
+        margin: 0;
       ">
-        ${hasBackground ? `
+        ${imagePosition === 'top' && hasBackground ? `
           <div style="
             height: 300px;
             background-image: url('${backgroundImage}');
@@ -976,17 +979,36 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
           "></div>
         ` : ''}
         
+        ${imagePosition === 'behind' && hasBackground ? `
+          <div style="
+            position: relative;
+            min-height: 400px;
+            background-image: url('${backgroundImage}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 40px 20px;
+          ">
+        ` : ''}
+        
         <div style="
           max-width: 600px;
-          margin: ${hasBackground ? '-60px auto 40px auto' : '40px auto'};
+          margin: ${imagePosition === 'top' && hasBackground ? '-80px auto 40px auto' : 
+                   imagePosition === 'behind' && hasBackground ? '0 auto' : 
+                   '40px auto'};
           position: relative;
           z-index: 10;
+          ${imagePosition === 'behind' && hasBackground ? '' : 'padding: 0 20px;'}
         ">
           <div style="
             background-color: #fff;
             border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            position: relative;
+            ${imagePosition === 'behind' && hasBackground ? 'background-color: rgba(255,255,255,0.95); backdrop-filter: blur(10px);' : ''}
           ">
             ${hasTitle ? `
               <h1 style="
@@ -1025,19 +1047,39 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
               ${htmlContent}
             </div>
             
+            ${imagePosition === 'bottom' && hasBackground ? `
+              <div style="
+                height: 200px;
+                background-image: url('${backgroundImage}');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                margin: 30px -40px 30px -40px;
+                border-radius: 8px;
+              "></div>
+            ` : ''}
+            
             <div style="
               border-top: 1px solid #eee; 
               padding-top: 20px;
               color: #666;
               font-size: 14px;
             ">
-              <p style="margin: 0;">
+              <p style="margin: 0 0 15px 0;">
                 Med vänliga hälsningar,<br />
                 <strong>Lilla Improteatern</strong>
+              </p>
+              <p style="margin: 0; font-size: 12px; color: #999;">
+                Vill du inte längre få våra mejl? 
+                <a href="#unsubscribe" style="color: #d32f2f; text-decoration: underline;">
+                  Avprenumerera här
+                </a>
               </p>
             </div>
           </div>
         </div>
+        
+        ${imagePosition === 'behind' && hasBackground ? '</div>' : ''}
       </div>
     `;
   };
@@ -1290,10 +1332,10 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
               <div className="space-y-2">
                 <Label>Förhandsvisning</Label>
                 <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
-                  {emailContent ? (
-                    <div dangerouslySetInnerHTML={{ 
-                      __html: getStyledEmailContent(emailContent, emailSubject, bulkEmailTemplateData.title, bulkEmailTemplateData.background_image, bulkEmailTemplateData.title_size) 
-                    }} />
+                    {emailContent ? (
+                      <div dangerouslySetInnerHTML={{ 
+                        __html: getStyledEmailContent(emailContent, emailSubject, bulkEmailTemplateData.title, bulkEmailTemplateData.background_image, bulkEmailTemplateData.title_size, bulkEmailTemplateData.image_position) 
+                      }} />
                   ) : (
                     <div className="text-muted-foreground text-center py-8">
                       Skriv ett meddelande för att se förhandsvisningen
@@ -1989,6 +2031,22 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="image-position">Bildposition</Label>
+                  <Select 
+                    value={templateForm.image_position} 
+                    onValueChange={(value) => setTemplateForm(prev => ({ ...prev, image_position: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Välj bildposition" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="top">Överst</SelectItem>
+                      <SelectItem value="behind">Bakom innehåll</SelectItem>
+                      <SelectItem value="bottom">Underst</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="template-content">Innehåll</Label>
                   </div>
@@ -2015,7 +2073,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                 <Label>Förhandsvisning</Label>
                 <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
                   <div dangerouslySetInnerHTML={{ 
-                    __html: getStyledEmailContent(templateForm.content, templateForm.subject, templateForm.title, templateForm.background_image, templateForm.title_size) 
+                    __html: getStyledEmailContent(templateForm.content, templateForm.subject, templateForm.title, templateForm.background_image, templateForm.title_size, templateForm.image_position) 
                   }} />
                 </div>
               </div>

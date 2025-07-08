@@ -230,6 +230,7 @@ const handler = async (req: Request): Promise<Response> => {
             const hasBackground = templateData?.background_image && templateData.background_image.trim() !== '';
             const hasTitle = templateData?.title && templateData.title.trim() !== '';
             const finalTitleSize = templateData?.title_size || '32';
+            const imagePosition = templateData?.image_position || 'top';
             
             return `
               <div style="
@@ -238,8 +239,9 @@ const handler = async (req: Request): Promise<Response> => {
                 color: #333;
                 background-color: #f5f5f5;
                 padding: 0;
+                margin: 0;
               ">
-                ${hasBackground ? `
+                ${imagePosition === 'top' && hasBackground ? `
                   <div style="
                     height: 300px;
                     background-image: url('${templateData.background_image}');
@@ -250,17 +252,35 @@ const handler = async (req: Request): Promise<Response> => {
                   "></div>
                 ` : ''}
                 
+                ${imagePosition === 'behind' && hasBackground ? `
+                  <div style="
+                    position: relative;
+                    min-height: 400px;
+                    background-image: url('${templateData.background_image}');
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    margin: 0;
+                    padding: 40px 20px;
+                  ">
+                ` : ''}
+                
                 <div style="
                   max-width: 600px;
-                  margin: ${hasBackground ? '-60px auto 40px auto' : '40px auto'};
+                  margin: ${imagePosition === 'top' && hasBackground ? '-80px auto 40px auto' : 
+                           imagePosition === 'behind' && hasBackground ? '0 auto' : 
+                           '40px auto'};
                   position: relative;
                   z-index: 10;
+                  ${imagePosition === 'behind' && hasBackground ? '' : 'padding: 0 20px;'}
                 ">
                   <div style="
                     background-color: #fff;
                     border-radius: 16px;
                     padding: 40px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+                    position: relative;
+                    ${imagePosition === 'behind' && hasBackground ? 'background-color: rgba(255,255,255,0.95); backdrop-filter: blur(10px);' : ''}
                   ">
                     ${hasTitle ? `
                       <h1 style="
@@ -299,19 +319,39 @@ const handler = async (req: Request): Promise<Response> => {
                       ${contentText}
                     </div>
                     
+                    ${imagePosition === 'bottom' && hasBackground ? `
+                      <div style="
+                        height: 200px;
+                        background-image: url('${templateData.background_image}');
+                        background-size: cover;
+                        background-position: center;
+                        background-repeat: no-repeat;
+                        margin: 30px -40px 30px -40px;
+                        border-radius: 8px;
+                      "></div>
+                    ` : ''}
+                    
                     <div style="
                       border-top: 1px solid #eee; 
                       padding-top: 20px;
                       color: #666;
                       font-size: 14px;
                     ">
-                      <p style="margin: 0;">
+                      <p style="margin: 0 0 15px 0;">
                         Med vänliga hälsningar,<br />
                         <strong>Lilla Improteatern</strong>
+                      </p>
+                      <p style="margin: 0; font-size: 12px; color: #999;">
+                        Vill du inte längre få våra mejl? 
+                        <a href="${Deno.env.get('SUPABASE_URL')}/functions/v1/unsubscribe-email?email=${encodeURIComponent(recipient.email)}" style="color: #d32f2f; text-decoration: underline;">
+                          Avprenumerera här
+                        </a>
                       </p>
                     </div>
                   </div>
                 </div>
+                
+                ${imagePosition === 'behind' && hasBackground ? '</div>' : ''}
               </div>
             `;
           }

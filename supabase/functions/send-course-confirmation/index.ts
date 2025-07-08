@@ -97,16 +97,17 @@ const handler = async (req: Request): Promise<Response> => {
     if (isPlainText) {
       // Convert plain text to styled HTML
       const textWithBreaks = personalizedContent.replace(/\n/g, '<br>');
-      htmlContent = createStyledEmailTemplate(personalizedSubject, textWithBreaks, template.title, template.background_image, template.title_size);
+      htmlContent = createStyledEmailTemplate(personalizedSubject, textWithBreaks, template.title, template.background_image, template.title_size, template.image_position);
     } else {
       // Use HTML content but wrap in template
-      htmlContent = createStyledEmailTemplate(personalizedSubject, personalizedContent, template.title, template.background_image, template.title_size);
+      htmlContent = createStyledEmailTemplate(personalizedSubject, personalizedContent, template.title, template.background_image, template.title_size, template.image_position);
     }
 
-    function createStyledEmailTemplate(subject: string, content: string, title?: string, backgroundImage?: string, titleSize?: string) {
+    function createStyledEmailTemplate(subject: string, content: string, title?: string, backgroundImage?: string, titleSize?: string, imagePosition?: string) {
       const hasBackground = backgroundImage && backgroundImage.trim() !== '';
       const hasTitle = title && title.trim() !== '';
       const finalTitleSize = titleSize || '32';
+      const finalImagePosition = imagePosition || 'top';
       
       return `
         <div style="
@@ -182,9 +183,15 @@ const handler = async (req: Request): Promise<Response> => {
                 color: #666;
                 font-size: 14px;
               ">
-                <p style="margin: 0;">
+                <p style="margin: 0 0 15px 0;">
                   Med vänliga hälsningar,<br />
                   <strong>Lilla Improteatern</strong>
+                </p>
+                <p style="margin: 0; font-size: 12px; color: #999;">
+                  Vill du inte längre få våra mejl? 
+                  <a href="${Deno.env.get('SUPABASE_URL')}/functions/v1/unsubscribe-email?email=${encodeURIComponent(email)}" style="color: #d32f2f; text-decoration: underline;">
+                    Avprenumerera här
+                  </a>
                 </p>
               </div>
             </div>
