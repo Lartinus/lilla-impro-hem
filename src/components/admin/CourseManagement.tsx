@@ -559,16 +559,25 @@ export const CourseManagement = () => {
 
       if (error) throw error;
 
-      // Get booking counts for each course
+      // Get booking counts for each course using Edge Function
       const coursesWithBookings = await Promise.all(
         (courseInstances || []).map(async (course) => {
           try {
-            const { data: bookingCount } = await supabase.rpc('get_course_booking_count', {
-              table_name: course.table_name
+            const { data: result, error } = await supabase.functions.invoke('get-course-bookings', {
+              body: { table_name: course.table_name }
             });
+
+            if (error) {
+              console.warn(`Failed to get booking count for ${course.table_name}:`, error);
+              return {
+                ...course,
+                bookingCount: 0
+              };
+            }
+
             return {
               ...course,
-              bookingCount: bookingCount || 0
+              bookingCount: result?.count || 0
             };
           } catch (error) {
             console.warn(`Failed to get booking count for ${course.table_name}:`, error);
