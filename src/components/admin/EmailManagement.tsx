@@ -1363,11 +1363,19 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Bakgrundsbild (valfritt)</Label>
-                    <ImagePicker
-                      value={bulkEmailTemplateData.background_image}
-                      onSelect={(url) => setBulkEmailTemplateData({...bulkEmailTemplateData, background_image: url})}
-                    />
+                    <div className="flex items-center justify-between">
+                      <Label>Bakgrundsbild (valfritt)</Label>
+                      <ImagePicker
+                        value={bulkEmailTemplateData.background_image}
+                        onSelect={(url) => setBulkEmailTemplateData({...bulkEmailTemplateData, background_image: url})}
+                        triggerClassName="h-8 px-3 text-sm"
+                      />
+                    </div>
+                    {bulkEmailTemplateData.background_image && (
+                      <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
+                        <span className="font-medium">Vald bild:</span> {bulkEmailTemplateData.background_image.split('/').pop()}
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -2072,14 +2080,22 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Bakgrundsbild (valfritt)</Label>
-                  <ImagePicker
-                    value={templateForm.background_image}
-                    onSelect={(url) => setTemplateForm(prev => ({ 
-                      ...prev, 
-                      background_image: url
-                    }))}
-                  />
+                  <div className="flex items-center justify-between">
+                    <Label>Bakgrundsbild (valfritt)</Label>
+                    <ImagePicker
+                      value={templateForm.background_image}
+                      onSelect={(url) => setTemplateForm(prev => ({ 
+                        ...prev, 
+                        background_image: url
+                      }))}
+                      triggerClassName="h-8 px-3 text-sm"
+                    />
+                  </div>
+                  {templateForm.background_image && (
+                    <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
+                      <span className="font-medium">Vald bild:</span> {templateForm.background_image.split('/').pop()}
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="image-position">Bildposition</Label>
