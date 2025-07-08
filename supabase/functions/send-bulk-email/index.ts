@@ -15,6 +15,11 @@ interface BulkEmailRequest {
   subject: string;
   content: string;
   templateId?: string;
+  attachments?: Array<{
+    filename: string;
+    url: string;
+    contentType: string;
+  }>;
 }
 
 interface EmailContact {
@@ -29,7 +34,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { recipientGroup, subject, content, templateId }: BulkEmailRequest = await req.json();
+    const { recipientGroup, subject, content, templateId, attachments }: BulkEmailRequest = await req.json();
 
     console.log('Processing bulk email request for group:', recipientGroup);
 
@@ -366,12 +371,33 @@ const handler = async (req: Request): Promise<Response> => {
             `;
           }
           
+          // Prepare attachments for Resend by downloading from URLs
+          const resendAttachments = [];
+          if (attachments && attachments.length > 0) {
+            for (const attachment of attachments) {
+              try {
+                const response = await fetch(attachment.url);
+                if (response.ok) {
+                  const content = await response.arrayBuffer();
+                  resendAttachments.push({
+                    filename: attachment.filename,
+                    content: new Uint8Array(content),
+                  });
+                }
+              } catch (attachmentError) {
+                console.error(`Failed to download attachment ${attachment.filename}:`, attachmentError);
+                // Continue with other attachments
+              }
+            }
+          }
+
           return resend.emails.send({
             from: "Lilla Improteatern <noreply@improteatern.se>",
             to: [recipient.email],
             subject: finalSubject,
             html: htmlContent,
             text: personalizedContent, // Keep plain text version for fallback
+            attachments: resendAttachments.length > 0 ? resendAttachments : undefined,
           });
         });
 

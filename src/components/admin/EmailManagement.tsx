@@ -183,6 +183,8 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
   const [emailContent, setEmailContent] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [uploadingFiles, setUploadingFiles] = useState(false);
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<EmailTemplate | null>(null);
   const [templateForm, setTemplateForm] = useState({
@@ -792,6 +794,56 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     staleTime: 5 * 60 * 1000,
   });
 
+  const handleFileUpload = async (files: FileList) => {
+    if (files.length === 0) return;
+    
+    setUploadingFiles(true);
+    const newAttachments: File[] = [];
+    
+    for (const file of Array.from(files)) {
+      // Check file size (max 25MB for email attachments)
+      if (file.size > 25 * 1024 * 1024) {
+        toast({
+          title: "Fil för stor",
+          description: `${file.name} är för stor. Maximal filstorlek är 25MB.`,
+          variant: "destructive",
+        });
+        continue;
+      }
+      
+      // Check file type - allow common document types
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/plain',
+        'image/jpeg',
+        'image/png',
+        'image/gif'
+      ];
+      
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "Filtyp ej tillåten",
+          description: `${file.name} har en filtyp som inte stöds.`,
+          variant: "destructive",
+        });
+        continue;
+      }
+      
+      newAttachments.push(file);
+    }
+    
+    setAttachments(prev => [...prev, ...newAttachments]);
+    setUploadingFiles(false);
+  };
+
+  const removeAttachment = (index: number) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleSendEmail = async () => {
     if (!selectedRecipients || !emailSubject || !emailContent) {
       toast({
@@ -804,12 +856,41 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
 
     setIsLoading(true);
     try {
+      // Upload attachments to Supabase Storage first
+      let attachmentUrls: { filename: string; url: string; contentType: string }[] = [];
+      
+      if (attachments.length > 0) {
+        for (const file of attachments) {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `email-attachments/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+          
+          const { error: uploadError } = await supabase.storage
+            .from('images')
+            .upload(fileName, file);
+          
+          if (uploadError) {
+            throw new Error(`Kunde inte ladda upp ${file.name}: ${uploadError.message}`);
+          }
+          
+          const { data: urlData } = supabase.storage
+            .from('images')
+            .getPublicUrl(fileName);
+          
+          attachmentUrls.push({
+            filename: file.name,
+            url: urlData.publicUrl,
+            contentType: file.type
+          });
+        }
+      }
+
       const { data, error } = await supabase.functions.invoke('send-bulk-email', {
         body: {
           recipientGroup: selectedRecipients,
           subject: emailSubject,
           content: emailContent,
-          templateId: selectedTemplate || null
+          templateId: selectedTemplate || null,
+          attachments: attachmentUrls
         }
       });
 
@@ -833,6 +914,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       setEmailContent('');
       setSelectedRecipients('');
       setSelectedTemplate('');
+      setAttachments([]);
       setBulkEmailTemplateData({ title: '', background_image: '', title_size: '32', image_position: 'top' });
     } catch (error: any) {
       console.error('Email sending error:', error);
@@ -1301,6 +1383,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                     setSelectedTemplate('');
                     setEmailSubject('');
                     setEmailContent('');
+                    setAttachments([]);
                     setBulkEmailTemplateData({ title: '', background_image: '', title_size: '32', image_position: 'top' });
                   }
                 }}>
@@ -1426,9 +1509,67 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                 </div>
               </div>
 
+              {/* File Attachments */}
+              <div className="space-y-2">
+                <Label>Bilagor</Label>
+                <div className="border-2 border-dashed border-muted rounded-lg p-4">
+                  <input
+                    type="file"
+                    multiple
+                    onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
+                    className="hidden"
+                    id="file-upload"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.gif"
+                  />
+                  <label
+                    htmlFor="file-upload"
+                    className="flex flex-col items-center justify-center cursor-pointer py-4"
+                  >
+                    <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                    <span className="text-sm text-muted-foreground">
+                      Klicka för att välja filer eller dra och släpp
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      Max 25MB per fil. Tillåtna typer: PDF, Word, Excel, bilder
+                    </span>
+                  </label>
+                </div>
+                
+                {/* Show attached files */}
+                {attachments.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-sm">Bifogade filer ({attachments.length})</Label>
+                    <div className="space-y-1">
+                      {attachments.map((file, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-4 h-4" />
+                            <span className="text-sm">{file.name}</span>
+                            <span className="text-xs text-muted-foreground">
+                              ({(file.size / 1024 / 1024).toFixed(1)} MB)
+                            </span>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeAttachment(index)}
+                          >
+                            ×
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {uploadingFiles && (
+                  <div className="text-sm text-muted-foreground">Laddar upp filer...</div>
+                )}
+              </div>
+
               <Button 
                 onClick={handleSendEmail}
-                disabled={isLoading || !selectedRecipients || !emailSubject || !emailContent}
+                disabled={isLoading || !selectedRecipients || !emailSubject || !emailContent || uploadingFiles}
                 className="w-full"
               >
                 <Send className="w-4 h-4 mr-2" />
