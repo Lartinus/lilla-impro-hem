@@ -147,7 +147,7 @@ const handler = async (req: Request): Promise<Response> => {
             <div style="text-align: center; font-size: 14px; color: #888;">
               <p>Med vänliga hälsningar,<br>Lilla Improvinsen</p>
               <p style="margin-top: 20px;">
-                <a href="https://gcimnsbeexkkqragmdzo.supabase.co/functions/v1/newsletter-unsubscribe?email=${encodeURIComponent(cleanEmail)}" style="color: #888; font-size: 12px;">Avregistrera dig här</a>
+                <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(cleanEmail)}" style="color: #888; font-size: 12px;">Avregistrera dig här</a>
               </p>
             </div>
           </div>

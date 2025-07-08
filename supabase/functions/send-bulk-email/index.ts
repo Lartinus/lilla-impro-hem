@@ -343,7 +343,7 @@ const handler = async (req: Request): Promise<Response> => {
                       </p>
                       <p style="margin: 0; font-size: 12px; color: #999;">
                         Vill du inte längre få våra mejl? 
-                        <a href="${Deno.env.get('SUPABASE_URL')}/functions/v1/unsubscribe-email?email=${encodeURIComponent(recipient.email)}" style="color: #d32f2f; text-decoration: underline;">
+                        <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(recipient.email)}" style="color: #d32f2f; text-decoration: underline;">
                           Avprenumerera här
                         </a>
                       </p>
