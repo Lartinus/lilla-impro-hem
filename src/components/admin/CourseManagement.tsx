@@ -151,63 +151,70 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewPart
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 pt-2">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => onViewParticipants(course)}
-              className="flex-1 min-w-0"
-            >
-              <Users className="w-4 h-4 mr-1" />
-              Deltagare ({course.bookingCount})
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => onEdit(course)}
-              className="flex-1 min-w-0"
-            >
-              <Edit className="w-4 h-4 mr-1" />
-              Redigera
-            </Button>
-            {!showCompleted && (
+          <div className="flex flex-col gap-2 pt-2">
+            {/* Första raden - Primära åtgärder */}
+            <div className="flex gap-2">
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => onToggleStatus(course)}
-                className="flex-1 min-w-0"
+                onClick={() => onViewParticipants(course)}
+                className="flex-1"
               >
-                {course.is_active ? (
-                  <PowerOff className="w-4 h-4 mr-1" />
-                ) : (
-                  <Power className="w-4 h-4 mr-1" />
-                )}
-                {course.is_active ? 'Inaktivera' : 'Aktivera'}
+                <Users className="w-4 h-4 mr-1" />
+                Deltagare ({course.bookingCount})
               </Button>
-            )}
-            {!showCompleted && onMarkCompleted && (
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => onMarkCompleted(course)}
-                className="flex-1 min-w-0"
+                onClick={() => onEdit(course)}
+                className="flex-1"
               >
-                <Archive className="w-4 h-4 mr-1" />
-                Markera som genomförd
+                <Edit className="w-4 h-4 mr-1" />
+                Redigera
               </Button>
-            )}
-            <Button 
-              variant="destructive" 
-              size="sm"
-              onClick={() => {
-                if (confirm(`Är du säker på att du vill radera "${course.course_title}"? Detta kan inte ångras.`)) {
-                  onDelete(course);
-                }
-              }}
-              className="min-w-0"
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
+            </div>
+            
+            {/* Andra raden - Sekundära åtgärder */}
+            <div className="flex gap-2">
+              {!showCompleted && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => onToggleStatus(course)}
+                  className="flex-1"
+                >
+                  {course.is_active ? (
+                    <PowerOff className="w-4 h-4 mr-1" />
+                  ) : (
+                    <Power className="w-4 h-4 mr-1" />
+                  )}
+                  {course.is_active ? 'Inaktivera' : 'Aktivera'}
+                </Button>
+              )}
+              {!showCompleted && onMarkCompleted && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => onMarkCompleted(course)}
+                  className="flex-1"
+                >
+                  <Archive className="w-4 h-4 mr-1" />
+                  Markera som genomförd
+                </Button>
+              )}
+              <Button 
+                variant="destructive" 
+                size="sm"
+                onClick={() => {
+                  if (confirm(`Är du säker på att du vill radera "${course.course_title}"? Detta kan inte ångras.`)) {
+                    onDelete(course);
+                  }
+                }}
+                className={showCompleted ? "flex-1" : ""}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </CardContent>
@@ -278,59 +285,71 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipa
         </Badge>
       </TableCell>
       <TableCell>
-        <div className="flex gap-2">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => onViewParticipants(course)}
-          >
-            <Users className="w-4 h-4 mr-1" />
-            Deltagare ({course.bookingCount})
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => onEdit(course)}
-          >
-            <Edit className="w-4 h-4 mr-1" />
-            Redigera
-          </Button>
-          {!showCompleted && (
+        <div className="space-y-2">
+          {/* Första raden - Primära åtgärder */}
+          <div className="flex gap-2">
             <Button 
               variant="outline" 
               size="sm"
-              onClick={() => onToggleStatus(course)}
+              onClick={() => onViewParticipants(course)}
+              className="flex-1"
             >
-              {course.is_active ? (
-                <PowerOff className="w-4 h-4 mr-1" />
-              ) : (
-                <Power className="w-4 h-4 mr-1" />
-              )}
-              {course.is_active ? 'Inaktivera' : 'Aktivera'}
+              <Users className="w-4 h-4 mr-1" />
+              Deltagare ({course.bookingCount})
             </Button>
-          )}
-          {!showCompleted && onMarkCompleted && (
             <Button 
               variant="outline" 
               size="sm"
-              onClick={() => onMarkCompleted(course)}
+              onClick={() => onEdit(course)}
+              className="flex-1"
             >
-              <Archive className="w-4 h-4 mr-1" />
-              Markera som genomförd
+              <Edit className="w-4 h-4 mr-1" />
+              Redigera
             </Button>
-          )}
-          <Button 
-            variant="destructive" 
-            size="sm"
-            onClick={() => {
-              if (confirm(`Är du säker på att du vill radera kursen "${course.course_title}"? Detta kan inte ångras.`)) {
-                onDelete(course);
-              }
-            }}
-          >
-            <Trash2 className="w-4 h-4 mr-1" />
-            Radera
-          </Button>
+          </div>
+          
+          {/* Andra raden - Sekundära åtgärder */}
+          <div className="flex gap-2">
+            {!showCompleted && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onToggleStatus(course)}
+                className="flex-1"
+              >
+                {course.is_active ? (
+                  <PowerOff className="w-4 h-4 mr-1" />
+                ) : (
+                  <Power className="w-4 h-4 mr-1" />
+                )}
+                {course.is_active ? 'Inaktivera' : 'Aktivera'}
+              </Button>
+            )}
+            {!showCompleted && onMarkCompleted && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onMarkCompleted(course)}
+                className="flex-1"
+              >
+                <Archive className="w-4 h-4 mr-1" />
+                Markera som genomförd
+              </Button>
+            )}
+            <Button 
+              variant="destructive" 
+              size="sm"
+              onClick={() => {
+                if (confirm(`Är du säker på att du vill radera kursen "${course.course_title}"? Detta kan inte ångras.`)) {
+                  onDelete(course);
+                }
+              }}
+              className={showCompleted ? "flex-1" : ""}
+            >
+              <Trash2 className="w-4 h-4 mr-1" />
+              Radera
+            </Button>
+          </div>
         </div>
       </TableCell>
     </TableRow>
