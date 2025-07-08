@@ -25,6 +25,7 @@ interface EmailTemplate {
   content: string;
   title?: string;
   background_image?: string;
+  title_size?: string;
   description?: string;
   is_active?: boolean;
   created_at?: string;
@@ -189,7 +190,8 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     content: '',
     title: '',
     background_image: '',
-    description: ''
+    description: '',
+    title_size: '32'
   });
   
   // New state for group management
@@ -846,6 +848,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
             content: templateForm.content,
             title: templateForm.title || null,
             background_image: templateForm.background_image || null,
+            title_size: templateForm.title_size || null,
             description: templateForm.description || null,
           })
           .eq('id', editingTemplate.id);
@@ -866,6 +869,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
             content: templateForm.content,
             title: templateForm.title || null,
             background_image: templateForm.background_image || null,
+            title_size: templateForm.title_size || null,
             description: templateForm.description || null,
           });
 
@@ -879,7 +883,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       
       setIsTemplateDialogOpen(false);
       setEditingTemplate(null);
-      setTemplateForm({ name: '', subject: '', content: '', title: '', background_image: '', description: '' });
+      setTemplateForm({ name: '', subject: '', content: '', title: '', background_image: '', description: '', title_size: '32' });
       queryClient.invalidateQueries({ queryKey: ['email-templates'] });
     } catch (error: any) {
       console.error('Template save error:', error);
@@ -900,17 +904,18 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         content: template.content,
         title: template.title || '',
         background_image: template.background_image || '',
-        description: template.description || ''
+        description: template.description || '',
+        title_size: template.title_size || '32'
       });
     } else {
       setEditingTemplate(null);
-      setTemplateForm({ name: '', subject: '', content: '', title: '', background_image: '', description: '' });
+      setTemplateForm({ name: '', subject: '', content: '', title: '', background_image: '', description: '', title_size: '32' });
     }
     setIsTemplateDialogOpen(true);
   };
 
   // Function to create styled HTML email content with new template design
-  const getStyledEmailContent = (content: string, subject: string = '', title: string = '', backgroundImage: string = '') => {
+  const getStyledEmailContent = (content: string, subject: string = '', title: string = '', backgroundImage: string = '', titleSize: string = '32') => {
     // Replace placeholders with example values for preview
     const previewContent = content
       .replace(/\[NAMN\]/g, 'Anna Andersson')
@@ -936,68 +941,80 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         font-family: Arial, sans-serif; 
         line-height: 1.6; 
         color: #333;
-        ${hasBackground ? `
-          background-image: url('${backgroundImage}');
-          background-size: cover;
-          background-position: center;
-          background-repeat: no-repeat;
-          min-height: 500px;
-          padding: 40px 20px;
-        ` : `
-          background-color: #f5f5f5;
-          padding: 40px 20px;
-        `}
+        background-color: #f5f5f5;
+        padding: 0;
       ">
-        <div style="
-          background-color: #fff;
-          max-width: 600px;
-          margin: 0 auto;
-          border-radius: 16px;
-          padding: 40px;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-          ${hasBackground ? 'backdrop-filter: blur(2px);' : ''}
-        ">
-          ${hasTitle ? `
-            <h1 style="
-              color: #333; 
-              margin: 0 0 30px 0;
-              font-size: 32px;
-              font-weight: bold;
-              text-align: center;
-              line-height: 1.2;
-            ">
-              ${title}
-            </h1>
-          ` : `
-            <div style="
-              border-bottom: 2px solid #d32f2f; 
-              padding-bottom: 20px; 
-              margin-bottom: 30px;
-            ">
-              <h2 style="
-                color: #d32f2f; 
-                margin: 0 0 10px 0;
-                font-size: 24px;
-              ">
-                ${subject || 'Email från Lilla Improteatern'}
-              </h2>
-            </div>
-          `}
-          
-          <div style="margin-bottom: 30px;">
-            ${htmlContent}
-          </div>
-          
+        ${hasBackground ? `
           <div style="
-            border-top: 1px solid #eee; 
-            padding-top: 20px;
-            color: #666;
-            font-size: 14px;
+            height: 300px;
+            background-image: url('${backgroundImage}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+          "></div>
+        ` : ''}
+        
+        <div style="
+          max-width: 600px;
+          margin: ${hasBackground ? '-60px auto 40px auto' : '40px auto'};
+          position: relative;
+          z-index: 10;
+        ">
+          <div style="
+            background-color: #fff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
           ">
-            <p style="margin: 0;">
-              Med vänliga hälsningar,<br />
-              <strong>Lilla Improteatern</strong>
-            </p>
+            ${hasTitle ? `
+              <h1 style="
+                color: #333; 
+                margin: 0 0 20px 0;
+                font-size: ${titleSize}px;
+                font-weight: bold;
+                text-align: center;
+                line-height: 1.2;
+              ">
+                ${title}
+              </h1>
+              <div style="
+                width: 60px;
+                height: 3px;
+                background-color: #333;
+                margin: 0 auto 30px auto;
+              "></div>
+            ` : `
+              <div style="
+                border-bottom: 2px solid #d32f2f; 
+                padding-bottom: 20px; 
+                margin-bottom: 30px;
+              ">
+                <h2 style="
+                  color: #d32f2f; 
+                  margin: 0 0 10px 0;
+                  font-size: 24px;
+                ">
+                  ${subject || 'Email från Lilla Improteatern'}
+                </h2>
+              </div>
+            `}
+            
+            <div style="margin-bottom: 30px;">
+              ${htmlContent}
+            </div>
+            
+            <div style="
+              border-top: 1px solid #eee; 
+              padding-top: 20px;
+              color: #666;
+              font-size: 14px;
+            ">
+              <p style="margin: 0;">
+                Med vänliga hälsningar,<br />
+                <strong>Lilla Improteatern</strong>
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -1896,6 +1913,18 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="template-title-size">Titelstorlek (px)</Label>
+                  <Input
+                    id="template-title-size"
+                    type="number"
+                    value={templateForm.title_size}
+                    onChange={(e) => setTemplateForm(prev => ({ ...prev, title_size: e.target.value }))}
+                    placeholder="32"
+                    min="16"
+                    max="72"
+                  />
+                </div>
+                <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="template-background">Bakgrundsbild (valfritt)</Label>
                     <ImagePicker
@@ -1942,7 +1971,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                 <Label>Förhandsvisning</Label>
                 <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
                   <div dangerouslySetInnerHTML={{ 
-                    __html: getStyledEmailContent(templateForm.content, templateForm.subject, templateForm.title, templateForm.background_image) 
+                    __html: getStyledEmailContent(templateForm.content, templateForm.subject, templateForm.title, templateForm.background_image, templateForm.title_size) 
                   }} />
                 </div>
               </div>
