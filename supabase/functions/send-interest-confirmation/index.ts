@@ -95,52 +95,100 @@ const handler = async (req: Request): Promise<Response> => {
     if (isPlainText) {
       // Convert plain text to styled HTML
       const textWithBreaks = personalizedContent.replace(/\n/g, '<br>');
-      htmlContent = `
+      htmlContent = createStyledEmailTemplate(personalizedSubject, textWithBreaks, template.title, template.background_image, template.title_size);
+    } else {
+      // Use HTML content but wrap in template
+      htmlContent = createStyledEmailTemplate(personalizedSubject, personalizedContent, template.title, template.background_image, template.title_size);
+    }
+
+    function createStyledEmailTemplate(subject: string, content: string, title?: string, backgroundImage?: string, titleSize?: string) {
+      const hasBackground = backgroundImage && backgroundImage.trim() !== '';
+      const hasTitle = title && title.trim() !== '';
+      const finalTitleSize = titleSize || '32';
+      
+      return `
         <div style="
           font-family: Arial, sans-serif; 
           line-height: 1.6; 
           color: #333;
-          background-color: #fff;
-          max-width: 600px;
-          margin: 20px auto;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          padding: 30px;
+          background-color: #f5f5f5;
+          padding: 0;
         ">
+          ${hasBackground ? `
+            <div style="
+              height: 300px;
+              background-image: url('${backgroundImage}');
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
+              margin: 0;
+            "></div>
+          ` : ''}
+          
           <div style="
-            border-bottom: 2px solid #d32f2f; 
-            padding-bottom: 20px; 
-            margin-bottom: 30px;
+            max-width: 600px;
+            margin: ${hasBackground ? '-60px auto 40px auto' : '40px auto'};
+            position: relative;
+            z-index: 10;
           ">
-            <h2 style="
-              color: #d32f2f; 
-              margin: 0 0 10px 0;
-              font-size: 24px;
+            <div style="
+              background-color: #fff;
+              border-radius: 16px;
+              padding: 40px;
+              box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             ">
-              ${personalizedSubject}
-            </h2>
-          </div>
-          
-          <div style="margin-bottom: 30px;">
-            ${textWithBreaks}
-          </div>
-          
-          <div style="
-            border-top: 1px solid #eee; 
-            padding-top: 20px;
-            color: #666;
-            font-size: 14px;
-          ">
-            <p style="margin: 0;">
-              Med vänliga hälsningar,<br />
-              <strong>Lilla Improteatern</strong>
-            </p>
+              ${hasTitle ? `
+                <h1 style="
+                  color: #333; 
+                  margin: 0 0 20px 0;
+                  font-size: ${finalTitleSize}px;
+                  font-weight: bold;
+                  text-align: center;
+                  line-height: 1.2;
+                ">
+                  ${title}
+                </h1>
+                <div style="
+                  width: 60px;
+                  height: 3px;
+                  background-color: #333;
+                  margin: 0 auto 30px auto;
+                "></div>
+              ` : `
+                <div style="
+                  border-bottom: 2px solid #d32f2f; 
+                  padding-bottom: 20px; 
+                  margin-bottom: 30px;
+                ">
+                  <h2 style="
+                    color: #d32f2f; 
+                    margin: 0 0 10px 0;
+                    font-size: 24px;
+                  ">
+                    ${subject}
+                  </h2>
+                </div>
+              `}
+              
+              <div style="margin-bottom: 30px;">
+                ${content}
+              </div>
+              
+              <div style="
+                border-top: 1px solid #eee; 
+                padding-top: 20px;
+                color: #666;
+                font-size: 14px;
+              ">
+                <p style="margin: 0;">
+                  Med vänliga hälsningar,<br />
+                  <strong>Lilla Improteatern</strong>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       `;
-    } else {
-      // Use HTML content as is
-      htmlContent = personalizedContent;
     }
 
     // Send the email

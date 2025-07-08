@@ -445,6 +445,7 @@ export type Database = {
           name: string
           subject: string
           title: string | null
+          title_size: string | null
           updated_at: string
         }
         Insert: {
@@ -457,6 +458,7 @@ export type Database = {
           name: string
           subject: string
           title?: string | null
+          title_size?: string | null
           updated_at?: string
         }
         Update: {
@@ -469,6 +471,7 @@ export type Database = {
           name?: string
           subject?: string
           title?: string | null
+          title_size?: string | null
           updated_at?: string
         }
         Relationships: []
