@@ -16,7 +16,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, GripVertical, User, Download, Archive } from 'lucide-react';
+import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, GripVertical, User, Download, Archive, RotateCcw } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
@@ -72,13 +72,14 @@ interface NewCourseForm {
 }
 
 // Mobile Course Card Component
-function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, onMarkCompleted, performers, showCompleted }: {
+function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, onMarkCompleted, onRestore, performers, showCompleted }: {
   course: CourseWithBookings;
   onEdit: (course: CourseWithBookings) => void;
   onToggleStatus: (course: CourseWithBookings) => void;
   onDelete: (course: CourseWithBookings) => void;
   onViewParticipants: (course: CourseWithBookings) => void;
   onMarkCompleted?: (course: CourseWithBookings) => void;
+  onRestore?: (course: CourseWithBookings) => void;
   performers?: any[];
   showCompleted: boolean;
 }) {
@@ -176,6 +177,17 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewPart
             
             {/* Andra raden - Sekundära åtgärder */}
             <div className="flex gap-2">
+              {showCompleted && onRestore && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => onRestore(course)}
+                  className="flex-1"
+                >
+                  <RotateCcw className="w-4 h-4 mr-1" />
+                  Återställ till aktiv
+                </Button>
+              )}
               {!showCompleted && (
                 <Button 
                   variant="outline" 
@@ -210,7 +222,7 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewPart
                     onDelete(course);
                   }
                 }}
-                className={showCompleted ? "flex-1" : ""}
+                className={showCompleted ? (onRestore ? "" : "flex-1") : ""}
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
@@ -223,13 +235,14 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewPart
 }
 
 // Sortable Row Component
-function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, onMarkCompleted, performers, showCompleted }: {
+function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, onMarkCompleted, onRestore, performers, showCompleted }: {
   course: CourseWithBookings;
   onEdit: (course: CourseWithBookings) => void;
   onToggleStatus: (course: CourseWithBookings) => void;
   onDelete: (course: CourseWithBookings) => void;
   onViewParticipants: (course: CourseWithBookings) => void;
   onMarkCompleted?: (course: CourseWithBookings) => void;
+  onRestore?: (course: CourseWithBookings) => void;
   performers?: any[];
   showCompleted: boolean;
 }) {
@@ -310,6 +323,17 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipa
           
           {/* Andra raden - Sekundära åtgärder */}
           <div className="flex gap-2">
+            {showCompleted && onRestore && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onRestore(course)}
+                className="flex-1"
+              >
+                <RotateCcw className="w-4 h-4 mr-1" />
+                Återställ till aktiv
+              </Button>
+            )}
             {!showCompleted && (
               <Button 
                 variant="outline" 
@@ -344,7 +368,7 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipa
                   onDelete(course);
                 }
               }}
-              className={showCompleted ? "flex-1" : ""}
+              className={showCompleted ? (onRestore ? "" : "flex-1") : ""}
             >
               <Trash2 className="w-4 h-4 mr-1" />
               Radera
@@ -511,6 +535,33 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       toast({
         title: "Fel",
         description: `Kunde inte markera kurs som genomförd: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Restore course from completed to active mutation
+  const restoreCourseMutation = useMutation({
+    mutationFn: async (course: CourseWithBookings) => {
+      const { error } = await supabase
+        .from('course_instances')
+        .update({ completed_at: null })
+        .eq('id', course.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-courses-formatted'] });
+      toast({
+        title: "Kurs återställd",
+        description: "Kursen har flyttats tillbaka till aktiva kurser",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte återställa kurs: ${error.message}`,
         variant: "destructive"
       });
     }
@@ -1241,6 +1292,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                         onDelete={course => deleteCourseMutation.mutate(course)}
                         onViewParticipants={handleViewParticipants}
                         onMarkCompleted={course => markCompletedMutation.mutate(course)}
+                        onRestore={course => restoreCourseMutation.mutate(course)}
                       />
                     ))}
                   </SortableContext>
@@ -1265,6 +1317,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                     onDelete={course => deleteCourseMutation.mutate(course)}
                     onViewParticipants={handleViewParticipants}
                     onMarkCompleted={course => markCompletedMutation.mutate(course)}
+                    onRestore={course => restoreCourseMutation.mutate(course)}
                   />
                 ))}
               </SortableContext>
