@@ -1766,19 +1766,19 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                         type: 'custom' as const,
                         isAllContacts: false
                       }))
-                  ].map((group) => (
-                    <Card key={group.id} className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <h4 className="font-satoshi font-semibold text-base">{group.name}</h4>
-                          {group.description && (
-                            <p className="font-satoshi text-sm text-muted-foreground mt-1">{group.description}</p>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <Badge variant="outline" className="px-3 py-1 font-satoshi">
-                            {group.count} personer
-                          </Badge>
+                   ].map((group) => (
+                     <Card key={group.id} className="p-3 lg:p-4">
+                       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                         <div className="flex-1 min-w-0">
+                           <h4 className="font-satoshi font-semibold text-sm lg:text-base break-words">{group.name}</h4>
+                           {group.description && (
+                             <p className="font-satoshi text-xs lg:text-sm text-muted-foreground mt-1 break-words">{group.description}</p>
+                           )}
+                         </div>
+                         <div className="flex items-center justify-between lg:justify-end gap-2 lg:gap-3 flex-shrink-0">
+                           <Badge variant="outline" className="px-2 py-1 text-xs lg:px-3 lg:text-sm font-satoshi whitespace-nowrap">
+                             {group.count} personer
+                           </Badge>
                           {group.type === 'custom' && (
                             <div className="flex gap-1">
                               <Button

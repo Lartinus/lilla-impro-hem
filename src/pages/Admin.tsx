@@ -159,23 +159,23 @@ const AdminDashboard = () => {
       
       <main className="container mx-auto px-4 py-8 pt-20">
         <div className="mb-8">
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">Administratörspanel</h1>
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Administratörspanel</h1>
               <p className="text-muted-foreground mt-2">Hantera kurser, biljetter och kommunikation</p>
             </div>
-            <div className="flex items-center gap-2 mt-1">
-              <Badge variant="secondary" className="text-sm flex items-center">
-                <Settings className="w-4 h-4 mr-1" />
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Badge variant="secondary" className="text-xs lg:text-sm flex items-center">
+                <Settings className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
                 Admin
               </Badge>
               <Button 
                 variant="outline" 
                 size="sm" 
                 onClick={handleSignOut}
-                className="text-sm flex items-center"
+                className="text-xs lg:text-sm flex items-center whitespace-nowrap"
               >
-                <LogOut className="w-4 h-4 mr-1" />
+                <LogOut className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
                 Logga ut
               </Button>
             </div>
