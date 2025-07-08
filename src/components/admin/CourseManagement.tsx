@@ -266,7 +266,7 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipa
       <TableCell>
         {course.start_date ? new Date(course.start_date).toLocaleDateString('sv-SE') : '-'}
       </TableCell>
-      <TableCell>
+      <TableCell className="whitespace-nowrap">
         {/* Visa båda kursledarna om de finns */}
         {(() => {
           const instructor1 = performers?.find(p => p.id === course.instructor_id_1);
@@ -1216,13 +1216,13 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                         <span className="ml-2">{getSortIcon('start_date')}</span>
                       </Button>
                     </TableHead>
-                    <TableHead>Kursledare</TableHead>
+                    <TableHead className="w-[180px]">Kursledare</TableHead>
                     <TableHead className="w-20">
                       Anmälda
                     </TableHead>
-                    <TableHead>Max antal</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="w-[300px]">Åtgärder</TableHead>
+                    <TableHead className="w-24">Max antal</TableHead>
+                    <TableHead className="w-20">Status</TableHead>
+                    <TableHead className="w-[280px]">Åtgärder</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
