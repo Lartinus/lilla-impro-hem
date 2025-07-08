@@ -30,46 +30,40 @@ serve(async (req) => {
       )
     }
 
-    // Check if table exists
-    const { data: tables } = await supabase
-      .from('information_schema.tables')
-      .select('table_name')
-      .eq('table_schema', 'public')
-      .eq('table_name', table_name)
+    // Try to get booking count directly - if table doesn't exist, it will throw an error
+    try {
+      const { count, error } = await supabase
+        .from(table_name)
+        .select('*', { count: 'exact', head: true })
 
-    if (!tables || tables.length === 0) {
-      return new Response(
-        JSON.stringify({ count: 0 }),
-        { 
-          status: 200, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      )
-    }
-
-    // Get booking count using service role which bypasses RLS
-    const { count, error } = await supabase
-      .from(table_name)
-      .select('*', { count: 'exact', head: true })
-
-    if (error) {
-      console.error('Error getting booking count:', error)
-      return new Response(
-        JSON.stringify({ count: 0 }),
-        { 
-          status: 200, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      )
-    }
-
-    return new Response(
-      JSON.stringify({ count: count || 0 }),
-      { 
-        status: 200, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      if (error) {
+        console.error('Error getting booking count:', error)
+        return new Response(
+          JSON.stringify({ count: 0 }),
+          { 
+            status: 200, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        )
       }
-    )
+
+      return new Response(
+        JSON.stringify({ count: count || 0 }),
+        { 
+          status: 200, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    } catch (tableError) {
+      console.log('Table probably does not exist:', table_name)
+      return new Response(
+        JSON.stringify({ count: 0 }),
+        { 
+          status: 200, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
 
   } catch (error) {
     console.error('Error in get-course-bookings:', error)
