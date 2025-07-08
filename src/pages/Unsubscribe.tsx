@@ -34,10 +34,26 @@ const Unsubscribe = () => {
         return;
       }
 
-      // If we have an email and no error, the unsubscribe was successful
-      console.log(`Unsubscribe completed for: ${email}`);
-      setStatus('success');
-      setMessage('Du har framgångsrikt avprenumererat från våra utskick.');
+      try {
+        console.log(`Processing unsubscribe for: ${email}`);
+        
+        // Call the newsletter-unsubscribe edge function
+        const { data, error: unsubscribeError } = await supabase.functions.invoke('newsletter-unsubscribe', {
+          body: { email: email }
+        });
+
+        if (unsubscribeError) {
+          throw unsubscribeError;
+        }
+
+        console.log(`Unsubscribe completed successfully for: ${email}`);
+        setStatus('success');
+        setMessage('Du har framgångsrikt avprenumererat från våra utskick.');
+      } catch (err) {
+        console.error('Error processing unsubscribe:', err);
+        setStatus('error');
+        setMessage('Ett fel uppstod vid avprenumerationen. Vänligen försök igen senare eller kontakta oss direkt.');
+      }
     };
 
     handleUnsubscribe();

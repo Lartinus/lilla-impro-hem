@@ -1,11 +1,44 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
 const handler = async (req: Request): Promise<Response> => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   try {
     const url = new URL(req.url);
-    const email = url.searchParams.get('email');
+    let email = url.searchParams.get('email');
     const token = url.searchParams.get('token');
+
+    // Handle different POST request types
+    if (req.method === 'POST') {
+      const contentType = req.headers.get('content-type') || '';
+      
+      if (contentType.includes('application/json')) {
+        // JSON request from React app
+        const body = await req.json();
+        email = body.email;
+      } else if (contentType.includes('application/x-www-form-urlencoded')) {
+        // Form submission
+        const formData = await req.formData();
+        const formEmail = formData.get('email') as string;
+        
+        if (formEmail) {
+          // Redirect to GET with email parameter
+          return new Response(null, {
+            status: 302,
+            headers: { "Location": `/newsletter-unsubscribe?email=${encodeURIComponent(formEmail)}` }
+          });
+        }
+      }
+    }
 
     if (!email && !token) {
       return new Response(`
@@ -60,19 +93,6 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    if (req.method === 'POST') {
-      // Handle form submission
-      const formData = await req.formData();
-      const formEmail = formData.get('email') as string;
-      
-      if (formEmail) {
-        // Redirect to GET with email parameter
-        return new Response(null, {
-          status: 302,
-          headers: { "Location": `/newsletter-unsubscribe?email=${encodeURIComponent(formEmail)}` }
-        });
-      }
-    }
 
     const targetEmail = email || token; // Support both email and token-based unsubscribe
 
@@ -117,6 +137,16 @@ const handler = async (req: Request): Promise<Response> => {
       .single();
 
     if (findError || !contact) {
+      if (req.method === 'POST') {
+        return new Response(JSON.stringify({ 
+          error: 'E-post ej funnen',
+          message: `Vi kunde inte hitta e-postadressen ${targetEmail} i vårt system.`
+        }), {
+          status: 404,
+          headers: { "Content-Type": "application/json", ...corsHeaders }
+        });
+      }
+      
       return new Response(`
         <!DOCTYPE html>
         <html>
@@ -178,6 +208,18 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log(`Successfully unsubscribed: ${contact.email}`);
+
+    // Return JSON response for POST requests
+    if (req.method === 'POST') {
+      return new Response(JSON.stringify({
+        success: true,
+        message: 'Du har framgångsrikt avprenumererat från våra utskick.',
+        email: contact.email
+      }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders }
+      });
+    }
 
     return new Response(`
       <!DOCTYPE html>
