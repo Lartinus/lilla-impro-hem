@@ -3,10 +3,14 @@ import Header from '@/components/Header';
 import ServiceBoxes from '@/components/ServiceBoxes';
 import MultiLayerParallaxBackground from '@/components/MultiLayerParallaxBackground';
 import { useOptimizedPrefetch } from '@/hooks/useOptimizedPrefetch';
+import { NewsletterSignupModal } from '@/components/NewsletterSignupModal';
+import { useState } from 'react';
 
 const Index = () => {
   // Use optimized prefetch for better performance
   useOptimizedPrefetch();
+  
+  const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
 
   // Enkelt sätt att stänga av parallax-bakgrunden
   const enableParallaxBackground = true;
@@ -48,9 +52,22 @@ const Index = () => {
             alt="Lilla Improteatern logotyp"
             className="h-40 md:h-48 lg:h-56 mx-auto mb-4 drop-shadow-lg"
           />
-          <p className="text-white text-sm">Följ oss på @lillaimproteatern</p>
+          <p className="text-white text-sm">
+            Följ oss på @lillaimproteatern eller via{' '}
+            <button 
+              onClick={() => setNewsletterModalOpen(true)}
+              className="underline hover:no-underline transition-all duration-200 cursor-pointer"
+            >
+              nyhetsbrevet
+            </button>
+          </p>
         </div>
       </div>
+
+      <NewsletterSignupModal 
+        open={newsletterModalOpen} 
+        onOpenChange={setNewsletterModalOpen} 
+      />
     </div>
   );
 };
