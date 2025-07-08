@@ -377,7 +377,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     staleTime: 2 * 60 * 1000,
   });
 
-  // Fetch all email contacts
+  // Fetch all email contacts (excluding unsubscribed)
   const { data: emailContacts, isLoading: contactsLoading } = useQuery({
     queryKey: ['email-contacts'],
     queryFn: async (): Promise<EmailContact[]> => {
@@ -387,7 +387,14 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      
+      // Filter out unsubscribed contacts
+      const activeContacts = (data || []).filter(contact => {
+        const metadata = contact.metadata as any || {};
+        return !metadata.unsubscribed;
+      });
+      
+      return activeContacts;
     },
     staleTime: 2 * 60 * 1000,
   });
@@ -716,7 +723,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     }
   });
 
-  // Fetch contacts not in current group
+  // Fetch contacts not in current group (excluding unsubscribed)
   const { data: availableContacts, isLoading: availableContactsLoading } = useQuery({
     queryKey: ['available-contacts', viewingGroupMembers],
     queryFn: async (): Promise<EmailContact[]> => {
@@ -731,6 +738,12 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       if (contactsError) throw contactsError;
       if (!allContacts) return [];
 
+      // Filter out unsubscribed contacts
+      const activeContacts = allContacts.filter(contact => {
+        const metadata = contact.metadata as any || {};
+        return !metadata.unsubscribed;
+      });
+
       // Get current group members
       const { data: currentMembers, error: membersError } = await supabase
         .from('email_group_members')
@@ -742,7 +755,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       const memberContactIds = new Set(currentMembers?.map(m => m.contact_id) || []);
       
       // Return contacts not in the group
-      return allContacts.filter(contact => !memberContactIds.has(contact.id));
+      return activeContacts.filter(contact => !memberContactIds.has(contact.id));
     },
     enabled: !!viewingGroupMembers && isAddMemberDialogOpen,
     staleTime: 1 * 60 * 1000,
