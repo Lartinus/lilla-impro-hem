@@ -101,7 +101,7 @@ const Unsubscribe = () => {
               {status === 'success' && (
                 <div className="space-y-4">
                   <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <div className="flex items-center justify-center gap-2 text-green-900 dark:text-green-200">
+                    <div className="flex items-center justify-center gap-2 text-green-200">
                       <Mail className="w-5 h-5" />
                       <span className="font-medium">
                         Vi kommer inte längre att skicka nyhetsbrev eller andra mejl till denna adress.
