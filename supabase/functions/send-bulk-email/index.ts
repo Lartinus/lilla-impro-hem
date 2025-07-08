@@ -60,7 +60,7 @@ const handler = async (req: Request): Promise<Response> => {
       const { data: groupMembers, error: groupError } = await supabase
         .from('email_group_members')
         .select(`
-          email_contacts (email, name)
+          email_contacts (email, name, metadata)
         `)
         .eq('group_id', groupId);
 
@@ -70,9 +70,13 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       recipients = groupMembers
-        ?.map(member => member.email_contacts)
-        .filter(Boolean)
-        .map(contact => ({
+        ?.map((member: any) => member.email_contacts)
+        ?.filter(contact => {
+          // Filter out unsubscribed contacts
+          const metadata = contact.metadata || {};
+          return !metadata.unsubscribed;
+        })
+        ?.map(contact => ({
           email: contact.email,
           name: contact.name
         })) || [];
@@ -83,17 +87,23 @@ const handler = async (req: Request): Promise<Response> => {
       
       const { data: contacts, error: contactsError } = await supabase
         .from('email_contacts')
-        .select('email, name');
+        .select('email, name, metadata');
 
       if (contactsError) {
         console.error('Error fetching all contacts:', contactsError);
         throw contactsError;
       }
 
-      recipients = contacts?.map(contact => ({
-        email: contact.email,
-        name: contact.name
-      })) || [];
+      recipients = contacts
+        ?.filter(contact => {
+          // Filter out unsubscribed contacts
+          const metadata = contact.metadata || {};
+          return !metadata.unsubscribed;
+        })
+        ?.map(contact => ({
+          email: contact.email,
+          name: contact.name
+        })) || [];
 
     } else if (recipientGroup === 'all_ticket_buyers') {
       // All ticket buyers

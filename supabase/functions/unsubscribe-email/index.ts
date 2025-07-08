@@ -46,40 +46,44 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Processing unsubscribe request for: ${email}`);
 
     try {
-      // Update email_contacts to mark as unsubscribed
+      // First get the contact to preserve existing metadata
+      const { data: contactData, error: getError } = await supabase
+        .from('email_contacts')
+        .select('id, metadata')
+        .eq('email', email.toLowerCase())
+        .single();
+
+      if (getError || !contactData) {
+        console.error('Contact not found:', getError);
+        throw new Error('Kontakt hittades inte');
+      }
+
+      // Update email_contacts to mark as unsubscribed, preserving existing metadata
+      const updatedMetadata = {
+        ...contactData.metadata,
+        unsubscribed: true,
+        unsubscribed_at: new Date().toISOString()
+      };
+
       const { error: updateError } = await supabase
         .from('email_contacts')
-        .update({ 
-          metadata: {
-            unsubscribed: true,
-            unsubscribed_at: new Date().toISOString()
-          }
-        })
+        .update({ metadata: updatedMetadata })
         .eq('email', email.toLowerCase());
 
       if (updateError) {
         console.error('Error updating contact:', updateError);
-        // Don't fail - continue to try removing from groups
+        throw updateError;
       }
 
-      // First get the contact ID
-      const { data: contactData } = await supabase
-        .from('email_contacts')
-        .select('id')
-        .eq('email', email.toLowerCase())
-        .single();
+      // Remove from all email groups
+      const { error: removeError } = await supabase
+        .from('email_group_members')
+        .delete()
+        .eq('contact_id', contactData.id);
 
-      if (contactData?.id) {
-        // Remove from all email groups
-        const { error: removeError } = await supabase
-          .from('email_group_members')
-          .delete()
-          .eq('contact_id', contactData.id);
-
-        if (removeError) {
-          console.error('Error removing from groups:', removeError);
-          // Don't fail - contact is still marked as unsubscribed
-        }
+      if (removeError) {
+        console.error('Error removing from groups:', removeError);
+        // Don't throw - contact is still marked as unsubscribed
       }
 
       console.log(`Successfully unsubscribed: ${email}`);
