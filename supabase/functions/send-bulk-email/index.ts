@@ -41,7 +41,7 @@ const handler = async (req: Request): Promise<Response> => {
         .select('*')
         .eq('id', templateId)
         .eq('is_active', true)
-        .single();
+        .maybeSingle();
 
       if (!templateError && templateData) {
         template = templateData;

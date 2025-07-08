@@ -194,6 +194,13 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     title_size: '32'
   });
   
+  // State for bulk email template data
+  const [bulkEmailTemplateData, setBulkEmailTemplateData] = useState({
+    title: '',
+    background_image: '',
+    title_size: '32'
+  });
+  
   // New state for group management
   const [isGroupDialogOpen, setIsGroupDialogOpen] = useState(false);
   const [editingGroup, setEditingGroup] = useState<EmailGroup | null>(null);
@@ -810,6 +817,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       setEmailContent('');
       setSelectedRecipients('');
       setSelectedTemplate('');
+      setBulkEmailTemplateData({ title: '', background_image: '', title_size: '32' });
     } catch (error: any) {
       console.error('Email sending error:', error);
       toast({
@@ -826,6 +834,13 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     setEmailSubject(template.subject);
     setEmailContent(template.content);
     setSelectedTemplate(template.id);
+    
+    // Store template data for preview
+    setBulkEmailTemplateData({
+      title: template.title || '',
+      background_image: template.background_image || '',
+      title_size: template.title_size || '32'
+    });
   };
 
   const handleSaveTemplate = async () => {
@@ -1217,9 +1232,16 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
               <div className="space-y-2">
                 <Label>Använd mall (valfritt)</Label>
                 <Select value={selectedTemplate} onValueChange={(value) => {
-                  const template = emailTemplates.find(t => t.id === value);
-                  if (template) {
-                    handleUseTemplate(template);
+                  if (value) {
+                    const template = emailTemplates.find(t => t.id === value);
+                    if (template) {
+                      handleUseTemplate(template);
+                    }
+                  } else {
+                    setSelectedTemplate('');
+                    setEmailSubject('');
+                    setEmailContent('');
+                    setBulkEmailTemplateData({ title: '', background_image: '', title_size: '32' });
                   }
                 }}>
                   <SelectTrigger>
@@ -1265,7 +1287,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                 <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
                   {emailContent ? (
                     <div dangerouslySetInnerHTML={{ 
-                      __html: getStyledEmailContent(emailContent, emailSubject) 
+                      __html: getStyledEmailContent(emailContent, emailSubject, bulkEmailTemplateData.title, bulkEmailTemplateData.background_image, bulkEmailTemplateData.title_size) 
                     }} />
                   ) : (
                     <div className="text-muted-foreground text-center py-8">
