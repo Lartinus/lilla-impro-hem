@@ -57,7 +57,7 @@ const AdminDashboard = () => {
     return (
       <div className="min-h-screen bg-background font-satoshi">
         <Header />
-        <main className="container mx-auto px-4 py-8 pt-10">
+        <main className="container mx-auto px-4 py-8 pt-32">
           <div className="max-w-md mx-auto">
             <Card>
               <CardHeader className="text-center">
@@ -100,7 +100,7 @@ const AdminDashboard = () => {
     return (
       <div className="min-h-screen bg-background font-satoshi">
         <Header />
-        <main className="container mx-auto px-4 py-8 pt-10">
+        <main className="container mx-auto px-4 py-8 pt-32">
           <div className="max-w-md mx-auto">
             <Card>
               <CardHeader className="text-center">
