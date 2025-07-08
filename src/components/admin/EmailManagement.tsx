@@ -26,6 +26,7 @@ interface EmailTemplate {
   title?: string;
   background_image?: string;
   title_size?: string;
+  image_position?: string;
   description?: string;
   is_active?: boolean;
   created_at?: string;
@@ -191,14 +192,16 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     title: '',
     background_image: '',
     description: '',
-    title_size: '32'
+    title_size: '32',
+    image_position: 'top'
   });
   
   // State for bulk email template data
   const [bulkEmailTemplateData, setBulkEmailTemplateData] = useState({
     title: '',
     background_image: '',
-    title_size: '32'
+    title_size: '32',
+    image_position: 'top'
   });
   
   // New state for group management
@@ -817,7 +820,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       setEmailContent('');
       setSelectedRecipients('');
       setSelectedTemplate('');
-      setBulkEmailTemplateData({ title: '', background_image: '', title_size: '32' });
+      setBulkEmailTemplateData({ title: '', background_image: '', title_size: '32', image_position: 'top' });
     } catch (error: any) {
       console.error('Email sending error:', error);
       toast({
@@ -839,7 +842,8 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
     setBulkEmailTemplateData({
       title: template.title || '',
       background_image: template.background_image || '',
-      title_size: template.title_size || '32'
+      title_size: template.title_size || '32',
+      image_position: template.image_position || 'top'
     });
   };
 
@@ -899,7 +903,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       
       setIsTemplateDialogOpen(false);
       setEditingTemplate(null);
-      setTemplateForm({ name: '', subject: '', content: '', title: '', background_image: '', description: '', title_size: '32' });
+      setTemplateForm({ name: '', subject: '', content: '', title: '', background_image: '', description: '', title_size: '32', image_position: 'top' });
       queryClient.invalidateQueries({ queryKey: ['email-templates'] });
     } catch (error: any) {
       console.error('Template save error:', error);
@@ -921,11 +925,12 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
         title: template.title || '',
         background_image: template.background_image || '',
         description: template.description || '',
-        title_size: template.title_size || '32'
+        title_size: template.title_size || '32',
+        image_position: template.image_position || 'top'
       });
     } else {
       setEditingTemplate(null);
-      setTemplateForm({ name: '', subject: '', content: '', title: '', background_image: '', description: '', title_size: '32' });
+      setTemplateForm({ name: '', subject: '', content: '', title: '', background_image: '', description: '', title_size: '32', image_position: 'top' });
     }
     setIsTemplateDialogOpen(true);
   };
@@ -1241,7 +1246,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                     setSelectedTemplate('');
                     setEmailSubject('');
                     setEmailContent('');
-                    setBulkEmailTemplateData({ title: '', background_image: '', title_size: '32' });
+                    setBulkEmailTemplateData({ title: '', background_image: '', title_size: '32', image_position: 'top' });
                   }
                 }}>
                   <SelectTrigger>
