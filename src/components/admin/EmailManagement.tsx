@@ -1328,6 +1328,69 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                 </p>
               </div>
 
+              {/* Design Options */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Design</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="title">Titel (valfritt)</Label>
+                    <Input
+                      id="title"
+                      value={bulkEmailTemplateData.title}
+                      onChange={(e) => setBulkEmailTemplateData({...bulkEmailTemplateData, title: e.target.value})}
+                      placeholder="Titel som visas i mejlet"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="title_size">Titelstorlek</Label>
+                    <Select 
+                      value={bulkEmailTemplateData.title_size} 
+                      onValueChange={(value) => setBulkEmailTemplateData({...bulkEmailTemplateData, title_size: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="24">Liten (24px)</SelectItem>
+                        <SelectItem value="28">Medium (28px)</SelectItem>
+                        <SelectItem value="32">Normal (32px)</SelectItem>
+                        <SelectItem value="36">Stor (36px)</SelectItem>
+                        <SelectItem value="40">Extra stor (40px)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="background_image">Bakgrundsbild URL (valfritt)</Label>
+                    <Input
+                      id="background_image"
+                      value={bulkEmailTemplateData.background_image}
+                      onChange={(e) => setBulkEmailTemplateData({...bulkEmailTemplateData, background_image: e.target.value})}
+                      placeholder="https://exempel.se/bild.jpg"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="image_position">Bildposition</Label>
+                    <Select 
+                      value={bulkEmailTemplateData.image_position} 
+                      onValueChange={(value) => setBulkEmailTemplateData({...bulkEmailTemplateData, image_position: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="top">Överst</SelectItem>
+                        <SelectItem value="behind">Bakom innehåll</SelectItem>
+                        <SelectItem value="bottom">Nederst</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
               {/* Email Preview */}
               <div className="space-y-2">
                 <Label>Förhandsvisning</Label>
