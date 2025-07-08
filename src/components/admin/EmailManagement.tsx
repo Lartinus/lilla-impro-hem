@@ -1363,12 +1363,10 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="background_image">Bakgrundsbild URL (valfritt)</Label>
-                    <Input
-                      id="background_image"
+                    <Label>Bakgrundsbild (valfritt)</Label>
+                    <ImagePicker
                       value={bulkEmailTemplateData.background_image}
-                      onChange={(e) => setBulkEmailTemplateData({...bulkEmailTemplateData, background_image: e.target.value})}
-                      placeholder="https://exempel.se/bild.jpg"
+                      onSelect={(url) => setBulkEmailTemplateData({...bulkEmailTemplateData, background_image: url})}
                     />
                   </div>
 
@@ -2074,23 +2072,13 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
                   />
                 </div>
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="template-background">Bakgrundsbild (valfritt)</Label>
-                    <ImagePicker
-                      onSelect={(url) => {
-                        setTemplateForm(prev => ({ 
-                          ...prev, 
-                          background_image: url
-                        }));
-                      }}
-                      triggerClassName="h-8 px-3 text-sm"
-                    />
-                  </div>
-                  <Input
-                    id="template-background"
+                  <Label>Bakgrundsbild (valfritt)</Label>
+                  <ImagePicker
                     value={templateForm.background_image}
-                    onChange={(e) => setTemplateForm(prev => ({ ...prev, background_image: e.target.value }))}
-                    placeholder="URL till bakgrundsbild"
+                    onSelect={(url) => setTemplateForm(prev => ({ 
+                      ...prev, 
+                      background_image: url
+                    }))}
                   />
                 </div>
                 <div className="space-y-2">
