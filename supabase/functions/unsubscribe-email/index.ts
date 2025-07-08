@@ -24,14 +24,23 @@ const handler = async (req: Request): Promise<Response> => {
     const token = url.searchParams.get('token');
 
     if (!email) {
-      // Redirect to unsubscribe page with error
-      return new Response(null, {
-        status: 302,
-        headers: {
-          "Location": "/avprenumerera?error=missing-email",
-          ...corsHeaders
+      // Return HTML redirect instead of 302 redirect
+      return new Response(
+        `<!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <script>window.location.href = '/avprenumerera?error=missing-email';</script>
+        </head>
+        <body>
+          <p>Omdirigerar...</p>
+        </body>
+        </html>`,
+        {
+          status: 200,
+          headers: { "Content-Type": "text/html; charset=utf-8", ...corsHeaders }
         }
-      });
+      );
     }
 
     console.log(`Processing unsubscribe request for: ${email}`);
@@ -75,26 +84,44 @@ const handler = async (req: Request): Promise<Response> => {
 
       console.log(`Successfully unsubscribed: ${email}`);
 
-      // Redirect to unsubscribe page with success
-      return new Response(null, {
-        status: 302,
-        headers: {
-          "Location": `/avprenumerera?email=${encodeURIComponent(email)}`,
-          ...corsHeaders
+      // Return HTML redirect for success
+      return new Response(
+        `<!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <script>window.location.href = '/avprenumerera?email=${encodeURIComponent(email)}';</script>
+        </head>
+        <body>
+          <p>Avprenumeration lyckades. Omdirigerar...</p>
+        </body>
+        </html>`,
+        {
+          status: 200,
+          headers: { "Content-Type": "text/html; charset=utf-8", ...corsHeaders }
         }
-      });
+      );
 
     } catch (error: any) {
       console.error("Error in unsubscribe function:", error);
       
-      // Redirect to unsubscribe page with error
-      return new Response(null, {
-        status: 302,
-        headers: {
-          "Location": `/avprenumerera?email=${encodeURIComponent(email)}&error=processing`,
-          ...corsHeaders
+      // Return HTML redirect for error
+      return new Response(
+        `<!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <script>window.location.href = '/avprenumerera?email=${encodeURIComponent(email)}&error=processing';</script>
+        </head>
+        <body>
+          <p>Ett fel uppstod. Omdirigerar...</p>
+        </body>
+        </html>`,
+        {
+          status: 200,
+          headers: { "Content-Type": "text/html; charset=utf-8", ...corsHeaders }
         }
-      });
+      );
     }
 
   } catch (error: any) {
