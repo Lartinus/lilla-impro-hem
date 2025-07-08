@@ -16,7 +16,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, GripVertical, User } from 'lucide-react';
+import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, GripVertical, User, Download } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
@@ -47,6 +47,11 @@ interface CourseWithBookings extends CourseInstance {
   bookingCount: number;
 }
 
+interface CourseParticipant {
+  email: string;
+  name: string;
+}
+
 type SortField = 'course_title' | 'start_date' | 'bookingCount' | 'sort_order';
 type SortDirection = 'asc' | 'desc';
 
@@ -67,11 +72,12 @@ interface NewCourseForm {
 }
 
 // Mobile Course Card Component
-function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, performers }: {
+function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, performers }: {
   course: CourseWithBookings;
   onEdit: (course: CourseWithBookings) => void;
   onToggleStatus: (course: CourseWithBookings) => void;
   onDelete: (course: CourseWithBookings) => void;
+  onViewParticipants: (course: CourseWithBookings) => void;
   performers?: any[];
 }) {
   const {
@@ -147,6 +153,15 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, performers
             <Button 
               variant="outline" 
               size="sm"
+              onClick={() => onViewParticipants(course)}
+              className="flex-1 min-w-0"
+            >
+              <Users className="w-4 h-4 mr-1" />
+              Deltagare ({course.bookingCount})
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
               onClick={() => onEdit(course)}
               className="flex-1 min-w-0"
             >
@@ -186,11 +201,12 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, performers
 }
 
 // Sortable Row Component
-function SortableRow({ course, onEdit, onToggleStatus, onDelete, performers }: {
+function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, performers }: {
   course: CourseWithBookings;
   onEdit: (course: CourseWithBookings) => void;
   onToggleStatus: (course: CourseWithBookings) => void;
   onDelete: (course: CourseWithBookings) => void;
+  onViewParticipants: (course: CourseWithBookings) => void;
   performers?: any[];
 }) {
   const {
@@ -249,6 +265,14 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete, performers }: {
           <Button 
             variant="outline" 
             size="sm"
+            onClick={() => onViewParticipants(course)}
+          >
+            <Users className="w-4 h-4 mr-1" />
+            Deltagare ({course.bookingCount})
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
             onClick={() => onEdit(course)}
           >
             <Edit className="w-4 h-4 mr-1" />
@@ -290,6 +314,9 @@ export const CourseManagement = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingCourse, setEditingCourse] = useState<CourseWithBookings | null>(null);
+  const [isParticipantsDialogOpen, setIsParticipantsDialogOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<CourseWithBookings | null>(null);
+  const [participants, setParticipants] = useState<CourseParticipant[]>([]);
   const [newCourse, setNewCourse] = useState<NewCourseForm>({
     courseType: '',
     customName: '',
@@ -667,6 +694,57 @@ export const CourseManagement = () => {
     } else {
       createCourseMutation.mutate(newCourse);
     }
+  };
+
+  const handleViewParticipants = async (course: CourseWithBookings) => {
+    setSelectedCourse(course);
+    setIsParticipantsDialogOpen(true);
+    
+    try {
+      const { data, error } = await supabase.rpc('get_course_participants', {
+        table_name: course.table_name
+      });
+
+      if (error) {
+        console.error('Error fetching participants:', error);
+        toast({
+          title: "Fel",
+          description: "Kunde inte hämta deltagare",
+          variant: "destructive"
+        });
+        setParticipants([]);
+      } else {
+        setParticipants(data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching participants:', error);
+      toast({
+        title: "Fel",
+        description: "Kunde inte hämta deltagare",
+        variant: "destructive"
+      });
+      setParticipants([]);
+    }
+  };
+
+  const exportParticipants = () => {
+    if (!selectedCourse || participants.length === 0) return;
+    
+    const csvContent = [
+      ['Namn', 'E-post'].join(','),
+      ...participants.map(p => [p.name, p.email].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', `${selectedCourse.course_title.replace(/[^a-zA-Z0-9]/g, '_')}_deltagare.csv`);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -1077,6 +1155,7 @@ export const CourseManagement = () => {
                         onEdit={handleEditCourse}
                         onToggleStatus={course => toggleStatusMutation.mutate(course)}
                         onDelete={course => deleteCourseMutation.mutate(course)}
+                        onViewParticipants={handleViewParticipants}
                       />
                     ))}
                   </SortableContext>
@@ -1098,6 +1177,7 @@ export const CourseManagement = () => {
                     onEdit={handleEditCourse}
                     onToggleStatus={course => toggleStatusMutation.mutate(course)}
                     onDelete={course => deleteCourseMutation.mutate(course)}
+                    onViewParticipants={handleViewParticipants}
                   />
                 ))}
               </SortableContext>
@@ -1105,6 +1185,60 @@ export const CourseManagement = () => {
           </DndContext>
         )}
       </CardContent>
+
+      {/* Participants Dialog */}
+      <Dialog open={isParticipantsDialogOpen} onOpenChange={setIsParticipantsDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <span>Deltagare - {selectedCourse?.course_title}</span>
+              {participants.length > 0 && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={exportParticipants}
+                  className="ml-2"
+                >
+                  <Download className="w-4 h-4 mr-1" />
+                  Exportera CSV
+                </Button>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-4">
+            {participants.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <Users className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                <p>Inga anmälningar än</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="text-sm text-muted-foreground">
+                  Totalt {participants.length} anmälda deltagare
+                </div>
+                <div className="border rounded-lg">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Namn</TableHead>
+                        <TableHead>E-post</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {participants.map((participant, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="font-medium">{participant.name}</TableCell>
+                          <TableCell>{participant.email}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
