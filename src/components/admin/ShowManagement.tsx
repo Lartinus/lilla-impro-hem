@@ -165,7 +165,7 @@ function SortableShowRow({ show, onEdit, onToggleVisibility, onDelete }: {
   );
 }
 
-export const ShowManagement = () => {
+export const ShowManagement = ({ showCompleted = false }: { showCompleted?: boolean }) => {
   const isMobile = useIsMobile();
   const [isShowDialogOpen, setIsShowDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);

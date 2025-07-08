@@ -16,7 +16,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, GripVertical, User, Download } from 'lucide-react';
+import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, GripVertical, User, Download, Archive } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
@@ -308,7 +308,7 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipa
   );
 }
 
-export const CourseManagement = () => {
+export const CourseManagement = ({ showCompleted = false }: { showCompleted?: boolean }) => {
   const [sortField, setSortField] = useState<SortField>('sort_order');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [isDialogOpen, setIsDialogOpen] = useState(false);

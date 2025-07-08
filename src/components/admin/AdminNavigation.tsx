@@ -17,7 +17,8 @@ import {
   Send,
   UserPlus,
   Contact,
-  FileText
+  FileText,
+  Archive
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -52,7 +53,8 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
       type: 'group' as const,
       expanded: expandedSections.courses,
       children: [
-        { id: 'courses', title: 'Kurshantering', icon: BookOpen },
+        { id: 'courses', title: 'Aktiva kurser', icon: BookOpen },
+        { id: 'courses-completed', title: 'Genomförda kurser', icon: Archive },
         { id: 'interest', title: 'Intresse', icon: Heart },
         { id: 'performers', title: 'Kursledare', icon: UserCheck },
       ]
@@ -64,7 +66,8 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
       type: 'group' as const,
       expanded: expandedSections.shows,
       children: [
-        { id: 'shows', title: 'Föreställningar', icon: Calendar },
+        { id: 'shows', title: 'Aktiva föreställningar', icon: Calendar },
+        { id: 'shows-completed', title: 'Genomförda föreställningar', icon: Archive },
         { id: 'actors', title: 'Skådespelare', icon: UserCircle },
         { id: 'discount-codes', title: 'Rabattkoder', icon: CreditCard },
         { id: 'venues', title: 'Platser', icon: MapPin },

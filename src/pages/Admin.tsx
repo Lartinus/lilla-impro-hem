@@ -119,13 +119,17 @@ const AdminDashboard = () => {
   const renderContent = () => {
     switch (activeSection) {
       case 'courses':
-        return <CourseManagement />;
+        return <CourseManagement showCompleted={false} />;
+      case 'courses-completed':
+        return <CourseManagement showCompleted={true} />;
       case 'performers':
         return <PerformerManagement />;
       case 'interest':
         return <InterestSignupManagement />;
       case 'shows':
-        return <ShowManagement />;
+        return <ShowManagement showCompleted={false} />;
+      case 'shows-completed':
+        return <ShowManagement showCompleted={true} />;
       case 'actors':
         return <ActorManagement />;
       case 'venues':
