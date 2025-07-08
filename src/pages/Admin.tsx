@@ -5,7 +5,7 @@ import { useAdminStats } from '@/hooks/useAdminStats';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { BarChart3, Users, Ticket, Mail, Settings, LogIn } from 'lucide-react';
+import { BarChart3, Users, Ticket, Mail, Settings, LogIn, LogOut } from 'lucide-react';
 import Header from '@/components/Header';
 import LoginForm from '@/components/auth/LoginForm';
 import SignUpForm from '@/components/auth/SignUpForm';
@@ -23,7 +23,7 @@ import { EmailManagement } from '@/components/admin/EmailManagement';
 import { UserManagement } from '@/components/admin/UserManagement';
 
 const AdminDashboard = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const { data: userRole, isLoading: roleLoading } = useUserRole();
   const { data: stats, isLoading: statsLoading } = useAdminStats();
   const [showSignUp, setShowSignUp] = React.useState(false);
@@ -33,6 +33,15 @@ const AdminDashboard = () => {
     shows: false,
     email: true
   });
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      // User will be redirected automatically by the AuthProvider
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   // Loading state
   if (authLoading || roleLoading) {
@@ -151,10 +160,21 @@ const AdminDashboard = () => {
               <h1 className="text-3xl font-bold text-foreground">Administratörspanel</h1>
               <p className="text-muted-foreground mt-2">Hantera kurser, biljetter och kommunikation</p>
             </div>
-            <Badge variant="secondary" className="text-sm flex items-center mt-1">
-              <Settings className="w-4 h-4 mr-1" />
-              Admin
-            </Badge>
+            <div className="flex items-center gap-2 mt-1">
+              <Badge variant="secondary" className="text-sm flex items-center">
+                <Settings className="w-4 h-4 mr-1" />
+                Admin
+              </Badge>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleSignOut}
+                className="text-sm flex items-center"
+              >
+                <LogOut className="w-4 h-4 mr-1" />
+                Logga ut
+              </Button>
+            </div>
           </div>
         </div>
 
