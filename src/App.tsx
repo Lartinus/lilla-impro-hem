@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import TicketPreviewPage from "./pages/TicketPreviewPage";
 import CourseConfirmationPreviewPage from "./pages/CourseConfirmationPreviewPage";
 import Unsubscribe from "./pages/Unsubscribe";
+import NewsletterConfirmation from "./pages/NewsletterConfirmation";
 import AdminDashboard from "./pages/Admin";
 
 // Create query client with optimized settings
@@ -55,6 +56,7 @@ const App = () => (
               <Route path="/biljett" element={<TicketPreviewPage />} />
               <Route path="/kursanmälan" element={<CourseConfirmationPreviewPage />} />
               <Route path="/avprenumerera" element={<Unsubscribe />} />
+              <Route path="/nyhetsbrev-bekraftelse" element={<NewsletterConfirmation />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

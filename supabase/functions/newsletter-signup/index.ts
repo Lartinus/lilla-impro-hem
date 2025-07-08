@@ -102,10 +102,10 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Send confirmation email
-    const confirmationUrl = `https://gcimnsbeexkkqragmdzo.supabase.co/functions/v1/newsletter-confirm?token=${confirmationToken}`;
+    const confirmationUrl = `https://improteatern.se/nyhetsbrev-bekraftelse?token=${confirmationToken}`;
     
     const emailResponse = await resend.emails.send({
-      from: "Lilla Improvinsen <onboarding@resend.dev>",
+      from: "Lilla Improteatern <onboarding@resend.dev>",
       to: [cleanEmail],
       subject: "Bekräfta din prenumeration på vårt nyhetsbrev",
       html: `
@@ -118,7 +118,7 @@ const handler = async (req: Request): Promise<Response> => {
         </head>
         <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-            <h1 style="margin: 0; font-size: 28px;">Lilla Improvinsen</h1>
+            <h1 style="margin: 0; font-size: 28px;">Lilla Improteatern</h1>
             <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Bekräfta din prenumeration</p>
           </div>
           
@@ -145,7 +145,7 @@ const handler = async (req: Request): Promise<Response> => {
             <hr style="margin: 30px 0; border: none; border-top: 1px solid #e0e0e0;">
             
             <div style="text-align: center; font-size: 14px; color: #888;">
-              <p>Med vänliga hälsningar,<br>Lilla Improvinsen</p>
+              <p>Med vänliga hälsningar,<br>Lilla Improteatern</p>
               <p style="margin-top: 20px;">
                 <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(cleanEmail)}" style="color: #888; font-size: 12px;">Avregistrera dig här</a>
               </p>

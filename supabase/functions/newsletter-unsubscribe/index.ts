@@ -216,7 +216,7 @@ const handler = async (req: Request): Promise<Response> => {
           <p>Du har framgångsrikt avregistrerats från vårt nyhetsbrev.</p>
           <div class="email">${contact.email}</div>
           <p style="color: #666;">Du kommer inte längre att få våra nyhetsbrev. Om du ändrar dig kan du när som helst registrera dig igen på vår hemsida.</p>
-          <p style="margin-top: 30px; font-size: 14px; color: #888;">Tack för att du varit en del av Lilla Improvinsen!</p>
+          <p style="margin-top: 30px; font-size: 14px; color: #888;">Tack för att du varit en del av Lilla Improteatern!</p>
         </div>
       </body>
       </html>
