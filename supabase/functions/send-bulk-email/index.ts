@@ -72,9 +72,9 @@ const handler = async (req: Request): Promise<Response> => {
       recipients = groupMembers
         ?.map((member: any) => member.email_contacts)
         ?.filter(contact => {
-          // Filter out unsubscribed contacts
+          // Filter out unsubscribed contacts (check both flags)
           const metadata = contact.metadata || {};
-          return !metadata.unsubscribed;
+          return !metadata.unsubscribed && !metadata.newsletter_unsubscribed;
         })
         ?.map(contact => ({
           email: contact.email,
@@ -96,9 +96,9 @@ const handler = async (req: Request): Promise<Response> => {
 
       recipients = contacts
         ?.filter(contact => {
-          // Filter out unsubscribed contacts
+          // Filter out unsubscribed contacts (check both flags)
           const metadata = contact.metadata || {};
-          return !metadata.unsubscribed;
+          return !metadata.unsubscribed && !metadata.newsletter_unsubscribed;
         })
         ?.map(contact => ({
           email: contact.email,

@@ -388,10 +388,10 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
 
       if (error) throw error;
       
-      // Filter out unsubscribed contacts
+      // Filter out unsubscribed contacts (check both unsubscribed flags)
       const activeContacts = (data || []).filter(contact => {
         const metadata = contact.metadata as any || {};
-        return !metadata.unsubscribed;
+        return !metadata.unsubscribed && !metadata.newsletter_unsubscribed;
       });
       
       return activeContacts;
@@ -738,10 +738,10 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 's
       if (contactsError) throw contactsError;
       if (!allContacts) return [];
 
-      // Filter out unsubscribed contacts
+      // Filter out unsubscribed contacts (check both unsubscribed flags)
       const activeContacts = allContacts.filter(contact => {
         const metadata = contact.metadata as any || {};
-        return !metadata.unsubscribed;
+        return !metadata.unsubscribed && !metadata.newsletter_unsubscribed;
       });
 
       // Get current group members
