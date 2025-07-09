@@ -150,7 +150,7 @@ const AdminDashboard = () => {
       case 'contacts':
       case 'import':
       case 'templates':
-        return <EmailManagement />;
+        return <EmailManagement activeTab={activeSection} />;
       default:
         return null;
     }

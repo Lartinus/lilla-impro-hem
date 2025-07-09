@@ -50,9 +50,12 @@ interface GroupMember {
   contact: EmailContact;
 }
 
-export function EmailManagement() {
+interface EmailManagementProps {
+  activeTab?: string;
+}
+
+export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
   // Core state
-  const [activeTab, setActiveTab] = useState('send');
   const [emailSubject, setEmailSubject] = useState('');
   const [emailContent, setEmailContent] = useState('');
   const [selectedRecipients, setSelectedRecipients] = useState('');
@@ -450,374 +453,381 @@ export function EmailManagement() {
     }
   };
 
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'send':
+        return renderSendEmail();
+      case 'templates':
+        return renderTemplates();
+      case 'groups':
+        return renderGroups();
+      case 'contacts':
+        return renderContacts();
+      default:
+        return renderSendEmail();
+    }
+  };
+
+  const renderSendEmail = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Send className="h-5 w-5" />
+          Skicka meddelande
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Recipients Selection */}
+        <div className="space-y-2">
+          <Label htmlFor="recipients">Mottagare</Label>
+          <Select value={selectedRecipients} onValueChange={setSelectedRecipients}>
+            <SelectTrigger>
+              <SelectValue placeholder="Välj mottagare" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Alla kontakter ({emailContacts.length} st)
+                </div>
+              </SelectItem>
+              {emailGroups.map((group) => (
+                <SelectItem key={group.id} value={group.id}>
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                    {group.name}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {selectedRecipients && selectedRecipients !== 'all' && (
+            <div className="text-sm text-muted-foreground">
+              {groupMembers.length} kontakter i denna grupp
+            </div>
+          )}
+        </div>
+
+        {/* Template Selection */}
+        <div className="space-y-2">
+          <Label>Använd mall (valfritt)</Label>
+          <Select value={selectedTemplate} onValueChange={(value) => {
+            if (value && value !== '') {
+              const template = emailTemplates.find(t => t.id === value);
+              if (template) {
+                handleUseTemplate(template);
+              }
+            } else {
+              setSelectedTemplate('');
+              setEmailSubject('');
+              setEmailContent('');
+              setAttachments([]);
+              setBulkEmailTemplateData({ background_image: '', content: '' });
+            }
+          }}>
+            <SelectTrigger>
+              <SelectValue placeholder="Välj en mall att börja med" />
+            </SelectTrigger>
+            <SelectContent>
+              {emailTemplates.map((template) => (
+                <SelectItem key={template.id} value={template.id}>
+                  {template.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Subject */}
+        <div className="space-y-2">
+          <Label htmlFor="subject">Ämne</Label>
+          <Input
+            id="subject"
+            value={emailSubject}
+            onChange={(e) => setEmailSubject(e.target.value)}
+            placeholder="Skriv ämnesraden här..."
+          />
+        </div>
+
+        {/* Content */}
+        <div className="space-y-2">
+          <Label htmlFor="content">Meddelande</Label>
+          <Textarea
+            id="content"
+            value={emailContent}
+            onChange={(e) => setEmailContent(e.target.value)}
+            placeholder="Skriv ditt meddelande här..."
+            rows={12}
+          />
+          <p className="text-sm text-muted-foreground">
+            Du kan använda följande variabler: [NAMN], [KURSNAMN], [FÖRESTÄLLNING], [DATUM], [TID], [PLATS], [ADRESS]
+          </p>
+        </div>
+
+        {/* Design Options */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">Design</h3>
+          
+          <div className="space-y-2">
+            <Label htmlFor="markdown-content">Innehåll (Markdown)</Label>
+            <Textarea
+              id="markdown-content"
+              value={bulkEmailTemplateData.content}
+              onChange={(e) => setBulkEmailTemplateData({...bulkEmailTemplateData, content: e.target.value})}
+              placeholder="# Rubrik&#10;&#10;Här kommer brödtexten...&#10;&#10;## Underrubrik&#10;&#10;Mer text här."
+              rows={10}
+              className="font-mono text-sm"
+            />
+            <p className="text-sm text-muted-foreground">
+              Använd Markdown för formatering: # för rubriker, **fet text**, *kursiv text*, etc.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label>Bakgrundsbild (valfritt)</Label>
+              <ImagePicker
+                value={bulkEmailTemplateData.background_image}
+                onSelect={(url) => setBulkEmailTemplateData({...bulkEmailTemplateData, background_image: url})}
+                triggerClassName="h-8 px-3 text-sm"
+              />
+            </div>
+            {bulkEmailTemplateData.background_image && (
+              <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
+                <span className="font-medium">Vald bild:</span> {bulkEmailTemplateData.background_image.split('/').pop()}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Email Preview */}
+        <div className="space-y-2">
+          <Label>Förhandsvisning</Label>
+          <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
+            {bulkEmailTemplateData.content ? (
+              <div dangerouslySetInnerHTML={{ 
+                __html: createSimpleEmailTemplate(emailSubject, bulkEmailTemplateData.content, bulkEmailTemplateData.background_image)
+              }} />
+            ) : (
+              <p className="text-muted-foreground text-sm">Skriv markdown-innehåll för att se förhandsvisningen...</p>
+            )}
+          </div>
+        </div>
+
+        {/* Send Button */}
+        <div className="flex justify-end pt-4">
+          <Button 
+            onClick={handleSendEmail} 
+            disabled={isLoading}
+            size="lg"
+          >
+            {isLoading ? 'Skickar...' : 'Skicka meddelande'}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const renderTemplates = () => (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h3 className="text-xl font-semibold">Email-mallar</h3>
+        <Dialog open={isTemplateDialogOpen} onOpenChange={setIsTemplateDialogOpen}>
+          <DialogTrigger asChild>
+            <Button onClick={() => handleEditTemplate()}>
+              <Plus className="h-4 w-4 mr-2" />
+              Ny mall
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {editingTemplate ? 'Redigera mall' : 'Skapa ny mall'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="template-name">Mallnamn</Label>
+                <Input
+                  id="template-name"
+                  value={templateForm.name}
+                  onChange={(e) => setTemplateForm(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="T.ex. Välkommen till kursen"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="template-subject">Ämnesrad</Label>
+                <Input
+                  id="template-subject"
+                  value={templateForm.subject}
+                  onChange={(e) => setTemplateForm(prev => ({ ...prev, subject: e.target.value }))}
+                  placeholder="Ämnesrad för mejlet"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="template-description">Beskrivning (valfritt)</Label>
+                <Input
+                  id="template-description"
+                  value={templateForm.description}
+                  onChange={(e) => setTemplateForm(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Kort beskrivning av vad mallen används till"
+                />
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Bakgrundsbild (valfritt)</Label>
+                  <ImagePicker
+                    value={templateForm.background_image}
+                    onSelect={(url) => setTemplateForm(prev => ({ ...prev, background_image: url }))}
+                    triggerClassName="h-8 px-3 text-sm"
+                  />
+                </div>
+                {templateForm.background_image && (
+                  <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
+                    <span className="font-medium">Vald bild:</span> {templateForm.background_image.split('/').pop()}
+                  </div>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="template-content">Innehåll (Markdown)</Label>
+                <Textarea
+                  id="template-content"
+                  value={templateForm.content}
+                  onChange={(e) => setTemplateForm(prev => ({ ...prev, content: e.target.value }))}
+                  placeholder="# Rubrik&#10;&#10;Här kommer brödtexten...&#10;&#10;## Underrubrik&#10;&#10;Mer text här."
+                  rows={10}
+                  className="font-mono text-sm"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Använd Markdown för formatering: # för rubriker, **fet text**, *kursiv text*, etc.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Label>Förhandsvisning</Label>
+                <div className="border rounded p-4 bg-muted/50 max-h-[300px] overflow-y-auto">
+                  {templateForm.content ? (
+                    <div dangerouslySetInnerHTML={{ 
+                      __html: createSimpleEmailTemplate(templateForm.subject, templateForm.content, templateForm.background_image)
+                    }} />
+                  ) : (
+                    <p className="text-muted-foreground text-sm">Skriv innehåll för att se förhandsvisningen...</p>
+                  )}
+                </div>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setIsTemplateDialogOpen(false)}>
+                  Avbryt
+                </Button>
+                <Button onClick={handleSaveTemplate}>
+                  {editingTemplate ? 'Uppdatera' : 'Skapa'} mall
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <div className="grid gap-4">
+        {emailTemplates.map((template) => (
+          <Card key={template.id}>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg">{template.name}</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Ämne: {template.subject}
+                  </p>
+                  {template.description && (
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {template.description}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEditTemplate(template)}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDeleteTemplate(template.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-sm text-muted-foreground">
+                <div className="max-h-20 overflow-hidden">
+                  {template.content.substring(0, 150)}
+                  {template.content.length > 150 && '...'}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderGroups = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle>Email-grupper</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {emailGroups.map((group) => (
+            <div key={group.id} className="flex items-center justify-between p-4 border rounded">
+              <div>
+                <h4 className="font-medium">{group.name}</h4>
+                {group.description && (
+                  <p className="text-sm text-muted-foreground">{group.description}</p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const renderContacts = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle>Email-kontakter ({emailContacts.length} st)</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2 max-h-96 overflow-y-auto">
+          {emailContacts.map((contact) => (
+            <div key={contact.id} className="flex items-center justify-between p-2 border rounded text-sm">
+              <div>
+                <span className="font-medium">{contact.email}</span>
+                {contact.name && <span className="ml-2 text-muted-foreground">({contact.name})</span>}
+              </div>
+              <Badge variant="outline" className="text-xs">
+                {contact.source || 'okänd'}
+              </Badge>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">Email-hantering</h2>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="send">Skicka meddelande</TabsTrigger>
-          <TabsTrigger value="templates">Email-mallar</TabsTrigger>
-          <TabsTrigger value="groups">Grupper</TabsTrigger>
-          <TabsTrigger value="contacts">Kontakter</TabsTrigger>
-        </TabsList>
-
-        {/* Send Email Tab */}
-        <TabsContent value="send" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Send className="h-5 w-5" />
-                Skicka meddelande
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Recipients Selection */}
-              <div className="space-y-2">
-                <Label htmlFor="recipients">Mottagare</Label>
-                <Select value={selectedRecipients} onValueChange={setSelectedRecipients}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Välj mottagare" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">
-                      <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        Alla kontakter ({emailContacts.length} st)
-                      </div>
-                    </SelectItem>
-                    {emailGroups.map((group) => (
-                      <SelectItem key={group.id} value={group.id}>
-                        <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4" />
-                          {group.name}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {selectedRecipients && selectedRecipients !== 'all' && (
-                  <div className="text-sm text-muted-foreground">
-                    {groupMembers.length} kontakter i denna grupp
-                  </div>
-                )}
-              </div>
-
-              {/* Template Selection */}
-              <div className="space-y-2">
-                <Label>Använd mall (valfritt)</Label>
-                <Select value={selectedTemplate} onValueChange={(value) => {
-                  if (value && value !== '') {
-                    const template = emailTemplates.find(t => t.id === value);
-                    if (template) {
-                      handleUseTemplate(template);
-                    }
-                  } else {
-                    setSelectedTemplate('');
-                    setEmailSubject('');
-                    setEmailContent('');
-                    setAttachments([]);
-                    setBulkEmailTemplateData({ background_image: '', content: '' });
-                  }
-                }}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Välj en mall att börja med" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {emailTemplates.map((template) => (
-                      <SelectItem key={template.id} value={template.id}>
-                        {template.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Subject */}
-              <div className="space-y-2">
-                <Label htmlFor="subject">Ämne</Label>
-                <Input
-                  id="subject"
-                  value={emailSubject}
-                  onChange={(e) => setEmailSubject(e.target.value)}
-                  placeholder="Skriv ämnesraden här..."
-                />
-              </div>
-
-              {/* Content */}
-              <div className="space-y-2">
-                <Label htmlFor="content">Meddelande</Label>
-                <Textarea
-                  id="content"
-                  value={emailContent}
-                  onChange={(e) => setEmailContent(e.target.value)}
-                  placeholder="Skriv ditt meddelande här..."
-                  rows={12}
-                />
-                <p className="text-sm text-muted-foreground">
-                  Du kan använda följande variabler: [NAMN], [KURSNAMN], [FÖRESTÄLLNING], [DATUM], [TID], [PLATS], [ADRESS]
-                </p>
-              </div>
-
-              {/* Design Options */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Design</h3>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="markdown-content">Innehåll (Markdown)</Label>
-                  <Textarea
-                    id="markdown-content"
-                    value={bulkEmailTemplateData.content}
-                    onChange={(e) => setBulkEmailTemplateData({...bulkEmailTemplateData, content: e.target.value})}
-                    placeholder="# Rubrik&#10;&#10;Här kommer brödtexten...&#10;&#10;## Underrubrik&#10;&#10;Mer text här."
-                    rows={10}
-                    className="font-mono text-sm"
-                  />
-                  <p className="text-sm text-muted-foreground">
-                    Använd Markdown för formatering: # för rubriker, **fet text**, *kursiv text*, etc.
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label>Bakgrundsbild (valfritt)</Label>
-                    <ImagePicker
-                      value={bulkEmailTemplateData.background_image}
-                      onSelect={(url) => setBulkEmailTemplateData({...bulkEmailTemplateData, background_image: url})}
-                      triggerClassName="h-8 px-3 text-sm"
-                    />
-                  </div>
-                  {bulkEmailTemplateData.background_image && (
-                    <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
-                      <span className="font-medium">Vald bild:</span> {bulkEmailTemplateData.background_image.split('/').pop()}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Email Preview */}
-              <div className="space-y-2">
-                <Label>Förhandsvisning</Label>
-                <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
-                  {bulkEmailTemplateData.content ? (
-                    <div dangerouslySetInnerHTML={{ 
-                      __html: createSimpleEmailTemplate(emailSubject, bulkEmailTemplateData.content, bulkEmailTemplateData.background_image)
-                    }} />
-                  ) : (
-                    <p className="text-muted-foreground text-sm">Skriv markdown-innehåll för att se förhandsvisningen...</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Send Button */}
-              <div className="flex justify-end pt-4">
-                <Button 
-                  onClick={handleSendEmail} 
-                  disabled={isLoading}
-                  size="lg"
-                >
-                  {isLoading ? 'Skickar...' : 'Skicka meddelande'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Templates Tab */}
-        <TabsContent value="templates" className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold">Email-mallar</h3>
-            <Dialog open={isTemplateDialogOpen} onOpenChange={setIsTemplateDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={() => handleEditTemplate()}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Ny mall
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>
-                    {editingTemplate ? 'Redigera mall' : 'Skapa ny mall'}
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="template-name">Mallnamn</Label>
-                    <Input
-                      id="template-name"
-                      value={templateForm.name}
-                      onChange={(e) => setTemplateForm(prev => ({ ...prev, name: e.target.value }))}
-                      placeholder="T.ex. Välkommen till kursen"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="template-subject">Ämnesrad</Label>
-                    <Input
-                      id="template-subject"
-                      value={templateForm.subject}
-                      onChange={(e) => setTemplateForm(prev => ({ ...prev, subject: e.target.value }))}
-                      placeholder="Ämnesrad för mejlet"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="template-description">Beskrivning (valfritt)</Label>
-                    <Input
-                      id="template-description"
-                      value={templateForm.description}
-                      onChange={(e) => setTemplateForm(prev => ({ ...prev, description: e.target.value }))}
-                      placeholder="Kort beskrivning av vad mallen används till"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label>Bakgrundsbild (valfritt)</Label>
-                      <ImagePicker
-                        value={templateForm.background_image}
-                        onSelect={(url) => setTemplateForm(prev => ({ ...prev, background_image: url }))}
-                        triggerClassName="h-8 px-3 text-sm"
-                      />
-                    </div>
-                    {templateForm.background_image && (
-                      <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
-                        <span className="font-medium">Vald bild:</span> {templateForm.background_image.split('/').pop()}
-                      </div>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="template-content">Innehåll (Markdown)</Label>
-                    <Textarea
-                      id="template-content"
-                      value={templateForm.content}
-                      onChange={(e) => setTemplateForm(prev => ({ ...prev, content: e.target.value }))}
-                      placeholder="# Rubrik&#10;&#10;Här kommer brödtexten...&#10;&#10;## Underrubrik&#10;&#10;Mer text här."
-                      rows={10}
-                      className="font-mono text-sm"
-                    />
-                    <p className="text-sm text-muted-foreground">
-                      Använd Markdown för formatering: # för rubriker, **fet text**, *kursiv text*, etc.
-                    </p>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Förhandsvisning</Label>
-                    <div className="border rounded p-4 bg-muted/50 max-h-[300px] overflow-y-auto">
-                      {templateForm.content ? (
-                        <div dangerouslySetInnerHTML={{ 
-                          __html: createSimpleEmailTemplate(templateForm.subject, templateForm.content, templateForm.background_image)
-                        }} />
-                      ) : (
-                        <p className="text-muted-foreground text-sm">Skriv innehåll för att se förhandsvisningen...</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <Button variant="outline" onClick={() => setIsTemplateDialogOpen(false)}>
-                      Avbryt
-                    </Button>
-                    <Button onClick={handleSaveTemplate}>
-                      {editingTemplate ? 'Uppdatera' : 'Skapa'} mall
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-
-          <div className="grid gap-4">
-            {emailTemplates.map((template) => (
-              <Card key={template.id}>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-lg">{template.name}</CardTitle>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Ämne: {template.subject}
-                      </p>
-                      {template.description && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {template.description}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEditTemplate(template)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteTemplate(template.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-muted-foreground">
-                    <div className="max-h-20 overflow-hidden">
-                      {template.content.substring(0, 150)}
-                      {template.content.length > 150 && '...'}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-
-        {/* Groups Tab - Simplified for now */}
-        <TabsContent value="groups" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Email-grupper</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {emailGroups.map((group) => (
-                  <div key={group.id} className="flex items-center justify-between p-4 border rounded">
-                    <div>
-                      <h4 className="font-medium">{group.name}</h4>
-                      {group.description && (
-                        <p className="text-sm text-muted-foreground">{group.description}</p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Contacts Tab - Simplified for now */}
-        <TabsContent value="contacts" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Email-kontakter ({emailContacts.length} st)</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2 max-h-96 overflow-y-auto">
-                {emailContacts.map((contact) => (
-                  <div key={contact.id} className="flex items-center justify-between p-2 border rounded text-sm">
-                    <div>
-                      <span className="font-medium">{contact.email}</span>
-                      {contact.name && <span className="ml-2 text-muted-foreground">({contact.name})</span>}
-                    </div>
-                    <Badge variant="outline" className="text-xs">
-                      {contact.source || 'okänd'}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {renderContent()}
     </div>
   );
+
 }
