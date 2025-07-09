@@ -566,6 +566,53 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     }
   });
 
+  // Template data mapping
+  const getTemplateData = (courseType: string) => {
+    const templates = {
+      'niv1': {
+        subtitle: 'Grundkurs i improvisationsteater',
+        course_info: 'En introduktionskurs för nybörjare inom improvisationsteater.',
+        practical_info: 'Ta med bekväma kläder och vara beredd att ha kul!',
+        price: 2400,
+        discount_price: 1800,
+        max_participants: 12,
+        sessions: 8,
+        hours_per_session: 2,
+      },
+      'niv2': {
+        subtitle: 'Fördjupningskurs i improvisationsteater',
+        course_info: 'En fortsättningskurs för dig som redan har grundläggande kunskaper.',
+        practical_info: 'Kräver tidigare erfarenhet av improvisationsteater.',
+        price: 2800,
+        discount_price: 2100,
+        max_participants: 10,
+        sessions: 8,
+        hours_per_session: 2.5,
+      },
+      'houseteam': {
+        subtitle: 'Regelbunden träning för erfarna improvisatörer',
+        course_info: 'Kontinuerlig träning och utveckling för medlemmar i LIT:s house team.',
+        practical_info: 'Endast för inbjudna medlemmar.',
+        price: 1500,
+        discount_price: 1200,
+        max_participants: 8,
+        sessions: 12,
+        hours_per_session: 2,
+      },
+      'helgworkshop': {
+        subtitle: 'Intensiv workshop under en helg',
+        course_info: 'En koncentrerad workshop som sträcker sig över en helg.',
+        practical_info: 'Fredag kväll, lördag och söndag.',
+        price: 1800,
+        discount_price: 1400,
+        max_participants: 15,
+        sessions: 3,
+        hours_per_session: 4,
+      }
+    };
+    return templates[courseType as keyof typeof templates];
+  };
+
   // Update course mutation
   const updateCourseMutation = useMutation({
     mutationFn: async (courseData: { course: CourseWithBookings; formData: NewCourseForm }) => {
@@ -574,7 +621,8 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       const { error } = await supabase
         .from('course_instances')
         .update({
-          course_title: formData.courseType === 'helgworkshop' ? formData.customName : 
+          course_title: formData.courseType === 'custom' ? formData.customName :
+                       formData.courseType === 'helgworkshop' ? formData.customName : 
                        formData.courseType === 'niv1' ? 'Nivå 1 - Scenarbete & Improv Comedy' :
                        formData.courseType === 'niv2' ? 'Nivå 2 - Långform improviserad komik' :
                        formData.courseType === 'houseteam' ? 'House Team & fortsättning' : course.course_title,
@@ -993,14 +1041,51 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                   <Label htmlFor="courseType">Kurstyp</Label>
                   <Select 
                     value={newCourse.courseType} 
-                    onValueChange={(value) => setNewCourse({...newCourse, courseType: value})}
+                    onValueChange={(value) => {
+                      setNewCourse({...newCourse, courseType: value});
+                      // Auto-fill form fields if selecting a template
+                      if (value === 'custom') {
+                        // Reset to defaults for custom course
+                        setNewCourse(prev => ({
+                          ...prev,
+                          courseType: value,
+                          customName: '',
+                          subtitle: '',
+                          sessions: 8,
+                          hoursPerSession: 2,
+                          maxParticipants: 12,
+                          price: 0,
+                          discountPrice: 0,
+                          courseInfo: '',
+                          practicalInfo: ''
+                        }));
+                      } else {
+                        // Fill with template data
+                        const templateData = getTemplateData(value);
+                        if (templateData) {
+                          setNewCourse(prev => ({
+                            ...prev,
+                            courseType: value,
+                            subtitle: templateData.subtitle || '',
+                            sessions: templateData.sessions,
+                            hoursPerSession: templateData.hours_per_session,
+                            maxParticipants: templateData.max_participants,
+                            price: templateData.price,
+                            discountPrice: templateData.discount_price || 0,
+                            courseInfo: templateData.course_info || '',
+                            practicalInfo: templateData.practical_info || ''
+                          }));
+                        }
+                      }
+                    }}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Välj kurstyp" />
+                      <SelectValue placeholder="Välj kurstyp eller skapa anpassad" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="custom">Anpassad kurs (eget namn)</SelectItem>
                       <SelectItem value="niv1">Nivå 1 - Scenarbete & Improv Comedy</SelectItem>
-                      <SelectItem value="niv2">Nivå 2 - Långform improviserad komik</SelectItem>
+                      <SelectItem value="niv2">Nivå 2 - Långform & Improviserad komik</SelectItem>
                       <SelectItem value="helgworkshop">Helgworkshop (eget namn)</SelectItem>
                       <SelectItem value="houseteam">House Team & fortsättning</SelectItem>
                     </SelectContent>
