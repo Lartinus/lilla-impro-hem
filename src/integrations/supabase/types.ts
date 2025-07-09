@@ -299,6 +299,57 @@ export type Database = {
         }
         Relationships: []
       }
+      course_templates: {
+        Row: {
+          course_info: string | null
+          created_at: string
+          discount_price: number | null
+          hours_per_session: number
+          id: string
+          is_active: boolean
+          max_participants: number
+          name: string
+          practical_info: string | null
+          price: number
+          sessions: number
+          subtitle: string | null
+          title_template: string
+          updated_at: string
+        }
+        Insert: {
+          course_info?: string | null
+          created_at?: string
+          discount_price?: number | null
+          hours_per_session?: number
+          id?: string
+          is_active?: boolean
+          max_participants?: number
+          name: string
+          practical_info?: string | null
+          price?: number
+          sessions?: number
+          subtitle?: string | null
+          title_template: string
+          updated_at?: string
+        }
+        Update: {
+          course_info?: string | null
+          created_at?: string
+          discount_price?: number | null
+          hours_per_session?: number
+          id?: string
+          is_active?: boolean
+          max_participants?: number
+          name?: string
+          practical_info?: string | null
+          price?: number
+          sessions?: number
+          subtitle?: string | null
+          title_template?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       discount_codes: {
         Row: {
           code: string

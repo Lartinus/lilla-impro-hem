@@ -429,6 +429,22 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     retry: 1
   });
 
+  // Fetch course templates from database
+  const { data: courseTemplates = [] } = useQuery({
+    queryKey: ['course-templates'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('course_templates')
+        .select('*')
+        .eq('is_active', true)
+        .order('name');
+      
+      if (error) throw error;
+      return data || [];
+    },
+    retry: 1
+  });
+
   // Update sort order mutation
   const updateSortOrderMutation = useMutation({
     mutationFn: async (updates: { id: string, sort_order: number }[]) => {
@@ -568,7 +584,23 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
 
   // Template data mapping
   const getTemplateData = (courseType: string) => {
-    const templates = {
+    // First check if it's a template from the database
+    const template = courseTemplates.find(t => t.id === courseType);
+    if (template) {
+      return {
+        subtitle: template.subtitle,
+        course_info: template.course_info,
+        practical_info: template.practical_info,
+        price: template.price,
+        discount_price: template.discount_price,
+        max_participants: template.max_participants,
+        sessions: template.sessions,
+        hours_per_session: template.hours_per_session,
+      };
+    }
+    
+    // Fallback to legacy mapping for backward compatibility
+    const legacyTemplates = {
       'niv1': {
         subtitle: 'Grundkurs i improvisationsteater',
         course_info: 'En introduktionskurs för nybörjare inom improvisationsteater.',
@@ -610,7 +642,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         hours_per_session: 4,
       }
     };
-    return templates[courseType as keyof typeof templates];
+    return legacyTemplates[courseType as keyof typeof legacyTemplates];
   };
 
   // Update course mutation
@@ -1084,10 +1116,11 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="custom">Anpassad kurs (eget namn)</SelectItem>
-                      <SelectItem value="niv1">Nivå 1 - Scenarbete & Improv Comedy</SelectItem>
-                      <SelectItem value="niv2">Nivå 2 - Långform & Improviserad komik</SelectItem>
-                      <SelectItem value="helgworkshop">Helgworkshop (eget namn)</SelectItem>
-                      <SelectItem value="houseteam">House Team & fortsättning</SelectItem>
+                      {courseTemplates.map((template) => (
+                        <SelectItem key={template.id} value={template.id}>
+                          {template.title_template}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>

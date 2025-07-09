@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,70 +27,138 @@ interface CourseTemplate {
   is_active: boolean;
 }
 
-const DEFAULT_TEMPLATES: CourseTemplate[] = [
-  {
-    id: 'niv1',
-    name: 'Nivå 1',
-    title_template: 'Niv 1 - Scenarbete & Improv Comedy',
-    subtitle: 'Grundkurs i improvisationsteater',
-    course_info: 'En introduktionskurs för nybörjare inom improvisationsteater.',
-    practical_info: 'Ta med bekväma kläder och vara beredd att ha kul!',
-    price: 2400,
-    discount_price: 1800,
-    max_participants: 12,
-    sessions: 8,
-    hours_per_session: 2,
-    is_active: true,
-  },
-  {
-    id: 'niv2',
-    name: 'Nivå 2',
-    title_template: 'Niv 2 - Långform & Improviserad komik',
-    subtitle: 'Fördjupningskurs i improvisationsteater',
-    course_info: 'En fortsättningskurs för dig som redan har grundläggande kunskaper.',
-    practical_info: 'Kräver tidigare erfarenhet av improvisationsteater.',
-    price: 2800,
-    discount_price: 2100,
-    max_participants: 10,
-    sessions: 8,
-    hours_per_session: 2.5,
-    is_active: true,
-  },
-  {
-    id: 'houseteam',
-    name: 'House Team',
-    title_template: 'House Team',
-    subtitle: 'Regelbunden träning för erfarna improvisatörer',
-    course_info: 'Kontinuerlig träning och utveckling för medlemmar i LIT:s house team.',
-    practical_info: 'Endast för inbjudna medlemmar.',
-    price: 1500,
-    discount_price: 1200,
-    max_participants: 8,
-    sessions: 12,
-    hours_per_session: 2,
-    is_active: true,
-  },
-  {
-    id: 'helgworkshop',
-    name: 'Helgworkshop',
-    title_template: 'Helgworkshop',
-    subtitle: 'Intensiv workshop under en helg',
-    course_info: 'En koncentrerad workshop som sträcker sig över en helg.',
-    practical_info: 'Fredag kväll, lördag och söndag.',
-    price: 1800,
-    discount_price: 1400,
-    max_participants: 15,
-    sessions: 3,
-    hours_per_session: 4,
-    is_active: true,
-  },
-];
-
 export const CourseTemplateManagement = () => {
-  const [templates, setTemplates] = useState<CourseTemplate[]>(DEFAULT_TEMPLATES);
   const [editingTemplate, setEditingTemplate] = useState<CourseTemplate | null>(null);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Hämta kursmallar från Supabase
+  const { data: templates = [], isLoading } = useQuery({
+    queryKey: ['course-templates'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('course_templates')
+        .select('*')
+        .order('name');
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Mutation för att skapa ny mall
+  const createMutation = useMutation({
+    mutationFn: async (template: Omit<CourseTemplate, 'id'>) => {
+      const { data, error } = await supabase
+        .from('course_templates')
+        .insert([template])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['course-templates'] });
+      toast({
+        title: "Mall skapad",
+        description: "Den nya kursmallen har skapats framgångsrikt.",
+      });
+      setEditingTemplate(null);
+      setIsCreatingNew(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: "Kunde inte skapa mall: " + error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Mutation för att uppdatera mall
+  const updateMutation = useMutation({
+    mutationFn: async (template: CourseTemplate) => {
+      const { data, error } = await supabase
+        .from('course_templates')
+        .update(template)
+        .eq('id', template.id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['course-templates'] });
+      toast({
+        title: "Mall uppdaterad",
+        description: "Kursmallen har uppdaterats framgångsrikt.",
+      });
+      setEditingTemplate(null);
+      setIsCreatingNew(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: "Kunde inte uppdatera mall: " + error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Mutation för att ta bort mall
+  const deleteMutation = useMutation({
+    mutationFn: async (templateId: string) => {
+      const { error } = await supabase
+        .from('course_templates')
+        .delete()
+        .eq('id', templateId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['course-templates'] });
+      toast({
+        title: "Mall borttagen",
+        description: "Kursmallen har tagits bort framgångsrikt.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: "Kunde inte ta bort mall: " + error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Mutation för att växla aktiv status
+  const toggleActiveMutation = useMutation({
+    mutationFn: async ({ templateId, isActive }: { templateId: string; isActive: boolean }) => {
+      const { error } = await supabase
+        .from('course_templates')
+        .update({ is_active: isActive })
+        .eq('id', templateId);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['course-templates'] });
+      toast({
+        title: "Status uppdaterad",
+        description: "Mallens status har uppdaterats.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: "Kunde inte uppdatera status: " + error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleEdit = (template: CourseTemplate) => {
     setEditingTemplate({ ...template });
@@ -126,25 +196,11 @@ export const CourseTemplateManagement = () => {
     }
 
     if (isCreatingNew) {
-      const newTemplate = {
-        ...editingTemplate,
-        id: editingTemplate.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, ''),
-      };
-      setTemplates(prev => [...prev, newTemplate]);
-      toast({
-        title: "Mall skapad",
-        description: "Den nya kursmallen har skapats framgångsrikt.",
-      });
+      const { id, ...templateData } = editingTemplate;
+      createMutation.mutate(templateData);
     } else {
-      setTemplates(prev => prev.map(t => t.id === editingTemplate.id ? editingTemplate : t));
-      toast({
-        title: "Mall uppdaterad",
-        description: "Kursmallen har uppdaterats framgångsrikt.",
-      });
+      updateMutation.mutate(editingTemplate);
     }
-
-    setEditingTemplate(null);
-    setIsCreatingNew(false);
   };
 
   const handleCancel = () => {
@@ -153,22 +209,36 @@ export const CourseTemplateManagement = () => {
   };
 
   const handleDelete = (templateId: string) => {
-    setTemplates(prev => prev.filter(t => t.id !== templateId));
-    toast({
-      title: "Mall borttagen",
-      description: "Kursmallen har tagits bort framgångsrikt.",
-    });
+    deleteMutation.mutate(templateId);
   };
 
   const toggleActive = (templateId: string) => {
-    setTemplates(prev => prev.map(t => 
-      t.id === templateId ? { ...t, is_active: !t.is_active } : t
-    ));
-    toast({
-      title: "Status uppdaterad",
-      description: "Mallens status har uppdaterats.",
-    });
+    const template = templates.find(t => t.id === templateId);
+    if (template) {
+      toggleActiveMutation.mutate({ 
+        templateId, 
+        isActive: !template.is_active 
+      });
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold">Kursmallar</h2>
+            <p className="text-muted-foreground">
+              Hantera mallar för kurser som kan användas när nya kurser skapas
+            </p>
+          </div>
+        </div>
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">Laddar kursmallar...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -295,9 +365,13 @@ export const CourseTemplateManagement = () => {
             </div>
 
             <div className="flex gap-2 pt-4">
-              <Button onClick={handleSave} className="flex items-center gap-2">
+              <Button 
+                onClick={handleSave} 
+                className="flex items-center gap-2"
+                disabled={createMutation.isPending || updateMutation.isPending}
+              >
                 <Save className="w-4 h-4" />
-                Spara
+                {createMutation.isPending || updateMutation.isPending ? 'Sparar...' : 'Spara'}
               </Button>
               <Button variant="outline" onClick={handleCancel} className="flex items-center gap-2">
                 <X className="w-4 h-4" />
@@ -342,6 +416,7 @@ export const CourseTemplateManagement = () => {
                     size="sm"
                     onClick={() => toggleActive(template.id)}
                     className="text-xs"
+                    disabled={toggleActiveMutation.isPending}
                   >
                     {template.is_active ? 'Inaktivera' : 'Aktivera'}
                   </Button>
@@ -377,8 +452,9 @@ export const CourseTemplateManagement = () => {
                         <AlertDialogAction 
                           onClick={() => handleDelete(template.id)}
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          disabled={deleteMutation.isPending}
                         >
-                          Ta bort
+                          {deleteMutation.isPending ? 'Tar bort...' : 'Ta bort'}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
