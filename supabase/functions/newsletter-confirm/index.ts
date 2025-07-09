@@ -1,7 +1,16 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
 const handler = async (req: Request): Promise<Response> => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
   try {
     const url = new URL(req.url);
     let token = url.searchParams.get('token');
@@ -26,8 +35,7 @@ const handler = async (req: Request): Promise<Response> => {
           status: 400,
           headers: { 
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type"
+            ...corsHeaders
           }
         });
       } else {
@@ -181,8 +189,7 @@ const handler = async (req: Request): Promise<Response> => {
         status: 200,
         headers: { 
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type"
+          ...corsHeaders
         }
       });
     } else {
@@ -207,29 +214,45 @@ const handler = async (req: Request): Promise<Response> => {
 
   } catch (error: any) {
     console.error("Error in newsletter-confirm function:", error);
-    return new Response(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Fel uppstod</title>
-        <meta charset="utf-8">
-        <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-          .container { background: white; padding: 40px; border-radius: 10px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-          .error { color: #e74c3c; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <h1 class="error">Ett fel uppstod</h1>
-          <p>Vi kunde inte bekräfta din prenumeration just nu. Försök igen senare eller kontakta oss om problemet kvarstår.</p>
-        </div>
-      </body>
-      </html>
-    `, {
-      status: 500,
-      headers: { "Content-Type": "text/html; charset=utf-8" }
-    });
+    
+    // Check if this is a function call or direct browser access
+    if (req.method === 'POST') {
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'server-error',
+        message: 'Ett fel uppstod vid bekräftelsen'
+      }), {
+        status: 500,
+        headers: { 
+          "Content-Type": "application/json",
+          ...corsHeaders
+        }
+      });
+    } else {
+      return new Response(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Fel uppstod</title>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
+            .container { background: white; padding: 40px; border-radius: 10px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            .error { color: #e74c3c; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h1 class="error">Ett fel uppstod</h1>
+            <p>Vi kunde inte bekräfta din prenumeration just nu. Försök igen senare eller kontakta oss om problemet kvarstår.</p>
+          </div>
+        </body>
+        </html>
+      `, {
+        status: 500,
+        headers: { "Content-Type": "text/html; charset=utf-8" }
+      });
+    }
   }
 };
 
