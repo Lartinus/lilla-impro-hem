@@ -315,7 +315,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
           border-top: 1px solid #e8e8e8;
         ">
           <div style="max-width: 600px; margin: 0 auto;">
-            <img src="https://gcimnsbeexkkqragmdzo.supabase.co/storage/v1/object/public/images/LIT_red_large.png" alt="Lilla Improteatern" style="
+            <img src="/uploads/LIT_red_large.png" alt="Lilla Improteatern" style="
               width: 120px;
               height: auto;
               margin: 0 auto 20px auto;
@@ -595,11 +595,14 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
         {/* Email Preview */}
         <div className="space-y-2">
           <Label>Förhandsvisning</Label>
-          <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
+          <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto preview-content">
             {bulkEmailTemplateData.content ? (
-              <div dangerouslySetInnerHTML={{ 
-                __html: createSimpleEmailTemplate(emailSubject, bulkEmailTemplateData.content, bulkEmailTemplateData.background_image)
-              }} />
+              <div 
+                dangerouslySetInnerHTML={{ 
+                  __html: createSimpleEmailTemplate(emailSubject, bulkEmailTemplateData.content, bulkEmailTemplateData.background_image)
+                }}
+                className="[&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-4 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2 [&_p]:mb-2 [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1"
+              />
             ) : (
               <p className="text-muted-foreground text-sm">Skriv markdown-innehåll för att se förhandsvisningen...</p>
             )}
