@@ -177,7 +177,7 @@ const ContactActivitiesDetail: React.FC<{ email: string }> = ({ email }) => {
   );
 };
 
-export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 'send' }) => {
+export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 'templates' }) => {
   const [selectedRecipients, setSelectedRecipients] = useState<string>('');
   const [emailSubject, setEmailSubject] = useState('');
   const [emailContent, setEmailContent] = useState('');
