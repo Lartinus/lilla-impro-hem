@@ -15,6 +15,7 @@ import Mohippa from "./pages/Mohippa";
 import NotFound from "./pages/NotFound";
 import TicketPreviewPage from "./pages/TicketPreviewPage";
 import CourseConfirmationPreviewPage from "./pages/CourseConfirmationPreviewPage";
+import EmailPreview from "./pages/EmailPreview";
 import Unsubscribe from "./pages/Unsubscribe";
 import NewsletterConfirmation from "./pages/NewsletterConfirmation";
 import AdminDashboard from "./pages/Admin";
@@ -55,6 +56,7 @@ const App = () => (
               <Route path="/shows/:slug" element={<ShowDetails />} />
               <Route path="/biljett" element={<TicketPreviewPage />} />
               <Route path="/kursanmälan" element={<CourseConfirmationPreviewPage />} />
+              <Route path="/email-preview" element={<EmailPreview />} />
               <Route path="/avprenumerera" element={<Unsubscribe />} />
               <Route path="/nyhetsbrev-bekraftelse" element={<NewsletterConfirmation />} />
               <Route path="/admin" element={<AdminDashboard />} />
