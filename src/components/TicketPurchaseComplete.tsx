@@ -45,7 +45,7 @@ const TicketPurchaseComplete = ({
   // Critical error handling: if totalTickets is not provided, we cannot proceed
   if (totalTickets === undefined || totalTickets === null) {
     console.error(`❌ CRITICAL ERROR: No totalTickets provided for show ${showSlug}`);
-    console.error(`  - This value must come from Strapi's available_tickets field`);
+    console.error(`  - This value must be configured in the show settings`);
     console.error(`  - Show will be displayed as sold out until this is fixed`);
     
     return (
@@ -64,7 +64,7 @@ const TicketPurchaseComplete = ({
 
   // Add detailed logging for debugging
   console.log(`🎭 TicketPurchaseComplete for ${showSlug}:`);
-  console.log(`  - totalTickets (from Strapi): ${totalTickets}`);
+  console.log(`  - totalTickets: ${totalTickets}`);
   console.log(`  - availableTickets (computed): ${availableTickets}`);
   console.log(`  - hasActiveBooking: ${hasActiveBooking}`);
   console.log(`  - Calculation: ${totalTickets} total - sold - booked = ${availableTickets} available`);

@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface OptimizedImageProps {
-  src: string | any | null; // Support both string URLs and Strapi objects
+  src: string | any | null; // Support both string URLs and image objects
   alt: string;
   className?: string;
   fallbackText?: string;
@@ -21,7 +21,7 @@ const OptimizedImage = ({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  // Simplified image URL handling - just use src as-is since we removed Strapi
+  // Simplified image URL handling
   const { imageUrl, originalSrc } = useCallback(() => {
     if (!src) return { imageUrl: null, originalSrc: null };
 

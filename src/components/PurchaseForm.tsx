@@ -39,7 +39,7 @@ const PurchaseForm = ({
     email: false
   });
 
-  // Calculate total with prices from Strapi
+  // Calculate total with show prices
   const regularTotal = ticketCount * ticketPrice;
   const discountTotal = discountTickets * discountPrice;
   let finalTotal = regularTotal + discountTotal;

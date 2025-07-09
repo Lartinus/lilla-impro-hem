@@ -19,14 +19,14 @@ interface OtherShowsSectionProps {
 }
 
 const OtherShowCard = ({ show }: { show: Show }) => {
-  // Only use useAvailableTickets if we have a valid totalTickets value from Strapi
+  // Calculate available tickets
   const { data: availableTickets } = useAvailableTickets(
     show.slug, 
     show.totalTickets || 0 // Use 0 as fallback to ensure sold out shows are handled correctly
   );
 
   console.log(`🎫 OtherShowCard for ${show.slug}:`);
-  console.log(`  - totalTickets from Strapi: ${show.totalTickets}`);
+  console.log(`  - totalTickets: ${show.totalTickets}`);
   console.log(`  - availableTickets calculated: ${availableTickets}`);
   
   const formatDateTime = (dateString: string) => {
@@ -45,8 +45,8 @@ const OtherShowCard = ({ show }: { show: Show }) => {
   };
 
   // Show as sold out if:
-  // 1. totalTickets is undefined/null (not configured in Strapi)
-  // 2. totalTickets is 0 (explicitly set to 0 in Strapi)
+  // 1. totalTickets is undefined/null (not configured)
+  // 2. totalTickets is 0 (explicitly set to 0)
   // 3. availableTickets is 0 or less (calculated as sold out)
   const isSoldOut = show.totalTickets === undefined || 
                     show.totalTickets === null || 

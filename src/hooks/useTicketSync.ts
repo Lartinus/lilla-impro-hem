@@ -7,12 +7,12 @@ export const useAvailableTickets = (showSlug: string, totalTickets: number) => {
     queryKey: ['available-tickets', showSlug, totalTickets],
     queryFn: async () => {
       console.log(`🎫 Calculating available tickets for ${showSlug}:`);
-      console.log(`  - Total tickets (from Strapi): ${totalTickets}`);
+      console.log(`  - Total tickets: ${totalTickets}`);
       
       // Critical validation: totalTickets must be provided and valid
       if (totalTickets === undefined || totalTickets === null || totalTickets < 0) {
         console.error(`❌ CRITICAL: Invalid totalTickets value: ${totalTickets}`);
-        console.error(`  - This value must come from Strapi's available_tickets field`);
+        console.error(`  - This value must be configured in the show settings`);
         console.error(`  - Cannot calculate availability without total tickets`);
         return 0; // Return 0 to prevent ticket sales
       }

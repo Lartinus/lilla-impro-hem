@@ -13,7 +13,7 @@ interface SimpleShow {
   time?: any;
   location: string;
   slug: string;
-  image?: any; // Raw Strapi image object
+  image?: any; // Image object
   totalTickets: number; // Required to get proper ticket counts
 }
 
@@ -26,14 +26,14 @@ const ShowCardSimple = ({
   show,
   onImageLoad
 }: ShowCardSimpleProps) => {
-  // Use totalTickets from Strapi to calculate availability
+  // Calculate ticket availability
   const { data: availableTickets, isLoading } = useAvailableTickets(
     show.slug, 
     show.totalTickets
   );
 
   console.log(`🎫 ShowCardSimple for ${show.slug}:`);
-  console.log(`  - totalTickets from Strapi: ${show.totalTickets}`);
+  console.log(`  - totalTickets: ${show.totalTickets}`);
   console.log(`  - availableTickets calculated: ${availableTickets}`);
   console.log(`  - isLoading: ${isLoading}`);
 
@@ -54,7 +54,7 @@ const ShowCardSimple = ({
   };
 
   // Only show as sold out if:
-  // 1. totalTickets is explicitly set to 0 in Strapi (immediate sold out)
+  // 1. totalTickets is explicitly set to 0 (immediate sold out)
   // 2. We have finished loading AND availableTickets is 0 or less
   // This prevents flickering while data is loading
   const isSoldOut = show.totalTickets === 0 || 
@@ -65,7 +65,7 @@ const ShowCardSimple = ({
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none overflow-hidden relative">
       <CardContent className="p-0">
-        {/* Optimized Show Image - pass raw Strapi object */}
+        {/* Optimized Show Image */}
         {show.image && (
           <OptimizedImage 
             src={show.image} 
