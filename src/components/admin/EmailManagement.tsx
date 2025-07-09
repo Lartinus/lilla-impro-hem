@@ -170,7 +170,12 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
         }
       }
       
-      setGroupMemberCounts(counts);
+      setGroupMemberCounts(prevCounts => {
+        // Only update if counts have actually changed
+        const hasChanged = Object.keys(counts).some(key => counts[key] !== prevCounts[key]) || 
+                          Object.keys(prevCounts).some(key => !(key in counts));
+        return hasChanged ? counts : prevCounts;
+      });
     };
 
     fetchGroupMemberCounts();
@@ -1224,7 +1229,6 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-medium">Email-grupper</h3>
           <Button onClick={() => {
             setEditingGroup(null);
             setGroupForm({ name: '', description: '' });
@@ -1247,9 +1251,6 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <h4 className="font-medium">{group.name}</h4>
-                      <Badge variant={group.is_active ? "default" : "secondary"}>
-                        {group.is_active ? "Aktiv" : "Inaktiv"}
-                      </Badge>
                     </div>
                     {group.description && (
                       <p className="text-sm text-muted-foreground mb-2">{group.description}</p>
@@ -1536,7 +1537,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Importera deltagare från kurser direkt till dina email-grupper.
+              Importera deltagare från kurser direkt till dina mottagargrupper.
             </p>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -1886,7 +1887,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">Email-hantering</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Mottagargrupper</h2>
       </div>
 
       {renderContent()}
