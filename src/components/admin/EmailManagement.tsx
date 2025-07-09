@@ -23,10 +23,7 @@ interface EmailTemplate {
   name: string;
   subject: string;
   content: string;
-  title?: string;
-  subtitle?: string;
   background_image?: string;
-  title_size?: string;
   description?: string;
   is_active?: boolean;
   created_at?: string;
@@ -191,19 +188,13 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
     name: '',
     subject: '',
     content: '',
-    title: '',
-    subtitle: '',
     background_image: '',
-    description: '',
-    title_size: '32'
+    description: ''
   });
   
   // State for bulk email template data
   const [bulkEmailTemplateData, setBulkEmailTemplateData] = useState({
-    title: '',
-    subtitle: '',
-    background_image: '',
-    title_size: '32'
+    background_image: ''
   });
   
   // New state for group management
@@ -915,7 +906,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
       setSelectedRecipients('');
       setSelectedTemplate('');
       setAttachments([]);
-      setBulkEmailTemplateData({ title: '', subtitle: '', background_image: '', title_size: '32' });
+      setBulkEmailTemplateData({ background_image: '' });
     } catch (error: any) {
       console.error('Email sending error:', error);
       toast({
@@ -935,10 +926,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
     
     // Store template data for preview
     setBulkEmailTemplateData({
-      title: template.title || '',
-      subtitle: template.subtitle || '',
-      background_image: template.background_image || '',
-      title_size: template.title_size || '32'
+      background_image: template.background_image || ''
     });
   };
 
@@ -961,10 +949,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
               name: templateForm.name,
               subject: templateForm.subject,
               content: templateForm.content,
-              title: templateForm.title || null,
-              subtitle: templateForm.subtitle || null,
               background_image: templateForm.background_image || null,
-              title_size: templateForm.title_size || null,
               description: templateForm.description || null,
             })
             .eq('id', editingTemplate.id);
@@ -983,10 +968,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
             name: templateForm.name,
             subject: templateForm.subject,
             content: templateForm.content,
-            title: templateForm.title || null,
-            subtitle: templateForm.subtitle || null,
             background_image: templateForm.background_image || null,
-            title_size: templateForm.title_size || null,
             description: templateForm.description || null,
           });
 
@@ -1000,7 +982,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
       
       setIsTemplateDialogOpen(false);
       setEditingTemplate(null);
-      setTemplateForm({ name: '', subject: '', content: '', title: '', subtitle: '', background_image: '', description: '', title_size: '32' });
+      setTemplateForm({ name: '', subject: '', content: '', background_image: '', description: '' });
       queryClient.invalidateQueries({ queryKey: ['email-templates'] });
     } catch (error: any) {
       console.error('Template save error:', error);
@@ -1019,15 +1001,12 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
         name: template.name, 
         subject: template.subject, 
         content: template.content, 
-        title: template.title || '', 
-        subtitle: template.subtitle || '', 
-        background_image: template.background_image || '', 
-        description: template.description || '', 
-        title_size: template.title_size || '32'
+        background_image: template.background_image || '',
+        description: template.description || ''
       });
     } else {
       setEditingTemplate(null);
-      setTemplateForm({ name: '', subject: '', content: '', title: '', subtitle: '', background_image: '', description: '', title_size: '32' });
+      setTemplateForm({ name: '', subject: '', content: '', background_image: '', description: '' });
     }
     setIsTemplateDialogOpen(true);
   };
@@ -1423,7 +1402,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
                     setEmailSubject('');
                     setEmailContent('');
                     setAttachments([]);
-                    setBulkEmailTemplateData({ title: '', subtitle: '', background_image: '', title_size: '32' });
+                    setBulkEmailTemplateData({ background_image: '' });
                   }
                 }}>
                   <SelectTrigger>
@@ -1530,15 +1509,15 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
               <div className="space-y-2">
                 <Label>Förhandsvisning</Label>
                 <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
-                    {emailContent ? (
-                      <div dangerouslySetInnerHTML={{ 
-                        __html: getStyledEmailContent(emailContent, emailSubject, bulkEmailTemplateData.title, bulkEmailTemplateData.subtitle, bulkEmailTemplateData.background_image, bulkEmailTemplateData.title_size) 
-                      }} />
-                  ) : (
-                    <div className="text-muted-foreground text-center py-8">
-                      Skriv ett meddelande för att se förhandsvisningen
-                    </div>
-                  )}
+                     {emailContent ? (
+                       <div dangerouslySetInnerHTML={{ 
+                         __html: getStyledEmailContent(emailContent, emailSubject, bulkEmailTemplateData.background_image) 
+                       }} />
+                   ) : (
+                     <div className="text-muted-foreground text-center py-8">
+                       Skriv ett meddelande för att se förhandsvisningen
+                     </div>
+                   )}
                 </div>
               </div>
 
@@ -2319,9 +2298,9 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
               <div className="space-y-2">
                 <Label>Förhandsvisning</Label>
                 <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
-                  <div dangerouslySetInnerHTML={{ 
-                    __html: getStyledEmailContent(templateForm.content, templateForm.subject, templateForm.title, templateForm.subtitle, templateForm.background_image, templateForm.title_size) 
-                  }} />
+                   <div dangerouslySetInnerHTML={{ 
+                     __html: getStyledEmailContent(templateForm.content, templateForm.subject, templateForm.background_image) 
+                   }} />
                 </div>
               </div>
             </div>
