@@ -1243,7 +1243,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
           <div className="space-y-4">
             {emailGroups.map((group) => (
               <Card key={group.id} className="p-4">
-                <div className="flex justify-between items-start">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <h4 className="font-medium">{group.name}</h4>
@@ -1258,7 +1258,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
                       {groupMemberCounts[group.id] || 0} medlemmar
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                     <Button
                       variant="outline"
                       size="sm"
@@ -1266,9 +1266,11 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
                         setSelectedGroup(group);
                         setShowGroupMembersDialog(true);
                       }}
+                      className="w-full sm:w-auto"
                     >
                       <Users className="w-4 h-4 mr-1" />
-                      Medlemmar
+                      <span className="hidden xs:inline">Medlemmar</span>
+                      <span className="xs:hidden">Medlem</span>
                     </Button>
                     <Button
                       variant="outline"
@@ -1281,9 +1283,11 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
                         });
                         setShowCreateGroupDialog(true);
                       }}
+                      className="w-full sm:w-auto"
                     >
                       <Edit className="w-4 h-4 mr-1" />
-                      Redigera
+                      <span className="hidden xs:inline">Redigera</span>
+                      <span className="xs:hidden">Edit</span>
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
@@ -1291,9 +1295,11 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
                           variant="outline"
                           size="sm"
                           disabled={group.name === 'Nyhetsbrevet'}
+                          className="w-full sm:w-auto"
                         >
                           <Trash2 className="w-4 h-4 mr-1" />
-                          Radera
+                          <span className="hidden xs:inline">Radera</span>
+                          <span className="xs:hidden">Ta bort</span>
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
@@ -1483,20 +1489,24 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
 
     return (
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <h3 className="text-lg font-medium">Alla kontakter ({totalContacts} st)</h3>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Button 
               onClick={handleSyncContacts}
               disabled={isSyncing}
               variant="outline"
+              size="sm"
+              className="w-full sm:w-auto"
             >
               <RefreshCw className="w-4 h-4 mr-2" />
-              {isSyncing ? 'Synkroniserar...' : 'Synkronisera'}
+              <span className="hidden xs:inline">{isSyncing ? 'Synkroniserar...' : 'Synkronisera'}</span>
+              <span className="xs:hidden">{isSyncing ? 'Sync...' : 'Sync'}</span>
             </Button>
-            <Button onClick={() => handleEditContact()}>
+            <Button onClick={() => handleEditContact()} size="sm" className="w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
-              Lägg till kontakt
+              <span className="hidden xs:inline">Lägg till kontakt</span>
+              <span className="xs:hidden">Ny kontakt</span>
             </Button>
           </div>
         </div>
@@ -1719,7 +1729,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-between mt-4">
+                  <div className="flex flex-col xs:flex-row items-center justify-between mt-4 gap-2">
                     <div className="text-sm text-muted-foreground">
                       Sida {currentPage} av {totalPages}
                     </div>
@@ -1730,7 +1740,8 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
                         onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                         disabled={currentPage === 1}
                       >
-                        Föregående
+                        <span className="hidden xs:inline">Föregående</span>
+                        <span className="xs:hidden">‹</span>
                       </Button>
                       <Button
                         variant="outline"
@@ -1738,7 +1749,8 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
                         onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                         disabled={currentPage === totalPages}
                       >
-                        Nästa
+                        <span className="hidden xs:inline">Nästa</span>
+                        <span className="xs:hidden">›</span>
                       </Button>
                     </div>
                   </div>
