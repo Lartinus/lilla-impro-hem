@@ -11,7 +11,8 @@ export function convertMarkdownToHtml(markdown: string): string {
   if (!markdown) return '';
   // Ta bort eventuell BOM och normalisera radslut
   const cleaned = markdown.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
-  // Standard parse utan avancerade extensions
+  
+  // Standard parse med GFM aktiverat
   const result = marked.parse(cleaned, {
     gfm: true,
     breaks: false,
@@ -27,6 +28,8 @@ export function convertMarkdownToHtml(markdown: string): string {
 export function convertMarkdownToHtmlForRedBox(markdown: string): string {
   if (!markdown) return '';
   const cleaned = markdown.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
+  
+  // Standard parse med GFM och breaks aktiverat
   const result = marked.parse(cleaned, {
     gfm: true,
     breaks: true,

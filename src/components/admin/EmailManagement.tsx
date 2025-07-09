@@ -315,6 +315,12 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
           border-top: 1px solid #e8e8e8;
         ">
           <div style="max-width: 600px; margin: 0 auto;">
+            <img src="https://gcimnsbeexkkqragmdzo.supabase.co/storage/v1/object/public/images/LIT_red_large.png" alt="Lilla Improteatern" style="
+              width: 120px;
+              height: auto;
+              margin: 0 auto 20px auto;
+              display: block;
+            "/>
             <p style="
               font-size: 16px;
               font-weight: 500;
@@ -549,20 +555,6 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
           />
         </div>
 
-        {/* Content */}
-        <div className="space-y-2">
-          <Label htmlFor="content">Meddelande</Label>
-          <Textarea
-            id="content"
-            value={emailContent}
-            onChange={(e) => setEmailContent(e.target.value)}
-            placeholder="Skriv ditt meddelande här..."
-            rows={12}
-          />
-          <p className="text-sm text-muted-foreground">
-            Du kan använda följande variabler: [NAMN], [KURSNAMN], [FÖRESTÄLLNING], [DATUM], [TID], [PLATS], [ADRESS]
-          </p>
-        </div>
 
         {/* Design Options */}
         <div className="space-y-4">
