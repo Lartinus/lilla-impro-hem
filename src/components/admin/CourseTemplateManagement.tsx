@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Plus, Edit, Trash2, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -353,15 +354,35 @@ export const CourseTemplateManagement = () => {
                     <Edit className="w-3 h-3" />
                     Redigera
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDelete(template.id)}
-                    className="flex items-center gap-1 text-destructive hover:text-destructive"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                    Ta bort
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        Ta bort
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Är du säker?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Denna åtgärd kan inte ångras. Kursmallen "{template.name}" kommer att tas bort permanent.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={() => handleDelete(template.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Ta bort
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </div>
             </CardContent>
