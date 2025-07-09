@@ -1042,10 +1042,10 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
       .replace(/\[TID\]/g, '19:00')
       .replace(/\[PLATS\]/g, 'Lilla Improteatern');
 
-    // Create the new template design with background and title
     const isPlainText = !content.includes('<') && !content.includes('>');
     const hasBackground = backgroundImage && backgroundImage.trim() !== '';
     const hasTitle = title && title.trim() !== '';
+    const finalTitleSize = titleSize || '32';
     
     let htmlContent;
     if (isPlainText) {
@@ -1054,127 +1054,129 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
       htmlContent = previewContent;
     }
     
+    // New clean, Moccamaster-inspired design
     return `
       <div style="
-        font-family: Arial, sans-serif; 
-        line-height: 1.6; 
-        color: #333;
-        background-color: #f5f5f5;
-        padding: 0;
         margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        background-color: #f8f9fa;
+        line-height: 1.6;
+        color: #333333;
       ">
-        ${imagePosition === 'top' && hasBackground ? `
-          <div style="
-            height: 300px;
-            background-image: url('${backgroundImage}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            margin: 0;
-          "></div>
-        ` : ''}
-        
-        ${imagePosition === 'behind' && hasBackground ? `
-          <div style="
-            position: relative;
-            min-height: 400px;
-            background-image: url('${backgroundImage}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            margin: 0;
-            padding: 40px 20px;
-          ">
-        ` : ''}
-        
+        <!-- Container -->
         <div style="
           max-width: 600px;
-          margin: ${imagePosition === 'top' && hasBackground ? '-80px auto 40px auto' : 
-                   imagePosition === 'behind' && hasBackground ? '0 auto' : 
-                   '40px auto'};
-          position: relative;
-          z-index: 10;
-          ${imagePosition === 'behind' && hasBackground ? '' : 'padding: 0 20px;'}
+          margin: 40px auto;
+          background-color: #ffffff;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         ">
+          <!-- Header -->
           <div style="
-            background-color: #fff;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            position: relative;
-            ${imagePosition === 'behind' && hasBackground ? 'background-color: rgba(255,255,255,0.95); backdrop-filter: blur(10px);' : ''}
+            background-color: #1a1a1a;
+            color: #ffffff;
+            padding: 40px 32px;
+            text-align: center;
           ">
-            ${hasTitle ? `
-              <h1 style="
-                color: #333; 
-                margin: 0 0 20px 0;
-                font-size: ${titleSize}px;
-                font-weight: bold;
-                text-align: center;
-                line-height: 1.2;
-              ">
-                ${title}
-              </h1>
+            ${hasBackground ? `
               <div style="
-                width: 60px;
-                height: 3px;
-                background-color: #333;
-                margin: 0 auto 30px auto;
-              "></div>
-            ` : `
-              <div style="
-                border-bottom: 2px solid #d32f2f; 
-                padding-bottom: 20px; 
-                margin-bottom: 30px;
-              ">
-                <h2 style="
-                  color: #d32f2f; 
-                  margin: 0 0 10px 0;
-                  font-size: 24px;
-                ">
-                  ${subject || 'Email från Lilla Improteatern'}
-                </h2>
-              </div>
-            `}
-            
-            <div style="margin-bottom: 30px;">
-              ${htmlContent}
-            </div>
-            
-            ${imagePosition === 'bottom' && hasBackground ? `
-              <div style="
-                height: 200px;
+                max-width: 400px;
+                margin: 0 auto 32px;
+                height: 160px;
                 background-image: url('${backgroundImage}');
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
-                margin: 30px -40px 30px -40px;
-                border-radius: 8px;
+                border-radius: 6px;
               "></div>
             ` : ''}
             
+            ${hasTitle ? `
+              <h1 style="
+                font-size: ${finalTitleSize}px;
+                font-weight: 400;
+                margin: 0 0 8px 0;
+                letter-spacing: -0.025em;
+                line-height: 1.2;
+              ">${title}</h1>
+            ` : `
+              <h1 style="
+                font-size: 28px;
+                font-weight: 400;
+                margin: 0 0 8px 0;
+                letter-spacing: -0.025em;
+                line-height: 1.2;
+              ">Meddelande från Lilla Improteatern</h1>
+            `}
+            
+            <p style="
+              margin: 0;
+              opacity: 0.9;
+              font-size: 16px;
+            ">${subject || 'Information från teatern'}</p>
+          </div>
+          
+          <!-- Content -->
+          <div style="padding: 40px 32px;">
+            <div style="margin-bottom: 32px;">
+              <h2 style="
+                font-size: 20px;
+                font-weight: 400;
+                margin: 0 0 16px 0;
+                color: #1a1a1a;
+              ">Hej Anna Andersson!</h2>
+              
+              <div style="
+                font-size: 16px;
+                color: #666;
+                line-height: 1.6;
+              ">
+                ${htmlContent}
+              </div>
+            </div>
+
+            <!-- Signature -->
             <div style="
-              border-top: 1px solid #eee; 
-              padding-top: 20px;
-              color: #666;
-              font-size: 14px;
+              text-align: center;
+              padding-top: 24px;
+              border-top: 1px solid #e9ecef;
             ">
-              <p style="margin: 0 0 15px 0;">
-                Med vänliga hälsningar,<br />
-                <strong>Lilla Improteatern</strong>
-              </p>
-              <p style="margin: 0; font-size: 12px; color: #999;">
-                Vill du inte längre få våra mejl? 
-                <a href="#unsubscribe" style="color: #d32f2f; text-decoration: underline;">
-                  Avprenumerera här
-                </a>
-              </p>
+              <p style="
+                font-size: 14px;
+                color: #999;
+                margin: 0 0 4px 0;
+              ">Med vänliga hälsningar</p>
+              <p style="
+                font-size: 16px;
+                font-weight: 500;
+                color: #1a1a1a;
+                margin: 0;
+              ">Lilla Improteatern</p>
             </div>
           </div>
+
+          <!-- Footer -->
+          <div style="
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+          ">
+            <p style="
+              font-size: 12px;
+              color: #999;
+              margin: 0;
+            ">
+              Vill du inte längre få våra mejl? 
+              <a href="#unsubscribe" style="
+                color: #666;
+                text-decoration: underline;
+              ">Avprenumerera här</a>
+            </p>
+          </div>
         </div>
-        
-        ${imagePosition === 'behind' && hasBackground ? '</div>' : ''}
       </div>
     `;
   };
