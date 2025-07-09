@@ -11,10 +11,12 @@ const corsHeaders = {
 };
 
 interface BulkEmailRequest {
-  recipientGroup: string;
+  recipientGroup?: string;
+  recipients?: string[];
   subject: string;
   content: string;
   templateId?: string;
+  group_name?: string;
   attachments?: Array<{
     filename: string;
     url: string;
@@ -34,9 +36,9 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { recipientGroup, subject, content, templateId, attachments }: BulkEmailRequest = await req.json();
+    const { recipientGroup, recipients, subject, content, templateId, attachments, group_name }: BulkEmailRequest = await req.json();
 
-    console.log('Processing bulk email request for group:', recipientGroup);
+    console.log('Processing bulk email request for group:', recipientGroup || group_name || 'direct recipients');
 
     // Get template if templateId is provided
     let template = null;
@@ -54,10 +56,14 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    // Get recipients based on group type
-    let recipients: EmailContact[] = [];
+    // Get recipients based on group type or direct recipients
+    let emailRecipients: EmailContact[] = [];
 
-    if (recipientGroup.startsWith('manual_')) {
+    if (recipients && recipients.length > 0) {
+      // Direct recipients array provided (from EmailManagement component)
+      emailRecipients = recipients.map(email => ({ email }));
+      console.log(`Using direct recipients: ${recipients.length} emails`);
+    } else if (recipientGroup && recipientGroup.startsWith('manual_')) {
       // Manual group - get from email_group_members
       const groupId = recipientGroup.replace('manual_', '');
       console.log('Fetching manual group members for group:', groupId);
@@ -69,12 +75,12 @@ const handler = async (req: Request): Promise<Response> => {
         `)
         .eq('group_id', groupId);
 
-      if (groupError) {
+        if (groupError) {
         console.error('Error fetching group members:', groupError);
         throw groupError;
       }
 
-      recipients = groupMembers
+      emailRecipients = groupMembers
         ?.map((member: any) => member.email_contacts)
         ?.filter(contact => {
           // Filter out unsubscribed contacts (check both flags)
@@ -99,7 +105,7 @@ const handler = async (req: Request): Promise<Response> => {
         throw contactsError;
       }
 
-      recipients = contacts
+      emailRecipients = contacts
         ?.filter(contact => {
           // Filter out unsubscribed contacts (check both flags)
           const metadata = contact.metadata || {};
@@ -133,9 +139,9 @@ const handler = async (req: Request): Promise<Response> => {
         });
       });
 
-      recipients = Array.from(uniqueBuyers.values());
+      emailRecipients = Array.from(uniqueBuyers.values());
 
-    } else if (recipientGroup.startsWith('interest_')) {
+    } else if (recipientGroup && recipientGroup.startsWith('interest_')) {
       // Interest signup group
       const interestId = recipientGroup.replace('interest_', '');
       console.log('Fetching interest signup submissions for:', interestId);
@@ -150,12 +156,12 @@ const handler = async (req: Request): Promise<Response> => {
         throw submissionsError;
       }
 
-      recipients = submissions?.map(submission => ({
+      emailRecipients = submissions?.map(submission => ({
         email: submission.email,
         name: submission.name
       })) || [];
 
-    } else {
+    } else if (recipientGroup) {
       // Course group - dynamic table
       console.log('Fetching course participants from table:', recipientGroup);
       
@@ -174,7 +180,7 @@ const handler = async (req: Request): Promise<Response> => {
             .select('email, name');
           
           if (error) throw error;
-          recipients = data?.map(participant => ({
+          emailRecipients = data?.map(participant => ({
             email: participant.email,
             name: participant.name
           })) || [];
@@ -183,16 +189,16 @@ const handler = async (req: Request): Promise<Response> => {
           throw new Error(`Could not fetch participants from course table: ${recipientGroup}`);
         }
       } else {
-        recipients = courseParticipants?.map((participant: any) => ({
+        emailRecipients = courseParticipants?.map((participant: any) => ({
           email: participant.email,
           name: participant.name
         })) || [];
       }
     }
 
-    console.log(`Found ${recipients.length} recipients`);
+    console.log(`Found ${emailRecipients.length} recipients`);
 
-    if (recipients.length === 0) {
+    if (emailRecipients.length === 0) {
       return new Response(
         JSON.stringify({ error: 'No recipients found for the selected group' }),
         {
@@ -205,8 +211,8 @@ const handler = async (req: Request): Promise<Response> => {
     // Send emails in batches to avoid rate limits
     const batchSize = 10;
     const batches = [];
-    for (let i = 0; i < recipients.length; i += batchSize) {
-      batches.push(recipients.slice(i, i + batchSize));
+    for (let i = 0; i < emailRecipients.length; i += batchSize) {
+      batches.push(emailRecipients.slice(i, i + batchSize));
     }
 
     let totalSent = 0;
@@ -461,13 +467,13 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Bulk email completed. Sent: ${totalSent}, Errors: ${errors.length}`);
 
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        sent: totalSent, 
-        total: recipients.length,
-        errors: errors.length > 0 ? errors : undefined
-      }),
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          sent: totalSent, 
+          total: emailRecipients.length,
+          errors: errors.length > 0 ? errors : undefined
+        }),
       {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
