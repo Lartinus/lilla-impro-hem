@@ -7,9 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Trash2, Edit, Plus } from 'lucide-react';
+import { Trash2, Edit, Plus, Eye } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { ImagePicker } from '../ImagePicker';
+import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 import { supabase } from '@/integrations/supabase/client';
 import { EmailTemplate } from './types';
 
@@ -20,6 +21,8 @@ interface EmailTemplatesManagerProps {
 
 export function EmailTemplatesManager({ emailTemplates, templatesLoading }: EmailTemplatesManagerProps) {
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
+  const [isPreviewDialogOpen, setIsPreviewDialogOpen] = useState(false);
+  const [previewTemplate, setPreviewTemplate] = useState<EmailTemplate | null>(null);
   const [editingTemplate, setEditingTemplate] = useState<EmailTemplate | null>(null);
   const [templateForm, setTemplateForm] = useState({
     name: '',
@@ -136,6 +139,71 @@ export function EmailTemplatesManager({ emailTemplates, templatesLoading }: Emai
     }
   };
 
+  const createPreviewEmailTemplate = (subject: string, markdownContent: string, backgroundImage?: string) => {
+    const hasBackground = backgroundImage && backgroundImage.trim() !== '';
+    
+    const htmlContent = convertMarkdownToHtml(markdownContent);
+    
+    return `
+      <!DOCTYPE html>
+      <html lang="sv" style="margin: 0; padding: 0;">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${subject}</title>
+        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+      </head>
+      <body style="
+        margin: 0;
+        padding: 0;
+        font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        background-color: #ffffff;
+        line-height: 1.6;
+        color: #333333;
+      ">
+        ${hasBackground ? `
+          <div style="
+            text-align: center;
+            padding: 0;
+            margin: 0;
+          ">
+            <img src="${backgroundImage}" alt="" style="
+              width: 100%;
+              max-width: 600px;
+              height: auto;
+              aspect-ratio: 1;
+              object-fit: cover;
+              display: block;
+              margin: 0 auto;
+            "/>
+          </div>
+        ` : ''}
+        
+        <div style="
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 40px 20px;
+          background-color: #ffffff;
+        ">
+          <div style="
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333333;
+            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+          ">
+            ${htmlContent}
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+  };
+
+  const handlePreviewTemplate = (template: EmailTemplate) => {
+    setPreviewTemplate(template);
+    setIsPreviewDialogOpen(true);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -162,9 +230,9 @@ export function EmailTemplatesManager({ emailTemplates, templatesLoading }: Emai
               <TableHeader>
                 <TableRow>
                   <TableHead>Namn</TableHead>
-                  <TableHead>Ämne</TableHead>
-                  <TableHead>Skapad</TableHead>
-                  <TableHead className="w-[100px]">Åtgärder</TableHead>
+                   <TableHead>Ämne</TableHead>
+                   <TableHead>Skapad</TableHead>
+                   <TableHead className="w-[120px]">Åtgärder</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -175,24 +243,34 @@ export function EmailTemplatesManager({ emailTemplates, templatesLoading }: Emai
                     <TableCell>
                       {new Date(template.created_at).toLocaleDateString('sv-SE')}
                     </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => handleEditTemplate(template)}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => handleDeleteTemplate(template.id)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+                     <TableCell>
+                       <div className="flex gap-2">
+                         <Button 
+                           variant="ghost" 
+                           size="sm"
+                           onClick={() => handlePreviewTemplate(template)}
+                           title="Förhandsgranska"
+                         >
+                           <Eye className="w-4 h-4" />
+                         </Button>
+                         <Button 
+                           variant="ghost" 
+                           size="sm"
+                           onClick={() => handleEditTemplate(template)}
+                           title="Redigera"
+                         >
+                           <Edit className="w-4 h-4" />
+                         </Button>
+                         <Button 
+                           variant="ghost" 
+                           size="sm"
+                           onClick={() => handleDeleteTemplate(template.id)}
+                           title="Ta bort"
+                         >
+                           <Trash2 className="w-4 h-4" />
+                         </Button>
+                       </div>
+                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -273,6 +351,36 @@ export function EmailTemplatesManager({ emailTemplates, templatesLoading }: Emai
             </Button>
             <Button onClick={handleSaveTemplate}>
               {editingTemplate ? 'Uppdatera' : 'Skapa'} mall
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isPreviewDialogOpen} onOpenChange={setIsPreviewDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>
+              Förhandsvisning: {previewTemplate?.name}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="border rounded p-4 bg-muted/50 max-h-[60vh] overflow-y-auto">
+            {previewTemplate && (
+              <div 
+                dangerouslySetInnerHTML={{ 
+                  __html: createPreviewEmailTemplate(
+                    previewTemplate.subject, 
+                    previewTemplate.content, 
+                    previewTemplate.background_image || undefined
+                  )
+                }}
+                className="[&_h1]:text-4xl [&_h1]:font-bold [&_h1]:mb-4 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mb-2 [&_p]:mb-2 [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1"
+                style={{ fontFamily: "'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif" }}
+              />
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsPreviewDialogOpen(false)}>
+              Stäng
             </Button>
           </DialogFooter>
         </DialogContent>
