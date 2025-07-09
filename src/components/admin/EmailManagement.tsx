@@ -312,25 +312,14 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
           background-color: #f9f9f9;
           padding: 40px 20px;
           text-align: center;
-          border-top: 1px solid #e8e8e8;
         ">
           <div style="max-width: 600px; margin: 0 auto;">
             <img src="/uploads/LIT_red_large.png" alt="Lilla Improteatern" style="
-              width: 120px;
+              width: 180px;
               height: auto;
               margin: 0 auto 20px auto;
               display: block;
             "/>
-            <p style="
-              font-size: 16px;
-              font-weight: 500;
-              color: #8B0000;
-              margin: 0 0 20px 0;
-              font-family: serif;
-            ">
-              Med vänliga hälsningar<br>
-              Lilla Improteatern
-            </p>
             <p style="
               font-size: 12px;
               color: #999999;
@@ -571,7 +560,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
               className="font-mono text-sm"
             />
             <p className="text-sm text-muted-foreground">
-              Använd Markdown för formatering: # för rubriker, **fet text**, *kursiv text*, etc.
+              Använd Markdown för formatering: # för stora rubriker, ## för mellanrubriker, ### för smårubriker, **fet text**, *kursiv text*, [länktext](url), - för punktlistor, 1. för numrerade listor, &gt; för citat.
             </p>
           </div>
 
@@ -601,7 +590,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
                 dangerouslySetInnerHTML={{ 
                   __html: createSimpleEmailTemplate(emailSubject, bulkEmailTemplateData.content, bulkEmailTemplateData.background_image)
                 }}
-                className="[&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-4 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2 [&_p]:mb-2 [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1"
+                className="[&_h1]:text-4xl [&_h1]:font-bold [&_h1]:mb-4 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mb-2 [&_p]:mb-2 [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1"
               />
             ) : (
               <p className="text-muted-foreground text-sm">Skriv markdown-innehåll för att se förhandsvisningen...</p>
