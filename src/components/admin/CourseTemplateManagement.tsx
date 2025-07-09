@@ -173,7 +173,7 @@ export const CourseTemplateManagement = () => {
       subtitle: '',
       course_info: '',
       practical_info: '',
-      price: 0,
+      price: 2800,
       discount_price: 0,
       max_participants: 12,
       sessions: 8,
@@ -282,7 +282,7 @@ export const CourseTemplateManagement = () => {
                   id="title_template"
                   value={editingTemplate.title_template}
                   onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, title_template: e.target.value } : null)}
-                  placeholder="t.ex. Niv 1 - Scenarbete & Improv Comedy"
+                  placeholder="t.ex. Nivå 1 - Scenarbete & Improv Comedy"
                 />
               </div>
               <div className="space-y-2">
@@ -359,7 +359,7 @@ export const CourseTemplateManagement = () => {
                 id="practical_info"
                 value={editingTemplate.practical_info || ''}
                 onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, practical_info: e.target.value } : null)}
-                placeholder="Praktisk information för deltagare"
+                placeholder="Praktisk information för deltagare (om annat än ovan)"
                 rows={3}
               />
             </div>
