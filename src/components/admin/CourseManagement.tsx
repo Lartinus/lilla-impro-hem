@@ -631,6 +631,10 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       let tableName = '';
       
       switch (courseData.courseType) {
+        case 'custom':
+          courseTitle = courseData.customName;
+          tableName = `course_custom_${courseData.customName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
+          break;
         case 'niv1':
           courseTitle = 'Nivå 1 - Scenarbete & Improv Comedy';
           tableName = `course_niv_1_scenarbete_improv_comedy_${Date.now()}`;
@@ -1002,14 +1006,16 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                     </SelectContent>
                   </Select>
                 </div>
-                {newCourse.courseType === 'helgworkshop' && (
+                {(newCourse.courseType === 'helgworkshop' || newCourse.courseType === 'custom') && (
                   <div className="grid gap-2">
-                    <Label htmlFor="customName">Namn på helgworkshop</Label>
+                    <Label htmlFor="customName">
+                      {newCourse.courseType === 'custom' ? 'Kurstitel' : 'Namn på helgworkshop'}
+                    </Label>
                     <Input
                       id="customName"
                       value={newCourse.customName}
                       onChange={(e) => setNewCourse({...newCourse, customName: e.target.value})}
-                      placeholder="T.ex. Comedy writing workshop"
+                      placeholder={newCourse.courseType === 'custom' ? "T.ex. Avancerad karaktärsutveckling" : "T.ex. Comedy writing workshop"}
                     />
                   </div>
                 )}
@@ -1196,7 +1202,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                   </Button>
                   <Button 
                     onClick={handleSubmit}
-                    disabled={(createCourseMutation.isPending || updateCourseMutation.isPending) || !newCourse.courseType || (newCourse.courseType === 'helgworkshop' && !newCourse.customName.trim())}
+                    disabled={(createCourseMutation.isPending || updateCourseMutation.isPending) || !newCourse.courseType || ((newCourse.courseType === 'helgworkshop' || newCourse.courseType === 'custom') && !newCourse.customName.trim())}
                   >
                     {(createCourseMutation.isPending || updateCourseMutation.isPending) ? 
                       (isEditMode ? 'Uppdaterar...' : 'Skapar...') : 
