@@ -4,25 +4,50 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 const handler = async (req: Request): Promise<Response> => {
   try {
     const url = new URL(req.url);
-    const token = url.searchParams.get('token');
+    let token = url.searchParams.get('token');
+    
+    // If no token in query params, try to get it from request body
+    if (!token && req.method === 'POST') {
+      try {
+        const body = await req.json();
+        token = body.token;
+      } catch (e) {
+        // Ignore JSON parsing errors, token might be in query params
+      }
+    }
 
     if (!token) {
-      return new Response(
-        `<!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <script>window.location.href = '/nyhetsbrev-bekraftelse?error=invalid-token';</script>
-        </head>
-        <body>
-          <p>Omdirigerar...</p>
-        </body>
-        </html>`,
-        {
-          status: 200,
-          headers: { "Content-Type": "text/html; charset=utf-8" }
-        }
-      );
+      if (req.method === 'POST') {
+        return new Response(JSON.stringify({
+          success: false,
+          error: 'invalid-token',
+          message: 'Bekräftelsetoken saknas'
+        }), {
+          status: 400,
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type"
+          }
+        });
+      } else {
+        return new Response(
+          `<!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <script>window.location.href = '/nyhetsbrev-bekraftelse?error=invalid-token';</script>
+          </head>
+          <body>
+            <p>Omdirigerar...</p>
+          </body>
+          </html>`,
+          {
+            status: 200,
+            headers: { "Content-Type": "text/html; charset=utf-8" }
+          }
+        );
+      }
     }
 
     const supabase = createClient(
@@ -144,22 +169,41 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Newsletter subscription confirmed for: ${contact.email}`);
 
-    return new Response(
-      `<!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <script>window.location.href = '/nyhetsbrev-bekraftelse?token=${encodeURIComponent(token)}';</script>
-      </head>
-      <body>
-        <p>Bekräftelse lyckades. Omdirigerar...</p>
-      </body>
-      </html>`,
-      {
+    // Check if this is a function call (POST with JSON) or direct browser access
+    if (req.method === 'POST') {
+      // Return JSON response for function calls
+      return new Response(JSON.stringify({
+        success: true,
+        message: 'Newsletter subscription confirmed',
+        email: contact.email,
+        name: contact.name
+      }), {
         status: 200,
-        headers: { "Content-Type": "text/html; charset=utf-8" }
-      }
-    );
+        headers: { 
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type"
+        }
+      });
+    } else {
+      // Return HTML redirect for direct browser access
+      return new Response(
+        `<!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <script>window.location.href = '/nyhetsbrev-bekraftelse?token=${encodeURIComponent(token)}';</script>
+        </head>
+        <body>
+          <p>Bekräftelse lyckades. Omdirigerar...</p>
+        </body>
+        </html>`,
+        {
+          status: 200,
+          headers: { "Content-Type": "text/html; charset=utf-8" }
+        }
+      );
+    }
 
   } catch (error: any) {
     console.error("Error in newsletter-confirm function:", error);

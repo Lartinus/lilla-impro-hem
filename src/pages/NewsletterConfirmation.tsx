@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle, Loader2, Mail } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const NewsletterConfirmation = () => {
   const [searchParams] = useSearchParams();
@@ -39,10 +40,30 @@ const NewsletterConfirmation = () => {
         return;
       }
 
-      // If we have a token and no error, the confirmation was successful
-      console.log(`Newsletter confirmation completed for token: ${token}`);
-      setStatus('success');
-      setMessage('Tack! Din prenumeration på vårt nyhetsbrev är nu bekräftad.');
+      try {
+        // Call the newsletter-confirm edge function
+        console.log(`Calling newsletter-confirm with token: ${token}`);
+        
+        const { data, error: confirmError } = await supabase.functions.invoke('newsletter-confirm', {
+          body: { token }
+        });
+
+        if (confirmError) {
+          console.error('Newsletter confirmation error:', confirmError);
+          setStatus('error');
+          setMessage('Ett fel uppstod vid bekräftelsen. Vänligen försök igen eller kontakta oss.');
+          return;
+        }
+
+        console.log('Newsletter confirmation successful:', data);
+        setStatus('success');
+        setMessage('Tack! Din prenumeration på vårt nyhetsbrev är nu bekräftad.');
+
+      } catch (error) {
+        console.error('Network error during newsletter confirmation:', error);
+        setStatus('error');
+        setMessage('Ett nätverksfel uppstod. Vänligen kontrollera din internetanslutning och försök igen.');
+      }
     };
 
     handleConfirmation();
