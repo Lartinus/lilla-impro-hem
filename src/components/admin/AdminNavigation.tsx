@@ -85,7 +85,6 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
         { id: 'send', title: 'Skicka meddelande', icon: Send },
         { id: 'groups', title: 'Mottagargrupper', icon: UserPlus },
         { id: 'contacts', title: 'Alla kontakter', icon: Contact },
-        { id: 'import', title: 'Importera', icon: FileText },
         { id: 'templates', title: 'Email-mallar', icon: Mail },
       ]
     },

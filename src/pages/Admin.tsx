@@ -148,7 +148,6 @@ const AdminDashboard = () => {
       case 'send':
       case 'groups':
       case 'contacts':
-      case 'import':
       case 'templates':
         return <EmailManagement activeTab={activeSection} />;
       default:

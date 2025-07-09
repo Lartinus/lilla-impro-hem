@@ -109,7 +109,17 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState('');
   const [selectedTargetGroup, setSelectedTargetGroup] = useState('');
+  const [newGroupName, setNewGroupName] = useState('');
+  const [createNewGroup, setCreateNewGroup] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+
+  // Pagination and search state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [contactsPerPage] = useState(20);
+
+  // Group members state
+  const [selectedGroupMembers, setSelectedGroupMembers] = useState<GroupMember[]>([]);
 
   const queryClient = useQueryClient();
 
@@ -216,6 +226,33 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
       return data;
     }
   });
+
+  // Fetch group members for the selected group in the members dialog
+  const { data: selectedGroupMembersData = [] } = useQuery({
+    queryKey: ['selected-group-members', selectedGroup?.id],
+    queryFn: async () => {
+      if (!selectedGroup?.id) return [];
+      
+      const { data, error } = await supabase
+        .from('email_group_members')
+        .select(`
+          id,
+          group_id,
+          contact_id,
+          contact:email_contacts(*)
+        `)
+        .eq('group_id', selectedGroup.id);
+
+      if (error) throw error;
+      return data as GroupMember[];
+    },
+    enabled: !!selectedGroup?.id && showGroupMembersDialog
+  });
+
+  // Update selected group members when data changes
+  useEffect(() => {
+    setSelectedGroupMembers(selectedGroupMembersData);
+  }, [selectedGroupMembersData]);
 
   // Use the contact activities hook
   const { data: contactActivities = [], isLoading: activitiesLoading } = useContactActivities(selectedContactEmail);
@@ -759,10 +796,28 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
   };
 
   const handleImportCourse = async () => {
-    if (!selectedCourse || !selectedTargetGroup) {
+    if (!selectedCourse) {
       toast({
-        title: "Välj kurs och grupp",
-        description: "Du måste välja både en kurs och en målgrupp.",
+        title: "Välj kurs",
+        description: "Du måste välja en kurs att importera från.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!createNewGroup && !selectedTargetGroup) {
+      toast({
+        title: "Välj grupp",
+        description: "Du måste välja en målgrupp eller skapa en ny grupp.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (createNewGroup && !newGroupName.trim()) {
+      toast({
+        title: "Ange gruppnamn",
+        description: "Du måste ange ett namn för den nya gruppen.",
         variant: "destructive",
       });
       return;
@@ -770,22 +825,44 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
 
     setIsImporting(true);
     try {
+      let targetGroupId = selectedTargetGroup;
+
+      // Create new group if requested
+      if (createNewGroup) {
+        const { data: newGroup, error: groupError } = await supabase
+          .from('email_groups')
+          .insert({
+            name: newGroupName.trim(),
+            description: `Importerad från kurs: ${courseInstances.find(c => c.table_name === selectedCourse)?.course_title || selectedCourse}`
+          })
+          .select()
+          .single();
+
+        if (groupError) throw groupError;
+        targetGroupId = newGroup.id;
+      }
+
       const { data, error } = await supabase.rpc('import_course_to_group', {
         course_table_name: selectedCourse,
-        target_group_id: selectedTargetGroup
+        target_group_id: targetGroupId
       });
 
       if (error) throw error;
 
       const importedCount = data || 0;
+      const courseName = courseInstances.find(c => c.table_name === selectedCourse)?.course_title || selectedCourse;
+      const groupName = createNewGroup ? newGroupName : emailGroups.find(g => g.id === targetGroupId)?.name;
+      
       toast({
         title: "Import slutförd",
-        description: `${importedCount} deltagare importerades till gruppen.`,
+        description: `${importedCount} deltagare från "${courseName}" importerades till gruppen "${groupName}".`,
       });
 
       setShowImportDialog(false);
       setSelectedCourse('');
       setSelectedTargetGroup('');
+      setNewGroupName('');
+      setCreateNewGroup(false);
       queryClient.invalidateQueries({ queryKey: ['email-contacts'] });
       queryClient.invalidateQueries({ queryKey: ['email-groups'] });
     } catch (error: any) {
@@ -800,6 +877,34 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     }
   };
 
+  // Function to remove member from group
+  const handleRemoveMemberFromGroup = async (memberId: string, contactEmail: string) => {
+    try {
+      const { error } = await supabase
+        .from('email_group_members')
+        .delete()
+        .eq('id', memberId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Medlem borttagen",
+        description: `${contactEmail} har tagits bort från gruppen.`,
+      });
+
+      // Update local state
+      setSelectedGroupMembers(prev => prev.filter(member => member.id !== memberId));
+      queryClient.invalidateQueries({ queryKey: ['selected-group-members', selectedGroup?.id] });
+    } catch (error: any) {
+      console.error('Remove member error:', error);
+      toast({
+        title: "Fel vid borttagning",
+        description: error.message || "Det gick inte att ta bort medlemmen från gruppen.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'send':
@@ -809,7 +914,6 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
       case 'groups':
         return renderGroups();
       case 'contacts':
-      case 'import':
         return renderContacts();
       default:
         return renderSendEmail();
@@ -1258,7 +1362,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
 
         {/* Group Members Dialog */}
         <Dialog open={showGroupMembersDialog} onOpenChange={setShowGroupMembersDialog}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-3xl">
             <DialogHeader>
               <DialogTitle>
                 Medlemmar i "{selectedGroup?.name}"
@@ -1266,12 +1370,72 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
             </DialogHeader>
             <div className="space-y-4">
               <div className="text-sm text-muted-foreground">
-                {groupMemberCounts[selectedGroup?.id || ''] || 0} medlemmar
+                {selectedGroupMembers.length} medlemmar
               </div>
-              {/* Here you could add member management functionality */}
-              <div className="text-center py-8 text-muted-foreground">
-                Medlemshantering kommer snart...
-              </div>
+              
+              {selectedGroupMembers.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  Inga medlemmar i denna grupp.
+                </div>
+              ) : (
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Namn</TableHead>
+                        <TableHead>E-post</TableHead>
+                        <TableHead>Telefon</TableHead>
+                        <TableHead>Källa</TableHead>
+                        <TableHead className="text-right">Åtgärder</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {selectedGroupMembers.map((member) => (
+                        <TableRow key={member.id}>
+                          <TableCell className="font-medium">
+                            {member.contact.name || 'Ej angivet'}
+                          </TableCell>
+                          <TableCell>{member.contact.email}</TableCell>
+                          <TableCell>{member.contact.phone || 'Ej angivet'}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className="text-xs">
+                              {member.contact.source === 'course' ? 'Kurs' :
+                               member.contact.source === 'ticket' ? 'Biljett' :
+                               member.contact.source === 'interest' ? 'Intresse' :
+                               member.contact.source === 'manual' ? 'Manuell' :
+                               'Okänd'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="sm">
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Ta bort från grupp</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Är du säker på att du vill ta bort "{member.contact.email}" från gruppen "{selectedGroup?.name}"? 
+                                    Kontakten kommer fortfarande finnas kvar i systemet men tas bort från denna grupp.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleRemoveMemberFromGroup(member.id, member.contact.email)}>
+                                    Ta bort från grupp
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
             </div>
             <DialogFooter>
               <Button onClick={() => setShowGroupMembersDialog(false)}>
@@ -1289,10 +1453,38 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
       return <div className="text-center py-4">Laddar kontakter...</div>;
     }
 
+    // Filter and sort contacts
+    const filteredContacts = emailContacts
+      .filter(contact => 
+        !searchTerm || 
+        contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        contact.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        contact.phone?.includes(searchTerm)
+      )
+      .sort((a, b) => {
+        const nameA = a.name || a.email;
+        const nameB = b.name || b.email;
+        return nameA.localeCompare(nameB, 'sv-SE');
+      });
+
+    // Pagination logic
+    const totalContacts = filteredContacts.length;
+    const totalPages = Math.ceil(totalContacts / contactsPerPage);
+    const startIndex = (currentPage - 1) * contactsPerPage;
+    const endIndex = startIndex + contactsPerPage;
+    const currentContacts = filteredContacts.slice(startIndex, endIndex);
+
+    // Reset to first page if current page is beyond available pages
+    useEffect(() => {
+      if (currentPage > totalPages && totalPages > 0) {
+        setCurrentPage(1);
+      }
+    }, [totalContacts, currentPage, totalPages]);
+
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-medium">Alla kontakter ({emailContacts.length} st)</h3>
+          <h3 className="text-lg font-medium">Alla kontakter ({totalContacts} st)</h3>
           <div className="flex gap-2">
             <Button 
               onClick={handleSyncContacts}
@@ -1309,20 +1501,35 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
           </div>
         </div>
 
+        {/* Search */}
+        <div className="space-y-2">
+          <Label htmlFor="contact-search">Sök kontakter</Label>
+          <Input
+            id="contact-search"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // Reset to first page when searching
+            }}
+            placeholder="Sök på namn, e-post eller telefon..."
+            className="max-w-md"
+          />
+        </div>
+
         {/* Import Section */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Download className="h-5 w-5" />
-              Importera kontakter
+              Importera kontakter från kurser
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
               Importera deltagare från kurser direkt till dina email-grupper.
             </p>
-            <div className="flex gap-4 items-end">
-              <div className="flex-1">
+            <div className="space-y-4">
+              <div className="space-y-2">
                 <Label htmlFor="course-select">Välj kurs</Label>
                 <Select value={selectedCourse} onValueChange={setSelectedCourse}>
                   <SelectTrigger>
@@ -1337,26 +1544,66 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex-1">
-                <Label htmlFor="group-select">Till grupp</Label>
-                <Select value={selectedTargetGroup} onValueChange={setSelectedTargetGroup}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Välj målgrupp" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {emailGroups.map((group) => (
-                      <SelectItem key={group.id} value={group.id}>
-                        {group.name} ({groupMemberCounts[group.id] || 0} medlemmar)
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="existing-group"
+                    name="group-type"
+                    checked={!createNewGroup}
+                    onChange={() => setCreateNewGroup(false)}
+                    className="w-4 h-4"
+                  />
+                  <Label htmlFor="existing-group">Importera till befintlig grupp</Label>
+                </div>
+                
+                {!createNewGroup && (
+                  <div className="ml-6">
+                    <Select value={selectedTargetGroup} onValueChange={setSelectedTargetGroup}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Välj målgrupp" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {emailGroups.map((group) => (
+                          <SelectItem key={group.id} value={group.id}>
+                            {group.name} ({groupMemberCounts[group.id] || 0} medlemmar)
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="new-group"
+                    name="group-type"
+                    checked={createNewGroup}
+                    onChange={() => setCreateNewGroup(true)}
+                    className="w-4 h-4"
+                  />
+                  <Label htmlFor="new-group">Skapa ny grupp</Label>
+                </div>
+                
+                {createNewGroup && (
+                  <div className="ml-6">
+                    <Input
+                      value={newGroupName}
+                      onChange={(e) => setNewGroupName(e.target.value)}
+                      placeholder="Namn på den nya gruppen"
+                    />
+                  </div>
+                )}
               </div>
+
               <Button 
                 onClick={handleImportCourse}
-                disabled={isImporting || !selectedCourse || !selectedTargetGroup}
+                disabled={isImporting || !selectedCourse || (!createNewGroup && !selectedTargetGroup) || (createNewGroup && !newGroupName.trim())}
+                className="w-full"
               >
-                {isImporting ? 'Importerar...' : 'Importera'}
+                {isImporting ? 'Importerar...' : 'Importera deltagare'}
               </Button>
             </div>
           </CardContent>
@@ -1365,99 +1612,138 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
         {/* Contacts Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Kontakter</CardTitle>
+            <div className="flex justify-between items-center">
+              <CardTitle>Kontakter</CardTitle>
+              {totalPages > 1 && (
+                <div className="text-sm text-muted-foreground">
+                  Visar {startIndex + 1}-{Math.min(endIndex, totalContacts)} av {totalContacts}
+                </div>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
-            {emailContacts.length === 0 ? (
+            {currentContacts.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                Inga kontakter hittades. Lägg till kontakter manuellt eller synkronisera från kurser och biljetter.
+                {searchTerm ? 
+                  `Inga kontakter hittades för "${searchTerm}".` :
+                  "Inga kontakter hittades. Lägg till kontakter manuellt eller synkronisera från kurser och biljetter."
+                }
               </div>
             ) : (
-              <div className="rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Namn</TableHead>
-                      <TableHead>E-post</TableHead>
-                      <TableHead>Telefon</TableHead>
-                      <TableHead>Källa</TableHead>
-                      <TableHead>Aktiviteter</TableHead>
-                      <TableHead>Datum</TableHead>
-                      <TableHead className="text-right">Åtgärder</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {emailContacts.map((contact) => (
-                      <TableRow key={contact.id}>
-                        <TableCell className="font-medium">
-                          {contact.name || 'Ej angivet'}
-                        </TableCell>
-                        <TableCell>{contact.email}</TableCell>
-                        <TableCell>{contact.phone || 'Ej angivet'}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="text-xs">
-                            {contact.source === 'course' ? 'Kurs' :
-                             contact.source === 'ticket' ? 'Biljett' :
-                             contact.source === 'interest' ? 'Intresse' :
-                             contact.source === 'manual' ? 'Manuell' :
-                             'Okänd'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedContactEmail(contact.email);
-                              setShowActivitiesDialog(true);
-                            }}
-                          >
-                            <Activity className="w-4 h-4 mr-1" />
-                            Visa
-                          </Button>
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {new Date(contact.created_at).toLocaleDateString('sv-SE')}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex gap-1 justify-end">
+              <>
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Namn</TableHead>
+                        <TableHead>E-post</TableHead>
+                        <TableHead>Telefon</TableHead>
+                        <TableHead>Källa</TableHead>
+                        <TableHead>Aktiviteter</TableHead>
+                        <TableHead>Datum</TableHead>
+                        <TableHead className="text-right">Åtgärder</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {currentContacts.map((contact) => (
+                        <TableRow key={contact.id}>
+                          <TableCell className="font-medium">
+                            {contact.name || 'Ej angivet'}
+                          </TableCell>
+                          <TableCell>{contact.email}</TableCell>
+                          <TableCell>{contact.phone || 'Ej angivet'}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className="text-xs">
+                              {contact.source === 'course' ? 'Kurs' :
+                               contact.source === 'ticket' ? 'Biljett' :
+                               contact.source === 'interest' ? 'Intresse' :
+                               contact.source === 'manual' ? 'Manuell' :
+                               'Okänd'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleEditContact(contact)}
+                              onClick={() => {
+                                setSelectedContactEmail(contact.email);
+                                setShowActivitiesDialog(true);
+                              }}
                             >
-                              <Edit className="w-4 h-4" />
+                              <Activity className="w-4 h-4 mr-1" />
+                              Visa
                             </Button>
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <Trash2 className="w-4 h-4" />
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Radera kontakt</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Är du säker på att du vill radera kontakten "{contact.email}"? 
-                                    Detta kommer också ta bort kontakten från alla grupper. 
-                                    Denna åtgärd kan inte ångras.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Avbryt</AlertDialogCancel>
-                                  <AlertDialogAction onClick={() => handleDeleteContact(contact.id)}>
-                                    Radera
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {new Date(contact.created_at).toLocaleDateString('sv-SE')}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex gap-1 justify-end">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleEditContact(contact)}
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="ghost" size="sm">
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Radera kontakt</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Är du säker på att du vill radera kontakten "{contact.email}"? 
+                                      Detta kommer också ta bort kontakten från alla grupper. 
+                                      Denna åtgärd kan inte ångras.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleDeleteContact(contact.id)}>
+                                      Radera
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between mt-4">
+                    <div className="text-sm text-muted-foreground">
+                      Sida {currentPage} av {totalPages}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        disabled={currentPage === 1}
+                      >
+                        Föregående
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        disabled={currentPage === totalPages}
+                      >
+                        Nästa
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </CardContent>
         </Card>
