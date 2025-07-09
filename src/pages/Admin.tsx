@@ -20,7 +20,7 @@ import { ActorManagement } from '@/components/admin/ActorManagement';
 import { AdminNavigation } from '@/components/admin/AdminNavigation';
 import { DiscountCodeManagement } from '@/components/admin/DiscountCodeManagement';
 import { ImageManagement } from '@/components/admin/ImageManagement';
-import { EmailManagement } from '@/components/admin/EmailManagement';
+import EmailManagement from '@/components/admin/EmailManagement';
 import { UserManagement } from '@/components/admin/UserManagement';
 
 const AdminDashboard = () => {
