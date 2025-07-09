@@ -1504,41 +1504,15 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
 
     return (
       <div className="space-y-6">
+    return (
+      <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <h3 className="text-lg font-medium">Alla kontakter ({totalContacts} st)</h3>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Button 
-              onClick={handleSyncContacts}
-              disabled={isSyncing}
-              variant="outline"
-              size="sm"
-              className="w-full sm:w-auto"
-            >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              <span className="hidden xs:inline">{isSyncing ? 'Synkroniserar...' : 'Synkronisera'}</span>
-              <span className="xs:hidden">{isSyncing ? 'Sync...' : 'Sync'}</span>
-            </Button>
-            <Button onClick={() => handleEditContact()} size="sm" className="w-full sm:w-auto">
-              <Plus className="w-4 h-4 mr-2" />
-              <span className="hidden xs:inline">Lägg till kontakt</span>
-              <span className="xs:hidden">Ny kontakt</span>
-            </Button>
-          </div>
-        </div>
-
-        {/* Search */}
-        <div className="space-y-2">
-          <Label htmlFor="contact-search">Sök kontakter</Label>
-          <Input
-            id="contact-search"
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1); // Reset to first page when searching
-            }}
-            placeholder="Sök på namn, e-post eller telefon..."
-            className="max-w-md"
-          />
+          <Button onClick={() => handleEditContact()} size="sm" className="w-full sm:w-auto">
+            <Plus className="w-4 h-4 mr-2" />
+            <span className="hidden xs:inline">Lägg till kontakt</span>
+            <span className="xs:hidden">Ny kontakt</span>
+          </Button>
         </div>
 
         {/* Import Section */}
@@ -1569,7 +1543,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
                   </SelectContent>
                 </Select>
               </div>
-
+              
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
                   <input
@@ -1633,6 +1607,21 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
             </div>
           </CardContent>
         </Card>
+
+        {/* Search */}
+        <div className="space-y-2">
+          <Label htmlFor="contact-search">Sök kontakter</Label>
+          <Input
+            id="contact-search"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // Reset to first page when searching
+            }}
+            placeholder="Sök på namn, e-post eller telefon..."
+            className="max-w-md"
+          />
+        </div>
 
         {/* Contacts Table */}
         <Card>

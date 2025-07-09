@@ -118,19 +118,20 @@ const handler = async (req: Request): Promise<Response> => {
           margin: 0;
           padding: 0;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-          background-color: #1a1a1a;
+          background-color: #f5f5f5;
           line-height: 1.6;
-          color: #ffffff;
+          color: #333333;
           padding: 20px;
         ">
           <!-- Container -->
           <div style="
             max-width: 560px;
             margin: 0 auto;
-            background-color: #f8f9fa;
+            background-color: #ffffff;
             border-radius: 12px;
             overflow: hidden;
-            color: #1a1a1a;
+            color: #333333;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           ">
             <!-- Header -->
             <div style="
@@ -143,7 +144,7 @@ const handler = async (req: Request): Promise<Response> => {
                 font-size: 24px;
                 font-weight: 600;
                 margin: 0 0 8px 0;
-                color: #1a1a1a;
+                color: #333333;
               ">Bekräfta din prenumeration</h1>
               <p style="
                 margin: 0;
@@ -162,7 +163,7 @@ const handler = async (req: Request): Promise<Response> => {
                   font-size: 20px;
                   font-weight: 500;
                   margin: 0 0 16px 0;
-                  color: #1a1a1a;
+                  color: #333333;
                 ">Hej ${name}!</h2>
                 
                 <p style="
@@ -175,7 +176,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <div style="margin-bottom: 32px;">
                   <a href="${confirmationUrl}" style="
                     display: inline-block;
-                    background-color: #1a1a1a;
+                    background-color: #e74c3c;
                     color: #ffffff;
                     padding: 14px 28px;
                     text-decoration: none;
@@ -208,7 +209,7 @@ const handler = async (req: Request): Promise<Response> => {
                 ">Kopiera denna länk till din webbläsare:</p>
                 <p style="
                   font-size: 12px;
-                  color: #1a1a1a;
+                  color: #333333;
                   margin: 0;
                   word-break: break-all;
                   font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
@@ -263,7 +264,7 @@ const handler = async (req: Request): Promise<Response> => {
               <p style="
                 font-size: 16px;
                 font-weight: 600;
-                color: #1a1a1a;
+                color: #333333;
                 margin: 0 0 16px 0;
               ">Lilla Improteatern</p>
               <p style="
