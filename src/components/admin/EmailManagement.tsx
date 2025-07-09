@@ -1504,8 +1504,6 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
 
     return (
       <div className="space-y-6">
-    return (
-      <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <h3 className="text-lg font-medium">Alla kontakter ({totalContacts} st)</h3>
           <Button onClick={() => handleEditContact()} size="sm" className="w-full sm:w-auto">
@@ -1896,5 +1894,6 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
       {renderContent()}
     </div>
   );
-
 }
+
+export default EmailManagement;
