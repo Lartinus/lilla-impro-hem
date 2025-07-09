@@ -44,6 +44,7 @@ export function GroupMembersDialog({
 
       // Invalidate queries to refresh data
       queryClient.invalidateQueries({ queryKey: ['group-members'] });
+      queryClient.invalidateQueries({ queryKey: ['group-members-dialog'] });
       queryClient.invalidateQueries({ queryKey: ['email-groups'] });
     } catch (error: any) {
       toast({

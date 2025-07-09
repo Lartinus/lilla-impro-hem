@@ -83,6 +83,28 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     enabled: !!selectedRecipients && selectedRecipients !== 'all'
   });
 
+  // Fetch group members for the selected group dialog
+  const { data: selectedGroupMembers = [] } = useQuery({
+    queryKey: ['group-members-dialog', selectedGroup?.id],
+    queryFn: async () => {
+      if (!selectedGroup?.id) return [];
+      
+      const { data, error } = await supabase
+        .from('email_group_members')
+        .select(`
+          id,
+          group_id,
+          contact_id,
+          contact:email_contacts(*)
+        `)
+        .eq('group_id', selectedGroup.id);
+
+      if (error) throw error;
+      return data as GroupMember[];
+    },
+    enabled: !!selectedGroup?.id
+  });
+
   // Fetch group member counts
   useEffect(() => {
     const fetchGroupMemberCounts = async () => {
@@ -192,7 +214,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
         open={showGroupMembersDialog}
         onOpenChange={setShowGroupMembersDialog}
         group={selectedGroup}
-        groupMembers={groupMembers}
+        groupMembers={selectedGroupMembers}
       />
     </div>
   );
