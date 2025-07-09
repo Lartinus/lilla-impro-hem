@@ -170,6 +170,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
             emailGroups={emailGroups}
             groupsLoading={groupsLoading}
             groupMemberCounts={groupMemberCounts}
+            emailContacts={emailContacts}
             onViewGroupMembers={handleViewGroupMembers}
           />
         );

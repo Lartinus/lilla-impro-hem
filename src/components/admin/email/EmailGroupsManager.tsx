@@ -7,15 +7,17 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Trash2, Edit, Plus, Users, Eye } from 'lucide-react';
+import { Trash2, Edit, Plus, Users, Eye, UserPlus } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { EmailGroup, GroupMember } from './types';
+import { EmailGroup, GroupMember, EmailContact } from './types';
+import { AddContactsToGroupsDialog } from './AddContactsToGroupsDialog';
 
 interface EmailGroupsManagerProps {
   emailGroups: EmailGroup[];
   groupsLoading: boolean;
   groupMemberCounts: {[key: string]: number};
+  emailContacts: EmailContact[];
   onViewGroupMembers: (group: EmailGroup) => void;
 }
 
@@ -23,9 +25,11 @@ export function EmailGroupsManager({
   emailGroups, 
   groupsLoading, 
   groupMemberCounts,
+  emailContacts,
   onViewGroupMembers 
 }: EmailGroupsManagerProps) {
   const [showCreateGroupDialog, setShowCreateGroupDialog] = useState(false);
+  const [showAddContactsDialog, setShowAddContactsDialog] = useState(false);
   const [editingGroup, setEditingGroup] = useState<EmailGroup | null>(null);
   const [groupForm, setGroupForm] = useState({
     name: '',
@@ -134,10 +138,16 @@ export function EmailGroupsManager({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">Mottagargrupper</h3>
-        <Button onClick={() => handleEditGroup()} size="sm">
-          <Plus className="w-4 h-4 mr-2" />
-          Ny grupp
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => setShowAddContactsDialog(true)} size="sm" variant="outline">
+            <UserPlus className="w-4 h-4 mr-2" />
+            Lägg till kontakter
+          </Button>
+          <Button onClick={() => handleEditGroup()} size="sm">
+            <Plus className="w-4 h-4 mr-2" />
+            Ny grupp
+          </Button>
+        </div>
       </div>
 
       <Card>
@@ -248,6 +258,13 @@ export function EmailGroupsManager({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AddContactsToGroupsDialog
+        open={showAddContactsDialog}
+        onOpenChange={setShowAddContactsDialog}
+        emailGroups={emailGroups}
+        emailContacts={emailContacts}
+      />
     </div>
   );
 }
