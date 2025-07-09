@@ -12,7 +12,7 @@ export function convertMarkdownToHtml(markdown: string): string {
   // Ta bort eventuell BOM och normalisera radslut
   const cleaned = markdown.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
   
-  // Konfigurera marked för att hantera breaks
+  // Konfigurera marked för att hantera breaks och HTML
   marked.setOptions({
     gfm: true,
     breaks: true, // Gör att enkla radbryt blir <br>
