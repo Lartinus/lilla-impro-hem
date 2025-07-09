@@ -11,10 +11,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Trash2, Edit, Plus, Send, Users, Eye, Copy } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Trash2, Edit, Plus, Send, Users, Eye, Copy, RefreshCw, Download, Activity } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { ImagePicker } from './ImagePicker';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
+import { useContactActivities, ContactActivity } from '@/hooks/useContactActivities';
 
 interface EmailTemplate {
   id: string;
@@ -90,6 +92,24 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     description: ''
   });
   const [groupMemberCounts, setGroupMemberCounts] = useState<{[key: string]: number}>({});
+
+  // Contact management state
+  const [showContactDialog, setShowContactDialog] = useState(false);
+  const [showActivitiesDialog, setShowActivitiesDialog] = useState(false);
+  const [selectedContactEmail, setSelectedContactEmail] = useState('');
+  const [editingContact, setEditingContact] = useState<EmailContact | null>(null);
+  const [contactForm, setContactForm] = useState({
+    email: '',
+    name: '',
+    phone: ''
+  });
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Import functionality state
+  const [showImportDialog, setShowImportDialog] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState('');
+  const [selectedTargetGroup, setSelectedTargetGroup] = useState('');
+  const [isImporting, setIsImporting] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -181,6 +201,24 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     },
     enabled: !!selectedRecipients && selectedRecipients !== 'all'
   });
+
+  // Fetch course instances for import functionality
+  const { data: courseInstances = [] } = useQuery({
+    queryKey: ['course-instances'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('course_instances')
+        .select('*')
+        .eq('is_active', true)
+        .order('course_title');
+
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  // Use the contact activities hook
+  const { data: contactActivities = [], isLoading: activitiesLoading } = useContactActivities(selectedContactEmail);
 
   // Handle template selection for bulk email
   const handleUseTemplate = (template: EmailTemplate) => {
@@ -581,6 +619,187 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     }
   };
 
+  // Contact management functions
+  const handleSaveContact = async () => {
+    if (!contactForm.email.trim()) {
+      toast({
+        title: "E-post krävs",
+        description: "Du måste ange en e-postadress.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      if (editingContact) {
+        // Update existing contact
+        const { error } = await supabase
+          .from('email_contacts')
+          .update({
+            email: contactForm.email.trim().toLowerCase(),
+            name: contactForm.name.trim() || null,
+            phone: contactForm.phone.trim() || null
+          })
+          .eq('id', editingContact.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Kontakt uppdaterad",
+          description: "Email-kontakten har uppdaterats.",
+        });
+      } else {
+        // Create new contact
+        const { error } = await supabase
+          .from('email_contacts')
+          .insert({
+            email: contactForm.email.trim().toLowerCase(),
+            name: contactForm.name.trim() || null,
+            phone: contactForm.phone.trim() || null,
+            source: 'manual'
+          });
+
+        if (error) throw error;
+
+        toast({
+          title: "Kontakt skapad",
+          description: "Email-kontakten har skapats.",
+        });
+      }
+
+      setShowContactDialog(false);
+      setEditingContact(null);
+      setContactForm({ email: '', name: '', phone: '' });
+      queryClient.invalidateQueries({ queryKey: ['email-contacts'] });
+    } catch (error: any) {
+      console.error('Contact save error:', error);
+      toast({
+        title: "Fel vid sparning",
+        description: error.message || "Det gick inte att spara kontakten.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteContact = async (contactId: string) => {
+    try {
+      // First remove from all groups
+      const { error: membersError } = await supabase
+        .from('email_group_members')
+        .delete()
+        .eq('contact_id', contactId);
+
+      if (membersError) throw membersError;
+
+      // Then delete the contact
+      const { error: contactError } = await supabase
+        .from('email_contacts')
+        .delete()
+        .eq('id', contactId);
+
+      if (contactError) throw contactError;
+
+      toast({
+        title: "Kontakt raderad",
+        description: "Email-kontakten har raderats.",
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['email-contacts'] });
+    } catch (error: any) {
+      console.error('Contact delete error:', error);
+      toast({
+        title: "Fel vid radering",
+        description: error.message || "Det gick inte att radera kontakten.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEditContact = (contact?: EmailContact) => {
+    if (contact) {
+      setEditingContact(contact);
+      setContactForm({
+        email: contact.email,
+        name: contact.name || '',
+        phone: contact.phone || ''
+      });
+    } else {
+      setEditingContact(null);
+      setContactForm({ email: '', name: '', phone: '' });
+    }
+    setShowContactDialog(true);
+  };
+
+  const handleSyncContacts = async () => {
+    setIsSyncing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('sync-contacts', {
+        body: {}
+      });
+
+      if (error) throw error;
+
+      const syncedCount = data?.synced || 0;
+      toast({
+        title: "Synkronisering slutförd",
+        description: `${syncedCount} kontakter synkroniserades från kurser, biljetter och intresseanmälningar.`,
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['email-contacts'] });
+    } catch (error: any) {
+      console.error('Sync error:', error);
+      toast({
+        title: "Fel vid synkronisering",
+        description: error.message || "Det gick inte att synkronisera kontakterna.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handleImportCourse = async () => {
+    if (!selectedCourse || !selectedTargetGroup) {
+      toast({
+        title: "Välj kurs och grupp",
+        description: "Du måste välja både en kurs och en målgrupp.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsImporting(true);
+    try {
+      const { data, error } = await supabase.rpc('import_course_to_group', {
+        course_table_name: selectedCourse,
+        target_group_id: selectedTargetGroup
+      });
+
+      if (error) throw error;
+
+      const importedCount = data || 0;
+      toast({
+        title: "Import slutförd",
+        description: `${importedCount} deltagare importerades till gruppen.`,
+      });
+
+      setShowImportDialog(false);
+      setSelectedCourse('');
+      setSelectedTargetGroup('');
+      queryClient.invalidateQueries({ queryKey: ['email-contacts'] });
+      queryClient.invalidateQueries({ queryKey: ['email-groups'] });
+    } catch (error: any) {
+      console.error('Import error:', error);
+      toast({
+        title: "Fel vid import",
+        description: error.message || "Det gick inte att importera deltagarna.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'send':
@@ -590,6 +809,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
       case 'groups':
         return renderGroups();
       case 'contacts':
+      case 'import':
         return renderContacts();
       default:
         return renderSendEmail();
@@ -1064,28 +1284,306 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     );
   };
 
-  const renderContacts = () => (
-    <Card>
-      <CardHeader>
-        <CardTitle>Email-kontakter ({emailContacts.length} st)</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-2 max-h-96 overflow-y-auto">
-          {emailContacts.map((contact) => (
-            <div key={contact.id} className="flex items-center justify-between p-2 border rounded text-sm">
-              <div>
-                <span className="font-medium">{contact.email}</span>
-                {contact.name && <span className="ml-2 text-muted-foreground">({contact.name})</span>}
-              </div>
-              <Badge variant="outline" className="text-xs">
-                {contact.source || 'okänd'}
-              </Badge>
-            </div>
-          ))}
+  const renderContacts = () => {
+    if (contactsLoading) {
+      return <div className="text-center py-4">Laddar kontakter...</div>;
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-medium">Alla kontakter ({emailContacts.length} st)</h3>
+          <div className="flex gap-2">
+            <Button 
+              onClick={handleSyncContacts}
+              disabled={isSyncing}
+              variant="outline"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              {isSyncing ? 'Synkroniserar...' : 'Synkronisera'}
+            </Button>
+            <Button onClick={() => handleEditContact()}>
+              <Plus className="w-4 h-4 mr-2" />
+              Lägg till kontakt
+            </Button>
+          </div>
         </div>
-      </CardContent>
-    </Card>
-  );
+
+        {/* Import Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Download className="h-5 w-5" />
+              Importera kontakter
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Importera deltagare från kurser direkt till dina email-grupper.
+            </p>
+            <div className="flex gap-4 items-end">
+              <div className="flex-1">
+                <Label htmlFor="course-select">Välj kurs</Label>
+                <Select value={selectedCourse} onValueChange={setSelectedCourse}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Välj en kurs att importera från" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {courseInstances.map((course) => (
+                      <SelectItem key={course.table_name} value={course.table_name}>
+                        {course.course_title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex-1">
+                <Label htmlFor="group-select">Till grupp</Label>
+                <Select value={selectedTargetGroup} onValueChange={setSelectedTargetGroup}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Välj målgrupp" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {emailGroups.map((group) => (
+                      <SelectItem key={group.id} value={group.id}>
+                        {group.name} ({groupMemberCounts[group.id] || 0} medlemmar)
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button 
+                onClick={handleImportCourse}
+                disabled={isImporting || !selectedCourse || !selectedTargetGroup}
+              >
+                {isImporting ? 'Importerar...' : 'Importera'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Contacts Table */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Kontakter</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {emailContacts.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                Inga kontakter hittades. Lägg till kontakter manuellt eller synkronisera från kurser och biljetter.
+              </div>
+            ) : (
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Namn</TableHead>
+                      <TableHead>E-post</TableHead>
+                      <TableHead>Telefon</TableHead>
+                      <TableHead>Källa</TableHead>
+                      <TableHead>Aktiviteter</TableHead>
+                      <TableHead>Datum</TableHead>
+                      <TableHead className="text-right">Åtgärder</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {emailContacts.map((contact) => (
+                      <TableRow key={contact.id}>
+                        <TableCell className="font-medium">
+                          {contact.name || 'Ej angivet'}
+                        </TableCell>
+                        <TableCell>{contact.email}</TableCell>
+                        <TableCell>{contact.phone || 'Ej angivet'}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="text-xs">
+                            {contact.source === 'course' ? 'Kurs' :
+                             contact.source === 'ticket' ? 'Biljett' :
+                             contact.source === 'interest' ? 'Intresse' :
+                             contact.source === 'manual' ? 'Manuell' :
+                             'Okänd'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedContactEmail(contact.email);
+                              setShowActivitiesDialog(true);
+                            }}
+                          >
+                            <Activity className="w-4 h-4 mr-1" />
+                            Visa
+                          </Button>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {new Date(contact.created_at).toLocaleDateString('sv-SE')}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex gap-1 justify-end">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEditContact(contact)}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="sm">
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Radera kontakt</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Är du säker på att du vill radera kontakten "{contact.email}"? 
+                                    Detta kommer också ta bort kontakten från alla grupper. 
+                                    Denna åtgärd kan inte ångras.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleDeleteContact(contact.id)}>
+                                    Radera
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Add/Edit Contact Dialog */}
+        <Dialog open={showContactDialog} onOpenChange={setShowContactDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {editingContact ? 'Redigera kontakt' : 'Lägg till kontakt'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="contact-email">E-postadress *</Label>
+                <Input
+                  id="contact-email"
+                  type="email"
+                  value={contactForm.email}
+                  onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="kontakt@exempel.se"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="contact-name">Namn</Label>
+                <Input
+                  id="contact-name"
+                  value={contactForm.name}
+                  onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="För- och efternamn"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="contact-phone">Telefon</Label>
+                <Input
+                  id="contact-phone"
+                  value={contactForm.phone}
+                  onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
+                  placeholder="070-123 45 67"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowContactDialog(false)}>
+                Avbryt
+              </Button>
+              <Button onClick={handleSaveContact}>
+                {editingContact ? 'Uppdatera' : 'Lägg till'} kontakt
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Contact Activities Dialog */}
+        <Dialog open={showActivitiesDialog} onOpenChange={setShowActivitiesDialog}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                Aktiviteter för {selectedContactEmail}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              {activitiesLoading ? (
+                <div className="text-center py-4">Laddar aktiviteter...</div>
+              ) : contactActivities.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  Inga aktiviteter hittades för denna kontakt.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {contactActivities.map((activity, index) => (
+                    <div key={index} className="border rounded p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <Badge variant={
+                            activity.activity_type === 'course' ? 'default' :
+                            activity.activity_type === 'ticket' ? 'secondary' :
+                            'outline'
+                          }>
+                            {activity.activity_type === 'course' ? 'Kurs' :
+                             activity.activity_type === 'ticket' ? 'Biljett' :
+                             activity.activity_type === 'interest' ? 'Intresse' :
+                             activity.activity_type}
+                          </Badge>
+                          <span className="font-medium">{activity.activity_title}</span>
+                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          {new Date(activity.activity_date).toLocaleDateString('sv-SE')}
+                        </span>
+                      </div>
+                      {activity.details && Object.keys(activity.details).length > 0 && (
+                        <div className="text-sm text-muted-foreground">
+                          {activity.activity_type === 'ticket' && (
+                            <div>
+                              <span>Antal biljetter: {activity.details.total_tickets}</span>
+                              <span className="ml-4">Datum: {activity.details.show_date}</span>
+                              <span className="ml-4">Plats: {activity.details.show_location}</span>
+                            </div>
+                          )}
+                          {activity.details.message && (
+                            <div className="mt-1">
+                              <span className="font-medium">Meddelande:</span> {activity.details.message}
+                            </div>
+                          )}
+                          {activity.details.phone && (
+                            <div className="mt-1">
+                              <span className="font-medium">Telefon:</span> {activity.details.phone}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setShowActivitiesDialog(false)}>
+                Stäng
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
