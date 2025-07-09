@@ -111,7 +111,6 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
       const { data, error } = await supabase
         .from('email_groups')
         .select('*')
-        .eq('is_active', true)
         .order('name');
 
       if (error) throw error;
