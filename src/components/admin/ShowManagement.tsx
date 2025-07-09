@@ -105,19 +105,16 @@ function SortableShowRow({ show, onEdit, onToggleVisibility, onDelete }: {
       <TableCell className="font-medium">{show.title}</TableCell>
       <TableCell>
         <div className="flex items-center gap-1">
-          <Calendar className="w-4 h-4 text-muted-foreground" />
-          {new Date(show.show_date).toLocaleDateString('sv-SE')} {show.show_time}
+          {new Date(show.show_date).toLocaleDateString('sv-SE')} {show.show_time.substring(0, 5)}
         </div>
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-1">
-          <MapPin className="w-4 h-4 text-muted-foreground" />
           {show.venue}
         </div>
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-1">
-          <Ticket className="w-4 h-4 text-muted-foreground" />
           {show.regular_price}kr
         </div>
       </TableCell>
@@ -561,18 +558,15 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
                       <h4 className="font-semibold text-base mb-3">{show.title}</h4>
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Calendar className="w-4 h-4 flex-shrink-0" />
-                          <span>{new Date(show.show_date).toLocaleDateString('sv-SE')} {show.show_time}</span>
+                          <span>{new Date(show.show_date).toLocaleDateString('sv-SE')} {show.show_time.substring(0, 5)}</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <MapPin className="w-4 h-4 flex-shrink-0" />
                           <span>{show.venue}</span>
                         </div>
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="flex items-center justify-end gap-1 text-lg font-semibold bg-primary/10 px-3 py-2 rounded-lg">
-                        <Ticket className="w-4 h-4" />
                         <span>{show.regular_price}kr</span>
                       </div>
                     </div>
