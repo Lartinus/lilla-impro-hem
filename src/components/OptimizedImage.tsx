@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getStrapiImageUrl } from '@/utils/strapiHelpers';
 
 interface OptimizedImageProps {
   src: string | any | null; // Support both string URLs and Strapi objects
@@ -22,38 +21,22 @@ const OptimizedImage = ({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  // Memoize the image URL calculation and determine original source for callback
+  // Simplified image URL handling - just use src as-is since we removed Strapi
   const { imageUrl, originalSrc } = useCallback(() => {
     if (!src) return { imageUrl: null, originalSrc: null };
 
-    // If src is already a string URL (legacy behavior)
+    // If src is a string URL, use as-is
     if (typeof src === 'string') {
-      // If it's already a full URL or local path, use as-is
-      if (src.startsWith('http') || src.startsWith('/')) {
-        return { imageUrl: src, originalSrc: src };
-      }
-      // Otherwise, treat as Strapi path and construct URL
-      return { 
-        imageUrl: getStrapiImageUrl(src, { size: preferredSize }), 
-        originalSrc: src 
-      };
+      return { imageUrl: src, originalSrc: src };
     }
 
-    // If src is a Strapi object, use getStrapiImageUrl to process it
-    const processedUrl = getStrapiImageUrl(src, { size: preferredSize });
-    
-    // For callback consistency, construct the original URL pattern
-    const callbackUrl = src?.data?.attributes?.url ? 
-      (src.data.attributes.url.startsWith('http') ? 
-        src.data.attributes.url : // Use as-is if already a full URL (Supabase)
-        `https://reliable-chicken-da8c8aa37e.media.strapiapp.com${src.data.attributes.url}`) : // Prefix only if relative (Strapi)
-      processedUrl;
-    
+    // Handle object format (for backward compatibility)
+    const url = src?.data?.attributes?.url || src?.url;
     return { 
-      imageUrl: processedUrl, 
-      originalSrc: callbackUrl 
+      imageUrl: url, 
+      originalSrc: url 
     };
-  }, [src, preferredSize])();
+  }, [src])();
 
   const handleLoad = useCallback(() => {
     console.log('OptimizedImage: Image loaded successfully, calling onLoad with:', originalSrc);

@@ -2,14 +2,11 @@
 import Header from '@/components/Header';
 import ServiceBoxes from '@/components/ServiceBoxes';
 import MultiLayerParallaxBackground from '@/components/MultiLayerParallaxBackground';
-import { useOptimizedPrefetch } from '@/hooks/useOptimizedPrefetch';
+
 import { NewsletterSignupModal } from '@/components/NewsletterSignupModal';
 import { useState } from 'react';
 
 const Index = () => {
-  // Use optimized prefetch for better performance
-  useOptimizedPrefetch();
-  
   const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
 
   // Enkelt sätt att stänga av parallax-bakgrunden
