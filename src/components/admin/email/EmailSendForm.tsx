@@ -86,7 +86,7 @@ export function EmailSendForm({
       <body style="
         margin: 0;
         padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        font-family: Georgia, 'Times New Roman', Times, serif;
         background-color: #ffffff;
         line-height: 1.6;
         color: #333333;
@@ -119,36 +119,9 @@ export function EmailSendForm({
             font-size: 16px;
             line-height: 1.6;
             color: #333333;
+            font-family: Georgia, 'Times New Roman', Times, serif;
           ">
             ${htmlContent}
-          </div>
-        </div>
-
-        <div style="
-          background-color: #f9f9f9;
-          padding: 40px 20px;
-          text-align: center;
-        ">
-          <div style="max-width: 600px; margin: 0 auto;">
-            <img src="/uploads/LIT_red_large.png" alt="Lilla Improteatern" style="
-              width: 180px;
-              height: auto;
-              margin: 0 auto 20px auto;
-              display: block;
-            "/>
-            <p style="
-              font-size: 12px;
-              color: #999999;
-              margin: 0;
-            ">
-              Vill du inte längre få våra mejl? 
-              <a href="https://improteatern.se/avprenumerera" style="
-                color: #666666;
-                text-decoration: underline;
-              ">
-                Avprenumerera här
-              </a>
-            </p>
           </div>
         </div>
       </body>
