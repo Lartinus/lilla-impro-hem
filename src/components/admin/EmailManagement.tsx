@@ -560,7 +560,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
               className="font-mono text-sm"
             />
             <p className="text-sm text-muted-foreground">
-              Använd Markdown för formatering: # för stora rubriker, ## för mellanrubriker, ### för smårubriker, **fet text**, *kursiv text*, [länktext](url), - för punktlistor, 1. för numrerade listor, &gt; för citat. För radbryt: &lt;br&gt; eller dubbla mellanslag följt av radbryt. För centrerad text: &lt;div style="text-align: center"&gt;# Din rubrik&lt;/div&gt;.
+              Använd Markdown för formatering: # för stora rubriker, ## för mellanrubriker, ### för smårubriker, **fet text**, *kursiv text*, [länktext](url), - för punktlistor, 1. för numrerade listor, &gt; för citat. För radbryt: &lt;br&gt; eller dubbla mellanslag följt av radbryt. För centrerade rubriker: &lt;h1 style="text-align: center"&gt;Din rubrik&lt;/h1&gt;.
             </p>
           </div>
 
