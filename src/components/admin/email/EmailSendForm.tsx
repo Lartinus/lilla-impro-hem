@@ -82,11 +82,12 @@ export function EmailSendForm({
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${subject}</title>
+        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
       </head>
       <body style="
         margin: 0;
         padding: 0;
-        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
         background-color: #ffffff;
         line-height: 1.6;
         color: #333333;
@@ -119,7 +120,7 @@ export function EmailSendForm({
             font-size: 16px;
             line-height: 1.6;
             color: #333333;
-            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
           ">
             ${htmlContent}
           </div>

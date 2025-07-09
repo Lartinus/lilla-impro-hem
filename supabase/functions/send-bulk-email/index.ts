@@ -257,11 +257,12 @@ const handler = async (req: Request): Promise<Response> => {
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>${subjectText}</title>
+                <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
               </head>
               <body style="
                 margin: 0;
                 padding: 0;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+                font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
                 background-color: #f0f0f0;
                 line-height: 1.6;
                 color: #333333;
@@ -294,6 +295,7 @@ const handler = async (req: Request): Promise<Response> => {
                     font-size: 16px;
                     line-height: 1.6;
                     color: #333333;
+                    font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
                   ">
                     ${contentText}
                   </div>
