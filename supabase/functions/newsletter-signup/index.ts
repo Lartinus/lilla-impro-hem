@@ -110,53 +110,175 @@ const handler = async (req: Request): Promise<Response> => {
       subject: "Bekräfta din prenumeration på vårt nyhetsbrev",
       html: `
         <!DOCTYPE html>
-        <html>
+        <html lang="sv" style="margin: 0; padding: 0;">
         <head>
-          <meta charset="utf-8">
+          <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>Bekräfta din prenumeration</title>
         </head>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa;">
-          <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%); color: white; padding: 30px; text-align: center; border-radius: 12px 12px 0 0; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);">
-            <h1 style="margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Lilla Improteatern</h1>
-            <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.95;">Bekräfta din prenumeration</p>
+        <body style="
+          margin: 0;
+          padding: 0;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+          background-color: #ffffff;
+          line-height: 1.6;
+          color: #333333;
+        ">
+          <!-- Header -->
+          <div style="
+            background-color: #ffffff;
+            padding: 40px 20px 0;
+            text-align: center;
+          ">
+            <div style="max-width: 600px; margin: 0 auto;">
+              <h1 style="
+                font-size: 28px;
+                font-weight: 300;
+                margin: 0 0 12px 0;
+                color: #1a1a1a;
+                letter-spacing: -0.025em;
+                line-height: 1.2;
+              ">
+                Bekräfta din prenumeration
+              </h1>
+              <p style="
+                font-size: 16px;
+                color: #666666;
+                margin: 0 0 40px 0;
+                font-weight: 400;
+              ">
+                Tack för att du vill prenumerera på vårt nyhetsbrev!
+              </p>
+            </div>
           </div>
           
-          <div style="background: white; padding: 40px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            <h2 style="color: #dc2626; margin-top: 0; font-size: 24px; font-weight: 600;">Hej ${cleanName}!</h2>
-            
-            <p style="font-size: 16px; margin: 20px 0;">Tack för att du vill prenumerera på vårt nyhetsbrev! För att bekräfta din registrering, klicka på knappen nedan:</p>
-            
-            <div style="text-align: center; margin: 35px 0;">
-              <a href="${confirmationUrl}" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 10px; font-weight: 600; display: inline-block; font-size: 16px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4); transition: all 0.3s ease;">
-                Bekräfta prenumeration
-              </a>
-            </div>
-            
-            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 20px; margin: 25px 0;">
-              <p style="color: #7f1d1d; font-size: 14px; margin: 0; line-height: 1.5;">
-                <strong>Om knappen inte fungerar:</strong><br>
-                Kopiera och klistra in denna länk i din webbläsare:<br>
-                <a href="${confirmationUrl}" style="color: #dc2626; word-break: break-all; text-decoration: underline;">${confirmationUrl}</a>
+          <!-- Main Content -->
+          <div style="
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+          ">
+            <div style="
+              background-color: #ffffff;
+              border: 1px solid #e8e8e8;
+              border-radius: 8px;
+              padding: 40px;
+            ">
+              <!-- Welcome Message -->
+              <div style="margin-bottom: 32px; text-align: center;">
+                <h2 style="
+                  font-size: 20px;
+                  font-weight: 400;
+                  margin: 0 0 12px 0;
+                  color: #1a1a1a;
+                ">
+                  Hej ${cleanName}!
+                </h2>
+                <p style="
+                  font-size: 16px;
+                  color: #666666;
+                  margin: 0 0 24px 0;
+                  line-height: 1.5;
+                ">
+                  För att bekräfta din registrering, klicka på knappen nedan:
+                </p>
+                
+                <a href="${confirmationUrl}" style="
+                  display: inline-block;
+                  background-color: #1a1a1a;
+                  color: #ffffff;
+                  padding: 14px 28px;
+                  text-decoration: none;
+                  border-radius: 6px;
+                  font-weight: 500;
+                  font-size: 15px;
+                  letter-spacing: 0.025em;
+                ">
+                  Bekräfta prenumeration
+                </a>
+              </div>
+              
+              <!-- Alternative Link -->
+              <div style="
+                background-color: #f9f9f9;
+                border-radius: 6px;
+                padding: 20px;
+                margin-bottom: 24px;
+                border-left: 3px solid #1a1a1a;
+              ">
+                <p style="
+                  font-size: 14px;
+                  color: #666666;
+                  margin: 0 0 12px 0;
+                ">
+                  <strong>Om knappen inte fungerar:</strong><br>
+                  Kopiera och klistra in denna länk i din webbläsare:
+                </p>
+                <p style="
+                  font-size: 13px;
+                  color: #1a1a1a;
+                  margin: 0;
+                  word-break: break-all;
+                  font-family: monospace;
+                ">
+                  ${confirmationUrl}
+                </p>
+              </div>
+              
+              <!-- Important Notice -->
+              <div style="
+                background-color: #f9f9f9;
+                border-radius: 6px;
+                padding: 16px;
+                margin-bottom: 24px;
+              ">
+                <p style="
+                  font-size: 14px;
+                  color: #666666;
+                  margin: 0;
+                ">
+                  ⏰ <strong>Viktigt:</strong> Denna bekräftelselänk är giltig i 24 timmar. Om du inte bekräftar inom denna tid behöver du registrera dig igen.
+                </p>
+              </div>
+              
+              <p style="
+                font-size: 14px;
+                color: #999999;
+                margin: 0 0 24px 0;
+                text-align: center;
+              ">
+                Om du inte begärde denna prenumeration kan du ignorera detta meddelande.
               </p>
-            </div>
-            
-            <div style="background: #f9fafb; border-radius: 8px; padding: 20px; margin: 25px 0;">
-              <p style="color: #6b7280; font-size: 14px; margin: 0;">
-                ⏰ <strong>Viktigt:</strong> Denna bekräftelselänk är giltig i 24 timmar. Om du inte bekräftar inom denna tid behöver du registrera dig igen.
-              </p>
-            </div>
-            
-            <hr style="margin: 35px 0; border: none; border-top: 2px solid #f3f4f6;">
-            
-            <div style="text-align: center; font-size: 14px; color: #6b7280;">
-              <p style="margin: 0 0 20px 0; font-size: 16px; color: #374151;">
-                Med vänliga hälsningar,<br>
-                <span style="color: #dc2626; font-weight: 600;">Lilla Improteatern</span>
-              </p>
-              <p style="margin: 0; font-size: 12px;">
-                <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(cleanEmail)}" style="color: #9ca3af; text-decoration: underline;">Avregistrera dig här</a>
-              </p>
+              
+              <!-- Signature -->
+              <div style="
+                text-align: center;
+                padding-top: 24px;
+                border-top: 1px solid #e8e8e8;
+              ">
+                <p style="
+                  font-size: 14px;
+                  color: #999999;
+                  margin: 0 0 4px 0;
+                ">
+                  Med vänliga hälsningar
+                </p>
+                <p style="
+                  font-size: 16px;
+                  font-weight: 500;
+                  color: #1a1a1a;
+                  margin: 0 0 12px 0;
+                ">
+                  Lilla Improteatern
+                </p>
+                <p style="
+                  font-size: 12px;
+                  color: #999999;
+                  margin: 0;
+                ">
+                  <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(cleanEmail)}" style="color: #666666; text-decoration: underline;">Avregistrera dig här</a>
+                </p>
+              </div>
             </div>
           </div>
         </body>

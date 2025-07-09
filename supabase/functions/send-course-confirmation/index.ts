@@ -107,98 +107,103 @@ const handler = async (req: Request): Promise<Response> => {
       const hasBackground = backgroundImage && backgroundImage.trim() !== '';
       const hasTitle = title && title.trim() !== '';
       const finalTitleSize = titleSize || '32';
-      const finalImagePosition = imagePosition || 'top';
       
-      // Enhanced template with Moccamaster-inspired design
+      // Clean, Moccamaster-inspired design
       return `
-        <div style="
-          font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-          background-color: #ffffff;
+        <!DOCTYPE html>
+        <html lang="sv" style="margin: 0; padding: 0;">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${subject}</title>
+        </head>
+        <body style="
           margin: 0;
           padding: 0;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+          background-color: #ffffff;
           line-height: 1.6;
-          color: #2c2c2c;
+          color: #333333;
         ">
-          ${hasBackground ? `
-            <div style="
-              background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-              padding: 60px 20px;
-              text-align: center;
-            ">
+          <!-- Header Section -->
+          <div style="
+            background-color: #ffffff;
+            padding: 40px 20px 0;
+            text-align: center;
+          ">
+            ${hasBackground ? `
               <div style="
+                max-width: 600px;
+                margin: 0 auto 40px;
                 height: 200px;
                 background-image: url('${backgroundImage}');
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
-                border-radius: 12px;
-                margin: 0 auto;
-                max-width: 600px;
+                border-radius: 8px;
               "></div>
-            </div>
-          ` : `
-            <div style="
-              background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-              padding: 60px 20px;
-              text-align: center;
-            ">
-              <div style="max-width: 600px; margin: 0 auto;">
-                ${hasTitle ? `
-                  <h1 style="
-                    font-size: ${finalTitleSize}px;
-                    font-weight: 300;
-                    margin: 0 0 16px 0;
-                    color: #2c2c2c;
-                    letter-spacing: -0.5px;
-                  ">
-                    ${title}
-                  </h1>
-                ` : `
-                  <h1 style="
-                    font-size: 36px;
-                    font-weight: 300;
-                    margin: 0 0 16px 0;
-                    color: #2c2c2c;
-                    letter-spacing: -0.5px;
-                  ">
-                    Tack för din bokning
-                  </h1>
-                `}
-                <p style="
-                  font-size: 18px;
-                  color: #6c757d;
-                  margin: 0;
+            ` : ''}
+            
+            <div style="max-width: 600px; margin: 0 auto;">
+              ${hasTitle ? `
+                <h1 style="
+                  font-size: ${finalTitleSize}px;
                   font-weight: 300;
+                  margin: 0 0 12px 0;
+                  color: #1a1a1a;
+                  letter-spacing: -0.025em;
+                  line-height: 1.2;
                 ">
-                  Din bokning är bekräftad
-                </p>
-              </div>
+                  ${title}
+                </h1>
+              ` : `
+                <h1 style="
+                  font-size: 28px;
+                  font-weight: 300;
+                  margin: 0 0 12px 0;
+                  color: #1a1a1a;
+                  letter-spacing: -0.025em;
+                  line-height: 1.2;
+                ">
+                  Tack för din bokning
+                </h1>
+              `}
+              <p style="
+                font-size: 16px;
+                color: #666666;
+                margin: 0 0 40px 0;
+                font-weight: 400;
+              ">
+                Din bokning är bekräftad
+              </p>
             </div>
-          `}
+          </div>
           
+          <!-- Main Content -->
           <div style="
             max-width: 600px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 0 20px 40px;
           ">
             <div style="
               background-color: #ffffff;
-              border-radius: 16px;
+              border: 1px solid #e8e8e8;
+              border-radius: 8px;
               padding: 40px;
-              box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             ">
-              <div style="margin-bottom: 40px; text-align: center;">
+              <!-- Welcome Message -->
+              <div style="margin-bottom: 32px; text-align: center;">
                 <h2 style="
-                  font-size: 24px;
+                  font-size: 20px;
                   font-weight: 400;
-                  margin: 0 0 16px 0;
-                  color: #2c2c2c;
+                  margin: 0 0 12px 0;
+                  color: #1a1a1a;
                 ">
-                  Hej ${personalizedContent.includes('[NAMN]') ? personalizedContent.match(/Tack.*?(\w+)!/)?.[1] || 'där' : 'där'}!
+                  Hej ${personalizedContent.includes('[NAMN]') ? personalizedContent.match(/Hej\s+(\w+)/)?.[1] || personalizedContent.match(/(\w+)!/)?.[1] || 'där' : 'där'}!
                 </h2>
                 <p style="
                   font-size: 16px;
-                  color: #6c757d;
+                  color: #666666;
                   margin: 0;
                   line-height: 1.5;
                 ">
@@ -206,35 +211,45 @@ const handler = async (req: Request): Promise<Response> => {
                 </p>
               </div>
 
+              <!-- Content Box -->
               <div style="
-                background-color: #f8f9fa;
-                border: 1px solid #e9ecef;
-                border-radius: 12px;
-                padding: 32px;
-                margin-bottom: 40px;
-                text-align: center;
+                background-color: #f9f9f9;
+                border-radius: 6px;
+                padding: 24px;
+                margin-bottom: 32px;
+                border-left: 3px solid #1a1a1a;
               ">
-                ${content}
+                <div style="
+                  font-size: 15px;
+                  line-height: 1.6;
+                  color: #333333;
+                ">
+                  ${content}
+                </div>
               </div>
 
+              <!-- Next Steps -->
               <div style="
                 text-align: center;
-                margin-bottom: 40px;
+                margin-bottom: 32px;
+                padding: 24px 0;
+                border-top: 1px solid #e8e8e8;
+                border-bottom: 1px solid #e8e8e8;
               ">
                 <h3 style="
-                  font-size: 18px;
+                  font-size: 17px;
                   font-weight: 500;
                   margin: 0 0 16px 0;
-                  color: #2c2c2c;
+                  color: #1a1a1a;
                 ">
                   Vad händer nu?
                 </h3>
                 <div style="
-                  font-size: 16px;
-                  color: #6c757d;
+                  font-size: 15px;
+                  color: #666666;
                   line-height: 1.6;
                 ">
-                  <p style="margin: 0 0 12px 0;">
+                  <p style="margin: 0 0 8px 0;">
                     Du kommer att få ett mejl med kursdetaljer senast en vecka innan kursstart
                   </p>
                   <p style="margin: 0;">
@@ -243,22 +258,19 @@ const handler = async (req: Request): Promise<Response> => {
                 </div>
               </div>
 
-              <div style="
-                border-top: 1px solid #e9ecef;
-                padding-top: 32px;
-                text-align: center;
-              ">
+              <!-- Signature -->
+              <div style="text-align: center;">
                 <p style="
                   font-size: 14px;
-                  color: #6c757d;
-                  margin: 0 0 8px 0;
+                  color: #999999;
+                  margin: 0 0 4px 0;
                 ">
                   Med vänliga hälsningar
                 </p>
                 <p style="
                   font-size: 16px;
                   font-weight: 500;
-                  color: #2c2c2c;
+                  color: #1a1a1a;
                   margin: 0;
                 ">
                   Lilla Improteatern
@@ -267,26 +279,29 @@ const handler = async (req: Request): Promise<Response> => {
             </div>
           </div>
 
+          <!-- Footer -->
           <div style="
-            background-color: #f8f9fa;
-            padding: 24px 20px;
+            background-color: #f9f9f9;
+            padding: 20px;
             text-align: center;
+            border-top: 1px solid #e8e8e8;
           ">
             <p style="
               font-size: 12px;
-              color: #6c757d;
+              color: #999999;
               margin: 0;
             ">
               Vill du inte längre få våra mejl? 
               <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(email)}" style="
-                color: #6c757d;
+                color: #666666;
                 text-decoration: underline;
               ">
                 Avprenumerera här
               </a>
             </p>
           </div>
-        </div>
+        </body>
+        </html>
       `;
     }
 

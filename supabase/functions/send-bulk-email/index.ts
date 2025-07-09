@@ -247,127 +247,162 @@ const handler = async (req: Request): Promise<Response> => {
             const finalTitleSize = templateData?.title_size || '32';
             const imagePosition = templateData?.image_position || 'top';
             
+            // Clean, Moccamaster-inspired design
             return `
-              <div style="
-                font-family: Arial, sans-serif; 
-                line-height: 1.6; 
-                color: #333;
-                background-color: #f5f5f5;
-                padding: 0;
+              <!DOCTYPE html>
+              <html lang="sv" style="margin: 0; padding: 0;">
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>${subjectText}</title>
+              </head>
+              <body style="
                 margin: 0;
+                padding: 0;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+                background-color: #ffffff;
+                line-height: 1.6;
+                color: #333333;
               ">
-                ${imagePosition === 'top' && hasBackground ? `
-                  <div style="
-                    height: 300px;
-                    background-image: url('${templateData.background_image}');
-                    background-size: cover;
-                    background-position: center;
-                    background-repeat: no-repeat;
-                    margin: 0;
-                  "></div>
-                ` : ''}
-                
-                ${imagePosition === 'behind' && hasBackground ? `
-                  <div style="
-                    position: relative;
-                    min-height: 400px;
-                    background-image: url('${templateData.background_image}');
-                    background-size: cover;
-                    background-position: center;
-                    background-repeat: no-repeat;
-                    margin: 0;
-                    padding: 40px 20px;
-                  ">
-                ` : ''}
-                
+                <!-- Header Section -->
                 <div style="
-                  max-width: 600px;
-                  margin: ${imagePosition === 'top' && hasBackground ? '-80px auto 40px auto' : 
-                           imagePosition === 'behind' && hasBackground ? '0 auto' : 
-                           '40px auto'};
-                  position: relative;
-                  z-index: 10;
-                  ${imagePosition === 'behind' && hasBackground ? '' : 'padding: 0 20px;'}
+                  background-color: #ffffff;
+                  padding: 40px 20px 0;
+                  text-align: center;
                 ">
-                  <div style="
-                    background-color: #fff;
-                    border-radius: 16px;
-                    padding: 40px;
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-                    position: relative;
-                    ${imagePosition === 'behind' && hasBackground ? 'background-color: rgba(255,255,255,0.95); backdrop-filter: blur(10px);' : ''}
-                  ">
+                  ${imagePosition === 'top' && hasBackground ? `
+                    <div style="
+                      max-width: 600px;
+                      margin: 0 auto 40px;
+                      height: 200px;
+                      background-image: url('${templateData.background_image}');
+                      background-size: cover;
+                      background-position: center;
+                      background-repeat: no-repeat;
+                      border-radius: 8px;
+                    "></div>
+                  ` : ''}
+                  
+                  <div style="max-width: 600px; margin: 0 auto;">
                     ${hasTitle ? `
                       <h1 style="
-                        color: #333; 
-                        margin: 0 0 20px 0;
                         font-size: ${finalTitleSize}px;
-                        font-weight: bold;
-                        text-align: center;
+                        font-weight: 300;
+                        margin: 0 0 12px 0;
+                        color: #1a1a1a;
+                        letter-spacing: -0.025em;
                         line-height: 1.2;
                       ">
                         ${templateData.title}
                       </h1>
-                      <div style="
-                        width: 60px;
-                        height: 3px;
-                        background-color: #333;
-                        margin: 0 auto 30px auto;
-                      "></div>
-                    ` : `
-                      <div style="
-                        border-bottom: 2px solid #d32f2f; 
-                        padding-bottom: 20px; 
-                        margin-bottom: 30px;
-                      ">
-                        <h2 style="
-                          color: #d32f2f; 
-                          margin: 0 0 10px 0;
-                          font-size: 24px;
-                        ">
-                          ${subjectText}
-                        </h2>
-                      </div>
-                    `}
+                    ` : ''}
                     
-                    <div style="margin-bottom: 30px;">
-                      ${contentText}
-                    </div>
-                    
-                    ${imagePosition === 'bottom' && hasBackground ? `
+                    ${imagePosition === 'header' && hasBackground ? `
                       <div style="
-                        height: 200px;
+                        max-width: 600px;
+                        margin: 20px auto 40px;
+                        height: 120px;
                         background-image: url('${templateData.background_image}');
                         background-size: cover;
                         background-position: center;
                         background-repeat: no-repeat;
-                        margin: 30px -40px 30px -40px;
                         border-radius: 8px;
                       "></div>
-                    ` : ''}
-                    
+                    ` : (!hasTitle ? '' : `
+                      <div style="height: 40px;"></div>
+                    `)}
+                  </div>
+                </div>
+                
+                <!-- Main Content -->
+                <div style="
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 0 20px 40px;
+                ">
+                  <div style="
+                    background-color: #ffffff;
+                    border: 1px solid #e8e8e8;
+                    border-radius: 8px;
+                    padding: 40px;
+                  ">
+                    <!-- Content Box -->
                     <div style="
-                      border-top: 1px solid #eee; 
-                      padding-top: 20px;
-                      color: #666;
-                      font-size: 14px;
+                      background-color: #f9f9f9;
+                      border-radius: 6px;
+                      padding: 24px;
+                      margin-bottom: 32px;
+                      border-left: 3px solid #1a1a1a;
                     ">
-                      <p style="margin: 0 0 15px 0;">
-                        Med vänliga hälsningar,<br />
-                        <strong>Lilla Improteatern</strong>
+                      <div style="
+                        font-size: 15px;
+                        line-height: 1.6;
+                        color: #333333;
+                      ">
+                        ${contentText}
+                      </div>
+                      
+                      ${imagePosition === 'content' && hasBackground ? `
+                        <div style="
+                          margin: 20px 0;
+                          height: 160px;
+                          background-image: url('${templateData.background_image}');
+                          background-size: cover;
+                          background-position: center;
+                          background-repeat: no-repeat;
+                          border-radius: 8px;
+                        "></div>
+                      ` : ''}
+                    </div>
+
+                    <!-- Signature -->
+                    <div style="
+                      text-align: center;
+                      padding-top: 24px;
+                      border-top: 1px solid #e8e8e8;
+                    ">
+                      <p style="
+                        font-size: 14px;
+                        color: #999999;
+                        margin: 0 0 4px 0;
+                      ">
+                        Med vänliga hälsningar
                       </p>
-                      <p style="margin: 0; font-size: 12px; color: #999;">
-                        Vill du inte längre få våra mejl? 
-                        <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(recipient.email)}" style="color: #d32f2f; text-decoration: underline;">
-                          Avprenumerera här
-                        </a>
+                      <p style="
+                        font-size: 16px;
+                        font-weight: 500;
+                        color: #1a1a1a;
+                        margin: 0;
+                      ">
+                        Lilla Improteatern
                       </p>
                     </div>
                   </div>
                 </div>
-                
-                ${imagePosition === 'behind' && hasBackground ? '</div>' : ''}
-              </div>
+
+                <!-- Footer -->
+                <div style="
+                  background-color: #f9f9f9;
+                  padding: 20px;
+                  text-align: center;
+                  border-top: 1px solid #e8e8e8;
+                ">
+                  <p style="
+                    font-size: 12px;
+                    color: #999999;
+                    margin: 0;
+                  ">
+                    Vill du inte längre få våra mejl? 
+                    <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(recipient.email)}" style="
+                      color: #666666;
+                      text-decoration: underline;
+                    ">
+                      Avprenumerera här
+                    </a>
+                  </p>
+                </div>
+              </body>
+              </html>
             `;
           }
           

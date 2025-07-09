@@ -106,88 +106,174 @@ const handler = async (req: Request): Promise<Response> => {
       const hasTitle = title && title.trim() !== '';
       const finalTitleSize = titleSize || '32';
       
+      // Clean, Moccamaster-inspired design
       return `
-        <div style="
-          font-family: Arial, sans-serif; 
-          line-height: 1.6; 
-          color: #333;
-          background-color: #f5f5f5;
+        <!DOCTYPE html>
+        <html lang="sv" style="margin: 0; padding: 0;">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${subject}</title>
+        </head>
+        <body style="
+          margin: 0;
           padding: 0;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+          background-color: #ffffff;
+          line-height: 1.6;
+          color: #333333;
         ">
-          ${hasBackground ? `
-            <div style="
-              height: 300px;
-              background-image: url('${backgroundImage}');
-              background-size: cover;
-              background-position: center;
-              background-repeat: no-repeat;
-              margin: 0;
-            "></div>
-          ` : ''}
-          
+          <!-- Header Section -->
           <div style="
-            max-width: 600px;
-            margin: ${hasBackground ? '-60px auto 40px auto' : '40px auto'};
-            position: relative;
-            z-index: 10;
+            background-color: #ffffff;
+            padding: 40px 20px 0;
+            text-align: center;
           ">
-            <div style="
-              background-color: #fff;
-              border-radius: 16px;
-              padding: 40px;
-              box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            ">
+            ${hasBackground ? `
+              <div style="
+                max-width: 600px;
+                margin: 0 auto 40px;
+                height: 200px;
+                background-image: url('${backgroundImage}');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                border-radius: 8px;
+              "></div>
+            ` : ''}
+            
+            <div style="max-width: 600px; margin: 0 auto;">
               ${hasTitle ? `
                 <h1 style="
-                  color: #333; 
-                  margin: 0 0 20px 0;
                   font-size: ${finalTitleSize}px;
-                  font-weight: bold;
-                  text-align: center;
+                  font-weight: 300;
+                  margin: 0 0 12px 0;
+                  color: #1a1a1a;
+                  letter-spacing: -0.025em;
                   line-height: 1.2;
                 ">
                   ${title}
                 </h1>
-                <div style="
-                  width: 60px;
-                  height: 3px;
-                  background-color: #333;
-                  margin: 0 auto 30px auto;
-                "></div>
               ` : `
-                <div style="
-                  border-bottom: 2px solid #d32f2f; 
-                  padding-bottom: 20px; 
-                  margin-bottom: 30px;
+                <h1 style="
+                  font-size: 28px;
+                  font-weight: 300;
+                  margin: 0 0 12px 0;
+                  color: #1a1a1a;
+                  letter-spacing: -0.025em;
+                  line-height: 1.2;
                 ">
-                  <h2 style="
-                    color: #d32f2f; 
-                    margin: 0 0 10px 0;
-                    font-size: 24px;
-                  ">
-                    ${subject}
-                  </h2>
-                </div>
+                  Tack för ditt intresse
+                </h1>
               `}
-              
-              <div style="margin-bottom: 30px;">
-                ${content}
-              </div>
-              
-              <div style="
-                border-top: 1px solid #eee; 
-                padding-top: 20px;
-                color: #666;
-                font-size: 14px;
+              <p style="
+                font-size: 16px;
+                color: #666666;
+                margin: 0 0 40px 0;
+                font-weight: 400;
               ">
-                <p style="margin: 0;">
-                  Med vänliga hälsningar,<br />
-                  <strong>Lilla Improteatern</strong>
+                Din intresseanmälan är mottagen
+              </p>
+            </div>
+          </div>
+          
+          <!-- Main Content -->
+          <div style="
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+          ">
+            <div style="
+              background-color: #ffffff;
+              border: 1px solid #e8e8e8;
+              border-radius: 8px;
+              padding: 40px;
+            ">
+              <!-- Welcome Message -->
+              <div style="margin-bottom: 32px; text-align: center;">
+                <h2 style="
+                  font-size: 20px;
+                  font-weight: 400;
+                  margin: 0 0 12px 0;
+                  color: #1a1a1a;
+                ">
+                  Hej ${personalizedContent.includes('[NAMN]') ? personalizedContent.match(/Hej\s+(\w+)/)?.[1] || personalizedContent.match(/(\w+)!/)?.[1] || 'där' : 'där'}!
+                </h2>
+                <p style="
+                  font-size: 16px;
+                  color: #666666;
+                  margin: 0;
+                  line-height: 1.5;
+                ">
+                  Tack för din intresseanmälan. Vi kontaktar dig så snart något aktuellt dyker upp!
+                </p>
+              </div>
+
+              <!-- Content Box -->
+              <div style="
+                background-color: #f9f9f9;
+                border-radius: 6px;
+                padding: 24px;
+                margin-bottom: 32px;
+                border-left: 3px solid #1a1a1a;
+              ">
+                <div style="
+                  font-size: 15px;
+                  line-height: 1.6;
+                  color: #333333;
+                ">
+                  ${content}
+                </div>
+              </div>
+
+              <!-- Signature -->
+              <div style="
+                text-align: center;
+                padding-top: 24px;
+                border-top: 1px solid #e8e8e8;
+              ">
+                <p style="
+                  font-size: 14px;
+                  color: #999999;
+                  margin: 0 0 4px 0;
+                ">
+                  Med vänliga hälsningar
+                </p>
+                <p style="
+                  font-size: 16px;
+                  font-weight: 500;
+                  color: #1a1a1a;
+                  margin: 0;
+                ">
+                  Lilla Improteatern
                 </p>
               </div>
             </div>
           </div>
-        </div>
+
+          <!-- Footer -->
+          <div style="
+            background-color: #f9f9f9;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e8e8e8;
+          ">
+            <p style="
+              font-size: 12px;
+              color: #999999;
+              margin: 0;
+            ">
+              Vill du inte längre få våra mejl? 
+              <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(email)}" style="
+                color: #666666;
+                text-decoration: underline;
+              ">
+                Avprenumerera här
+              </a>
+            </p>
+          </div>
+        </body>
+        </html>
       `;
     }
 

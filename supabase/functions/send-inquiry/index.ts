@@ -86,96 +86,147 @@ const handler = async (req: Request): Promise<Response> => {
 
     const notificationContent = `
       <!DOCTYPE html>
-      <html>
+      <html lang="sv" style="margin: 0; padding: 0;">
       <head>
-        <meta charset="utf-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${notificationSubject}</title>
       </head>
-      <body style="margin: 0; padding: 0; background-color: #f4f4f4;">
-        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px 0;">
-          <tr>
-            <td align="center">
-              <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <body style="
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        background-color: #ffffff;
+        line-height: 1.6;
+        color: #333333;
+      ">
+        <!-- Header -->
+        <div style="
+          background-color: #ffffff;
+          padding: 40px 20px 0;
+          text-align: center;
+        ">
+          <div style="max-width: 600px; margin: 0 auto;">
+            <h1 style="
+              font-size: 24px;
+              font-weight: 300;
+              margin: 0 0 12px 0;
+              color: #1a1a1a;
+              letter-spacing: -0.025em;
+            ">
+              ${notificationSubject}
+            </h1>
+            <p style="
+              font-size: 14px;
+              color: #999999;
+              margin: 0 0 40px 0;
+            ">
+              Förfrågan mottagen: ${new Date().toLocaleDateString('sv-SE')}
+            </p>
+          </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div style="
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 0 20px 40px;
+        ">
+          <div style="
+            background-color: #ffffff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 40px;
+          ">
+            <!-- Contact Details -->
+            <div style="margin-bottom: 24px;">
+              <table style="width: 100%; border-collapse: collapse;">
                 <tr>
-                  <td style="background-color: #d32f2f; padding: 30px 40px;">
-                    <h1 style="color: #ffffff; margin: 0; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold;">
-                      ${notificationSubject}
-                    </h1>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                    <strong style="color: #1a1a1a; font-size: 14px;">Namn:</strong>
+                    <span style="color: #333333; margin-left: 8px;">${inquiryData.name}</span>
                   </td>
                 </tr>
-                
                 <tr>
-                  <td style="padding: 30px 40px;">
-                    <table width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td style="padding: 10px 0;">
-                          <strong style="color: #d32f2f;">Namn:</strong><br>
-                          <span style="color: #333; font-size: 16px;">${inquiryData.name}</span>
-                        </td>
-                      </tr>
-                      
-                      <tr>
-                        <td style="padding: 10px 0;">
-                          <strong style="color: #d32f2f;">E-post:</strong><br>
-                          <span style="color: #333; font-size: 16px;">${inquiryData.email}</span>
-                        </td>
-                      </tr>
-                      
-                      ${inquiryData.phone ? `
-                      <tr>
-                        <td style="padding: 10px 0;">
-                          <strong style="color: #d32f2f;">Telefon:</strong><br>
-                          <span style="color: #333; font-size: 16px;">${inquiryData.phone}</span>
-                        </td>
-                      </tr>
-                      ` : ''}
-                      
-                      ${inquiryData.company ? `
-                      <tr>
-                        <td style="padding: 10px 0;">
-                          <strong style="color: #d32f2f;">Företag:</strong><br>
-                          <span style="color: #333; font-size: 16px;">${inquiryData.company}</span>
-                        </td>
-                      </tr>
-                      ` : ''}
-                      
-                      ${inquiryData.occasion ? `
-                      <tr>
-                        <td style="padding: 10px 0;">
-                          <strong style="color: #d32f2f;">Tillfälle:</strong><br>
-                          <span style="color: #333; font-size: 16px;">${inquiryData.occasion}</span>
-                        </td>
-                      </tr>
-                      ` : ''}
-                      
-                      <tr>
-                        <td style="padding: 10px 0;">
-                          <strong style="color: #d32f2f;">Vad de är ute efter:</strong><br>
-                          <span style="color: #333; font-size: 16px; white-space: pre-wrap;">${inquiryData.requirements}</span>
-                        </td>
-                      </tr>
-                      
-                      <tr>
-                        <td style="padding: 20px 0 10px 0;">
-                          <strong style="color: #d32f2f;">Typ av förfrågan:</strong><br>
-                          <span style="color: #333; font-size: 16px;">${inquiryData.type === 'corporate' ? 'Företag' : 'Privat'}</span>
-                        </td>
-                      </tr>
-                    </table>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                    <strong style="color: #1a1a1a; font-size: 14px;">E-post:</strong>
+                    <span style="color: #333333; margin-left: 8px;">${inquiryData.email}</span>
                   </td>
                 </tr>
-                
+                ${inquiryData.phone ? `
                 <tr>
-                  <td style="background-color: #f9f9f9; padding: 20px 40px; text-align: center;">
-                    <p style="margin: 0; color: #666; font-size: 14px;">
-                      Förfrågan mottagen: ${new Date().toLocaleString('sv-SE')}
-                    </p>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                    <strong style="color: #1a1a1a; font-size: 14px;">Telefon:</strong>
+                    <span style="color: #333333; margin-left: 8px;">${inquiryData.phone}</span>
+                  </td>
+                </tr>
+                ` : ''}
+                ${inquiryData.company ? `
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                    <strong style="color: #1a1a1a; font-size: 14px;">Företag:</strong>
+                    <span style="color: #333333; margin-left: 8px;">${inquiryData.company}</span>
+                  </td>
+                </tr>
+                ` : ''}
+                ${inquiryData.occasion ? `
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                    <strong style="color: #1a1a1a; font-size: 14px;">Tillfälle:</strong>
+                    <span style="color: #333333; margin-left: 8px;">${inquiryData.occasion}</span>
+                  </td>
+                </tr>
+                ` : ''}
+                <tr>
+                  <td style="padding: 8px 0;">
+                    <strong style="color: #1a1a1a; font-size: 14px;">Typ:</strong>
+                    <span style="color: #333333; margin-left: 8px;">${inquiryData.type === 'corporate' ? 'Företag' : 'Privat'}</span>
                   </td>
                 </tr>
               </table>
-            </td>
-          </tr>
-        </table>
+            </div>
+
+            <!-- Requirements -->
+            <div>
+              <h3 style="
+                font-size: 16px;
+                font-weight: 500;
+                margin: 0 0 12px 0;
+                color: #1a1a1a;
+              ">
+                Krav och önskemål:
+              </h3>
+              <div style="
+                background-color: #f9f9f9;
+                border-radius: 6px;
+                padding: 16px;
+                border-left: 3px solid #1a1a1a;
+                font-size: 14px;
+                line-height: 1.6;
+                color: #333333;
+                white-space: pre-wrap;
+              ">
+                ${inquiryData.requirements}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="
+          background-color: #f9f9f9;
+          padding: 20px;
+          text-align: center;
+          border-top: 1px solid #e8e8e8;
+        ">
+          <p style="
+            font-size: 12px;
+            color: #999999;
+            margin: 0;
+          ">
+            Logga in på adminpanelen för att hantera förfrågan
+          </p>
+        </div>
       </body>
       </html>
     `;
@@ -198,61 +249,134 @@ const handler = async (req: Request): Promise<Response> => {
 
     const confirmationContent = `
       <!DOCTYPE html>
-      <html>
+      <html lang="sv" style="margin: 0; padding: 0;">
       <head>
-        <meta charset="utf-8">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${confirmationSubject}</title>
       </head>
-      <body style="margin: 0; padding: 0; background-color: #f4f4f4;">
-        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px 0;">
-          <tr>
-            <td align="center">
-              <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <tr>
-                  <td style="background-color: #d32f2f; padding: 30px 40px;">
-                    <h1 style="color: #ffffff; margin: 0; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold;">
-                      Lilla Improteatern
-                    </h1>
-                  </td>
-                </tr>
-                
-                <tr>
-                  <td style="padding: 30px 40px;">
-                    <h2 style="color: #d32f2f; margin: 0 0 20px 0; font-size: 20px;">
-                      Tack för din förfrågan!
-                    </h2>
-                    
-                    <p style="color: #333; font-size: 16px; line-height: 1.6;">
-                      Hej <strong>${inquiryData.name}</strong>,
-                    </p>
-                    
-                    <p style="color: #333; font-size: 16px; line-height: 1.6;">
-                      Vi har tagit emot din förfrågan och kommer att kontakta dig så snart som möjligt för att diskutera möjligheterna.
-                    </p>
-                    
-                    <p style="color: #333; font-size: 16px; line-height: 1.6;">
-                      ${inquiryData.type === 'corporate' 
-                        ? 'Vi ser fram emot att skapa något fantastiskt för er organisation!' 
-                        : 'Vi ser fram emot att göra ert tillfälle extra speciellt!'}
-                    </p>
-                  </td>
-                </tr>
-                
-                <tr>
-                  <td style="background-color: #f9f9f9; padding: 30px 40px;">
-                    <p style="margin: 0 0 10px 0; color: #666; font-size: 14px; text-align: center;">
-                      Med vänliga hälsningar,<br>
-                      <strong style="color: #d32f2f;">Lilla Improteatern</strong>
-                    </p>
-                    <p style="margin: 0; color: #999; font-size: 12px; text-align: center;">
-                      Besök oss på <a href="https://improteatern.se" style="color: #d32f2f;">improteatern.se</a>
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
+      <body style="
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        background-color: #ffffff;
+        line-height: 1.6;
+        color: #333333;
+      ">
+        <!-- Header -->
+        <div style="
+          background-color: #ffffff;
+          padding: 40px 20px 0;
+          text-align: center;
+        ">
+          <div style="max-width: 600px; margin: 0 auto;">
+            <h1 style="
+              font-size: 28px;
+              font-weight: 300;
+              margin: 0 0 12px 0;
+              color: #1a1a1a;
+              letter-spacing: -0.025em;
+              line-height: 1.2;
+            ">
+              Tack för din förfrågan!
+            </h1>
+            <p style="
+              font-size: 16px;
+              color: #666666;
+              margin: 0 0 40px 0;
+              font-weight: 400;
+            ">
+              Vi återkommer så snart som möjligt
+            </p>
+          </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div style="
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 0 20px 40px;
+        ">
+          <div style="
+            background-color: #ffffff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 40px;
+          ">
+            <!-- Welcome Message -->
+            <div style="margin-bottom: 32px;">
+              <h2 style="
+                font-size: 20px;
+                font-weight: 400;
+                margin: 0 0 12px 0;
+                color: #1a1a1a;
+              ">
+                Hej ${inquiryData.name}!
+              </h2>
+              <p style="
+                font-size: 16px;
+                color: #666666;
+                margin: 0 0 16px 0;
+                line-height: 1.5;
+              ">
+                Vi har tagit emot din förfrågan och kommer att kontakta dig så snart som möjligt för att diskutera möjligheterna.
+              </p>
+              <p style="
+                font-size: 16px;
+                color: #666666;
+                margin: 0;
+                line-height: 1.5;
+              ">
+                ${inquiryData.type === 'corporate' 
+                  ? 'Vi ser fram emot att skapa något fantastiskt för er organisation!' 
+                  : 'Vi ser fram emot att göra ert tillfälle extra speciellt!'}
+              </p>
+            </div>
+
+            <!-- Contact Info -->
+            <div style="
+              background-color: #f9f9f9;
+              border-radius: 6px;
+              padding: 20px;
+              margin-bottom: 24px;
+              border-left: 3px solid #1a1a1a;
+            ">
+              <p style="
+                font-size: 14px;
+                color: #666666;
+                margin: 0;
+                line-height: 1.5;
+              ">
+                <strong>Har du frågor?</strong><br>
+                Kontakta oss på <a href="mailto:kontakt@improteatern.se" style="color: #1a1a1a; text-decoration: underline;">kontakt@improteatern.se</a><br>
+                eller besök <a href="https://improteatern.se" style="color: #1a1a1a; text-decoration: underline;">improteatern.se</a>
+              </p>
+            </div>
+
+            <!-- Signature -->
+            <div style="
+              text-align: center;
+              padding-top: 24px;
+              border-top: 1px solid #e8e8e8;
+            ">
+              <p style="
+                font-size: 14px;
+                color: #999999;
+                margin: 0 0 4px 0;
+              ">
+                Med vänliga hälsningar
+              </p>
+              <p style="
+                font-size: 16px;
+                font-weight: 500;
+                color: #1a1a1a;
+                margin: 0;
+              ">
+                Lilla Improteatern
+              </p>
+            </div>
+          </div>
+        </div>
       </body>
       </html>
     `;
