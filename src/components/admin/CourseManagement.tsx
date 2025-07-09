@@ -1363,7 +1363,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                     </TableHead>
                     <TableHead className="w-24">Max antal</TableHead>
                     <TableHead className="w-20">Status</TableHead>
-                    <TableHead className="w-[280px]">Åtgärder</TableHead>
+                    <TableHead className="w-[320px]">Åtgärder</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
