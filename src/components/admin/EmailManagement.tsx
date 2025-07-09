@@ -8,7 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Trash2, Edit, Plus, Send, Users, Eye, Copy } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
@@ -80,12 +81,15 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
   });
   
   // New state for group management
-  const [isGroupDialogOpen, setIsGroupDialogOpen] = useState(false);
+  const [showCreateGroupDialog, setShowCreateGroupDialog] = useState(false);
+  const [showGroupMembersDialog, setShowGroupMembersDialog] = useState(false);
   const [editingGroup, setEditingGroup] = useState<EmailGroup | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<EmailGroup | null>(null);
   const [groupForm, setGroupForm] = useState({
     name: '',
     description: ''
   });
+  const [groupMemberCounts, setGroupMemberCounts] = useState<{[key: string]: number}>({});
 
   const queryClient = useQueryClient();
 
@@ -117,6 +121,30 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
       return data as EmailGroup[];
     }
   });
+
+  // Fetch group member counts
+  useEffect(() => {
+    const fetchGroupMemberCounts = async () => {
+      if (!emailGroups.length) return;
+      
+      const counts: {[key: string]: number} = {};
+      
+      for (const group of emailGroups) {
+        const { count, error } = await supabase
+          .from('email_group_members')
+          .select('*', { count: 'exact', head: true })
+          .eq('group_id', group.id);
+        
+        if (!error) {
+          counts[group.id] = count || 0;
+        }
+      }
+      
+      setGroupMemberCounts(counts);
+    };
+
+    fetchGroupMemberCounts();
+  }, [emailGroups]);
 
   // Fetch email contacts
   const { data: emailContacts = [], isLoading: contactsLoading } = useQuery({
@@ -447,6 +475,112 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     }
   };
 
+  // Group management functions
+  const handleSaveGroup = async () => {
+    if (!groupForm.name.trim()) {
+      toast({
+        title: "Namn krävs",
+        description: "Du måste ange ett namn för gruppen.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      if (editingGroup) {
+        // Update existing group
+        const { error } = await supabase
+          .from('email_groups')
+          .update({
+            name: groupForm.name.trim(),
+            description: groupForm.description.trim() || null
+          })
+          .eq('id', editingGroup.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Grupp uppdaterad",
+          description: "Email-gruppen har uppdaterats.",
+        });
+      } else {
+        // Create new group
+        const { error } = await supabase
+          .from('email_groups')
+          .insert({
+            name: groupForm.name.trim(),
+            description: groupForm.description.trim() || null
+          });
+
+        if (error) throw error;
+
+        toast({
+          title: "Grupp skapad",
+          description: "Email-gruppen har skapats.",
+        });
+      }
+
+      setShowCreateGroupDialog(false);
+      setEditingGroup(null);
+      setGroupForm({ name: '', description: '' });
+      queryClient.invalidateQueries({ queryKey: ['email-groups'] });
+    } catch (error: any) {
+      console.error('Group save error:', error);
+      toast({
+        title: "Fel vid sparning",
+        description: error.message || "Det gick inte att spara gruppen.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteGroup = async (groupId: string) => {
+    const group = emailGroups.find(g => g.id === groupId);
+    if (!group) return;
+
+    // Don't allow deleting the newsletter group
+    if (group.name === 'Nyhetsbrevet') {
+      toast({
+        title: "Kan inte radera",
+        description: "Nyhetsbrevet-gruppen kan inte raderas.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // First delete all group members
+      const { error: membersError } = await supabase
+        .from('email_group_members')
+        .delete()
+        .eq('group_id', groupId);
+
+      if (membersError) throw membersError;
+
+      // Then delete the group
+      const { error: groupError } = await supabase
+        .from('email_groups')
+        .delete()
+        .eq('id', groupId);
+
+      if (groupError) throw groupError;
+
+      toast({
+        title: "Grupp raderad",
+        description: "Email-gruppen har raderats.",
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['email-groups'] });
+    } catch (error: any) {
+      console.error('Group delete error:', error);
+      toast({
+        title: "Fel vid radering",
+        description: error.message || "Det gick inte att radera gruppen.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'send':
@@ -758,27 +892,177 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     </div>
   );
 
-  const renderGroups = () => (
-    <Card>
-      <CardHeader>
-        <CardTitle>Email-grupper</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {emailGroups.map((group) => (
-            <div key={group.id} className="flex items-center justify-between p-4 border rounded">
-              <div>
-                <h4 className="font-medium">{group.name}</h4>
-                {group.description && (
-                  <p className="text-sm text-muted-foreground">{group.description}</p>
-                )}
+  const renderGroups = () => {
+    if (groupsLoading) {
+      return <div className="text-center py-4">Laddar grupper...</div>;
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-medium">Email-grupper</h3>
+          <Button onClick={() => {
+            setEditingGroup(null);
+            setGroupForm({ name: '', description: '' });
+            setShowCreateGroupDialog(true);
+          }}>
+            <Plus className="w-4 h-4 mr-2" />
+            Ny grupp
+          </Button>
+        </div>
+
+        {!emailGroups || emailGroups.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            Inga grupper hittades. Skapa din första grupp genom att klicka på "Ny grupp".
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {emailGroups.map((group) => (
+              <Card key={group.id} className="p-4">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className="font-medium">{group.name}</h4>
+                      <Badge variant={group.is_active ? "default" : "secondary"}>
+                        {group.is_active ? "Aktiv" : "Inaktiv"}
+                      </Badge>
+                    </div>
+                    {group.description && (
+                      <p className="text-sm text-muted-foreground mb-2">{group.description}</p>
+                    )}
+                    <div className="text-sm text-muted-foreground">
+                      {groupMemberCounts[group.id] || 0} medlemmar
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedGroup(group);
+                        setShowGroupMembersDialog(true);
+                      }}
+                    >
+                      <Users className="w-4 h-4 mr-1" />
+                      Medlemmar
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEditingGroup(group);
+                        setGroupForm({
+                          name: group.name,
+                          description: group.description || ''
+                        });
+                        setShowCreateGroupDialog(true);
+                      }}
+                    >
+                      <Edit className="w-4 h-4 mr-1" />
+                      Redigera
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={group.name === 'Nyhetsbrevet'}
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Radera
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Radera grupp</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Är du säker på att du vill radera gruppen "{group.name}"? 
+                            Detta kommer även ta bort alla medlemmar från gruppen. 
+                            Denna åtgärd kan inte ångras.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDeleteGroup(group.id)}>
+                            Radera
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* Create/Edit Group Dialog */}
+        <Dialog open={showCreateGroupDialog} onOpenChange={setShowCreateGroupDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {editingGroup ? 'Redigera grupp' : 'Skapa ny grupp'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="group-name">Gruppnamn</Label>
+                <Input
+                  id="group-name"
+                  value={groupForm.name}
+                  onChange={(e) => setGroupForm(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="T.ex. Kursdeltagare våren 2024"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="group-description">Beskrivning (valfritt)</Label>
+                <Textarea
+                  id="group-description"
+                  value={groupForm.description}
+                  onChange={(e) => setGroupForm(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Kort beskrivning av vad gruppen används till"
+                  rows={3}
+                />
               </div>
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowCreateGroupDialog(false)}>
+                Avbryt
+              </Button>
+              <Button onClick={handleSaveGroup}>
+                {editingGroup ? 'Uppdatera' : 'Skapa'} grupp
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Group Members Dialog */}
+        <Dialog open={showGroupMembersDialog} onOpenChange={setShowGroupMembersDialog}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                Medlemmar i "{selectedGroup?.name}"
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="text-sm text-muted-foreground">
+                {groupMemberCounts[selectedGroup?.id || ''] || 0} medlemmar
+              </div>
+              {/* Here you could add member management functionality */}
+              <div className="text-center py-8 text-muted-foreground">
+                Medlemshantering kommer snart...
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setShowGroupMembersDialog(false)}>
+                Stäng
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    );
+  };
 
   const renderContacts = () => (
     <Card>
