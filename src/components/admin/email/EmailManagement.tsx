@@ -151,7 +151,6 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
             emailTemplates={emailTemplates}
             emailGroups={emailGroups}
             emailContacts={emailContacts}
-            groupMembers={groupMembers}
             templatesLoading={templatesLoading}
           />
         );

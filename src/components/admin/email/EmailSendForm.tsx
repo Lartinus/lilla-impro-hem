@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,7 +17,6 @@ interface EmailSendFormProps {
   emailTemplates: EmailTemplate[];
   emailGroups: EmailGroup[];
   emailContacts: EmailContact[];
-  groupMembers: GroupMember[];
   templatesLoading: boolean;
 }
 
@@ -24,7 +24,6 @@ export function EmailSendForm({
   emailTemplates,
   emailGroups,
   emailContacts,
-  groupMembers,
   templatesLoading
 }: EmailSendFormProps) {
   const [emailSubject, setEmailSubject] = useState('');
@@ -36,6 +35,28 @@ export function EmailSendForm({
   const [bulkEmailTemplateData, setBulkEmailTemplateData] = useState({
     background_image: '',
     content: ''
+  });
+
+  // Fetch group members for the selected group
+  const { data: selectedGroupMembers = [] } = useQuery({
+    queryKey: ['send-email-group-members', selectedRecipients],
+    queryFn: async () => {
+      if (!selectedRecipients || selectedRecipients === 'all') return [];
+      
+      const { data, error } = await supabase
+        .from('email_group_members')
+        .select(`
+          id,
+          group_id,
+          contact_id,
+          contact:email_contacts(*)
+        `)
+        .eq('group_id', selectedRecipients);
+
+      if (error) throw error;
+      return data as GroupMember[];
+    },
+    enabled: !!selectedRecipients && selectedRecipients !== 'all'
   });
 
   const handleUseTemplate = (template: EmailTemplate) => {
@@ -161,7 +182,7 @@ export function EmailSendForm({
       if (selectedRecipients === 'all') {
         recipients = emailContacts.map(contact => contact.email);
       } else {
-        const members = groupMembers.map(member => member.contact.email);
+        const members = selectedGroupMembers.map(member => member.contact.email);
         recipients = members;
       }
 
