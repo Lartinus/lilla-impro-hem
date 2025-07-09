@@ -149,11 +149,6 @@ export const ActorSelector: React.FC<ActorSelectorProps> = ({
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm">{actor.name}</p>
-                            {actor.bio && (
-                              <p className="text-xs text-muted-foreground truncate">
-                                {actor.bio}
-                              </p>
-                            )}
                           </div>
                         </div>
                       </div>
