@@ -18,6 +18,7 @@ import { Eye, EyeOff, Plus, Edit, Trash2, GripVertical, Calendar, MapPin, Ticket
 import { toast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ImagePicker } from './ImagePicker';
+import { ActorSelector } from './ActorSelector';
 
 interface AdminShow {
   id: string;
@@ -803,31 +804,12 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
 
               <div>
                 <Label>Skådespelare (max 12)</Label>
-                <div className="grid grid-cols-3 gap-2 mt-2 max-h-48 overflow-y-auto">
-                  {actors?.slice(0, 12).map((actor) => (
-                    <label key={actor.id} className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        checked={newShow.performer_ids.includes(actor.id)}
-                        disabled={!newShow.performer_ids.includes(actor.id) && newShow.performer_ids.length >= 12}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setNewShow(prev => ({
-                              ...prev,
-                              performer_ids: [...prev.performer_ids, actor.id]
-                            }));
-                          } else {
-                            setNewShow(prev => ({
-                              ...prev,
-                              performer_ids: prev.performer_ids.filter(id => id !== actor.id)
-                            }));
-                          }
-                        }}
-                      />
-                      <span className="text-sm">{actor.name}</span>
-                    </label>
-                  ))}
-                </div>
+                <ActorSelector
+                  actors={actors || []}
+                  selectedActorIds={newShow.performer_ids}
+                  onSelectionChange={(ids) => setNewShow(prev => ({ ...prev, performer_ids: ids }))}
+                  maxSelection={12}
+                />
                 <p className="text-xs text-muted-foreground mt-1">
                   {newShow.performer_ids.length}/12 skådespelare valda
                 </p>
