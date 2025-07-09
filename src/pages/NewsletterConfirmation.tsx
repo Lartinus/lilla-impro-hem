@@ -138,13 +138,8 @@ const NewsletterConfirmation = () => {
               {status === 'success' && (
                 <div className="space-y-4">
                   <p className="text-muted-foreground">
-                    Tack! Din prenumeration på vårt nyhetsbrev är nu bekräftad.
+                    Tack! Din prenumeration på vårt nyhetsbrev är nu bekräftad. Du kommer nu att få våra nyhetsbrev och information om kommande föreställningar och kurser.
                   </p>
-                  
-                  <p className="text-muted-foreground">
-                    Du kommer nu att få våra nyhetsbrev och information om kommande föreställningar och kurser.
-                  </p>
-                  
                   <p className="text-muted-foreground">
                     Välkommen till Lilla Improteaterns community! Vi ser fram emot att dela våra senaste nyheter med dig.
                   </p>
