@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { EmailSendForm } from './EmailSendForm';
 import { EmailTemplatesManager } from './EmailTemplatesManager';
@@ -178,30 +177,9 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
         <h2 className="text-3xl font-bold tracking-tight">Email-hantering</h2>
       </div>
 
-      <Tabs value={activeTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="send">Skicka</TabsTrigger>
-          <TabsTrigger value="templates">Mallar</TabsTrigger>
-          <TabsTrigger value="groups">Grupper</TabsTrigger>
-          <TabsTrigger value="contacts">Kontakter</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="send" className="space-y-4">
-          {renderContent()}
-        </TabsContent>
-
-        <TabsContent value="templates" className="space-y-4">
-          {renderContent()}
-        </TabsContent>
-
-        <TabsContent value="groups" className="space-y-4">
-          {renderContent()}
-        </TabsContent>
-
-        <TabsContent value="contacts" className="space-y-4">
-          {renderContent()}
-        </TabsContent>
-      </Tabs>
+      <div className="space-y-4">
+        {renderContent()}
+      </div>
 
       <ContactActivitiesDialog
         open={showActivitiesDialog}
