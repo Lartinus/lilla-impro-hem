@@ -114,25 +114,26 @@ const NewsletterConfirmation = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center space-y-6">
-              <p className="text-muted-foreground">
-                {message}
-              </p>
-
               {status === 'success' && (
                 <div className="space-y-4">
-                  <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                    <div className="flex items-center justify-center gap-2 text-red-700 dark:text-red-400">
-                      <Mail className="w-5 h-5" />
-                      <span className="font-medium">
-                        Du kommer nu att få våra nyhetsbrev och information om kommande föreställningar och kurser.
-                      </span>
-                    </div>
-                  </div>
+                  <p className="text-muted-foreground">
+                    Tack! Din prenumeration på vårt nyhetsbrev är nu bekräftad.
+                  </p>
                   
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground">
+                    Du kommer nu att få våra nyhetsbrev och information om kommande föreställningar och kurser.
+                  </p>
+                  
+                  <p className="text-muted-foreground">
                     Välkommen till Lilla Improteaterns community! Vi ser fram emot att dela våra senaste nyheter med dig.
                   </p>
                 </div>
+              )}
+
+              {status !== 'success' && (
+                <p className="text-muted-foreground">
+                  {message}
+                </p>
               )}
 
               {status === 'already_confirmed' && (
