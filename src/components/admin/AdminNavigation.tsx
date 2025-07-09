@@ -55,6 +55,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
       children: [
         { id: 'courses', title: 'Aktiva kurser', icon: BookOpen },
         { id: 'courses-completed', title: 'Genomförda kurser', icon: Archive },
+        { id: 'course-templates', title: 'Kursmallar', icon: FileText },
         { id: 'interest', title: 'Intresse', icon: Heart },
         { id: 'performers', title: 'Kursledare', icon: UserCheck },
       ]
