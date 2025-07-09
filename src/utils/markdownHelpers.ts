@@ -12,11 +12,14 @@ export function convertMarkdownToHtml(markdown: string): string {
   // Ta bort eventuell BOM och normalisera radslut
   const cleaned = markdown.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
   
-  // Standard parse med GFM aktiverat
-  const result = marked.parse(cleaned, {
+  // Konfigurera marked för att hantera breaks
+  marked.setOptions({
     gfm: true,
-    breaks: false,
+    breaks: true, // Gör att enkla radbryt blir <br>
   });
+  
+  // Standard parse med GFM aktiverat
+  const result = marked.parse(cleaned);
   
   // Hantera både synkron och asynkron marked.parse
   return typeof result === 'string' ? result : '';
