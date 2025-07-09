@@ -194,7 +194,8 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
   
   // State for bulk email template data
   const [bulkEmailTemplateData, setBulkEmailTemplateData] = useState({
-    background_image: ''
+    background_image: '',
+    content: ''
   });
   
   // New state for group management
@@ -906,7 +907,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
       setSelectedRecipients('');
       setSelectedTemplate('');
       setAttachments([]);
-      setBulkEmailTemplateData({ background_image: '' });
+      setBulkEmailTemplateData({ background_image: '', content: '' });
     } catch (error: any) {
       console.error('Email sending error:', error);
       toast({
@@ -926,7 +927,8 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
     
     // Store template data for preview
     setBulkEmailTemplateData({
-      background_image: template.background_image || ''
+      background_image: template.background_image || '',
+      content: template.content || ''
     });
   };
 
@@ -997,10 +999,10 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
   const openTemplateDialog = (template?: EmailTemplate) => {
     if (template) {
       setEditingTemplate(template);
-      setTemplateForm({ 
-        name: template.name, 
-        subject: template.subject, 
-        content: template.content, 
+      setTemplateForm({
+        name: template.name,
+        subject: template.subject,
+        content: template.content,
         background_image: template.background_image || '',
         description: template.description || ''
       });
@@ -1402,7 +1404,7 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
                     setEmailSubject('');
                     setEmailContent('');
                     setAttachments([]);
-                    setBulkEmailTemplateData({ background_image: '' });
+                    setBulkEmailTemplateData({ background_image: '', content: '' });
                   }
                 }}>
                   <SelectTrigger>
@@ -1446,62 +1448,35 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Design</h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="title">Titel (valfritt)</Label>
-                    <Input
-                      id="title"
-                      value={bulkEmailTemplateData.title}
-                      onChange={(e) => setBulkEmailTemplateData({...bulkEmailTemplateData, title: e.target.value})}
-                      placeholder="Titel som visas i mejlet"
+                <div className="space-y-2">
+                  <Label htmlFor="markdown-content">Innehåll (Markdown)</Label>
+                  <Textarea
+                    id="markdown-content"
+                    value={bulkEmailTemplateData.content}
+                    onChange={(e) => setBulkEmailTemplateData({...bulkEmailTemplateData, content: e.target.value})}
+                    placeholder="# Rubrik&#10;&#10;Här kommer brödtexten...&#10;&#10;## Underrubrik&#10;&#10;Mer text här."
+                    rows={10}
+                    className="font-mono text-sm"
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    Använd Markdown för formatering: # för rubriker, **fet text**, *kursiv text*, etc.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>Bakgrundsbild (valfritt)</Label>
+                    <ImagePicker
+                      value={bulkEmailTemplateData.background_image}
+                      onSelect={(url) => setBulkEmailTemplateData({...bulkEmailTemplateData, background_image: url})}
+                      triggerClassName="h-8 px-3 text-sm"
                     />
                   </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="subtitle">Undertitel (valfritt)</Label>
-                    <Input
-                      id="subtitle"
-                      value={bulkEmailTemplateData.subtitle}
-                      onChange={(e) => setBulkEmailTemplateData({...bulkEmailTemplateData, subtitle: e.target.value})}
-                      placeholder="Text som visas under titeln"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="title_size">Titelstorlek</Label>
-                    <Select 
-                      value={bulkEmailTemplateData.title_size} 
-                      onValueChange={(value) => setBulkEmailTemplateData({...bulkEmailTemplateData, title_size: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="24">Liten (24px)</SelectItem>
-                        <SelectItem value="28">Medium (28px)</SelectItem>
-                        <SelectItem value="32">Normal (32px)</SelectItem>
-                        <SelectItem value="36">Stor (36px)</SelectItem>
-                        <SelectItem value="40">Extra stor (40px)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label>Bakgrundsbild (valfritt)</Label>
-                      <ImagePicker
-                        value={bulkEmailTemplateData.background_image}
-                        onSelect={(url) => setBulkEmailTemplateData({...bulkEmailTemplateData, background_image: url})}
-                        triggerClassName="h-8 px-3 text-sm"
-                      />
+                  {bulkEmailTemplateData.background_image && (
+                    <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
+                      <span className="font-medium">Vald bild:</span> {bulkEmailTemplateData.background_image.split('/').pop()}
                     </div>
-                    {bulkEmailTemplateData.background_image && (
-                      <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
-                        <span className="font-medium">Vald bild:</span> {bulkEmailTemplateData.background_image.split('/').pop()}
-                      </div>
-                    )}
-                  </div>
-
+                  )}
                 </div>
               </div>
 
@@ -1509,8 +1484,15 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
               <div className="space-y-2">
                 <Label>Förhandsvisning</Label>
                 <div className="border rounded p-4 bg-muted/50 max-h-[400px] overflow-y-auto">
-                     {emailContent ? (
+                     {bulkEmailTemplateData.content ? (
                        <div dangerouslySetInnerHTML={{ 
+                         __html: createSimpleEmailTemplate(emailSubject, bulkEmailTemplateData.content, bulkEmailTemplateData.background_image)
+                       }} />
+                     ) : (
+                       <p className="text-muted-foreground text-sm">Skriv markdown-innehåll för att se förhandsvisningen...</p>
+                     )}
+                  </div>
+                </div>
                          __html: getStyledEmailContent(emailContent, emailSubject, bulkEmailTemplateData.background_image) 
                        }} />
                    ) : (
@@ -2222,36 +2204,6 @@ export const EmailManagement: React.FC<EmailManagementProps> = ({ activeTab = 't
                     value={templateForm.subject}
                     onChange={(e) => setTemplateForm(prev => ({ ...prev, subject: e.target.value }))}
                     placeholder="Ämnesrad för mejlet"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="template-title">Titel (valfritt)</Label>
-                  <Input
-                    id="template-title"
-                    value={templateForm.title}
-                    onChange={(e) => setTemplateForm(prev => ({ ...prev, title: e.target.value }))}
-                    placeholder="Stor titel som visas överst i mejlet"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="template-subtitle">Undertitel (valfritt)</Label>
-                  <Input
-                    id="template-subtitle"
-                    value={templateForm.subtitle}
-                    onChange={(e) => setTemplateForm(prev => ({ ...prev, subtitle: e.target.value }))}
-                    placeholder="Text som visas under titeln"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="template-title-size">Titelstorlek (px)</Label>
-                  <Input
-                    id="template-title-size"
-                    type="number"
-                    value={templateForm.title_size}
-                    onChange={(e) => setTemplateForm(prev => ({ ...prev, title_size: e.target.value }))}
-                    placeholder="32"
-                    min="16"
-                    max="72"
                   />
                 </div>
                 <div className="space-y-2">
