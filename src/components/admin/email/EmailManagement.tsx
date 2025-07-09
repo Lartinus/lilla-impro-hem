@@ -7,6 +7,7 @@ import { EmailGroupsManager } from './EmailGroupsManager';
 import { EmailContactsManager } from './EmailContactsManager';
 import { ContactActivitiesDialog } from './ContactActivitiesDialog';
 import { CourseImportDialog } from './CourseImportDialog';
+import { GroupMembersDialog } from './GroupMembersDialog';
 import { EmailTemplate, EmailGroup, EmailContact, GroupMember, EmailManagementProps } from './types';
 
 export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
@@ -185,6 +186,13 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
         open={showActivitiesDialog}
         onOpenChange={setShowActivitiesDialog}
         contactEmail={selectedContactEmail}
+      />
+
+      <GroupMembersDialog
+        open={showGroupMembersDialog}
+        onOpenChange={setShowGroupMembersDialog}
+        group={selectedGroup}
+        groupMembers={groupMembers}
       />
     </div>
   );
