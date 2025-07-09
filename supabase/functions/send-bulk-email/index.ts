@@ -249,11 +249,7 @@ const handler = async (req: Request): Promise<Response> => {
 
           function createStyledEmailTemplate(subjectText: string, contentText: string, templateData: any = null) {
             const hasBackground = templateData?.background_image && templateData.background_image.trim() !== '';
-            const hasTitle = templateData?.title && templateData.title.trim() !== '';
-            const finalTitleSize = templateData?.title_size || '32';
-            const imagePosition = templateData?.image_position || 'top';
             
-            // Clean, Moccamaster-inspired design
             return `
               <!DOCTYPE html>
               <html lang="sv" style="margin: 0; padding: 0;">
@@ -266,146 +262,69 @@ const handler = async (req: Request): Promise<Response> => {
                 margin: 0;
                 padding: 0;
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-                background-color: #ffffff;
+                background-color: #f0f0f0;
                 line-height: 1.6;
                 color: #333333;
               ">
-                <!-- Header Section -->
-                <div style="
-                  background-color: #ffffff;
-                  padding: 40px 20px 0;
-                  text-align: center;
-                ">
-                  ${imagePosition === 'top' && hasBackground ? `
-                    <div style="
+                ${hasBackground ? `
+                  <div style="
+                    text-align: center;
+                    padding: 0;
+                    margin: 0;
+                  ">
+                    <img src="${templateData.background_image}" alt="" style="
+                      width: 100%;
                       max-width: 600px;
-                      margin: 0 auto 40px;
-                      height: 200px;
-                      background-image: url('${templateData.background_image}');
-                      background-size: cover;
-                      background-position: center;
-                      background-repeat: no-repeat;
-                      border-radius: 8px;
-                    "></div>
-                  ` : ''}
-                  
-                  <div style="max-width: 600px; margin: 0 auto;">
-                    ${hasTitle ? `
-                      <h1 style="
-                        font-size: ${finalTitleSize}px;
-                        font-weight: 300;
-                        margin: 0 0 12px 0;
-                        color: #1a1a1a;
-                        letter-spacing: -0.025em;
-                        line-height: 1.2;
-                      ">
-                        ${templateData.title}
-                      </h1>
-                    ` : ''}
-                    
-                    ${imagePosition === 'header' && hasBackground ? `
-                      <div style="
-                        max-width: 600px;
-                        margin: 20px auto 40px;
-                        height: 120px;
-                        background-image: url('${templateData.background_image}');
-                        background-size: cover;
-                        background-position: center;
-                        background-repeat: no-repeat;
-                        border-radius: 8px;
-                      "></div>
-                    ` : (!hasTitle ? '' : `
-                      <div style="height: 40px;"></div>
-                    `)}
+                      height: auto;
+                      aspect-ratio: 1;
+                      object-fit: cover;
+                      display: block;
+                      margin: 0 auto;
+                    "/>
                   </div>
-                </div>
+                ` : ''}
                 
-                <!-- Main Content -->
                 <div style="
                   max-width: 600px;
                   margin: 0 auto;
-                  padding: 0 20px 40px;
+                  padding: 40px 20px;
+                  background-color: #f0f0f0;
                 ">
                   <div style="
-                    background-color: #ffffff;
-                    border: 1px solid #e8e8e8;
-                    border-radius: 8px;
-                    padding: 40px;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    color: #333333;
                   ">
-                    <!-- Content Box -->
-                    <div style="
-                      background-color: #f9f9f9;
-                      border-radius: 6px;
-                      padding: 24px;
-                      margin-bottom: 32px;
-                      border-left: 3px solid #1a1a1a;
-                    ">
-                      <div style="
-                        font-size: 15px;
-                        line-height: 1.6;
-                        color: #333333;
-                      ">
-                        ${contentText}
-                      </div>
-                      
-                      ${imagePosition === 'content' && hasBackground ? `
-                        <div style="
-                          margin: 20px 0;
-                          height: 160px;
-                          background-image: url('${templateData.background_image}');
-                          background-size: cover;
-                          background-position: center;
-                          background-repeat: no-repeat;
-                          border-radius: 8px;
-                        "></div>
-                      ` : ''}
-                    </div>
-
-                    <!-- Signature -->
-                    <div style="
-                      text-align: center;
-                      padding-top: 24px;
-                      border-top: 1px solid #e8e8e8;
-                    ">
-                      <p style="
-                        font-size: 14px;
-                        color: #999999;
-                        margin: 0 0 4px 0;
-                      ">
-                        Med vänliga hälsningar
-                      </p>
-                      <p style="
-                        font-size: 16px;
-                        font-weight: 500;
-                        color: #1a1a1a;
-                        margin: 0;
-                      ">
-                        Lilla Improteatern
-                      </p>
-                    </div>
+                    ${contentText}
                   </div>
                 </div>
 
-                <!-- Footer -->
                 <div style="
-                  background-color: #f9f9f9;
-                  padding: 20px;
+                  background-color: #e5e5e5;
+                  padding: 40px 20px;
                   text-align: center;
-                  border-top: 1px solid #e8e8e8;
                 ">
-                  <p style="
-                    font-size: 12px;
-                    color: #999999;
-                    margin: 0;
-                  ">
-                    Vill du inte längre få våra mejl? 
-                    <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(recipient.email)}" style="
-                      color: #666666;
-                      text-decoration: underline;
+                  <div style="max-width: 600px; margin: 0 auto;">
+                    <img src="https://gcimnsbeexkkqragmdzo.supabase.co/storage/v1/object/public/images/LIT_red_large.png" alt="Lilla Improteatern" style="
+                      width: 180px;
+                      height: auto;
+                      margin: 0 auto 20px auto;
+                      display: block;
+                    "/>
+                    <p style="
+                      font-size: 12px;
+                      color: #999999;
+                      margin: 0;
                     ">
-                      Avprenumerera här
-                    </a>
-                  </p>
+                      Vill du inte längre få våra mejl? 
+                      <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(recipient.email)}" style="
+                        color: #666666;
+                        text-decoration: underline;
+                      ">
+                        Avprenumerera här
+                      </a>
+                    </p>
+                  </div>
                 </div>
               </body>
               </html>
