@@ -63,8 +63,8 @@ export const useAdminStats = () => {
       const activeShowCount = activeShows?.length || 0;
 
       return {
-        avgCourseParticipants: activeCourseCount > 0 ? Math.round(totalCourseBookings / activeCourseCount) : 0,
-        avgSoldTicketsPerShow: activeShowCount > 0 ? Math.round(soldTickets / activeShowCount) : 0,
+        avgCourseParticipants: activeCourseCount > 0 ? Number((totalCourseBookings / activeCourseCount).toFixed(1)) : 0,
+        avgSoldTicketsPerShow: activeShowCount > 0 ? Number((soldTickets / activeShowCount).toFixed(1)) : 0,
         activeCourses: activeCourseCount,
         nextShowDate: nextShow?.show_date || null
       };
