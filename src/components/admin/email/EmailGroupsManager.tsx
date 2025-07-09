@@ -264,6 +264,7 @@ export function EmailGroupsManager({
         onOpenChange={setShowAddContactsDialog}
         emailGroups={emailGroups}
         emailContacts={emailContacts}
+        groupMemberCounts={groupMemberCounts}
       />
     </div>
   );

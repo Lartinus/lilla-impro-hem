@@ -17,15 +17,18 @@ interface AddContactsToGroupsDialogProps {
   onOpenChange: (open: boolean) => void;
   emailGroups: EmailGroup[];
   emailContacts: EmailContact[];
+  groupMemberCounts: {[key: string]: number};
 }
 
 export function AddContactsToGroupsDialog({ 
   open, 
   onOpenChange,
   emailGroups,
-  emailContacts 
+  emailContacts,
+  groupMemberCounts 
 }: AddContactsToGroupsDialogProps) {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [contactSearchTerm, setContactSearchTerm] = useState('');
+  const [groupSearchTerm, setGroupSearchTerm] = useState('');
   const [selectedContacts, setSelectedContacts] = useState<Set<string>>(new Set());
   const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
   const [isAdding, setIsAdding] = useState(false);
@@ -33,15 +36,26 @@ export function AddContactsToGroupsDialog({
 
   // Filter contacts based on search term
   const filteredContacts = useMemo(() => {
-    if (!searchTerm) return emailContacts;
+    if (!contactSearchTerm) return emailContacts;
     
-    const term = searchTerm.toLowerCase();
+    const term = contactSearchTerm.toLowerCase();
     return emailContacts.filter(contact => 
       contact.email.toLowerCase().includes(term) ||
       contact.name?.toLowerCase().includes(term) ||
       contact.phone?.includes(term)
     );
-  }, [emailContacts, searchTerm]);
+  }, [emailContacts, contactSearchTerm]);
+
+  // Filter groups based on search term
+  const filteredGroups = useMemo(() => {
+    if (!groupSearchTerm) return emailGroups;
+    
+    const term = groupSearchTerm.toLowerCase();
+    return emailGroups.filter(group => 
+      group.name.toLowerCase().includes(term) ||
+      group.description?.toLowerCase().includes(term)
+    );
+  }, [emailGroups, groupSearchTerm]);
 
   // Get existing group memberships for selected contacts
   const { data: existingMemberships = [] } = useQuery({
@@ -70,11 +84,19 @@ export function AddContactsToGroupsDialog({
     setSelectedContacts(newSelection);
   };
 
-  const handleSelectAll = () => {
+  const handleSelectAllContacts = () => {
     if (selectedContacts.size === filteredContacts.length) {
       setSelectedContacts(new Set());
     } else {
       setSelectedContacts(new Set(filteredContacts.map(c => c.id)));
+    }
+  };
+
+  const handleSelectAllGroups = () => {
+    if (selectedGroups.size === filteredGroups.length) {
+      setSelectedGroups(new Set());
+    } else {
+      setSelectedGroups(new Set(filteredGroups.map(g => g.id)));
     }
   };
 
@@ -145,7 +167,8 @@ export function AddContactsToGroupsDialog({
       // Reset selections
       setSelectedContacts(new Set());
       setSelectedGroups(new Set());
-      setSearchTerm('');
+      setContactSearchTerm('');
+      setGroupSearchTerm('');
 
       // Refresh data
       queryClient.invalidateQueries({ queryKey: ['email-groups'] });
@@ -166,13 +189,14 @@ export function AddContactsToGroupsDialog({
   const handleClose = () => {
     setSelectedContacts(new Set());
     setSelectedGroups(new Set());
-    setSearchTerm('');
+    setContactSearchTerm('');
+    setGroupSearchTerm('');
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] flex flex-col">
+      <DialogContent className="max-w-7xl max-h-[95vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserPlus className="w-5 h-5" />
@@ -180,32 +204,80 @@ export function AddContactsToGroupsDialog({
           </DialogTitle>
         </DialogHeader>
         
-        <div className="flex-1 min-h-0 space-y-6">
+        <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Group Selection */}
-          <div className="space-y-3">
+          <div className="space-y-3 flex flex-col h-full">
             <Label className="text-sm font-medium">Välj grupper</Label>
-            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-3 border rounded-lg bg-muted/30">
-              {emailGroups.map((group) => (
-                <div key={group.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`group-${group.id}`}
-                    checked={selectedGroups.has(group.id)}
-                    onCheckedChange={() => handleGroupToggle(group.id)}
-                  />
-                  <Label 
-                    htmlFor={`group-${group.id}`}
-                    className="text-sm cursor-pointer"
-                  >
-                    {group.name}
-                  </Label>
-                </div>
-              ))}
+            
+            {/* Group Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Sök grupper..."
+                value={groupSearchTerm}
+                onChange={(e) => setGroupSearchTerm(e.target.value)}
+                className="pl-10"
+              />
             </div>
-            {selectedGroups.size > 0 && (
-              <div className="text-sm text-muted-foreground">
-                {selectedGroups.size} grupper valda
+
+            {/* Select All Groups */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="select-all-groups"
+                  checked={filteredGroups.length > 0 && selectedGroups.size === filteredGroups.length}
+                  onCheckedChange={handleSelectAllGroups}
+                />
+                <Label htmlFor="select-all-groups" className="text-sm cursor-pointer">
+                  Välj alla ({filteredGroups.length} grupper)
+                </Label>
               </div>
-            )}
+              {selectedGroups.size > 0 && (
+                <Badge variant="secondary">
+                  {selectedGroups.size} valda
+                </Badge>
+              )}
+            </div>
+
+            {/* Groups Table */}
+            <div className="flex-1 min-h-0 border rounded-lg overflow-hidden">
+              <div className="h-full overflow-auto">
+                <Table>
+                  <TableHeader className="sticky top-0 bg-background">
+                    <TableRow>
+                      <TableHead className="w-12"></TableHead>
+                      <TableHead>Namn</TableHead>
+                      <TableHead>Beskrivning</TableHead>
+                      <TableHead>Medlemmar</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredGroups.map((group) => (
+                      <TableRow key={group.id}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedGroups.has(group.id)}
+                            onCheckedChange={() => handleGroupToggle(group.id)}
+                          />
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {group.name}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {group.description || '-'}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            <Users className="w-4 h-4" />
+                            {groupMemberCounts[group.id] || 0}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
           </div>
 
           {/* Contact Search and Selection */}
@@ -213,26 +285,26 @@ export function AddContactsToGroupsDialog({
             <div className="space-y-3">
               <Label className="text-sm font-medium">Välj kontakter</Label>
               
-              {/* Search */}
+              {/* Contact Search */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Sök kontakter (namn, e-post, telefon)..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  value={contactSearchTerm}
+                  onChange={(e) => setContactSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
 
-              {/* Select All */}
+              {/* Select All Contacts */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Checkbox
-                    id="select-all"
+                    id="select-all-contacts"
                     checked={filteredContacts.length > 0 && selectedContacts.size === filteredContacts.length}
-                    onCheckedChange={handleSelectAll}
+                    onCheckedChange={handleSelectAllContacts}
                   />
-                  <Label htmlFor="select-all" className="text-sm cursor-pointer">
+                  <Label htmlFor="select-all-contacts" className="text-sm cursor-pointer">
                     Välj alla ({filteredContacts.length} kontakter)
                   </Label>
                 </div>
