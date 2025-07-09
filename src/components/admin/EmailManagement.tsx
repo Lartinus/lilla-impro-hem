@@ -181,6 +181,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     fetchGroupMemberCounts();
   }, [emailGroups]);
 
+
   // Fetch email contacts
   const { data: emailContacts = [], isLoading: contactsLoading } = useQuery({
     queryKey: ['email-contacts'],
@@ -194,6 +195,26 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
       return data as EmailContact[];
     }
   });
+
+  // Handle pagination reset when filtering contacts
+  useEffect(() => {
+    if (activeTab === 'contacts') {
+      const filteredContacts = emailContacts
+        .filter(contact => 
+          !searchTerm || 
+          contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          contact.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          contact.phone?.includes(searchTerm)
+        );
+      
+      const totalContacts = filteredContacts.length;
+      const totalPages = Math.ceil(totalContacts / contactsPerPage);
+      
+      if (currentPage > totalPages && totalPages > 0) {
+        setCurrentPage(1);
+      }
+    }
+  }, [emailContacts, searchTerm, currentPage, contactsPerPage, activeTab]);
 
   // Fetch group members for a specific group
   const { data: groupMembers = [] } = useQuery({
@@ -1480,13 +1501,6 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     const startIndex = (currentPage - 1) * contactsPerPage;
     const endIndex = startIndex + contactsPerPage;
     const currentContacts = filteredContacts.slice(startIndex, endIndex);
-
-    // Reset to first page if current page is beyond available pages
-    useEffect(() => {
-      if (currentPage > totalPages && totalPages > 0) {
-        setCurrentPage(1);
-      }
-    }, [totalContacts, currentPage, totalPages]);
 
     return (
       <div className="space-y-6">
