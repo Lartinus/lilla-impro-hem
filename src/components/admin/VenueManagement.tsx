@@ -9,11 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { Plus, Edit, Trash2, GripVertical, MapPin, Power, PowerOff } from 'lucide-react';
+import { Plus, Edit, Trash2, MapPin, Power, PowerOff, ChevronUp, ChevronDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -35,39 +31,41 @@ interface VenueForm {
   is_active: boolean;
 }
 
-// Sortable Row Component
-function SortableVenueRow({ venue, onEdit, onToggleActive, onDelete }: {
+// Venue Row Component
+function VenueRow({ venue, onEdit, onToggleActive, onDelete, onMoveUp, onMoveDown, canMoveUp, canMoveDown }: {
   venue: Venue;
   onEdit: (venue: Venue) => void;
   onToggleActive: (venue: Venue) => void;
   onDelete: (venue: Venue) => void;
+  onMoveUp: (venue: Venue) => void;
+  onMoveDown: (venue: Venue) => void;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: venue.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
   return (
-    <TableRow ref={setNodeRef} style={style} className={isDragging ? 'z-50' : ''}>
+    <TableRow>
       <TableCell>
         <div className="flex items-center gap-2">
-          <button
-            className="cursor-grab hover:cursor-grabbing text-muted-foreground hover:text-foreground"
-            {...attributes}
-            {...listeners}
-          >
-            <GripVertical className="w-4 h-4" />
-          </button>
+          <div className="flex flex-col">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onMoveUp(venue)}
+              disabled={!canMoveUp}
+              className="w-6 h-6 p-0"
+            >
+              <ChevronUp className="w-3 h-3" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onMoveDown(venue)}
+              disabled={!canMoveDown}
+              className="w-6 h-6 p-0"
+            >
+              <ChevronDown className="w-3 h-3" />
+            </Button>
+          </div>
           <span className="text-xs text-muted-foreground">#{venue.sort_order || 0}</span>
         </div>
       </TableCell>
@@ -138,13 +136,6 @@ export const VenueManagement = () => {
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
 
   // Fetch venues
   const { data: venues, isLoading } = useQuery({
@@ -157,6 +148,61 @@ export const VenueManagement = () => {
       
       if (error) throw error;
       return data || [];
+    }
+  });
+
+  // Move venue up/down mutations
+  const moveVenueUpMutation = useMutation({
+    mutationFn: async (venue: Venue) => {
+      const currentIndex = venues!.findIndex(v => v.id === venue.id);
+      if (currentIndex > 0) {
+        const prevVenue = venues![currentIndex - 1];
+        const currentSortOrder = venue.sort_order || 0;
+        const prevSortOrder = prevVenue.sort_order || 0;
+        
+        await Promise.all([
+          supabase.from('venues').update({ sort_order: prevSortOrder }).eq('id', venue.id),
+          supabase.from('venues').update({ sort_order: currentSortOrder }).eq('id', prevVenue.id)
+        ]);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-venues'] });
+      queryClient.invalidateQueries({ queryKey: ['venues'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte flytta platsen: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
+  const moveVenueDownMutation = useMutation({
+    mutationFn: async (venue: Venue) => {
+      const currentIndex = venues!.findIndex(v => v.id === venue.id);
+      if (currentIndex < venues!.length - 1) {
+        const nextVenue = venues![currentIndex + 1];
+        const currentSortOrder = venue.sort_order || 0;
+        const nextSortOrder = nextVenue.sort_order || 0;
+        
+        await Promise.all([
+          supabase.from('venues').update({ sort_order: nextSortOrder }).eq('id', venue.id),
+          supabase.from('venues').update({ sort_order: currentSortOrder }).eq('id', nextVenue.id)
+        ]);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-venues'] });
+      queryClient.invalidateQueries({ queryKey: ['venues'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte flytta platsen: ${error.message}`,
+        variant: "destructive"
+      });
     }
   });
 
@@ -232,26 +278,6 @@ export const VenueManagement = () => {
     }
   });
 
-  // Handle drag end for venues
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id && venues) {
-      const oldIndex = venues.findIndex((venue) => venue.id === active.id);
-      const newIndex = venues.findIndex((venue) => venue.id === over.id);
-
-      const newVenues = arrayMove(venues, oldIndex, newIndex);
-      
-      // Update sort orders
-      newVenues.forEach((venue, index) => {
-        updateVenueMutation.mutate({
-          id: venue.id,
-          data: { sort_order: index + 1 }
-        });
-      });
-    }
-  };
-
   const handleEditVenue = (venue: Venue) => {
     setEditingVenue(venue);
     setNewVenue({
@@ -286,6 +312,14 @@ export const VenueManagement = () => {
     }
   };
 
+  const handleMoveUp = (venue: Venue) => {
+    moveVenueUpMutation.mutate(venue);
+  };
+
+  const handleMoveDown = (venue: Venue) => {
+    moveVenueDownMutation.mutate(venue);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -295,6 +329,12 @@ export const VenueManagement = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="bg-muted/30 p-4 rounded-lg border border-border/40 mb-6">
+          <p className="text-sm text-muted-foreground">
+            Använd upp/ner-pilarna för att ändra ordning - platser sorteras efter ordningsnummer
+          </p>
+        </div>
+
         <div className="flex justify-start items-center mb-6">
           <Button onClick={() => {
             setIsEditMode(false);
@@ -317,23 +357,45 @@ export const VenueManagement = () => {
         ) : venues && venues.length > 0 ? (
           isMobile ? (
             <div className="space-y-4">
-              {venues.map((venue) => (
+              {venues.map((venue, index) => (
                 <Card key={venue.id} className="p-4">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs text-muted-foreground">#{venue.sort_order || 0}</span>
-                        <Badge variant={venue.is_active ? "default" : "secondary"}>
-                          {venue.is_active ? 'Aktiv' : 'Inaktiv'}
-                        </Badge>
+                    <div className="flex items-center gap-2">
+                      <div className="flex flex-col">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleMoveUp(venue)}
+                          disabled={index === 0}
+                          className="w-6 h-6 p-0"
+                        >
+                          <ChevronUp className="w-3 h-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleMoveDown(venue)}
+                          disabled={index === venues.length - 1}
+                          className="w-6 h-6 p-0"
+                        >
+                          <ChevronDown className="w-3 h-3" />
+                        </Button>
                       </div>
-                      <h4 className="font-medium">{venue.name}</h4>
-                      {venue.address && (
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                          <MapPin className="w-4 h-4" />
-                          {venue.address}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs text-muted-foreground">#{venue.sort_order || 0}</span>
+                          <Badge variant={venue.is_active ? "default" : "secondary"}>
+                            {venue.is_active ? 'Aktiv' : 'Inaktiv'}
+                          </Badge>
                         </div>
-                      )}
+                        <h4 className="font-medium">{venue.name}</h4>
+                        {venue.address && (
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                            <MapPin className="w-4 h-4" />
+                            {venue.address}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                   
@@ -375,36 +437,32 @@ export const VenueManagement = () => {
               ))}
             </div>
           ) : (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-20">Ordning</TableHead>
-                    <TableHead>Namn</TableHead>
-                    <TableHead>Adress</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Åtgärder</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <SortableContext items={venues.map(v => v.id)} strategy={verticalListSortingStrategy}>
-                    {venues.map((venue) => (
-                      <SortableVenueRow
-                        key={venue.id}
-                        venue={venue}
-                        onEdit={handleEditVenue}
-                        onToggleActive={handleToggleActive}
-                        onDelete={handleDeleteVenue}
-                      />
-                    ))}
-                  </SortableContext>
-                </TableBody>
-              </Table>
-            </DndContext>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-20">Ordning</TableHead>
+                  <TableHead>Namn</TableHead>
+                  <TableHead>Adress</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Åtgärder</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {venues.map((venue, index) => (
+                  <VenueRow
+                    key={venue.id}
+                    venue={venue}
+                    onEdit={handleEditVenue}
+                    onToggleActive={handleToggleActive}
+                    onDelete={handleDeleteVenue}
+                    onMoveUp={handleMoveUp}
+                    onMoveDown={handleMoveDown}
+                    canMoveUp={index > 0}
+                    canMoveDown={index < venues.length - 1}
+                  />
+                ))}
+              </TableBody>
+            </Table>
           )
         ) : (
           <div className="text-center py-8">

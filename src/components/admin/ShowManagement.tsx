@@ -10,11 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { Eye, EyeOff, Plus, Edit, Trash2, GripVertical, Calendar, MapPin, Ticket } from 'lucide-react';
+import { Eye, EyeOff, Plus, Edit, Trash2, Calendar, MapPin, Ticket, ChevronUp, ChevronDown } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ImagePicker } from './ImagePicker';
@@ -66,39 +62,41 @@ interface NewShowForm {
   performer_ids: string[];
 }
 
-// Sortable Row Component for Shows
-function SortableShowRow({ show, onEdit, onToggleVisibility, onDelete }: {
+// Show Row Component
+function ShowRow({ show, onEdit, onToggleVisibility, onDelete, onMoveUp, onMoveDown, canMoveUp, canMoveDown }: {
   show: AdminShowWithPerformers;
   onEdit: (show: AdminShowWithPerformers) => void;
   onToggleVisibility: (show: AdminShowWithPerformers) => void;
   onDelete: (show: AdminShowWithPerformers) => void;
+  onMoveUp: (show: AdminShowWithPerformers) => void;
+  onMoveDown: (show: AdminShowWithPerformers) => void;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: show.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
   return (
-    <TableRow ref={setNodeRef} style={style} className={isDragging ? 'z-50' : ''}>
+    <TableRow>
       <TableCell>
         <div className="flex items-center gap-2">
-          <button
-            className="cursor-grab hover:cursor-grabbing text-muted-foreground hover:text-foreground"
-            {...attributes}
-            {...listeners}
-          >
-            <GripVertical className="w-4 h-4" />
-          </button>
+          <div className="flex flex-col">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onMoveUp(show)}
+              disabled={!canMoveUp}
+              className="w-6 h-6 p-0"
+            >
+              <ChevronUp className="w-3 h-3" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onMoveDown(show)}
+              disabled={!canMoveDown}
+              className="w-6 h-6 p-0"
+            >
+              <ChevronDown className="w-3 h-3" />
+            </Button>
+          </div>
           <span className="text-xs text-muted-foreground">#{show.sort_order || 0}</span>
         </div>
       </TableCell>
@@ -187,13 +185,6 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
   });
 
   const queryClient = useQueryClient();
-  
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
 
   // Generate slug from title
   const generateSlug = (title: string) => {
@@ -285,6 +276,59 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
         ...show,
         performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || []
       })) as AdminShowWithPerformers[];
+    }
+  });
+
+  // Move show up/down mutations
+  const moveShowUpMutation = useMutation({
+    mutationFn: async (show: AdminShowWithPerformers) => {
+      const currentIndex = shows!.findIndex(s => s.id === show.id);
+      if (currentIndex > 0) {
+        const prevShow = shows![currentIndex - 1];
+        const currentSortOrder = show.sort_order || 0;
+        const prevSortOrder = prevShow.sort_order || 0;
+        
+        await Promise.all([
+          supabase.from('admin_shows').update({ sort_order: prevSortOrder }).eq('id', show.id),
+          supabase.from('admin_shows').update({ sort_order: currentSortOrder }).eq('id', prevShow.id)
+        ]);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte flytta föreställningen: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
+  const moveShowDownMutation = useMutation({
+    mutationFn: async (show: AdminShowWithPerformers) => {
+      const currentIndex = shows!.findIndex(s => s.id === show.id);
+      if (currentIndex < shows!.length - 1) {
+        const nextShow = shows![currentIndex + 1];
+        const currentSortOrder = show.sort_order || 0;
+        const nextSortOrder = nextShow.sort_order || 0;
+        
+        await Promise.all([
+          supabase.from('admin_shows').update({ sort_order: nextSortOrder }).eq('id', show.id),
+          supabase.from('admin_shows').update({ sort_order: currentSortOrder }).eq('id', nextShow.id)
+        ]);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte flytta föreställningen: ${error.message}`,
+        variant: "destructive"
+      });
     }
   });
 
@@ -461,26 +505,6 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
     }
   });
 
-  // Handle drag end for shows
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id && shows) {
-      const oldIndex = shows.findIndex((show) => show.id === active.id);
-      const newIndex = shows.findIndex((show) => show.id === over.id);
-
-      const newShows = arrayMove(shows, oldIndex, newIndex);
-      
-      // Update sort orders
-      newShows.forEach((show, index) => {
-        updateShowMutation.mutate({
-          id: show.id,
-          data: { sort_order: index + 1 }
-        });
-      });
-    }
-  };
-
   const handleEditShow = (show: AdminShowWithPerformers) => {
     setEditingShow(show);
     setNewShow({
@@ -514,6 +538,14 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
     deleteShowMutation.mutate(show.id);
   };
 
+  const handleMoveUp = (show: AdminShowWithPerformers) => {
+    moveShowUpMutation.mutate(show);
+  };
+
+  const handleMoveDown = (show: AdminShowWithPerformers) => {
+    moveShowDownMutation.mutate(show);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -523,6 +555,12 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        <div className="bg-muted/30 p-4 rounded-lg border border-border/40">
+          <p className="text-sm text-muted-foreground">
+            Använd upp/ner-pilarna för att ändra ordning - föreställningar sorteras efter ordningsnummer på hemsidan
+          </p>
+        </div>
+
         {!showCompleted && (
           <div className="flex justify-start items-center mb-6">
             <Button 
@@ -540,28 +578,50 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
         ) : shows && shows.length > 0 ? (
           isMobile ? (
             <div className="space-y-6">
-              {shows.map((show) => (
+              {shows.map((show, index) => (
                 <Card key={show.id} className="p-4 sm:p-6 border-2 border-border/50 hover:border-border transition-colors">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-medium text-muted-foreground bg-muted/50 px-2 py-1 rounded">
-                          #{show.sort_order || 0}
-                        </span>
-                        <Badge 
-                          variant={show.is_active ? "default" : "secondary"}
-                          className="text-xs"
+                    <div className="flex items-center gap-2">
+                      <div className="flex flex-col">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleMoveUp(show)}
+                          disabled={index === 0}
+                          className="w-6 h-6 p-0"
                         >
-                          {show.is_active ? 'Aktiv' : 'Dold'}
-                        </Badge>
+                          <ChevronUp className="w-3 h-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleMoveDown(show)}
+                          disabled={index === shows.length - 1}
+                          className="w-6 h-6 p-0"
+                        >
+                          <ChevronDown className="w-3 h-3" />
+                        </Button>
                       </div>
-                      <h4 className="font-semibold text-base mb-3">{show.title}</h4>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span>{new Date(show.show_date).toLocaleDateString('sv-SE')} {show.show_time.substring(0, 5)}</span>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs font-medium text-muted-foreground bg-muted/50 px-2 py-1 rounded">
+                            #{show.sort_order || 0}
+                          </span>
+                          <Badge 
+                            variant={show.is_active ? "default" : "secondary"}
+                            className="text-xs"
+                          >
+                            {show.is_active ? 'Aktiv' : 'Dold'}
+                          </Badge>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span>{show.venue}</span>
+                        <h4 className="font-semibold text-base mb-3">{show.title}</h4>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <span>{new Date(show.show_date).toLocaleDateString('sv-SE')} {show.show_time.substring(0, 5)}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <span>{show.venue}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -613,38 +673,34 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
               ))}
             </div>
           ) : (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-20">Ordning</TableHead>
-                    <TableHead>Titel</TableHead>
-                    <TableHead>Datum & Tid</TableHead>
-                    <TableHead>Plats</TableHead>
-                    <TableHead>Pris</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Åtgärder</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <SortableContext items={shows.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                    {shows.map((show) => (
-                      <SortableShowRow
-                        key={show.id}
-                        show={show}
-                        onEdit={handleEditShow}
-                        onToggleVisibility={handleToggleShowVisibility}
-                        onDelete={handleDeleteShow}
-                      />
-                    ))}
-                  </SortableContext>
-                </TableBody>
-              </Table>
-            </DndContext>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-20">Ordning</TableHead>
+                  <TableHead>Titel</TableHead>
+                  <TableHead>Datum & Tid</TableHead>
+                  <TableHead>Plats</TableHead>
+                  <TableHead>Pris</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Åtgärder</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {shows.map((show, index) => (
+                  <ShowRow
+                    key={show.id}
+                    show={show}
+                    onEdit={handleEditShow}
+                    onToggleVisibility={handleToggleShowVisibility}
+                    onDelete={handleDeleteShow}
+                    onMoveUp={handleMoveUp}
+                    onMoveDown={handleMoveDown}
+                    canMoveUp={index > 0}
+                    canMoveDown={index < shows.length - 1}
+                  />
+                ))}
+              </TableBody>
+            </Table>
           )
         ) : (
           <div className="text-center py-12">

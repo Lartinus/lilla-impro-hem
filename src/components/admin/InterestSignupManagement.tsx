@@ -10,11 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { Eye, EyeOff, Plus, Edit, Trash2, GripVertical, Users, UserX } from 'lucide-react';
+import { Eye, EyeOff, Plus, Edit, Trash2, Users, UserX, ChevronUp, ChevronDown } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -50,40 +46,42 @@ interface NewInterestSignupForm {
   is_visible: boolean;
 }
 
-// Sortable Row Component
-function SortableRow({ item, onEdit, onToggleVisibility, onDelete, onViewSubmissions }: {
+// Row Component
+function InterestRow({ item, onEdit, onToggleVisibility, onDelete, onViewSubmissions, onMoveUp, onMoveDown, canMoveUp, canMoveDown }: {
   item: InterestSignupWithSubmissions;
   onEdit: (item: InterestSignupWithSubmissions) => void;
   onToggleVisibility: (item: InterestSignupWithSubmissions) => void;
   onDelete: (item: InterestSignupWithSubmissions) => void;
   onViewSubmissions: (item: InterestSignupWithSubmissions) => void;
+  onMoveUp: (item: InterestSignupWithSubmissions) => void;
+  onMoveDown: (item: InterestSignupWithSubmissions) => void;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: item.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
   return (
-    <TableRow ref={setNodeRef} style={style} className={isDragging ? 'z-50' : ''}>
+    <TableRow>
       <TableCell>
         <div className="flex items-center gap-2">
-          <button
-            className="cursor-grab hover:cursor-grabbing text-muted-foreground hover:text-foreground"
-            {...attributes}
-            {...listeners}
-          >
-            <GripVertical className="w-4 h-4" />
-          </button>
+          <div className="flex flex-col">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onMoveUp(item)}
+              disabled={!canMoveUp}
+              className="w-6 h-6 p-0"
+            >
+              <ChevronUp className="w-3 h-3" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onMoveDown(item)}
+              disabled={!canMoveDown}
+              className="w-6 h-6 p-0"
+            >
+              <ChevronDown className="w-3 h-3" />
+            </Button>
+          </div>
           <span className="text-xs text-muted-foreground">#{item.sort_order || 0}</span>
         </div>
       </TableCell>
@@ -162,13 +160,6 @@ export const InterestSignupManagement = () => {
   });
 
   const queryClient = useQueryClient();
-  
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
 
   // Fetch interest signups
   const { data: interestSignups, isLoading } = useQuery({
@@ -205,17 +196,20 @@ export const InterestSignupManagement = () => {
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
-  // Update sort order mutation
-  const updateSortOrderMutation = useMutation({
-    mutationFn: async (updates: { id: string, sort_order: number }[]) => {
-      const promises = updates.map(({ id, sort_order }) =>
-        supabase
-          .from('interest_signups')
-          .update({ sort_order })
-          .eq('id', id)
-      );
-      
-      await Promise.all(promises);
+  // Move interest up/down mutations
+  const moveInterestUpMutation = useMutation({
+    mutationFn: async (item: InterestSignupWithSubmissions) => {
+      const currentIndex = interestSignups!.findIndex(i => i.id === item.id);
+      if (currentIndex > 0) {
+        const prevItem = interestSignups![currentIndex - 1];
+        const currentSortOrder = item.sort_order || 0;
+        const prevSortOrder = prevItem.sort_order || 0;
+        
+        await Promise.all([
+          supabase.from('interest_signups').update({ sort_order: prevSortOrder }).eq('id', item.id),
+          supabase.from('interest_signups').update({ sort_order: currentSortOrder }).eq('id', prevItem.id)
+        ]);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['interest-signups'] });
@@ -223,7 +217,33 @@ export const InterestSignupManagement = () => {
     onError: (error) => {
       toast({
         title: "Fel",
-        description: `Kunde inte uppdatera sorteringsordning: ${error.message}`,
+        description: `Kunde inte flytta intresseanmälan: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
+  const moveInterestDownMutation = useMutation({
+    mutationFn: async (item: InterestSignupWithSubmissions) => {
+      const currentIndex = interestSignups!.findIndex(i => i.id === item.id);
+      if (currentIndex < interestSignups!.length - 1) {
+        const nextItem = interestSignups![currentIndex + 1];
+        const currentSortOrder = item.sort_order || 0;
+        const nextSortOrder = nextItem.sort_order || 0;
+        
+        await Promise.all([
+          supabase.from('interest_signups').update({ sort_order: nextSortOrder }).eq('id', item.id),
+          supabase.from('interest_signups').update({ sort_order: currentSortOrder }).eq('id', nextItem.id)
+        ]);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['interest-signups'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte flytta intresseanmälan: ${error.message}`,
         variant: "destructive"
       });
     }
@@ -452,23 +472,12 @@ export const InterestSignupManagement = () => {
     }
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
+  const handleMoveUp = (item: InterestSignupWithSubmissions) => {
+    moveInterestUpMutation.mutate(item);
+  };
 
-    if (over && active.id !== over.id && interestSignups) {
-      const oldIndex = interestSignups.findIndex(item => item.id === active.id);
-      const newIndex = interestSignups.findIndex(item => item.id === over.id);
-      
-      const newOrder = arrayMove(interestSignups, oldIndex, newIndex);
-      
-      // Update sort_order for all affected items
-      const updates = newOrder.map((item, index) => ({
-        id: item.id,
-        sort_order: index + 1
-      }));
-      
-      updateSortOrderMutation.mutate(updates);
-    }
+  const handleMoveDown = (item: InterestSignupWithSubmissions) => {
+    moveInterestDownMutation.mutate(item);
   };
 
   if (isLoading) {
@@ -577,7 +586,7 @@ export const InterestSignupManagement = () => {
       <CardContent className="space-y-4">
         <div className="bg-muted/30 p-4 rounded-lg border border-border/40">
           <p className="text-sm text-muted-foreground">
-            Hantera intresseanmälningar för kommande kurser. Dra för att ändra ordning.
+            Hantera intresseanmälningar för kommande kurser. Använd upp/ner-pilarna för att ändra ordning.
           </p>
         </div>
         
@@ -594,17 +603,39 @@ export const InterestSignupManagement = () => {
             {interestSignups.map((item, index) => (
               <Card key={item.id} className="p-4">
                 <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs text-muted-foreground">#{item.sort_order || 0}</span>
-                      <Badge variant={item.is_visible ? "default" : "secondary"}>
-                        {item.is_visible ? 'Synlig' : 'Dold'}
-                      </Badge>
+                  <div className="flex items-center gap-2">
+                    <div className="flex flex-col">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleMoveUp(item)}
+                        disabled={index === 0}
+                        className="w-6 h-6 p-0"
+                      >
+                        <ChevronUp className="w-3 h-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleMoveDown(item)}
+                        disabled={index === interestSignups.length - 1}
+                        className="w-6 h-6 p-0"
+                      >
+                        <ChevronDown className="w-3 h-3" />
+                      </Button>
                     </div>
-                    <h4 className="font-medium">{item.title}</h4>
-                    {item.subtitle && (
-                      <p className="text-sm text-muted-foreground">{item.subtitle}</p>
-                    )}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs text-muted-foreground">#{item.sort_order || 0}</span>
+                        <Badge variant={item.is_visible ? "default" : "secondary"}>
+                          {item.is_visible ? 'Synlig' : 'Dold'}
+                        </Badge>
+                      </div>
+                      <h4 className="font-medium">{item.title}</h4>
+                      {item.subtitle && (
+                        <p className="text-sm text-muted-foreground">{item.subtitle}</p>
+                      )}
+                    </div>
                   </div>
                   <div className="text-right">
                     <div className="text-lg font-semibold">{item.submissionCount}</div>
@@ -659,41 +690,34 @@ export const InterestSignupManagement = () => {
             ))}
           </div>
         ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Ordning</TableHead>
-                  <TableHead>Titel</TableHead>
-                  <TableHead>Undertitel</TableHead>
-                  <TableHead>Anmälda</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="w-[400px]">Åtgärder</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <SortableContext
-                  items={interestSignups.map(item => item.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {interestSignups.map((item) => (
-                    <SortableRow
-                      key={item.id}
-                      item={item}
-                      onEdit={handleEdit}
-                      onToggleVisibility={item => toggleVisibilityMutation.mutate(item)}
-                      onDelete={item => deleteMutation.mutate(item)}
-                      onViewSubmissions={handleViewSubmissions}
-                    />
-                  ))}
-                </SortableContext>
-              </TableBody>
-            </Table>
-          </DndContext>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Ordning</TableHead>
+                <TableHead>Titel</TableHead>
+                <TableHead>Undertitel</TableHead>
+                <TableHead>Anmälda</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="w-[400px]">Åtgärder</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {interestSignups.map((item, index) => (
+                <InterestRow
+                  key={item.id}
+                  item={item}
+                  onEdit={handleEdit}
+                  onToggleVisibility={item => toggleVisibilityMutation.mutate(item)}
+                  onDelete={item => deleteMutation.mutate(item)}
+                  onViewSubmissions={handleViewSubmissions}
+                  onMoveUp={handleMoveUp}
+                  onMoveDown={handleMoveDown}
+                  canMoveUp={index > 0}
+                  canMoveDown={index < interestSignups.length - 1}
+                />
+              ))}
+            </TableBody>
+          </Table>
         )}
       </CardContent>
 
