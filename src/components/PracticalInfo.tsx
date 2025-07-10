@@ -41,32 +41,11 @@ export const PracticalInfo = ({
     return weekdays[date.getDay()];
   };
 
-  // Parse practical info text if provided, otherwise use defaults
+  // Build practical info items from individual fields for better control
   const getPracticalItems = () => {
     const items = [];
     
-    if (practicalInfoText) {
-      // Handle discount price specially to avoid splitting it into multiple items
-      if (practicalInfoText.includes('Rabatterat pris:')) {
-        // Split by line breaks only for practical info text to preserve discount price as one item
-        const lines = practicalInfoText
-          .split(/\n/)
-          .map(line => line.trim())
-          .filter(line => line.length > 0);
-        
-        return lines;
-      } else {
-        // Split by common delimiters and clean up
-        const lines = practicalInfoText
-          .split(/[,\n\r•\-]/)
-          .map(line => line.trim())
-          .filter(line => line.length > 0);
-        
-        return lines;
-      }
-    }
-    
-    // Default items if no practical info provided
+    // Always use individual fields for structured data when available
     if (sessions && sessions > 0 && hoursPerSession && hoursPerSession > 0) {
       items.push(`${sessions} tillfällen à ${hoursPerSession}h`);
     }
@@ -91,6 +70,25 @@ export const PracticalInfo = ({
     
     if (discountPrice && discountPrice > 0) {
       items.push(`Rabatterat pris: ${discountPrice} kr (pensionär, student eller omtag)`);
+    }
+    
+    // Add any additional practical info text at the end
+    if (practicalInfoText) {
+      // Only add text that doesn't duplicate the structured data above
+      const textItems = practicalInfoText
+        .split(/\n/)
+        .map(line => line.trim())
+        .filter(line => line.length > 0)
+        .filter(line => {
+          // Filter out items that are already covered by structured data
+          return !line.includes('tillfällen à') && 
+                 !line.includes('Startdatum') && 
+                 !line.includes('Max') && 
+                 !line.includes('Ordinarie pris:') && 
+                 !line.includes('Rabatterat pris:');
+        });
+      
+      items.push(...textItems);
     }
     
     if (additionalInfo) {
