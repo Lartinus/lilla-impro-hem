@@ -1195,15 +1195,6 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                   </div>
                 )}
 
-                <div className="grid gap-2">
-                  <Label htmlFor="subtitle">Undertitel</Label>
-                  <Input
-                    id="subtitle"
-                    value={newCourse.subtitle}
-                    onChange={(e) => setNewCourse({...newCourse, subtitle: e.target.value})}
-                    placeholder="T.ex. För rutinerade improvisatörer och nybörjare"
-                  />
-                </div>
 
                 <div className="grid gap-4">
                   <div className="grid gap-2">

@@ -288,15 +288,6 @@ export const CourseTemplateManagement = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="subtitle">Underrubrik</Label>
-                <Input
-                  id="subtitle"
-                  value={editingTemplate.subtitle || ''}
-                  onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, subtitle: e.target.value } : null)}
-                  placeholder="Kort beskrivning"
-                />
-              </div>
-              <div className="space-y-2">
                 <Label htmlFor="max_participants">Max deltagare</Label>
                 <Input
                   id="max_participants"
