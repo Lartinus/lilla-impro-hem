@@ -992,10 +992,6 @@ export type Database = {
           expires_at: string
         }[]
       }
-      debug_delete_participant: {
-        Args: { p_table_name: string; p_participant_email: string }
-        Returns: Json
-      }
       delete_course_participant: {
         Args: { table_name: string; participant_email: string }
         Returns: boolean
