@@ -964,6 +964,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      admin_delete_participant: {
+        Args: { table_name: string; participant_email: string }
+        Returns: boolean
+      }
       check_duplicate_course_booking: {
         Args: { table_name: string; email_address: string }
         Returns: boolean

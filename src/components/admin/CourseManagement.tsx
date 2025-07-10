@@ -1039,10 +1039,10 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     mutationFn: async ({ email, tableName }: { email: string; tableName: string }) => {
       console.log('🗑️ Attempting to delete participant:', { email, tableName });
       
-      // Use the admin function with correct parameter names
-      const { data, error } = await supabase.rpc('delete_course_participant_admin', {
-        p_table_name: tableName,
-        p_participant_email: email
+      // Use the simplified admin function
+      const { data, error } = await supabase.rpc('admin_delete_participant', {
+        table_name: tableName,
+        participant_email: email
       });
 
       console.log('🗑️ Delete response:', { data, error });
