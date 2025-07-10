@@ -391,6 +391,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
   const [isParticipantsDialogOpen, setIsParticipantsDialogOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<CourseWithBookings | null>(null);
   const [participants, setParticipants] = useState<CourseParticipant[]>([]);
+  const [isLoadingParticipants, setIsLoadingParticipants] = useState(false);
   const [isAddParticipantFormOpen, setIsAddParticipantFormOpen] = useState(false);
   const [newParticipant, setNewParticipant] = useState({
     name: '',
@@ -986,6 +987,8 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
   const handleViewParticipants = async (course: CourseWithBookings) => {
     setSelectedCourse(course);
     setIsParticipantsDialogOpen(true);
+    setIsLoadingParticipants(true);
+    setParticipants([]); // Clear previous participants
     
     try {
       const { data, error } = await supabase.functions.invoke('get-course-participants', {
@@ -1011,6 +1014,8 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         variant: "destructive"
       });
       setParticipants([]);
+    } finally {
+      setIsLoadingParticipants(false);
     }
   };
 
@@ -1723,7 +1728,12 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
 
             {/* Participants List */}
             <div className="flex-1 overflow-hidden">
-              {participants.length === 0 ? (
+              {isLoadingParticipants ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                  <p>Laddar deltagare...</p>
+                </div>
+              ) : participants.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <Users className="w-12 h-12 mx-auto mb-2 opacity-50" />
                   <p>Inga anmälningar än</p>
