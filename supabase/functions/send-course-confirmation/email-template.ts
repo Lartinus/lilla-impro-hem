@@ -11,7 +11,7 @@ export function createSimpleEmailTemplate(subject: string, content: string): str
       margin: 0;
       padding: 0;
       font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      background-color: #f0f0f0;
+      background-color: #ffffff;
       line-height: 1.6;
       color: #333333;
     ">
