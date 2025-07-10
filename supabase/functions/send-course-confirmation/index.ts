@@ -27,6 +27,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { name, email, courseTitle, isAvailable }: ConfirmationEmailRequest = await req.json();
 
     console.log(`Processing course confirmation for ${email} - course: ${courseTitle}`);
+    console.log('Request data:', { name, email, courseTitle, isAvailable });
 
     // Get the email template from database
     const { data: template, error: templateError } = await supabase
@@ -38,6 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (templateError || !template) {
       console.error('Could not fetch email template:', templateError);
+      console.error('Template search result:', { template, templateError });
       throw new Error('Email template not found');
     }
 
