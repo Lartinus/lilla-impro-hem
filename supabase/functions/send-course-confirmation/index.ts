@@ -42,6 +42,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Processing course confirmation for ${email} - course: ${courseTitle}`);
     console.log('Request data:', { name, email, courseTitle, isAvailable, courseStartDate, courseStartTime });
+    console.log('DEBUG: Name parameter received:', name);
+    console.log('DEBUG: Name type:', typeof name);
+    console.log('DEBUG: Name length:', name ? name.length : 'undefined');
 
     // Get email template from database
     console.log('Fetching course confirmation email template...');
