@@ -19,22 +19,25 @@ export function createSimpleEmailTemplate(subject: string, content: string): str
         max-width: 600px;
         margin: 40px auto;
         padding: 40px;
-        2px solid #000;
+        border: 2px solid #000;
+        border-radius: 8px;
       ">
         <h1 style="
           font-size: 28px;
           font-weight: 400;
           margin: 0 0 8px 0;
           color: #1c1c1c;
-          text-align: Left;
+          text-align: left;
         ">
           Tack för din bokning
         </h1>
         <p style="
           font-size: 16px;
           color: #1c1c1c;
-          margin: 0 0 40px 0;
+          margin: 0 0 20px 0;
           text-align: left;
+          padding-bottom: 20px;
+          border-bottom: 1px solid #e0e0e0;
         ">
           Din bokning är bekräftad
         </p>
@@ -43,6 +46,7 @@ export function createSimpleEmailTemplate(subject: string, content: string): str
           font-size: 16px;
           line-height: 1.6;
           color: #1c1c1c;
+          padding-top: 20px;
         ">
           ${content}
         </div>
