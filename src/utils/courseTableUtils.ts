@@ -66,8 +66,33 @@ export const ensureCourseTableExists = async (courseTitle: string) => {
       const existingInstance = existingInstances[0];
       console.log('✅ Found existing course instance:', existingInstance);
       
-      // For existing instances, we'll trust they're working and avoid unnecessary checks
-      // that might trigger the database function errors
+      // Check if the instance has an empty table_name and fix it
+      if (!existingInstance.table_name || existingInstance.table_name.trim() === '') {
+        console.log('🔧 Fixing empty table_name for existing instance');
+        
+        // Generate a proper table name
+        const newTableName = generateTableName(existingInstance.course_title);
+        console.log('📋 Generated new table name:', newTableName);
+        
+        // Update the instance with the new table name
+        const { data: updatedInstance, error: updateError } = await supabase
+          .from('course_instances')
+          .update({ table_name: newTableName })
+          .eq('id', existingInstance.id)
+          .select()
+          .single();
+          
+        if (updateError) {
+          console.error('❌ Failed to update table_name:', updateError);
+          // Don't fail completely - return the instance as is for fallback handling
+          return existingInstance;
+        }
+        
+        console.log('✅ Updated instance with new table_name:', updatedInstance);
+        return updatedInstance;
+      }
+      
+      // For existing instances with valid table names, we'll trust they're working
       console.log('✅ Using existing instance without re-verification');
       
       return existingInstance;
