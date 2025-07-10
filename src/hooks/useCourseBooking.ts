@@ -141,13 +141,24 @@ export const useCourseBooking = (courseTitle: string) => {
         console.log('📧 Sending confirmation email for course:', courseTitle);
         console.log('📧 Email data:', { name: values.name, email: values.email, isAvailable: !isHouseTeamsOrContinuation });
         
+        // Check if courseTitle looks like a table name and fix it
+        let actualCourseTitle = courseTitle;
+        if (courseTitle.startsWith('course_')) {
+          console.log('⚠️ Course title looks like table name, trying to get real title from instance');
+          actualCourseTitle = courseInstance.course_title || courseTitle;
+        }
+        
+        const emailPayload = {
+          name: values.name,
+          email: values.email,
+          courseTitle: actualCourseTitle,
+          isAvailable: !isHouseTeamsOrContinuation
+        };
+        
+        console.log('📧 Calling edge function with payload:', emailPayload);
+        
         const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-course-confirmation', {
-          body: {
-            name: values.name,
-            email: values.email,
-            courseTitle: courseTitle,
-            isAvailable: !isHouseTeamsOrContinuation
-          }
+          body: emailPayload
         });
 
         if (emailError) {

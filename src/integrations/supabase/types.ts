@@ -143,7 +143,7 @@ export type Database = {
         }
         Relationships: []
       }
-      course_course_niv_1_1752147042033_1752158368271: {
+      course_course_niv_1_1752147042033_1752158584307: {
         Row: {
           address: string | null
           city: string | null

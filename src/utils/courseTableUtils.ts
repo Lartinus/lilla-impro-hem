@@ -34,11 +34,25 @@ export const ensureCourseTableExists = async (courseTitle: string) => {
   try {
     console.log('🔍 Looking for existing course instance for:', courseTitle);
     
+    // Map table names to proper course titles to fix the existing data issue
+    const tableNameToCourseTitle: { [key: string]: string } = {
+      'course_niv__1_1752147042033': 'Nivå 1 – Improv Comedy: Scenarbete',
+      'course_niv_1_scenarbete_improv_comedy_1749454350362': 'Nivå 1 – Improv Comedy: Scenarbete',
+      'course_niv_2_l_ngform_improviserad_komik_1749806847850': 'Nivå 2 – Improv Comedy: Långform'
+    };
+    
+    // If courseTitle looks like a table name, map it to the proper title
+    let searchTitle = courseTitle;
+    if (courseTitle.startsWith('course_') && tableNameToCourseTitle[courseTitle]) {
+      searchTitle = tableNameToCourseTitle[courseTitle];
+      console.log('🔄 Mapped table name to course title:', courseTitle, '->', searchTitle);
+    }
+    
     // First, check if we already have an active instance for this course
     const { data: existingInstances, error: fetchError } = await supabase
       .from('course_instances')
       .select('*')
-      .eq('course_title', courseTitle)
+      .or(`course_title.eq.${searchTitle},table_name.eq.${courseTitle}`)
       .eq('is_active', true)
       .order('created_at', { ascending: false })
       .limit(1);
