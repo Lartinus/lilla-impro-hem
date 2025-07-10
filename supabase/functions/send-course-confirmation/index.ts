@@ -317,9 +317,9 @@ const handler = async (req: Request): Promise<Response> => {
       text: personalizedContent, // Keep plain text version for fallback
       tags: [
         { name: 'type', value: 'course-confirmation' },
-        { name: 'course', value: courseTitle.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() },
+        { name: 'course', value: courseTitle.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase().slice(0, 50) },
         { name: 'available', value: isAvailable ? 'yes' : 'no' },
-        { name: 'template', value: template.name }
+        { name: 'template', value: template.name.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase().slice(0, 50) }
       ]
     });
 
