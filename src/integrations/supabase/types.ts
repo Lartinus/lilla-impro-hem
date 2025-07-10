@@ -757,6 +757,48 @@ export type Database = {
           },
         ]
       }
+      show_templates: {
+        Row: {
+          created_at: string
+          description: string | null
+          discount_price: number
+          id: string
+          is_active: boolean
+          max_tickets: number | null
+          name: string
+          regular_price: number
+          sort_order: number | null
+          title_template: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          discount_price?: number
+          id?: string
+          is_active?: boolean
+          max_tickets?: number | null
+          name: string
+          regular_price?: number
+          sort_order?: number | null
+          title_template: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          discount_price?: number
+          id?: string
+          is_active?: boolean
+          max_tickets?: number | null
+          name?: string
+          regular_price?: number
+          sort_order?: number | null
+          title_template?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ticket_bookings: {
         Row: {
           created_at: string

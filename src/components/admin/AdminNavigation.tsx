@@ -69,6 +69,7 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
       children: [
         { id: 'shows', title: 'Aktiva föreställningar', icon: Calendar },
         { id: 'shows-completed', title: 'Genomförda föreställningar', icon: Archive },
+        { id: 'show-templates', title: 'Föreställningsmallar', icon: FileText },
         { id: 'actors', title: 'Skådespelare', icon: UserCircle },
         { id: 'discount-codes', title: 'Rabattkoder', icon: CreditCard },
         { id: 'venues', title: 'Platser', icon: MapPin },

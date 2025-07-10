@@ -11,6 +11,7 @@ import LoginForm from '@/components/auth/LoginForm';
 import SignUpForm from '@/components/auth/SignUpForm';
 import { CourseManagement } from '@/components/admin/CourseManagement';
 import { CourseTemplateManagement } from '@/components/admin/CourseTemplateManagement';
+import ShowTemplateManagement from '@/components/admin/ShowTemplateManagement';
 import { TicketManagement } from '@/components/admin/TicketManagement';
 import { PerformerManagement } from '@/components/admin/PerformerManagement';
 import { InterestSignupManagement } from '@/components/admin/InterestSignupManagement';
@@ -125,6 +126,8 @@ const AdminDashboard = () => {
         return <CourseManagement showCompleted={true} />;
       case 'course-templates':
         return <CourseTemplateManagement />;
+      case 'show-templates':
+        return <ShowTemplateManagement />;
       case 'performers':
         return <PerformerManagement />;
       case 'interest':
