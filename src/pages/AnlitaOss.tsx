@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import CorporateInquiryForm from '@/components/CorporateInquiryForm';
+import PrivateInquiryForm from '@/components/PrivateInquiryForm';
 
 export default function AnlitaOss() {
   const [marginTop, setMarginTop] = useState('-150px');
@@ -58,9 +60,6 @@ export default function AnlitaOss() {
                   eller konferens skapar vi upplevelser i stunden – med hög grad av igenkänningshumor, 
                   överraskningar och gemenskap i fokus.
                 </p>
-                <Button asChild className="mt-4">
-                  <Link to="/foretag">Gör en förfrågan</Link>
-                </Button>
               </div>
 
               <div className="space-y-4 pt-6 border-t border-gray-200">
@@ -116,6 +115,11 @@ export default function AnlitaOss() {
                     </li>
                   ))}
                 </ul>
+              </div>
+
+              <div className="pt-6 border-t border-gray-200">
+                <p className="mb-4 font-bold">Berätta om er organisation och vad ni är ute efter:</p>
+                <CorporateInquiryForm />
               </div>
             </div>
 
@@ -176,9 +180,7 @@ export default function AnlitaOss() {
 
               <div className="pt-6 border-t border-gray-200">
                 <p className="mb-4 font-bold">Vill du veta mer eller boka oss?</p>
-                <Button asChild>
-                  <Link to="/mohippa">Gör en förfrågan</Link>
-                </Button>
+                <PrivateInquiryForm />
               </div>
             </div>
 
