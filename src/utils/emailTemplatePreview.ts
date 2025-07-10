@@ -1,12 +1,15 @@
-import { convertMarkdownToHtml } from './markdownHelpers';
+import { convertMarkdownToHtml, convertMarkdownToHtmlWithVariables } from './markdownHelpers';
 
 export function createEmailTemplatePreview(
   subject: string, 
   markdownContent: string, 
-  backgroundImage?: string
+  backgroundImage?: string,
+  variables?: Record<string, string>
 ): string {
   const hasBackground = backgroundImage && backgroundImage.trim() !== '';
-  const htmlContent = convertMarkdownToHtml(markdownContent);
+  const htmlContent = variables 
+    ? convertMarkdownToHtmlWithVariables(markdownContent, variables)
+    : convertMarkdownToHtml(markdownContent);
   
   return `
     <!DOCTYPE html>

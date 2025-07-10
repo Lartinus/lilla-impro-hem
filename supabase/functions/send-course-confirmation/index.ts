@@ -4,6 +4,25 @@ import { supabase } from "../_shared/supabase.ts";
 import { ConfirmationEmailRequest } from "./types.ts";
 import { createSimpleEmailTemplate } from "./email-template.ts";
 
+// Utility function to process markdown with variables
+function convertMarkdownToHtmlWithVariables(
+  markdown: string, 
+  variables: Record<string, string> = {}
+): string {
+  if (!markdown) return '';
+  
+  let processedMarkdown = markdown;
+  
+  // Replace variables in markdown text
+  Object.entries(variables).forEach(([key, value]) => {
+    const regex = new RegExp(`\\[${key.toUpperCase()}\\]`, 'gi');
+    processedMarkdown = processedMarkdown.replace(regex, value || 'vän');
+  });
+  
+  // Convert line breaks to <br> tags for HTML
+  return processedMarkdown.replace(/\n/g, '<br>');
+}
+
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
@@ -22,6 +41,33 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Processing course confirmation for ${email} - course: ${courseTitle}`);
     console.log('Request data:', { name, email, courseTitle, isAvailable, courseStartDate, courseStartTime });
+
+    // Get email template from database
+    console.log('Fetching course confirmation email template...');
+    const { data: template, error: templateError } = await supabase
+      .from('email_templates')
+      .select('*')
+      .eq('name', 'Kursbekräftelse')
+      .eq('is_active', true)
+      .single();
+
+    if (templateError || !template) {
+      console.error('Could not fetch email template:', templateError);
+      console.log('Using fallback email instead...');
+      
+      // Send fallback email
+      const fallbackResult = await sendFallbackEmail(name, email, courseTitle, courseStartDate, courseStartTime);
+      
+      return new Response(JSON.stringify(fallbackResult), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          ...corsHeaders,
+        },
+      });
+    }
+
+    console.log('Using email template:', template.name);
 
     // Get course information if not provided
     let finalStartDate = courseStartDate;
@@ -45,53 +91,95 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    // Create email content
-    const subject = `Tack för din bokning - ${courseTitle}`;
-    
-    // Check if course title already ends with punctuation to avoid duplication
-    const courseDisplayName = courseTitle.endsWith('!') || courseTitle.endsWith('?') || courseTitle.endsWith('.') 
-      ? courseTitle 
-      : courseTitle + '!';
-    
-    let emailContent = `Hej ${name}!
+    // Extract first name from full name
+    const firstName = name.split(' ')[0];
 
-Tack för din anmälan till ${courseDisplayName}`;
+    // Prepare variables for template
+    const variables = {
+      NAMN: firstName,
+      KURS: courseTitle,
+      STARTDATUM: finalStartDate ? new Date(finalStartDate).toLocaleDateString('sv-SE') : '',
+      STARTTID: finalStartTime ? finalStartTime.substring(0, 5) : ''
+    };
 
-    // Add course date and time if available
-    if (finalStartDate) {
-      const formattedDate = new Date(finalStartDate).toLocaleDateString('sv-SE');
-      emailContent += `
+    // Process subject with variables
+    let personalizedSubject = template.subject;
+    Object.entries(variables).forEach(([key, value]) => {
+      const regex = new RegExp(`\\[${key}\\]`, 'gi');
+      personalizedSubject = personalizedSubject.replace(regex, value);
+    });
 
-Kursstart: ${formattedDate}`;
+    // Process content with variables
+    const personalizedContent = convertMarkdownToHtmlWithVariables(template.content, variables);
+
+    // Create styled email template
+    const htmlContent = createStyledEmailTemplate(personalizedSubject, personalizedContent, template);
+
+    function createStyledEmailTemplate(subjectText: string, contentText: string, templateData: any = null) {
+      const hasBackground = templateData?.background_image && templateData.background_image.trim() !== '';
+      
+      return `
+        <!DOCTYPE html>
+        <html lang="sv" style="margin: 0; padding: 0;">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>${subjectText}</title>
+          <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+        </head>
+        <body style="
+          margin: 0;
+          padding: 0;
+          font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+          background-color: #ffffff;
+          line-height: 1.6;
+          color: #333333;
+        ">
+          ${hasBackground ? `
+            <div style="
+              text-align: center;
+              padding: 0;
+              margin: 0;
+            ">
+              <img src="${templateData.background_image}" alt="" style="
+                width: 100%;
+                max-width: 600px;
+                height: auto;
+                aspect-ratio: 1;
+                object-fit: cover;
+                display: block;
+                margin: 0 auto;
+              "/>
+            </div>
+          ` : ''}
+          
+          <div style="
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #ffffff;
+          ">
+            <div style="
+              font-size: 16px;
+              line-height: 1.6;
+              color: #333333;
+              font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            ">
+              ${contentText}
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
     }
-    
-    if (finalStartTime) {
-      const formattedTime = finalStartTime.substring(0, 5); // Format HH:MM
-      emailContent += `
-Tid: ${formattedTime}`;
-    }
-
-    emailContent += `
-
-Du kommer att få ett mejl med kursdetaljer senast en vecka innan kursstart
-
-Har du frågor? Svara på detta mejl så hör vi av oss.
-
-Med vänliga hälsningar
-Lilla Improteatern`;
-
-    // Create HTML email with simple template
-    const textWithBreaks = emailContent.replace(/\n/g, '<br>');
-    const htmlContent = createSimpleEmailTemplate(subject, textWithBreaks);
 
     // Send the email
-    console.log('Sending confirmation email with simple template');
+    console.log('Sending course confirmation email using template:', template.name);
     const emailResponse = await resend.emails.send({
       from: "Lilla Improteatern <noreply@improteatern.se>",
       to: [email],
-      subject: subject,
+      subject: personalizedSubject,
       html: htmlContent,
-      text: emailContent, // Keep plain text version for fallback
       tags: [
         { name: 'type', value: 'course-confirmation' },
         { name: 'course', value: courseTitle.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase().slice(0, 50) },
@@ -119,5 +207,59 @@ Lilla Improteatern`;
     );
   }
 };
+
+// Fallback function for when template is not found
+async function sendFallbackEmail(
+  name: string, 
+  email: string, 
+  courseTitle: string, 
+  startDate?: string, 
+  startTime?: string
+) {
+  const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+  
+  const subject = `Tack för din bokning - ${courseTitle}`;
+  const courseDisplayName = courseTitle.endsWith('!') || courseTitle.endsWith('?') || courseTitle.endsWith('.') 
+    ? courseTitle 
+    : courseTitle + '!';
+  
+  let emailContent = `Hej ${name}!
+
+Tack för din anmälan till ${courseDisplayName}`;
+
+  if (startDate) {
+    const formattedDate = new Date(startDate).toLocaleDateString('sv-SE');
+    emailContent += `
+
+Kursstart: ${formattedDate}`;
+  }
+  
+  if (startTime) {
+    const formattedTime = startTime.substring(0, 5);
+    emailContent += `
+Tid: ${formattedTime}`;
+  }
+
+  emailContent += `
+
+Du kommer att få ett mejl med kursdetaljer senast en vecka innan kursstart
+
+Har du frågor? Svara på detta mejl så hör vi av oss.
+
+Med vänliga hälsningar
+Lilla Improteatern`;
+
+  const { createSimpleEmailTemplate } = await import("./email-template.ts");
+  const textWithBreaks = emailContent.replace(/\n/g, '<br>');
+  const htmlContent = createSimpleEmailTemplate(subject, textWithBreaks);
+
+  return await resend.emails.send({
+    from: "Lilla Improteatern <noreply@improteatern.se>",
+    to: [email],
+    subject: subject,
+    html: htmlContent,
+    tags: [{ name: 'type', value: 'course-confirmation-fallback' }]
+  });
+}
 
 serve(handler);

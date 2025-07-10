@@ -35,6 +35,29 @@ export function convertMarkdownToHtml(markdown: string): string {
 }
 
 /**
+ * Konverterar markdown till HTML och ersätter variabler som [NAMN] med faktiska värden
+ * @param markdown Markdown text med variabler
+ * @param variables Objekt med variabler att ersätta, t.ex. { NAMN: "John Doe" }
+ * @returns HTML-sträng med ersatta variabler
+ */
+export function convertMarkdownToHtmlWithVariables(
+  markdown: string, 
+  variables: Record<string, string> = {}
+): string {
+  if (!markdown) return '';
+  
+  let processedMarkdown = markdown;
+  
+  // Ersätt variabler i markdown-texten
+  Object.entries(variables).forEach(([key, value]) => {
+    const regex = new RegExp(`\\[${key.toUpperCase()}\\]`, 'gi');
+    processedMarkdown = processedMarkdown.replace(regex, value || 'vän');
+  });
+  
+  return convertMarkdownToHtml(processedMarkdown);
+}
+
+/**
  * Samma som ovan, men med line-breaks (== nya <br> på enradiga radslut).
  */
 export function convertMarkdownToHtmlForRedBox(markdown: string): string {
