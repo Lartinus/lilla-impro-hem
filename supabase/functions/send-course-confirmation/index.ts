@@ -15,6 +15,7 @@ function convertMarkdownToHtmlWithVariables(
   
   // Replace variables in markdown text
   Object.entries(variables).forEach(([key, value]) => {
+    console.log(`DEBUG: Replacing [${key}] with "${value}"`);
     const regex = new RegExp(`\\[${key.toUpperCase()}\\]`, 'gi');
     processedMarkdown = processedMarkdown.replace(regex, value || 'vän');
   });
@@ -101,6 +102,9 @@ const handler = async (req: Request): Promise<Response> => {
       STARTDATUM: finalStartDate ? new Date(finalStartDate).toLocaleDateString('sv-SE') : '',
       STARTTID: finalStartTime ? finalStartTime.substring(0, 5) : ''
     };
+
+    console.log('DEBUG: Variables for template replacement:', variables);
+    console.log('DEBUG: Template content before replacement:', template.content);
 
     // Process subject with variables
     let personalizedSubject = template.subject;
