@@ -993,7 +993,7 @@ export type Database = {
         }[]
       }
       debug_delete_participant: {
-        Args: { table_name: string; participant_email: string }
+        Args: { p_table_name: string; p_participant_email: string }
         Returns: Json
       }
       delete_course_participant: {
