@@ -37,6 +37,7 @@ interface Course {
   maxParticipants?: number | null;
   max_participants?: number | null;
   start_date?: string | null;
+  start_time?: string | null;
   practical_info?: string;
   sessions?: number;
   hours_per_session?: number;
@@ -107,6 +108,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         <PracticalInfo 
           practicalInfoText={course.practical_info}
           startDate={course.start_date}
+          startTime={course.start_time}
           maxParticipants={course.max_participants}
           sessions={course.sessions}
           hoursPerSession={course.hours_per_session}

@@ -44,7 +44,6 @@ export const PracticalInfo = ({
   // Build practical info items from individual fields for better control
   const getPracticalItems = () => {
     const items = [];
-    
     // Always use individual fields for structured data when available
     if (sessions && sessions > 0 && hoursPerSession && hoursPerSession > 0) {
       items.push(`${sessions} tillfällen à ${hoursPerSession}h`);
