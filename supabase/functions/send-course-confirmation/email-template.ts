@@ -58,7 +58,7 @@ export function createSimpleEmailTemplate(subject: string, content: string): str
           border-top: 1px solid #e0e0e0;
         ">
           <img 
-            src="https://gcimnsbeeexkkqragmdzo.supabase.co/storage/v1/object/public/images/LIT_BoW_small.png" 
+            src="https://gcimnsbeeexkkqragmdzo.supabase.co/storage/v1/object/public/uploads/LIT_BoW_small.png" 
             alt="Lilla Improteatern" 
             style="
               max-width: 120px;
