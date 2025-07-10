@@ -231,8 +231,10 @@ const handler = async (req: Request): Promise<Response> => {
             finalSubject = subject || template.subject;
           }
           
-          // Personalize content by replacing [NAMN] with recipient name
-          let personalizedContent = finalContent.replace(/\[NAMN\]/g, recipient.name || 'Vän');
+          // Personalize content by replacing [NAMN] with recipient name (first name only)
+          const firstName = recipient.name ? recipient.name.split(' ')[0] : 'Vän';
+          let personalizedContent = finalContent.replace(/\[NAMN\]/g, firstName);
+          let personalizedSubject = finalSubject.replace(/\[NAMN\]/g, firstName);
           
           // Check if content is plain text or HTML
           const isPlainText = !finalContent.includes('<') && !finalContent.includes('>');
@@ -358,7 +360,7 @@ const handler = async (req: Request): Promise<Response> => {
           return resend.emails.send({
             from: "Lilla Improteatern <noreply@improteatern.se>",
             to: [recipient.email],
-            subject: finalSubject,
+            subject: personalizedSubject,
             html: htmlContent,
             text: personalizedContent, // Keep plain text version for fallback
             attachments: resendAttachments.length > 0 ? resendAttachments : undefined,

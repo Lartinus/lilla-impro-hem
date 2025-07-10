@@ -197,7 +197,7 @@ const handler = async (req: Request): Promise<Response> => {
                   margin: 0 0 12px 0;
                   color: #1a1a1a;
                 ">
-                  Hej ${personalizedContent.includes('[NAMN]') ? personalizedContent.match(/Hej\s+(\w+)/)?.[1] || personalizedContent.match(/(\w+)!/)?.[1] || 'där' : 'där'}!
+                  Hej ${name.split(' ')[0]}!
                 </h2>
                 <p style="
                   font-size: 16px;
