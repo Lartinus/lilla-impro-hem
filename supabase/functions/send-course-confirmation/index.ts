@@ -48,7 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { data: template, error: templateError } = await supabase
       .from('email_templates')
       .select('*')
-      .eq('name', 'Kursbekräftelse')
+      .eq('name', 'Välkomstmejl')
       .eq('is_active', true)
       .single();
 
