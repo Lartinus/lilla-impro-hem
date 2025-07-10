@@ -12,11 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, GripVertical, User, Download, Archive, RotateCcw } from 'lucide-react';
+import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, User, Download, Archive, RotateCcw, ChevronUp, ChevronDown } from 'lucide-react';
 import { RepeatablePracticalInfo } from './RepeatablePracticalInfo';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -75,7 +71,7 @@ interface NewCourseForm {
 }
 
 // Mobile Course Card Component
-function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, onMarkCompleted, onRestore, performers, showCompleted }: {
+function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, onMarkCompleted, onRestore, performers, showCompleted, onMoveUp, onMoveDown, canMoveUp, canMoveDown }: {
   course: CourseWithBookings;
   onEdit: (course: CourseWithBookings) => void;
   onToggleStatus: (course: CourseWithBookings) => void;
@@ -83,36 +79,38 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewPart
   onViewParticipants: (course: CourseWithBookings) => void;
   onMarkCompleted?: (course: CourseWithBookings) => void;
   onRestore?: (course: CourseWithBookings) => void;
+  onMoveUp: (course: CourseWithBookings) => void;
+  onMoveDown: (course: CourseWithBookings) => void;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
   performers?: any[];
   showCompleted: boolean;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: course.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
   return (
-    <Card ref={setNodeRef} style={style} className={isDragging ? 'z-50' : ''}>
+    <Card>
       <CardContent className="p-4">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2">
-            <button
-              className="cursor-grab hover:cursor-grabbing text-muted-foreground hover:text-foreground"
-              {...attributes}
-              {...listeners}
-            >
-              <GripVertical className="w-4 h-4" />
-            </button>
+            <div className="flex flex-col">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onMoveUp(course)}
+                disabled={!canMoveUp}
+                className="w-6 h-6 p-0"
+              >
+                <ChevronUp className="w-3 h-3" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onMoveDown(course)}
+                disabled={!canMoveDown}
+                className="w-6 h-6 p-0"
+              >
+                <ChevronDown className="w-3 h-3" />
+              </Button>
+            </div>
             <span className="text-xs text-muted-foreground">#{course.sort_order || 0}</span>
           </div>
           <Badge variant={course.is_active ? "default" : "secondary"}>
@@ -237,8 +235,8 @@ function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewPart
   );
 }
 
-// Sortable Row Component
-function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, onMarkCompleted, onRestore, performers, showCompleted }: {
+// Course Row Component
+function CourseRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, onMarkCompleted, onRestore, performers, showCompleted, onMoveUp, onMoveDown, canMoveUp, canMoveDown }: {
   course: CourseWithBookings;
   onEdit: (course: CourseWithBookings) => void;
   onToggleStatus: (course: CourseWithBookings) => void;
@@ -246,35 +244,37 @@ function SortableRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipa
   onViewParticipants: (course: CourseWithBookings) => void;
   onMarkCompleted?: (course: CourseWithBookings) => void;
   onRestore?: (course: CourseWithBookings) => void;
+  onMoveUp: (course: CourseWithBookings) => void;
+  onMoveDown: (course: CourseWithBookings) => void;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
   performers?: any[];
   showCompleted: boolean;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: course.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
   return (
-    <TableRow ref={setNodeRef} style={style} className={isDragging ? 'z-50' : ''}>
+    <TableRow>
       <TableCell>
         <div className="flex items-center gap-2">
-          <button
-            className="cursor-grab hover:cursor-grabbing text-muted-foreground hover:text-foreground"
-            {...attributes}
-            {...listeners}
-          >
-            <GripVertical className="w-4 h-4" />
-          </button>
+          <div className="flex flex-col">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onMoveUp(course)}
+              disabled={!canMoveUp}
+              className="w-6 h-6 p-0"
+            >
+              <ChevronUp className="w-3 h-3" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onMoveDown(course)}
+              disabled={!canMoveDown}
+              className="w-6 h-6 p-0"
+            >
+              <ChevronDown className="w-3 h-3" />
+            </Button>
+          </div>
           <span className="text-xs text-muted-foreground">#{course.sort_order || 0}</span>
         </div>
       </TableCell>
@@ -409,13 +409,6 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
   });
 
   const queryClient = useQueryClient();
-  
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
 
   // Fetch performers from local database
   const { data: performers } = useQuery({
@@ -449,17 +442,20 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     retry: 1
   });
 
-  // Update sort order mutation
-  const updateSortOrderMutation = useMutation({
-    mutationFn: async (updates: { id: string, sort_order: number }[]) => {
-      const promises = updates.map(({ id, sort_order }) =>
-        supabase
-          .from('course_instances')
-          .update({ sort_order })
-          .eq('id', id)
-      );
-      
-      await Promise.all(promises);
+  // Move course up/down mutations
+  const moveCourseUpMutation = useMutation({
+    mutationFn: async (course: CourseWithBookings) => {
+      const currentIndex = sortedCourses.findIndex(c => c.id === course.id);
+      if (currentIndex > 0) {
+        const prevCourse = sortedCourses[currentIndex - 1];
+        const currentSortOrder = course.sort_order || 0;
+        const prevSortOrder = prevCourse.sort_order || 0;
+        
+        await Promise.all([
+          supabase.from('course_instances').update({ sort_order: prevSortOrder }).eq('id', course.id),
+          supabase.from('course_instances').update({ sort_order: currentSortOrder }).eq('id', prevCourse.id)
+        ]);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
@@ -467,7 +463,33 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     onError: (error) => {
       toast({
         title: "Fel",
-        description: `Kunde inte uppdatera sorteringsordning: ${error.message}`,
+        description: `Kunde inte flytta kursen: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
+  const moveCourseDownMutation = useMutation({
+    mutationFn: async (course: CourseWithBookings) => {
+      const currentIndex = sortedCourses.findIndex(c => c.id === course.id);
+      if (currentIndex < sortedCourses.length - 1) {
+        const nextCourse = sortedCourses[currentIndex + 1];
+        const currentSortOrder = course.sort_order || 0;
+        const nextSortOrder = nextCourse.sort_order || 0;
+        
+        await Promise.all([
+          supabase.from('course_instances').update({ sort_order: nextSortOrder }).eq('id', course.id),
+          supabase.from('course_instances').update({ sort_order: currentSortOrder }).eq('id', nextCourse.id)
+        ]);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte flytta kursen: ${error.message}`,
         variant: "destructive"
       });
     }
@@ -1006,23 +1028,12 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     window.URL.revokeObjectURL(url);
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
+  const handleMoveUp = (course: CourseWithBookings) => {
+    moveCourseUpMutation.mutate(course);
+  };
 
-    if (over && active.id !== over.id && courses) {
-      const oldIndex = courses.findIndex(course => course.id === active.id);
-      const newIndex = courses.findIndex(course => course.id === over.id);
-      
-      const newOrder = arrayMove(courses, oldIndex, newIndex);
-      
-      // Update sort_order for all affected courses
-      const updates = newOrder.map((course, index) => ({
-        id: course.id,
-        sort_order: index + 1
-      }));
-      
-      updateSortOrderMutation.mutate(updates);
-    }
+  const handleMoveDown = (course: CourseWithBookings) => {
+    moveCourseDownMutation.mutate(course);
   };
 
   const handleSort = (field: SortField) => {
@@ -1409,7 +1420,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       <CardContent className="space-y-4">
         <div className="bg-muted/30 p-4 rounded-lg border border-border/40">
           <p className="text-sm text-muted-foreground">
-            Dra kurserna för att ändra ordning - kurser sorteras efter ordningsnummer på hemsidan
+            Använd upp/ner-pilarna för att ändra ordning - kurser sorteras efter ordningsnummer på hemsidan
           </p>
         </div>
         
@@ -1422,11 +1433,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
             </p>
           </div>
         ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
+          <>
             {/* Desktop Table View */}
             <div className="hidden md:block">
               <Table>
@@ -1472,52 +1479,50 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <SortableContext
-                    items={sortedCourses.map(course => course.id)}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    {sortedCourses.map((course) => (
-                      <SortableRow
-                        key={course.id}
-                        course={course}
-                        performers={performers}
-                        showCompleted={showCompleted}
-                        onEdit={handleEditCourse}
-                        onToggleStatus={course => toggleStatusMutation.mutate(course)}
-                        onDelete={course => deleteCourseMutation.mutate(course)}
-                        onViewParticipants={handleViewParticipants}
-                        onMarkCompleted={course => markCompletedMutation.mutate(course)}
-                        onRestore={course => restoreCourseMutation.mutate(course)}
-                      />
-                    ))}
-                  </SortableContext>
+                  {sortedCourses.map((course, index) => (
+                    <CourseRow
+                      key={course.id}
+                      course={course}
+                      performers={performers}
+                      showCompleted={showCompleted}
+                      onEdit={handleEditCourse}
+                      onToggleStatus={course => toggleStatusMutation.mutate(course)}
+                      onDelete={course => deleteCourseMutation.mutate(course)}
+                      onViewParticipants={handleViewParticipants}
+                      onMarkCompleted={course => markCompletedMutation.mutate(course)}
+                      onRestore={course => restoreCourseMutation.mutate(course)}
+                      onMoveUp={handleMoveUp}
+                      onMoveDown={handleMoveDown}
+                      canMoveUp={index > 0}
+                      canMoveDown={index < sortedCourses.length - 1}
+                    />
+                  ))}
                 </TableBody>
               </Table>
             </div>
 
             {/* Mobile Card View */}
             <div className="md:hidden space-y-4">
-              <SortableContext
-                items={sortedCourses.map(course => course.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                {sortedCourses.map((course) => (
-                  <MobileCourseCard
-                    key={course.id}
-                    course={course}
-                    performers={performers}
-                    showCompleted={showCompleted}
-                    onEdit={handleEditCourse}
-                    onToggleStatus={course => toggleStatusMutation.mutate(course)}
-                    onDelete={course => deleteCourseMutation.mutate(course)}
-                    onViewParticipants={handleViewParticipants}
-                    onMarkCompleted={course => markCompletedMutation.mutate(course)}
-                    onRestore={course => restoreCourseMutation.mutate(course)}
-                  />
-                ))}
-              </SortableContext>
+              {sortedCourses.map((course, index) => (
+                <MobileCourseCard
+                  key={course.id}
+                  course={course}
+                  performers={performers}
+                  showCompleted={showCompleted}
+                  onEdit={handleEditCourse}
+                  onToggleStatus={course => toggleStatusMutation.mutate(course)}
+                  onDelete={course => deleteCourseMutation.mutate(course)}
+                  onViewParticipants={handleViewParticipants}
+                  onMarkCompleted={course => markCompletedMutation.mutate(course)}
+                  onRestore={course => restoreCourseMutation.mutate(course)}
+                  onMoveUp={handleMoveUp}
+                  onMoveDown={handleMoveDown}
+                  canMoveUp={index > 0}
+                  canMoveDown={index < sortedCourses.length - 1}
+                />
+              ))}
             </div>
-          </DndContext>
+          </>
         )}
       </CardContent>
 
