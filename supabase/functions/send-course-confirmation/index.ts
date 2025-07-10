@@ -1,7 +1,8 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { supabase } from "../_shared/supabase.ts";
+import { ConfirmationEmailRequest } from "./types.ts";
+import { createSimpleEmailTemplate } from "./email-template.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -9,15 +10,6 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
-
-interface ConfirmationEmailRequest {
-  name: string;
-  email: string;
-  courseTitle: string;
-  isAvailable: boolean;
-  courseStartDate?: string;
-  courseStartTime?: string;
-}
 
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
@@ -53,7 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    // Fixed email content instead of using database template
+    // Create email content
     const subject = `Tack för din bokning - ${courseTitle}`;
     
     let emailContent = `Hej ${name}!
@@ -83,65 +75,12 @@ Har du frågor? Svara på detta mejl så hör vi av oss.
 Med vänliga hälsningar
 Lilla Improteatern`;
 
-    // Create simple HTML email
+    // Create HTML email with simple template
     const textWithBreaks = emailContent.replace(/\n/g, '<br>');
-    const htmlContent = createStyledEmailTemplate(subject, textWithBreaks);
-
-    function createStyledEmailTemplate(subject: string, content: string) {
-      return `
-        <!DOCTYPE html>
-        <html lang="sv" style="margin: 0; padding: 0;">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>${subject}</title>
-        </head>
-        <body style="
-          margin: 0;
-          padding: 0;
-          font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-          background-color: #ffffff;
-          line-height: 1.6;
-          color: #333333;
-        ">
-          <div style="
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 40px;
-          ">
-            <h1 style="
-              font-size: 28px;
-              font-weight: 400;
-              margin: 0 0 8px 0;
-              color: #1a1a1a;
-              text-align: center;
-            ">
-              Tack för din bokning
-            </h1>
-            <p style="
-              font-size: 16px;
-              color: #666666;
-              margin: 0 0 40px 0;
-              text-align: center;
-            ">
-              Din bokning är bekräftad
-            </p>
-            
-            <div style="
-              font-size: 16px;
-              line-height: 1.6;
-              color: #333333;
-            ">
-              ${content}
-            </div>
-          </div>
-        </body>
-        </html>
-      `;
-    }
+    const htmlContent = createSimpleEmailTemplate(subject, textWithBreaks);
 
     // Send the email
-    console.log('Sending confirmation email with fixed template');
+    console.log('Sending confirmation email with simple template');
     const emailResponse = await resend.emails.send({
       from: "Lilla Improteatern <noreply@improteatern.se>",
       to: [email],
