@@ -50,12 +50,12 @@ export const PracticalInfo = ({
     }
     
     if (startDate) {
-      items.push(`Startdatum ${formatDate(startDate)}`);
-      
       if (startTime) {
         const weekday = getWeekdayInSwedish(startDate);
         const formattedTime = formatTime(startTime);
-        items.push(`${weekday.charAt(0).toUpperCase() + weekday.slice(1)} ${formattedTime}`);
+        items.push(`${weekday.charAt(0).toUpperCase() + weekday.slice(1)} ${formattedTime}, startdatum ${formatDate(startDate)}`);
+      } else {
+        items.push(`Startdatum ${formatDate(startDate)}`);
       }
     }
     
