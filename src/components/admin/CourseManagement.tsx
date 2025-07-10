@@ -17,6 +17,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSo
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, GripVertical, User, Download, Archive, RotateCcw } from 'lucide-react';
+import { RepeatablePracticalInfo } from './RepeatablePracticalInfo';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
@@ -41,6 +42,7 @@ interface CourseInstance {
   price?: number;
   discount_price?: number;
   sort_order?: number;
+  start_time?: string | null;
 }
 
 interface CourseWithBookings extends CourseInstance {
@@ -64,6 +66,7 @@ interface NewCourseForm {
   sessions: number;
   hoursPerSession: number;
   startDate: Date | undefined;
+  startTime: string;
   maxParticipants: number;
   price: number;
   discountPrice: number;
@@ -397,9 +400,10 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     sessions: 1,
     hoursPerSession: 2,
     startDate: undefined,
+    startTime: '18:00',
     maxParticipants: 12,
-    price: 0,
-    discountPrice: 0,
+    price: 2800,
+    discountPrice: 2200,
     courseInfo: '',
     practicalInfo: ''
   });
@@ -588,6 +592,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     const template = courseTemplates.find(t => t.id === courseType);
     if (template) {
       return {
+        title_template: template.title_template,
         subtitle: template.subtitle,
         course_info: template.course_info,
         practical_info: template.practical_info,
@@ -596,32 +601,38 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         max_participants: template.max_participants,
         sessions: template.sessions,
         hours_per_session: template.hours_per_session,
+        start_time: template.start_time,
       };
     }
     
     // Fallback to legacy mapping for backward compatibility
     const legacyTemplates = {
       'niv1': {
+        title_template: 'Nivå 1 - Scenarbete & Improv Comedy',
         subtitle: 'Grundkurs i improvisationsteater',
         course_info: 'En introduktionskurs för nybörjare inom improvisationsteater.',
         practical_info: 'Ta med bekväma kläder och vara beredd att ha kul!',
-        price: 2400,
-        discount_price: 1800,
+        price: 2800,
+        discount_price: 2200,
         max_participants: 12,
         sessions: 8,
         hours_per_session: 2,
+        start_time: '18:00',
       },
       'niv2': {
+        title_template: 'Nivå 2 - Långform improviserad komik',
         subtitle: 'Fördjupningskurs i improvisationsteater',
         course_info: 'En fortsättningskurs för dig som redan har grundläggande kunskaper.',
         practical_info: 'Kräver tidigare erfarenhet av improvisationsteater.',
         price: 2800,
-        discount_price: 2100,
+        discount_price: 2200,
         max_participants: 10,
         sessions: 8,
         hours_per_session: 2.5,
+        start_time: '18:00',
       },
       'houseteam': {
+        title_template: 'House Team & fortsättning',
         subtitle: 'Regelbunden träning för erfarna improvisatörer',
         course_info: 'Kontinuerlig träning och utveckling för medlemmar i LIT:s house team.',
         practical_info: 'Endast för inbjudna medlemmar.',
@@ -630,8 +641,10 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         max_participants: 8,
         sessions: 12,
         hours_per_session: 2,
+        start_time: '18:00',
       },
       'helgworkshop': {
+        title_template: 'Helgworkshop',
         subtitle: 'Intensiv workshop under en helg',
         course_info: 'En koncentrerad workshop som sträcker sig över en helg.',
         practical_info: 'Fredag kväll, lördag och söndag.',
@@ -640,6 +653,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         max_participants: 15,
         sessions: 3,
         hours_per_session: 4,
+        start_time: '18:00',
       }
     };
     return legacyTemplates[courseType as keyof typeof legacyTemplates];
@@ -660,6 +674,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                        formData.courseType === 'houseteam' ? 'House Team & fortsättning' : course.course_title,
           subtitle: formData.subtitle,
           start_date: formData.startDate?.toISOString().split('T')[0],
+          start_time: formData.startTime,
           max_participants: formData.maxParticipants,
           course_info: formData.courseInfo,
           practical_info: formData.practicalInfo,
@@ -710,27 +725,35 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       let courseTitle = '';
       let tableName = '';
       
-      switch (courseData.courseType) {
-        case 'custom':
-          courseTitle = courseData.customName;
-          tableName = `course_custom_${courseData.customName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
-          break;
-        case 'niv1':
-          courseTitle = 'Nivå 1 - Scenarbete & Improv Comedy';
-          tableName = `course_niv_1_scenarbete_improv_comedy_${Date.now()}`;
-          break;
-        case 'niv2':
-          courseTitle = 'Nivå 2 - Långform improviserad komik';
-          tableName = `course_niv_2_langform_improviserad_komik_${Date.now()}`;
-          break;
-        case 'helgworkshop':
-          courseTitle = courseData.customName;
-          tableName = `course_helgworkshop_${courseData.customName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
-          break;
-        case 'houseteam':
-          courseTitle = 'House Team & fortsättning';
-          tableName = `course_house_team_fortsattning_${Date.now()}`;
-          break;
+      // Check if it's a template and use its title
+      const template = courseTemplates.find(t => t.id === courseData.courseType);
+      if (template) {
+        courseTitle = template.title_template;
+        tableName = `course_${template.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
+      } else {
+        // Legacy handling for non-template courses
+        switch (courseData.courseType) {
+          case 'custom':
+            courseTitle = courseData.customName;
+            tableName = `course_custom_${courseData.customName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
+            break;
+          case 'niv1':
+            courseTitle = 'Nivå 1 - Scenarbete & Improv Comedy';
+            tableName = `course_niv_1_scenarbete_improv_comedy_${Date.now()}`;
+            break;
+          case 'niv2':
+            courseTitle = 'Nivå 2 - Långform improviserad komik';
+            tableName = `course_niv_2_langform_improviserad_komik_${Date.now()}`;
+            break;
+          case 'helgworkshop':
+            courseTitle = courseData.customName;
+            tableName = `course_helgworkshop_${courseData.customName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
+            break;
+          case 'houseteam':
+            courseTitle = 'House Team & fortsättning';
+            tableName = `course_house_team_fortsattning_${Date.now()}`;
+            break;
+        }
       }
 
       // Create course instance
@@ -741,6 +764,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
           subtitle: courseData.subtitle,
           table_name: tableName,
           start_date: courseData.startDate?.toISOString().split('T')[0],
+          start_time: courseData.startTime,
           max_participants: courseData.maxParticipants,
           course_info: courseData.courseInfo,
           practical_info: courseData.practicalInfo,
@@ -866,9 +890,10 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       sessions: 1,
       hoursPerSession: 2,
       startDate: undefined,
+      startTime: '18:00',
       maxParticipants: 12,
-      price: 0,
-      discountPrice: 0,
+      price: 2800,
+      discountPrice: 2200,
       courseInfo: '',
       practicalInfo: ''
     });
@@ -894,9 +919,10 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       sessions: course.sessions || 1,
       hoursPerSession: course.hours_per_session || 2,
       startDate: course.start_date ? new Date(course.start_date) : undefined,
+      startTime: course.start_time || '18:00',
       maxParticipants: course.max_participants || 12,
-      price: course.price || 0,
-      discountPrice: course.discount_price || 0,
+      price: course.price || 2800,
+      discountPrice: course.discount_price || 2200,
       courseInfo: course.course_info || '',
       practicalInfo: course.practical_info || ''
     });
@@ -1085,9 +1111,10 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                           subtitle: '',
                           sessions: 8,
                           hoursPerSession: 2,
+                          startTime: '18:00',
                           maxParticipants: 12,
-                          price: 0,
-                          discountPrice: 0,
+                          price: 2800,
+                          discountPrice: 2200,
                           courseInfo: '',
                           practicalInfo: ''
                         }));
@@ -1098,9 +1125,11 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                           setNewCourse(prev => ({
                             ...prev,
                             courseType: value,
+                            customName: templateData.title_template || '',
                             subtitle: templateData.subtitle || '',
                             sessions: templateData.sessions,
                             hoursPerSession: templateData.hours_per_session,
+                            startTime: templateData.start_time || '18:00',
                             maxParticipants: templateData.max_participants,
                             price: templateData.price,
                             discountPrice: templateData.discount_price || 0,
@@ -1214,31 +1243,42 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                   </div>
                 </div>
 
-                <div className="grid gap-2">
-                  <Label>Startdatum</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "justify-start text-left font-normal",
-                          !newCourse.startDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {newCourse.startDate ? format(newCourse.startDate, "PPP") : <span>Välj datum</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={newCourse.startDate}
-                        onSelect={(date) => setNewCourse({...newCourse, startDate: date})}
-                        initialFocus
-                        className="pointer-events-auto"
-                      />
-                    </PopoverContent>
-                  </Popover>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label>Startdatum</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "justify-start text-left font-normal",
+                            !newCourse.startDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {newCourse.startDate ? format(newCourse.startDate, "PPP") : <span>Välj datum</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={newCourse.startDate}
+                          onSelect={(date) => setNewCourse({...newCourse, startDate: date})}
+                          initialFocus
+                          className="pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="startTime">Starttid</Label>
+                    <Input
+                      id="startTime"
+                      type="time"
+                      value={newCourse.startTime}
+                      onChange={(e) => setNewCourse({...newCourse, startTime: e.target.value})}
+                    />
+                  </div>
                 </div>
 
                 <div className="grid gap-2">
@@ -1297,17 +1337,32 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                   />
                 </div>
 
-                <div className="grid gap-2">
-                  <Label htmlFor="practicalInfo">Praktisk information</Label>
-                  <Textarea
-                    id="practicalInfo"
-                    value={newCourse.practicalInfo}
-                    onChange={(e) => setNewCourse({...newCourse, practicalInfo: e.target.value})}
-                    placeholder="Tider, plats, vad man ska ta med sig, etc."
-                    rows={3}
-                    className="resize-y min-h-[80px] max-h-[150px] overflow-y-auto"
-                  />
-                </div>
+                <RepeatablePracticalInfo
+                  value={newCourse.practicalInfo}
+                  onChange={(value) => setNewCourse({...newCourse, practicalInfo: value})}
+                  baseInfo={(() => {
+                    // Generate base practical info from course details
+                    const baseItems = [];
+                    if (newCourse.sessions && newCourse.sessions > 0 && newCourse.hoursPerSession && newCourse.hoursPerSession > 0) {
+                      baseItems.push(`${newCourse.sessions} tillfällen à ${newCourse.hoursPerSession}h`);
+                    }
+                    if (newCourse.startDate) {
+                      const dateStr = `Startdatum: ${newCourse.startDate.toLocaleDateString('sv-SE', { day: 'numeric', month: 'long' })}`;
+                      const timeStr = newCourse.startTime ? ` kl. ${newCourse.startTime}` : '';
+                      baseItems.push(dateStr + timeStr);
+                    }
+                    if (newCourse.maxParticipants && newCourse.maxParticipants > 0) {
+                      baseItems.push(`Max ${newCourse.maxParticipants} deltagare`);
+                    }
+                    if (newCourse.price && newCourse.price > 0) {
+                      baseItems.push(`Ordinarie pris: ${newCourse.price} kr`);
+                    }
+                    if (newCourse.discountPrice && newCourse.discountPrice > 0) {
+                      baseItems.push(`Rabatterat pris: ${newCourse.discountPrice} kr (pensionär, student eller omtag)`);
+                    }
+                    return baseItems.join('\n');
+                  })()}
+                />
 
                 <div className="flex justify-end gap-2 pt-4">
                   <Button variant="outline" onClick={() => {

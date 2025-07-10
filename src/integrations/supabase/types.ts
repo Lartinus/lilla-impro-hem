@@ -163,6 +163,7 @@ export type Database = {
           sessions: number | null
           sort_order: number | null
           start_date: string | null
+          start_time: string | null
           subtitle: string | null
           table_name: string
         }
@@ -185,6 +186,7 @@ export type Database = {
           sessions?: number | null
           sort_order?: number | null
           start_date?: string | null
+          start_time?: string | null
           subtitle?: string | null
           table_name: string
         }
@@ -207,6 +209,7 @@ export type Database = {
           sessions?: number | null
           sort_order?: number | null
           start_date?: string | null
+          start_time?: string | null
           subtitle?: string | null
           table_name?: string
         }
@@ -312,6 +315,7 @@ export type Database = {
           practical_info: string | null
           price: number
           sessions: number
+          start_time: string | null
           subtitle: string | null
           title_template: string
           updated_at: string
@@ -328,6 +332,7 @@ export type Database = {
           practical_info?: string | null
           price?: number
           sessions?: number
+          start_time?: string | null
           subtitle?: string | null
           title_template: string
           updated_at?: string
@@ -344,6 +349,7 @@ export type Database = {
           practical_info?: string | null
           price?: number
           sessions?: number
+          start_time?: string | null
           subtitle?: string | null
           title_template?: string
           updated_at?: string

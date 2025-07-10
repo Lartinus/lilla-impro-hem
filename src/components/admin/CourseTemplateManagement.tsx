@@ -24,6 +24,7 @@ interface CourseTemplate {
   max_participants: number;
   sessions: number;
   hours_per_session: number;
+  start_time?: string;
   is_active: boolean;
 }
 
@@ -174,10 +175,11 @@ export const CourseTemplateManagement = () => {
       course_info: '',
       practical_info: '',
       price: 2800,
-      discount_price: 0,
+      discount_price: 2200,
       max_participants: 12,
       sessions: 8,
       hours_per_session: 2,
+      start_time: '18:00',
       is_active: true,
     });
     setIsCreatingNew(true);
@@ -330,7 +332,7 @@ export const CourseTemplateManagement = () => {
                   onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, sessions: parseInt(e.target.value) || 0 } : null)}
                 />
               </div>
-              <div className="space-y-2">
+                <div className="space-y-2">
                 <Label htmlFor="hours_per_session">Timmar per tillfälle</Label>
                 <Input
                   id="hours_per_session"
@@ -338,6 +340,15 @@ export const CourseTemplateManagement = () => {
                   step="0.5"
                   value={editingTemplate.hours_per_session}
                   onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, hours_per_session: parseFloat(e.target.value) || 0 } : null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="start_time">Starttid</Label>
+                <Input
+                  id="start_time"
+                  type="time"
+                  value={editingTemplate.start_time || '18:00'}
+                  onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, start_time: e.target.value } : null)}
                 />
               </div>
             </div>
@@ -407,6 +418,7 @@ export const CourseTemplateManagement = () => {
                     <span>Max {template.max_participants} deltagare</span>
                     <span>{template.sessions} tillfällen</span>
                     <span>{template.hours_per_session}h per tillfälle</span>
+                    {template.start_time && <span>Starttid: {template.start_time}</span>}
                   </div>
                 </div>
                 

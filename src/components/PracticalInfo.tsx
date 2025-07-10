@@ -4,6 +4,7 @@ interface PracticalInfoProps {
   sessions?: number;
   hoursPerSession?: number;
   startDate?: string | null;
+  startTime?: string | null;
   maxParticipants?: number | null;
   price?: number;
   discountPrice?: number;
@@ -15,6 +16,7 @@ export const PracticalInfo = ({
   sessions = 8, 
   hoursPerSession = 2.5, 
   startDate, 
+  startTime,
   maxParticipants = 12, 
   price, 
   discountPrice,
@@ -49,7 +51,9 @@ export const PracticalInfo = ({
     }
     
     if (startDate) {
-      items.push(`Startdatum: ${formatDate(startDate)}`);
+      const dateStr = `Startdatum: ${formatDate(startDate)}`;
+      const timeStr = startTime ? ` kl. ${startTime}` : '';
+      items.push(dateStr + timeStr);
     }
     
     if (maxParticipants && maxParticipants > 0) {
