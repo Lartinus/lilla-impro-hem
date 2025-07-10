@@ -1,0 +1,1 @@
+UPDATE course_templates SET title_template = 'Improboost!' WHERE title_template = 'Improboost! ';
