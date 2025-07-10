@@ -234,6 +234,10 @@ const handler = async (req: Request): Promise<Response> => {
           // Personalize content by replacing [NAMN] with recipient name (first name only)
           const firstName = recipient.name ? recipient.name.split(' ')[0] : '';
           let personalizedContent = finalContent.replace(/\[NAMN\]/g, firstName);
+          // Clean up extra spaces when name is empty (e.g., "Hej !" becomes "Hej!")
+          if (!firstName) {
+            personalizedContent = personalizedContent.replace(/Hej\s+!/g, 'Hej!');
+          }
           let personalizedSubject = finalSubject.replace(/\[NAMN\]/g, firstName);
           
           // Check if content is plain text or HTML
