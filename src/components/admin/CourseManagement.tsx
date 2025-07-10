@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,375 +11,38 @@ import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, User, Download, Archive, RotateCcw, ChevronUp, ChevronDown, UserPlus, UserMinus } from 'lucide-react';
+import { 
+  ArrowUpDown, 
+  ArrowUp, 
+  ArrowDown, 
+  Plus, 
+  CalendarIcon, 
+  Download, 
+  UserPlus, 
+  UserMinus,
+  Users
+} from 'lucide-react';
 import { RepeatablePracticalInfo } from './RepeatablePracticalInfo';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { toast } from '@/hooks/use-toast';
 
-interface CourseInstance {
-  id: string;
-  course_title: string;
-  table_name: string;
-  start_date: string | null;
-  end_date: string | null;
-  max_participants: number | null;
-  is_active: boolean;
-  created_at: string;
-  course_info?: string | null;
-  practical_info?: string | null;
-  instructor?: string | null;
-  instructor_id_1?: string | null;
-  instructor_id_2?: string | null;
-  subtitle?: string | null;
-  sessions?: number;
-  hours_per_session?: number;
-  price?: number;
-  discount_price?: number;
-  sort_order?: number;
-  start_time?: string | null;
-}
+// Import types and utilities
+import {
+  CourseWithBookings,
+  NewCourseForm,
+  SortField,
+  SortDirection,
+  CourseTemplate,
+  Performer
+} from '@/types/courseManagement';
+import { getTemplateData } from '@/utils/courseTemplateHelpers';
+import { handleSort as handleSortUtil, sortCourses, exportParticipants } from '@/utils/courseTableUtils';
+import { useCourseManagementMutations } from '@/hooks/useCourseManagementMutations';
+import { useCourseParticipants } from '@/hooks/useCourseParticipants';
 
-interface CourseWithBookings extends CourseInstance {
-  bookingCount: number;
-}
-
-interface CourseParticipant {
-  email: string;
-  name: string;
-}
-
-type SortField = 'course_title' | 'start_date' | 'bookingCount' | 'sort_order';
-type SortDirection = 'asc' | 'desc';
-
-interface NewCourseForm {
-  courseType: string;
-  customName: string;
-  subtitle: string;
-  instructor1: string;
-  instructor2: string;
-  sessions: number;
-  hoursPerSession: number;
-  startDate: Date | undefined;
-  startTime: string;
-  maxParticipants: number;
-  price: number;
-  discountPrice: number;
-  courseInfo: string;
-  practicalInfo: string;
-}
-
-// Mobile Course Card Component
-function MobileCourseCard({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, onMarkCompleted, onRestore, performers, showCompleted, onMoveUp, onMoveDown, canMoveUp, canMoveDown }: {
-  course: CourseWithBookings;
-  onEdit: (course: CourseWithBookings) => void;
-  onToggleStatus: (course: CourseWithBookings) => void;
-  onDelete: (course: CourseWithBookings) => void;
-  onViewParticipants: (course: CourseWithBookings) => void;
-  onMarkCompleted?: (course: CourseWithBookings) => void;
-  onRestore?: (course: CourseWithBookings) => void;
-  onMoveUp: (course: CourseWithBookings) => void;
-  onMoveDown: (course: CourseWithBookings) => void;
-  canMoveUp: boolean;
-  canMoveDown: boolean;
-  performers?: any[];
-  showCompleted: boolean;
-}) {
-  return (
-    <Card>
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="flex flex-col">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onMoveUp(course)}
-                disabled={!canMoveUp}
-                className="w-6 h-6 p-0"
-              >
-                <ChevronUp className="w-3 h-3" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onMoveDown(course)}
-                disabled={!canMoveDown}
-                className="w-6 h-6 p-0"
-              >
-                <ChevronDown className="w-3 h-3" />
-              </Button>
-            </div>
-            <span className="text-xs text-muted-foreground">#{course.sort_order || 0}</span>
-          </div>
-          <Badge variant={course.is_active ? "default" : "secondary"}>
-            {course.is_active ? 'Aktiv' : 'Inaktiv'}
-          </Badge>
-        </div>
-
-        <div className="space-y-3">
-          <div>
-            <h3 className="font-semibold text-base leading-5">{course.course_title}</h3>
-            {course.subtitle && (
-              <p className="text-sm text-muted-foreground mt-1">{course.subtitle}</p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-muted-foreground">Startdatum:</span>
-              <div>{course.start_date ? format(new Date(course.start_date), 'yyyy-MM-dd') : 'Ej satt'}</div>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Kursledare:</span>
-              <div>
-                {/* Visa båda kursledarna om de finns */}
-                {(() => {
-                  const instructor1 = performers?.find(p => p.id === course.instructor_id_1);
-                  const instructor2 = performers?.find(p => p.id === course.instructor_id_2);
-                  const instructors = [instructor1?.name, instructor2?.name].filter(Boolean);
-                  return instructors.length > 0 ? instructors.join(', ') : 'Ej satt';
-                })()}
-              </div>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Anmälningar:</span>
-              <div className="font-medium">{course.bookingCount}</div>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Max antal:</span>
-              <div>{course.max_participants || 12}</div>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2 pt-2">
-            {/* Första raden - Primära åtgärder */}
-            <div className="flex gap-2 min-w-0">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => onViewParticipants(course)}
-                className="flex-1 min-w-0 text-xs px-2"
-              >
-                <Users className="w-3 h-3 mr-1 flex-shrink-0" />
-                <span className="truncate">Deltagare ({course.bookingCount})</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => onEdit(course)}
-                className="flex-1 min-w-0 text-xs px-2"
-              >
-                <Edit className="w-3 h-3 mr-1 flex-shrink-0" />
-                <span className="truncate">Redigera</span>
-              </Button>
-            </div>
-            
-            {/* Andra raden - Sekundära åtgärder */}
-            <div className="flex gap-2 min-w-0">
-              {showCompleted && onRestore && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => onRestore(course)}
-                  className="flex-1 min-w-0 text-xs px-2"
-                >
-                  <RotateCcw className="w-3 h-3 mr-1 flex-shrink-0" />
-                  <span className="truncate">Återställ</span>
-                </Button>
-              )}
-              {!showCompleted && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => onToggleStatus(course)}
-                  className="flex-1 min-w-0 text-xs px-2"
-                >
-                  {course.is_active ? (
-                    <PowerOff className="w-3 h-3 mr-1 flex-shrink-0" />
-                  ) : (
-                    <Power className="w-3 h-3 mr-1 flex-shrink-0" />
-                  )}
-                  <span className="truncate">{course.is_active ? 'Inaktivera' : 'Aktivera'}</span>
-                </Button>
-              )}
-              {!showCompleted && onMarkCompleted && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => onMarkCompleted(course)}
-                  className="flex-1 min-w-0 text-xs px-2"
-                >
-                  <Archive className="w-3 h-3 mr-1 flex-shrink-0" />
-                  <span className="truncate">Genomförd</span>
-                </Button>
-              )}
-              <Button 
-                variant="destructive" 
-                size="sm"
-                onClick={() => {
-                  if (confirm(`Är du säker på att du vill radera "${course.course_title}"? Detta kan inte ångras.`)) {
-                    onDelete(course);
-                  }
-                }}
-                className={`min-w-0 px-2 ${showCompleted ? (onRestore ? "w-10" : "flex-1") : "w-10"}`}
-              >
-                <Trash2 className="w-3 h-3 flex-shrink-0" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-// Course Row Component
-function CourseRow({ course, onEdit, onToggleStatus, onDelete, onViewParticipants, onMarkCompleted, onRestore, performers, showCompleted, onMoveUp, onMoveDown, canMoveUp, canMoveDown }: {
-  course: CourseWithBookings;
-  onEdit: (course: CourseWithBookings) => void;
-  onToggleStatus: (course: CourseWithBookings) => void;
-  onDelete: (course: CourseWithBookings) => void;
-  onViewParticipants: (course: CourseWithBookings) => void;
-  onMarkCompleted?: (course: CourseWithBookings) => void;
-  onRestore?: (course: CourseWithBookings) => void;
-  onMoveUp: (course: CourseWithBookings) => void;
-  onMoveDown: (course: CourseWithBookings) => void;
-  canMoveUp: boolean;
-  canMoveDown: boolean;
-  performers?: any[];
-  showCompleted: boolean;
-}) {
-  return (
-    <TableRow>
-      <TableCell>
-        <div className="flex items-center gap-2">
-          <div className="flex flex-col">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onMoveUp(course)}
-              disabled={!canMoveUp}
-              className="w-6 h-6 p-0"
-            >
-              <ChevronUp className="w-3 h-3" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onMoveDown(course)}
-              disabled={!canMoveDown}
-              className="w-6 h-6 p-0"
-            >
-              <ChevronDown className="w-3 h-3" />
-            </Button>
-          </div>
-          <span className="text-xs text-muted-foreground">#{course.sort_order || 0}</span>
-        </div>
-      </TableCell>
-      <TableCell className="font-medium">{course.course_title}</TableCell>
-      <TableCell>
-        {course.start_date ? new Date(course.start_date).toLocaleDateString('sv-SE') : '-'}
-      </TableCell>
-      <TableCell className="whitespace-nowrap">
-        {/* Visa båda kursledarna om de finns */}
-        {(() => {
-          const instructor1 = performers?.find(p => p.id === course.instructor_id_1);
-          const instructor2 = performers?.find(p => p.id === course.instructor_id_2);
-          const instructors = [instructor1?.name, instructor2?.name].filter(Boolean);
-          return instructors.length > 0 ? instructors.join(', ') : 'Ingen kursledare';
-        })()}
-      </TableCell>
-      <TableCell>
-        <span className="font-semibold">{course.bookingCount}</span>
-      </TableCell>
-      <TableCell>{course.max_participants || '-'}</TableCell>
-      <TableCell>
-        <Badge variant={course.is_active ? "default" : "secondary"}>
-          {course.is_active ? 'Aktiv' : 'Inaktiv'}
-        </Badge>
-      </TableCell>
-      <TableCell>
-        <div className="space-y-2">
-          {/* Första raden - Primära åtgärder */}
-          <div className="flex gap-2 min-w-0">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => onViewParticipants(course)}
-              className="flex-1 min-w-0 text-xs px-2"
-            >
-              <Users className="w-3 h-3 mr-1 flex-shrink-0" />
-              <span className="truncate">Deltagare ({course.bookingCount})</span>
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => onEdit(course)}
-              className="flex-1 min-w-0 text-xs px-2"
-            >
-              <Edit className="w-3 h-3 mr-1 flex-shrink-0" />
-              <span className="truncate">Redigera</span>
-            </Button>
-          </div>
-          
-          {/* Andra raden - Sekundära åtgärder */}
-          <div className="flex gap-2 min-w-0">
-            {showCompleted && onRestore && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => onRestore(course)}
-                className="flex-1 min-w-0 text-xs px-2"
-              >
-                <RotateCcw className="w-3 h-3 mr-1 flex-shrink-0" />
-                <span className="truncate">Återställ</span>
-              </Button>
-            )}
-            {!showCompleted && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => onToggleStatus(course)}
-                className="flex-1 min-w-0 text-xs px-2"
-              >
-                {course.is_active ? (
-                  <PowerOff className="w-3 h-3 mr-1 flex-shrink-0" />
-                ) : (
-                  <Power className="w-3 h-3 mr-1 flex-shrink-0" />
-                )}
-                <span className="truncate">{course.is_active ? 'Inaktivera' : 'Aktivera'}</span>
-              </Button>
-            )}
-            {!showCompleted && onMarkCompleted && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => onMarkCompleted(course)}
-                className="flex-1 min-w-0 text-xs px-2"
-              >
-                <Archive className="w-3 h-3 mr-1 flex-shrink-0" />
-                <span className="truncate">Genomförd</span>
-              </Button>
-            )}
-            <Button 
-              variant="destructive" 
-              size="sm"
-              onClick={() => {
-                if (confirm(`Är du säker på att du vill radera kursen "${course.course_title}"? Detta kan inte ångras.`)) {
-                  onDelete(course);
-                }
-              }}
-              className={`min-w-0 px-2 ${showCompleted ? (onRestore ? "w-10" : "flex-1") : "w-10"}`}
-            >
-              <Trash2 className="w-3 h-3 flex-shrink-0" />
-            </Button>
-          </div>
-        </div>
-      </TableCell>
-    </TableRow>
-  );
-}
+// Import components
+import { MobileCourseCard } from './course/MobileCourseCard';
+import { CourseRow } from './course/CourseRow';
 
 export const CourseManagement = ({ showCompleted = false }: { showCompleted?: boolean }) => {
   const [sortField, setSortField] = useState<SortField>('sort_order');
@@ -390,14 +52,6 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
   const [editingCourse, setEditingCourse] = useState<CourseWithBookings | null>(null);
   const [isParticipantsDialogOpen, setIsParticipantsDialogOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<CourseWithBookings | null>(null);
-  const [participants, setParticipants] = useState<CourseParticipant[]>([]);
-  const [isLoadingParticipants, setIsLoadingParticipants] = useState(false);
-  const [isAddParticipantFormOpen, setIsAddParticipantFormOpen] = useState(false);
-  const [newParticipant, setNewParticipant] = useState({
-    name: '',
-    email: '',
-    phone: ''
-  });
   const [newCourse, setNewCourse] = useState<NewCourseForm>({
     courseType: '',
     customName: '',
@@ -415,8 +69,6 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     practicalInfo: ''
   });
 
-  const queryClient = useQueryClient();
-
   // Fetch performers from local database
   const { data: performers } = useQuery({
     queryKey: ['performers'],
@@ -428,7 +80,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         .order('name');
       
       if (error) throw error;
-      return data || [];
+      return data as Performer[] || [];
     },
     retry: 1
   });
@@ -444,416 +96,12 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         .order('name');
       
       if (error) throw error;
-      return data || [];
+      return data as CourseTemplate[] || [];
     },
     retry: 1
   });
 
-  // Move course up/down mutations
-  const moveCourseUpMutation = useMutation({
-    mutationFn: async (course: CourseWithBookings) => {
-      const currentIndex = sortedCourses.findIndex(c => c.id === course.id);
-      if (currentIndex > 0) {
-        const prevCourse = sortedCourses[currentIndex - 1];
-        const currentSortOrder = course.sort_order || 0;
-        const prevSortOrder = prevCourse.sort_order || 0;
-        
-        await Promise.all([
-          supabase.from('course_instances').update({ sort_order: prevSortOrder }).eq('id', course.id),
-          supabase.from('course_instances').update({ sort_order: currentSortOrder }).eq('id', prevCourse.id)
-        ]);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte flytta kursen: ${error.message}`,
-        variant: "destructive"
-      });
-    }
-  });
-
-  const moveCourseDownMutation = useMutation({
-    mutationFn: async (course: CourseWithBookings) => {
-      const currentIndex = sortedCourses.findIndex(c => c.id === course.id);
-      if (currentIndex < sortedCourses.length - 1) {
-        const nextCourse = sortedCourses[currentIndex + 1];
-        const currentSortOrder = course.sort_order || 0;
-        const nextSortOrder = nextCourse.sort_order || 0;
-        
-        await Promise.all([
-          supabase.from('course_instances').update({ sort_order: nextSortOrder }).eq('id', course.id),
-          supabase.from('course_instances').update({ sort_order: currentSortOrder }).eq('id', nextCourse.id)
-        ]);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte flytta kursen: ${error.message}`,
-        variant: "destructive"
-      });
-    }
-  });
-
-  // Delete course mutation
-  const deleteCourseMutation = useMutation({
-    mutationFn: async (course: CourseWithBookings) => {
-      // Delete the booking table first
-      await supabase.rpc('drop_course_booking_table', {
-        table_name: course.table_name
-      });
-
-      // Delete the course instance
-      const { error } = await supabase
-        .from('course_instances')
-        .delete()
-        .eq('id', course.id);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-courses-formatted'] });
-      toast({
-        title: "Kurs raderad",
-        description: "Kursen har raderats framgångsrikt",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte radera kurs: ${error.message}`,
-        variant: "destructive"
-      });
-    }
-  });
-
-  // Toggle course status mutation
-  const toggleStatusMutation = useMutation({
-    mutationFn: async (course: CourseWithBookings) => {
-      const { error } = await supabase
-        .from('course_instances')
-        .update({ is_active: !course.is_active })
-        .eq('id', course.id);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-courses-formatted'] });
-      toast({
-        title: "Status uppdaterad",
-        description: "Kursstatus har ändrats framgångsrikt",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte ändra kursstatus: ${error.message}`,
-        variant: "destructive"
-      });
-    }
-  });
-
-  // Mark course as completed mutation
-  const markCompletedMutation = useMutation({
-    mutationFn: async (course: CourseWithBookings) => {
-      const { error } = await supabase
-        .from('course_instances')
-        .update({ completed_at: new Date().toISOString() })
-        .eq('id', course.id);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
-      toast({
-        title: "Kurs markerad som genomförd",
-        description: "Kursen har flyttats till arkivet",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte markera kurs som genomförd: ${error.message}`,
-        variant: "destructive"
-      });
-    }
-  });
-
-  // Restore course from completed to active mutation
-  const restoreCourseMutation = useMutation({
-    mutationFn: async (course: CourseWithBookings) => {
-      const { error } = await supabase
-        .from('course_instances')
-        .update({ completed_at: null })
-        .eq('id', course.id);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-courses-formatted'] });
-      toast({
-        title: "Kurs återställd",
-        description: "Kursen har flyttats tillbaka till aktiva kurser",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte återställa kurs: ${error.message}`,
-        variant: "destructive"
-      });
-    }
-  });
-
-  // Template data mapping
-  const getTemplateData = (courseType: string) => {
-    // First check if it's a template from the database
-    const template = courseTemplates.find(t => t.id === courseType);
-    if (template) {
-      return {
-        title_template: template.title_template,
-        subtitle: template.subtitle,
-        course_info: template.course_info,
-        practical_info: template.practical_info,
-        price: template.price,
-        discount_price: template.discount_price,
-        max_participants: template.max_participants,
-        sessions: template.sessions,
-        hours_per_session: template.hours_per_session,
-        start_time: template.start_time,
-      };
-    }
-    
-    // Fallback to legacy mapping for backward compatibility
-    const legacyTemplates = {
-      'niv1': {
-        title_template: 'Nivå 1 - Scenarbete & Improv Comedy',
-        subtitle: 'Grundkurs i improvisationsteater',
-        course_info: 'En introduktionskurs för nybörjare inom improvisationsteater.',
-        practical_info: 'Ta med bekväma kläder och vara beredd att ha kul!',
-        price: 2800,
-        discount_price: 2200,
-        max_participants: 12,
-        sessions: 8,
-        hours_per_session: 2,
-        start_time: '18:00',
-      },
-      'niv2': {
-        title_template: 'Nivå 2 - Långform improviserad komik',
-        subtitle: 'Fördjupningskurs i improvisationsteater',
-        course_info: 'En fortsättningskurs för dig som redan har grundläggande kunskaper.',
-        practical_info: 'Kräver tidigare erfarenhet av improvisationsteater.',
-        price: 2800,
-        discount_price: 2200,
-        max_participants: 10,
-        sessions: 8,
-        hours_per_session: 2.5,
-        start_time: '18:00',
-      },
-      'houseteam': {
-        title_template: 'House Team & fortsättning',
-        subtitle: 'Regelbunden träning för erfarna improvisatörer',
-        course_info: 'Kontinuerlig träning och utveckling för medlemmar i LIT:s house team.',
-        practical_info: 'Endast för inbjudna medlemmar.',
-        price: 1500,
-        discount_price: 1200,
-        max_participants: 8,
-        sessions: 12,
-        hours_per_session: 2,
-        start_time: '18:00',
-      },
-      'helgworkshop': {
-        title_template: 'Helgworkshop',
-        subtitle: 'Intensiv workshop under en helg',
-        course_info: 'En koncentrerad workshop som sträcker sig över en helg.',
-        practical_info: 'Fredag kväll, lördag och söndag.',
-        price: 1800,
-        discount_price: 1400,
-        max_participants: 15,
-        sessions: 3,
-        hours_per_session: 4,
-        start_time: '18:00',
-      }
-    };
-    return legacyTemplates[courseType as keyof typeof legacyTemplates];
-  };
-
-  // Update course mutation
-  const updateCourseMutation = useMutation({
-    mutationFn: async (courseData: { course: CourseWithBookings; formData: NewCourseForm }) => {
-      const { course, formData } = courseData;
-      
-      const { error } = await supabase
-        .from('course_instances')
-        .update({
-          course_title: (() => {
-            // Check if it's a template
-            const template = courseTemplates.find(t => t.id === formData.courseType);
-            if (template) {
-              return template.title_template || formData.customName || course.course_title;
-            }
-            
-            // Handle legacy course types
-            switch (formData.courseType) {
-              case 'custom':
-              case 'helgworkshop':
-                return formData.customName;
-              case 'niv1':
-                return 'Nivå 1 - Scenarbete & Improv Comedy';
-              case 'niv2':
-                return 'Nivå 2 - Långform improviserad komik';
-              case 'houseteam':
-                return 'House Team & fortsättning';
-              default:
-                return course.course_title;
-            }
-          })(),
-          subtitle: formData.subtitle,
-          start_date: formData.startDate?.toISOString().split('T')[0],
-          start_time: formData.startTime,
-          max_participants: formData.maxParticipants,
-          course_info: formData.courseInfo,
-          practical_info: formData.practicalInfo,
-          instructor_id_1: formData.instructor1 ? performers?.find(p => p.id === formData.instructor1)?.id || null : null,
-          instructor_id_2: formData.instructor2 ? performers?.find(p => p.id === formData.instructor2)?.id || null : null,
-          price: formData.price,
-          discount_price: formData.discountPrice,
-          sessions: formData.sessions,
-          hours_per_session: formData.hoursPerSession,
-        })
-        .eq('id', course.id);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-courses-formatted'] });
-      setIsDialogOpen(false);
-      setIsEditMode(false);
-      setEditingCourse(null);
-      resetForm();
-      toast({
-        title: "Kurs uppdaterad",
-        description: "Kursen har uppdaterats framgångsrikt",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte uppdatera kurs: ${error.message}`,
-        variant: "destructive"
-      });
-    }
-  });
-
-  const createCourseMutation = useMutation({
-    mutationFn: async (courseData: NewCourseForm) => {
-      // Get the highest sort_order and add 1
-      const { data: maxOrderData } = await supabase
-        .from('course_instances')
-        .select('sort_order')
-        .order('sort_order', { ascending: false })
-        .limit(1);
-      
-      const nextSortOrder = (maxOrderData?.[0]?.sort_order || 0) + 1;
-
-      // Generate course title based on type
-      let courseTitle = '';
-      let tableName = '';
-      
-      // Check if it's a template and use its title
-      const template = courseTemplates.find(t => t.id === courseData.courseType);
-      if (template) {
-        courseTitle = (template.title_template || courseData.customName || 'Untitled Course').trim();
-        tableName = `course_${template.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
-      } else {
-        // Legacy handling for non-template courses
-        switch (courseData.courseType) {
-          case 'custom':
-            courseTitle = courseData.customName;
-            tableName = `course_custom_${courseData.customName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
-            break;
-          case 'niv1':
-            courseTitle = 'Nivå 1 - Scenarbete & Improv Comedy';
-            tableName = `course_niv_1_scenarbete_improv_comedy_${Date.now()}`;
-            break;
-          case 'niv2':
-            courseTitle = 'Nivå 2 - Långform improviserad komik';
-            tableName = `course_niv_2_langform_improviserad_komik_${Date.now()}`;
-            break;
-          case 'helgworkshop':
-            courseTitle = courseData.customName;
-            tableName = `course_helgworkshop_${courseData.customName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
-            break;
-          case 'houseteam':
-            courseTitle = 'House Team & fortsättning';
-            tableName = `course_house_team_fortsattning_${Date.now()}`;
-            break;
-        }
-      }
-
-      // Create course instance
-      const { data: courseInstance, error: courseError } = await supabase
-        .from('course_instances')
-        .insert({
-          course_title: courseTitle,
-          subtitle: courseData.subtitle,
-          table_name: tableName,
-          start_date: courseData.startDate?.toISOString().split('T')[0],
-          start_time: courseData.startTime,
-          max_participants: courseData.maxParticipants,
-          course_info: courseData.courseInfo,
-          practical_info: courseData.practicalInfo,
-          instructor_id_1: courseData.instructor1 ? performers?.find(p => p.id === courseData.instructor1)?.id || null : null,
-          instructor_id_2: courseData.instructor2 ? performers?.find(p => p.id === courseData.instructor2)?.id || null : null,
-          price: courseData.price,
-          discount_price: courseData.discountPrice,
-          sessions: courseData.sessions,
-          hours_per_session: courseData.hoursPerSession,
-          sort_order: nextSortOrder,
-          is_active: true
-        })
-        .select()
-        .single();
-
-      if (courseError) throw courseError;
-
-      // Create the booking table
-      await supabase.rpc('create_course_booking_table', {
-        table_name: tableName
-      });
-
-      return courseInstance;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-courses-formatted'] });
-      setIsDialogOpen(false);
-      resetForm();
-      toast({
-        title: "Kurs skapad",
-        description: "Kursen har skapats framgångsrikt",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte skapa kurs: ${error.message}`,
-        variant: "destructive"
-      });
-    }
-  });
-
+  // Fetch courses
   const { data: courses, isLoading } = useQuery({
     queryKey: ['admin-courses', showCompleted],
     queryFn: async (): Promise<CourseWithBookings[]> => {
@@ -872,7 +120,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
 
       if (error) throw error;
 
-      // Get booking counts for each course using a more direct approach
+      // Get booking counts for each course
       const coursesWithBookings = await Promise.all(
         (courseInstances || []).map(async (course) => {
           try {
@@ -920,11 +168,40 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         })
       );
 
-      // Show all courses
       return coursesWithBookings;
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
+
+  // Sort courses
+  const sortedCourses = courses ? sortCourses(courses, sortField, sortDirection) : [];
+
+  // Get mutations
+  const {
+    moveCourseUpMutation,
+    moveCourseDownMutation,
+    deleteCourseMutation,
+    toggleStatusMutation,
+    markCompletedMutation,
+    restoreCourseMutation,
+    updateCourseMutation,
+    createCourseMutation
+  } = useCourseManagementMutations(sortedCourses, courseTemplates, performers);
+
+  // Get participant management
+  const {
+    participants,
+    isLoadingParticipants,
+    isAddParticipantFormOpen,
+    setIsAddParticipantFormOpen,
+    newParticipant,
+    setNewParticipant,
+    handleViewParticipants,
+    handleDeleteParticipant,
+    handleAddParticipant,
+    addParticipantMutation,
+    deleteParticipantMutation
+  } = useCourseParticipants();
 
   const resetForm = () => {
     setNewCourse({
@@ -984,171 +261,10 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     }
   };
 
-  const handleViewParticipants = async (course: CourseWithBookings) => {
+  const handleViewParticipantsWrapper = async (course: CourseWithBookings) => {
     setSelectedCourse(course);
     setIsParticipantsDialogOpen(true);
-    setIsLoadingParticipants(true);
-    setParticipants([]); // Clear previous participants
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('get-course-participants', {
-        body: { table_name: course.table_name }
-      });
-
-      if (error) {
-        console.error('Error fetching participants:', error);
-        toast({
-          title: "Fel",
-          description: "Kunde inte hämta deltagare",
-          variant: "destructive"
-        });
-        setParticipants([]);
-      } else {
-        setParticipants(data?.participants || []);
-      }
-    } catch (error) {
-      console.error('Error fetching participants:', error);
-      toast({
-        title: "Fel",
-        description: "Kunde inte hämta deltagare",
-        variant: "destructive"
-      });
-      setParticipants([]);
-    } finally {
-      setIsLoadingParticipants(false);
-    }
-  };
-
-  const exportParticipants = () => {
-    if (!selectedCourse || participants.length === 0) return;
-    
-    const csvContent = [
-      ['Namn', 'E-post'].join(','),
-      ...participants.map(p => [p.name, p.email].join(','))
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('hidden', '');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `${selectedCourse.course_title.replace(/[^a-zA-Z0-9]/g, '_')}_deltagare.csv`);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  };
-
-  // Delete participant mutation
-  const deleteParticipantMutation = useMutation({
-    mutationFn: async ({ email, tableName }: { email: string; tableName: string }) => {
-      console.log('🗑️ Attempting to delete participant:', { email, tableName });
-      
-      // Use edge function for deletion
-      const { data, error } = await supabase.functions.invoke('delete-course-participant', {
-        body: {
-          table_name: tableName,
-          participant_email: email
-        }
-      });
-
-      console.log('🗑️ Delete response:', { data, error });
-
-      if (error) {
-        console.error('❌ Edge function error:', error);
-        throw new Error(`Databasfel: ${error.message}`);
-      }
-      
-      if (!data?.success) {
-        throw new Error(data?.error || 'Deltagaren kunde inte hittas i kursen');
-      }
-      
-      return data;
-    },
-    onSuccess: () => {
-      toast({
-        title: "Deltagare raderad",
-        description: "Deltagaren har raderats från kursen."
-      });
-      // Refresh participants list
-      if (selectedCourse) {
-        handleViewParticipants(selectedCourse);
-      }
-      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte radera deltagaren: ${error.message}`,
-        variant: "destructive"
-      });
-    }
-  });
-
-  // Add participant mutation
-  const addParticipantMutation = useMutation({
-    mutationFn: async ({ name, email, phone, tableName }: { name: string; email: string; phone: string; tableName: string }) => {
-      const { data, error } = await supabase.rpc('add_course_participant', {
-        table_name: tableName,
-        participant_name: name,
-        participant_email: email,
-        participant_phone: phone
-      });
-
-      if (error) throw error;
-      
-      return data;
-    },
-    onSuccess: () => {
-      toast({
-        title: "Deltagare tillagd",
-        description: "Deltagaren har lagts till i kursen."
-      });
-      // Reset form and close
-      setNewParticipant({ name: '', email: '', phone: '' });
-      setIsAddParticipantFormOpen(false);
-      // Refresh participants list
-      if (selectedCourse) {
-        handleViewParticipants(selectedCourse);
-      }
-      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte lägga till deltagaren: ${error.message}`,
-        variant: "destructive"
-      });
-    }
-  });
-
-  const handleDeleteParticipant = (email: string) => {
-    if (!selectedCourse) return;
-    
-    if (confirm('Är du säker på att du vill radera denna deltagare från kursen?')) {
-      deleteParticipantMutation.mutate({
-        email,
-        tableName: selectedCourse.table_name
-      });
-    }
-  };
-
-  const handleAddParticipant = () => {
-    if (!selectedCourse || !newParticipant.name.trim() || !newParticipant.email.trim()) {
-      toast({
-        title: "Ofullständig information",
-        description: "Namn och e-post är obligatoriska.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    addParticipantMutation.mutate({
-      name: newParticipant.name,
-      email: newParticipant.email,
-      phone: newParticipant.phone,
-      tableName: selectedCourse.table_name
-    });
+    await handleViewParticipants(course);
   };
 
   const handleMoveUp = (course: CourseWithBookings) => {
@@ -1160,12 +276,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
   };
 
   const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortDirection('asc');
-    }
+    handleSortUtil(field, sortField, sortDirection, setSortField, setSortDirection);
   };
 
   const getSortIcon = (field: SortField) => {
@@ -1177,36 +288,20 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       <ArrowDown className="w-4 h-4" />;
   };
 
-  const sortedCourses = courses ? [...courses].sort((a, b) => {
-    if (sortField === 'sort_order') {
-      // For sort_order, always use ascending order to maintain drag order
-      return (a.sort_order || 0) - (b.sort_order || 0);
+  const exportParticipantsWrapper = () => {
+    if (!selectedCourse || participants.length === 0) return;
+    exportParticipants(selectedCourse.course_title, participants);
+  };
+
+  // Update form mutations to reset and close dialog
+  React.useEffect(() => {
+    if (updateCourseMutation.isSuccess || createCourseMutation.isSuccess) {
+      setIsDialogOpen(false);
+      setIsEditMode(false);
+      setEditingCourse(null);
+      resetForm();
     }
-
-    let aValue: string | number | Date;
-    let bValue: string | number | Date;
-
-    switch (sortField) {
-      case 'course_title':
-        aValue = a.course_title.toLowerCase();
-        bValue = b.course_title.toLowerCase();
-        break;
-      case 'start_date':
-        aValue = a.start_date ? new Date(a.start_date) : new Date(0);
-        bValue = b.start_date ? new Date(b.start_date) : new Date(0);
-        break;
-      case 'bookingCount':
-        aValue = a.bookingCount;
-        bValue = b.bookingCount;
-        break;
-      default:
-        return 0;
-    }
-
-    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-    return 0;
-  }) : [];
+  }, [updateCourseMutation.isSuccess, createCourseMutation.isSuccess]);
 
   if (isLoading) {
     return (
@@ -1271,7 +366,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                         }));
                       } else {
                         // Fill with template data
-                        const templateData = getTemplateData(value);
+                        const templateData = getTemplateData(value, courseTemplates);
                         if (templateData) {
                           setNewCourse(prev => ({
                             ...prev,
@@ -1317,7 +412,6 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                     />
                   </div>
                 )}
-
 
                 <div className="grid gap-4">
                   <div className="grid gap-2">
@@ -1377,17 +471,17 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                     <Input
                       id="hoursPerSession"
                       type="number"
-                      min="0"
                       step="0.5"
+                      min="0"
                       value={newCourse.hoursPerSession}
                       onChange={(e) => setNewCourse({...newCourse, hoursPerSession: parseFloat(e.target.value) || 0})}
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label>Startdatum</Label>
+                    <Label>Startdatum (valfritt)</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -1398,7 +492,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {newCourse.startDate ? format(newCourse.startDate, "PPP") : <span>Välj datum</span>}
+                          {newCourse.startDate ? format(newCourse.startDate, "PPP") : "Välj datum"}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -1407,13 +501,14 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                           selected={newCourse.startDate}
                           onSelect={(date) => setNewCourse({...newCourse, startDate: date})}
                           initialFocus
-                          className="pointer-events-auto"
+                          className="p-3 pointer-events-auto"
                         />
                       </PopoverContent>
                     </Popover>
                   </div>
+
                   <div className="grid gap-2">
-                    <Label htmlFor="startTime">Starttid</Label>
+                    <Label htmlFor="startTime">Starttid (valfritt)</Label>
                     <Input
                       id="startTime"
                       type="time"
@@ -1423,48 +518,47 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                   </div>
                 </div>
 
-                <div className="grid gap-2">
-                  <Label htmlFor="maxParticipants">Max deltagare (0 = dölj)</Label>
-                  <Input
-                    id="maxParticipants"
-                    type="number"
-                    min="0"
-                    value={newCourse.maxParticipants}
-                    onChange={(e) => setNewCourse({...newCourse, maxParticipants: parseInt(e.target.value) || 0})}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="price">Pris (SEK)</Label>
+                    <Label htmlFor="maxParticipants">Max antal deltagare</Label>
+                    <Input
+                      id="maxParticipants"
+                      type="number"
+                      min="1"
+                      value={newCourse.maxParticipants}
+                      onChange={(e) => setNewCourse({...newCourse, maxParticipants: parseInt(e.target.value) || 12})}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="price">Ordinarie pris (kr)</Label>
                     <Input
                       id="price"
-                      type="text"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      value={newCourse.price === 0 ? '' : newCourse.price.toString()}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, '');
-                        setNewCourse({...newCourse, price: parseInt(value) || 0});
-                      }}
-                      placeholder="0"
+                      type="number"
+                      min="0"
+                      value={newCourse.price}
+                      onChange={(e) => setNewCourse({...newCourse, price: parseInt(e.target.value) || 0})}
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="discountPrice">Rabatterat pris (SEK)</Label>
+                    <Label htmlFor="discountPrice">Rabatterat pris (kr)</Label>
                     <Input
                       id="discountPrice"
-                      type="text"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      value={newCourse.discountPrice === 0 ? '' : newCourse.discountPrice.toString()}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, '');
-                        setNewCourse({...newCourse, discountPrice: parseInt(value) || 0});
-                      }}
-                      placeholder="0"
+                      type="number"
+                      min="0"
+                      value={newCourse.discountPrice}
+                      onChange={(e) => setNewCourse({...newCourse, discountPrice: parseInt(e.target.value) || 0})}
                     />
                   </div>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="subtitle">Underrubrik (valfritt)</Label>
+                  <Input
+                    id="subtitle"
+                    value={newCourse.subtitle}
+                    onChange={(e) => setNewCourse({...newCourse, subtitle: e.target.value})}
+                    placeholder="Kort beskrivning av kursen"
+                  />
                 </div>
 
                 <div className="grid gap-2">
@@ -1473,28 +567,22 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                     id="courseInfo"
                     value={newCourse.courseInfo}
                     onChange={(e) => setNewCourse({...newCourse, courseInfo: e.target.value})}
-                    placeholder="Beskrivning av kursen, innehåll, mål, etc."
+                    placeholder="Detaljerad beskrivning av kursen..."
                     rows={4}
-                    className="resize-y min-h-[100px] max-h-[200px] overflow-y-auto"
                   />
                 </div>
 
                 <RepeatablePracticalInfo
-                  value={newCourse.practicalInfo}
-                  onChange={(value) => setNewCourse({...newCourse, practicalInfo: value})}
-                  baseInfo={(() => {
-                    // Generate base practical info from course details
+                  value={(() => {
                     const baseItems = [];
-                    if (newCourse.sessions && newCourse.sessions > 0 && newCourse.hoursPerSession && newCourse.hoursPerSession > 0) {
-                      baseItems.push(`${newCourse.sessions} tillfällen à ${newCourse.hoursPerSession}h`);
+                    if (newCourse.sessions && newCourse.sessions > 0) {
+                      baseItems.push(`Antal tillfällen: ${newCourse.sessions}`);
                     }
-                    if (newCourse.startDate) {
-                      const dateStr = `Startdatum: ${newCourse.startDate.toLocaleDateString('sv-SE', { day: 'numeric', month: 'long' })}`;
-                      const timeStr = newCourse.startTime ? ` kl. ${newCourse.startTime}` : '';
-                      baseItems.push(dateStr + timeStr);
+                    if (newCourse.hoursPerSession && newCourse.hoursPerSession > 0) {
+                      baseItems.push(`Timmar per tillfälle: ${newCourse.hoursPerSession}`);
                     }
-                    if (newCourse.maxParticipants && newCourse.maxParticipants > 0) {
-                      baseItems.push(`Max ${newCourse.maxParticipants} deltagare`);
+                    if (newCourse.maxParticipants) {
+                      baseItems.push(`Max antal deltagare: ${newCourse.maxParticipants}`);
                     }
                     if (newCourse.price && newCourse.price > 0) {
                       baseItems.push(`Ordinarie pris: ${newCourse.price} kr`);
@@ -1504,6 +592,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                     }
                     return baseItems.join('\n');
                   })()}
+                  onChange={(value) => setNewCourse({...newCourse, practicalInfo: value})}
                 />
 
                 <div className="flex justify-end gap-2 pt-4">
@@ -1602,7 +691,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                       onEdit={handleEditCourse}
                       onToggleStatus={course => toggleStatusMutation.mutate(course)}
                       onDelete={course => deleteCourseMutation.mutate(course)}
-                      onViewParticipants={handleViewParticipants}
+                      onViewParticipants={handleViewParticipantsWrapper}
                       onMarkCompleted={course => markCompletedMutation.mutate(course)}
                       onRestore={course => restoreCourseMutation.mutate(course)}
                       onMoveUp={handleMoveUp}
@@ -1626,7 +715,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                   onEdit={handleEditCourse}
                   onToggleStatus={course => toggleStatusMutation.mutate(course)}
                   onDelete={course => deleteCourseMutation.mutate(course)}
-                  onViewParticipants={handleViewParticipants}
+                  onViewParticipants={handleViewParticipantsWrapper}
                   onMarkCompleted={course => markCompletedMutation.mutate(course)}
                   onRestore={course => restoreCourseMutation.mutate(course)}
                   onMoveUp={handleMoveUp}
@@ -1659,7 +748,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    onClick={exportParticipants}
+                    onClick={exportParticipantsWrapper}
                   >
                     <Download className="w-4 h-4 mr-1" />
                     Exportera CSV
@@ -1716,7 +805,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                       Avbryt
                     </Button>
                     <Button 
-                      onClick={handleAddParticipant}
+                      onClick={() => selectedCourse && handleAddParticipant(selectedCourse.table_name)}
                       disabled={addParticipantMutation.isPending || !newParticipant.name.trim() || !newParticipant.email.trim()}
                     >
                       {addParticipantMutation.isPending ? 'Lägger till...' : 'Lägg till'}
@@ -1762,7 +851,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                                 <Button
                                   variant="destructive"
                                   size="sm"
-                                  onClick={() => handleDeleteParticipant(participant.email)}
+                                  onClick={() => selectedCourse && handleDeleteParticipant(participant.email, selectedCourse.table_name)}
                                   disabled={deleteParticipantMutation.isPending}
                                   className="p-2"
                                 >
