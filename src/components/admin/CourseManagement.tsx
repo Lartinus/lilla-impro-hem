@@ -1039,9 +1039,10 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     mutationFn: async ({ email, tableName }: { email: string; tableName: string }) => {
       console.log('🗑️ Attempting to delete participant:', { email, tableName });
       
-      const { data, error } = await supabase.rpc('delete_course_participant', {
-        table_name: tableName,
-        participant_email: email
+      // Try the admin-specific function first
+      const { data, error } = await supabase.rpc('delete_course_participant_admin', {
+        p_table_name: tableName,
+        p_participant_email: email
       });
 
       console.log('🗑️ Delete response:', { data, error });
@@ -1052,7 +1053,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       }
       
       if (data === false) {
-        throw new Error('Deltagaren kunde inte hittas eller du har inte behörighet att radera');
+        throw new Error('Deltagaren kunde inte hittas i kursen');
       }
       
       return data;

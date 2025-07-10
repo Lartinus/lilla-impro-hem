@@ -1000,6 +1000,10 @@ export type Database = {
         Args: { table_name: string; participant_email: string }
         Returns: boolean
       }
+      delete_course_participant_admin: {
+        Args: { p_table_name: string; p_participant_email: string }
+        Returns: boolean
+      }
       drop_course_booking_table: {
         Args: { table_name: string }
         Returns: undefined
