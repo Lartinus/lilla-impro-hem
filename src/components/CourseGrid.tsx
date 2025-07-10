@@ -27,7 +27,7 @@ const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
       {courses.length === 0 ? (
         <div className="bg-white shadow-lg border-4 border-white mb-6">
           <div className="p-6 md:p-8">
-            <p className="text-black text-center text-xl">
+            <p className="text-black">
               Vi har inga kurser planerade just nu! Kom gärna tillbaka senare eller följ oss i våra kanaler för info om framtida kurser.
             </p>
           </div>
