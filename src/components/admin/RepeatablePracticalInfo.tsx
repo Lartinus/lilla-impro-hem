@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,43 +11,58 @@ interface RepeatablePracticalInfoProps {
 }
 
 export const RepeatablePracticalInfo = ({ value, onChange, baseInfo }: RepeatablePracticalInfoProps) => {
-  // Parse the existing practical info into an array
-  const parseItems = (infoString: string) => {
+  // Parse the existing practical info into an array, excluding base info items
+  const parseAdditionalItems = (infoString: string, baseInfoString?: string) => {
     if (!infoString) return [''];
-    return infoString.split('\n').filter(item => item.trim() !== '');
+    
+    const allItems = infoString.split('\n').filter(item => item.trim() !== '');
+    const baseItems = baseInfoString ? baseInfoString.split('\n').filter(item => item.trim() !== '') : [];
+    
+    // Filter out base items from the current value to get only additional items
+    const additionalItems = allItems.filter(item => !baseItems.includes(item));
+    
+    return additionalItems.length > 0 ? additionalItems : [''];
   };
 
-  const [items, setItems] = useState<string[]>(() => {
-    const parsed = parseItems(value);
-    return parsed.length > 0 ? parsed : [''];
+  const [additionalItems, setAdditionalItems] = useState<string[]>(() => {
+    const parsed = parseAdditionalItems(value, baseInfo);
+    return parsed;
   });
 
-  const updateValue = (newItems: string[]) => {
-    setItems(newItems);
+  // Update when baseInfo changes
+  useEffect(() => {
+    const parsed = parseAdditionalItems(value, baseInfo);
+    setAdditionalItems(parsed);
+  }, [baseInfo]);
+
+  const updateValue = (newAdditionalItems: string[]) => {
+    setAdditionalItems(newAdditionalItems);
     
-    // Combine base info with additional items
-    const baseItems = baseInfo ? parseItems(baseInfo) : [];
-    const filteredNewItems = newItems.filter(item => item.trim() !== '');
-    const allItems = [...baseItems, ...filteredNewItems];
+    // Combine base info with filtered additional items
+    const baseItems = baseInfo ? baseInfo.split('\n').filter(item => item.trim() !== '') : [];
+    const filteredAdditionalItems = newAdditionalItems.filter(item => item.trim() !== '');
+    const allItems = [...baseItems, ...filteredAdditionalItems];
     
     onChange(allItems.join('\n'));
   };
 
   const addItem = () => {
-    const newItems = [...items, ''];
+    const newItems = [...additionalItems, ''];
     updateValue(newItems);
   };
 
   const removeItem = (index: number) => {
-    const newItems = items.filter((_, i) => i !== index);
+    const newItems = additionalItems.filter((_, i) => i !== index);
     updateValue(newItems);
   };
 
   const updateItem = (index: number, newValue: string) => {
-    const newItems = [...items];
+    const newItems = [...additionalItems];
     newItems[index] = newValue;
     updateValue(newItems);
   };
+
+  const baseItems = baseInfo ? baseInfo.split('\n').filter(item => item.trim() !== '') : [];
 
   return (
     <div className="space-y-3">
@@ -65,11 +80,11 @@ export const RepeatablePracticalInfo = ({ value, onChange, baseInfo }: Repeatabl
         </Button>
       </div>
       
-      {baseInfo && (
+      {baseItems.length > 0 && (
         <div className="p-3 bg-muted/30 rounded-md border border-dashed">
           <p className="text-sm text-muted-foreground mb-2">Befintlig praktisk information:</p>
           <div className="text-sm space-y-1">
-            {parseItems(baseInfo).map((item, index) => (
+            {baseItems.map((item, index) => (
               <div key={index} className="flex items-start space-x-2">
                 <div className="w-1 h-1 bg-muted-foreground rounded-full flex-shrink-0 mt-2"></div>
                 <span>{item}</span>
@@ -80,7 +95,7 @@ export const RepeatablePracticalInfo = ({ value, onChange, baseInfo }: Repeatabl
       )}
 
       <div className="space-y-2">
-        {items.map((item, index) => (
+        {additionalItems.map((item, index) => (
           <div key={index} className="flex gap-2">
             <Input
               value={item}
@@ -88,7 +103,7 @@ export const RepeatablePracticalInfo = ({ value, onChange, baseInfo }: Repeatabl
               placeholder="T.ex. Ta med bekväma kläder"
               className="flex-1"
             />
-            {items.length > 1 && (
+            {additionalItems.length > 1 && (
               <Button
                 type="button"
                 variant="outline"
@@ -103,7 +118,7 @@ export const RepeatablePracticalInfo = ({ value, onChange, baseInfo }: Repeatabl
         ))}
       </div>
       
-      {items.length === 0 && (
+      {additionalItems.length === 1 && additionalItems[0] === '' && (
         <p className="text-sm text-muted-foreground italic">
           Klicka på "Lägg till" för att lägga till ytterligare praktisk information.
         </p>
