@@ -45,6 +45,18 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('DEBUG: Name parameter received:', name);
     console.log('DEBUG: Name type:', typeof name);
     console.log('DEBUG: Name length:', name ? name.length : 'undefined');
+    
+    // Validate that name is provided
+    if (!name || name.trim() === '') {
+      console.error('ERROR: No name provided for course confirmation email');
+      return new Response(
+        JSON.stringify({ error: 'Name is required for course confirmation email' }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
 
     // Get email template from database
     console.log('Fetching course confirmation email template...');
