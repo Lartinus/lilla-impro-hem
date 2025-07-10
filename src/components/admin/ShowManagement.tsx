@@ -166,6 +166,7 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
   const [isShowDialogOpen, setIsShowDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingShow, setEditingShow] = useState<AdminShowWithPerformers | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   
   const [newShow, setNewShow] = useState<NewShowForm>({
     title: '',
@@ -235,6 +236,21 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
         .select('*')
         .eq('is_active', true)
         .order('name');
+      
+      if (error) throw error;
+      return data || [];
+    }
+  });
+
+  // Fetch show templates
+  const { data: showTemplates } = useQuery({
+    queryKey: ['show-templates'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('show_templates')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order');
       
       if (error) throw error;
       return data || [];
@@ -367,6 +383,7 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
       setIsShowDialogOpen(false);
+      setSelectedTemplate('');
       setNewShow({
         title: '',
         slug: '',
@@ -546,6 +563,33 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
     moveShowDownMutation.mutate(show);
   };
 
+  // Handle template selection
+  const handleTemplateSelection = (templateId: string) => {
+    setSelectedTemplate(templateId);
+    
+    if (templateId) {
+      const template = showTemplates?.find(t => t.id === templateId);
+      if (template) {
+        // Generate title with current date if title_template contains {datum}
+        const currentDate = new Date().toLocaleDateString('sv-SE', { 
+          day: 'numeric', 
+          month: 'long' 
+        });
+        const generatedTitle = template.title_template.replace('{datum}', currentDate);
+        
+        setNewShow(prev => ({
+          ...prev,
+          title: generatedTitle,
+          slug: generateSlug(generatedTitle),
+          description: template.description || '',
+          regular_price: template.regular_price / 100, // Convert from öre to kr
+          discount_price: template.discount_price / 100, // Convert from öre to kr
+          max_tickets: template.max_tickets || 100
+        }));
+      }
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -718,6 +762,7 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
           if (!open) {
             setIsEditMode(false);
             setEditingShow(null);
+            setSelectedTemplate('');
           }
         }}>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -727,6 +772,27 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
+              {!isEditMode && (
+                <div>
+                  <Label htmlFor="template">Föreställningsmall (valfritt)</Label>
+                  <select
+                    id="template"
+                    value={selectedTemplate}
+                    onChange={(e) => handleTemplateSelection(e.target.value)}
+                    className="w-full px-3 py-2 border border-input bg-background rounded-md"
+                  >
+                    <option value="">Välj mall eller skapa från början...</option>
+                    {showTemplates?.map((template) => (
+                      <option key={template.id} value={template.id}>
+                        {template.name} - {template.regular_price / 100}kr
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Välj en mall för att förifyllda formuläret med standardvärden
+                  </p>
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="title">Titel</Label>
