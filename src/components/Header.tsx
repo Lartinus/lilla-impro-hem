@@ -31,7 +31,7 @@ const Header = () => {
             <NavLink to="/foretag">Företag</NavLink>
             <NavLink to="/mohippa">Möhippa</NavLink>
             <NavLink to="/anlita-oss">Anlita oss</NavLink>
-            <NavLink to="/om-oss">Om oss</NavLink>
+            <NavLink to="/om-oss">Om oss & kontakt</NavLink>
             <NavLink to="/shows">Föreställningar</NavLink>
           </nav>
 
