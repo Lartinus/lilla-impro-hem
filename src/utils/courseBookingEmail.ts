@@ -35,6 +35,9 @@ export const sendConfirmationEmail = async (
     };
     
     console.log('📧 Calling edge function with payload:', emailPayload);
+    console.log('📧 DEBUG: formData.name value:', formData.name);
+    console.log('📧 DEBUG: formData.name type:', typeof formData.name);
+    console.log('📧 DEBUG: formData.name length:', formData.name ? formData.name.length : 'undefined');
     
     const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-course-confirmation', {
       body: emailPayload

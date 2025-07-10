@@ -100,6 +100,7 @@ const handler = async (req: Request): Promise<Response> => {
     const firstName = name.split(' ')[0];
     console.log('DEBUG: Full name received:', name);
     console.log('DEBUG: Extracted first name:', firstName);
+    console.log('DEBUG: Name is undefined/empty?', !name || name.trim() === '');
 
     // Prepare variables for template
     const variables = {
