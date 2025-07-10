@@ -138,8 +138,10 @@ export const useCourseBooking = (courseTitle: string) => {
       try {
         const isHouseTeamsOrContinuation = courseTitle.includes("House teams") || courseTitle.includes("fortsättning");
         
-        console.log('📧 Sending confirmation email...');
-        const { error: emailError } = await supabase.functions.invoke('send-course-confirmation', {
+        console.log('📧 Sending confirmation email for course:', courseTitle);
+        console.log('📧 Email data:', { name: values.name, email: values.email, isAvailable: !isHouseTeamsOrContinuation });
+        
+        const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-course-confirmation', {
           body: {
             name: values.name,
             email: values.email,
@@ -150,12 +152,14 @@ export const useCourseBooking = (courseTitle: string) => {
 
         if (emailError) {
           console.error('⚠️ Error sending confirmation email:', emailError);
+          console.error('⚠️ Email error details:', JSON.stringify(emailError, null, 2));
           // Don't fail the booking just because email failed
         } else {
           console.log('📧 Confirmation email sent successfully');
+          console.log('📧 Email response:', emailResponse);
         }
       } catch (emailError) {
-        console.error('⚠️ Error sending confirmation email:', emailError);
+        console.error('⚠️ Exception while sending confirmation email:', emailError);
         // Don't fail the booking just because email failed
       }
       
