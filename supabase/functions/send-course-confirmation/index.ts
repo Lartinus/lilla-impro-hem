@@ -15,6 +15,8 @@ interface ConfirmationEmailRequest {
   email: string;
   courseTitle: string;
   isAvailable: boolean;
+  courseStartDate?: string;
+  courseStartTime?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -24,10 +26,32 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, courseTitle, isAvailable }: ConfirmationEmailRequest = await req.json();
+    const { name, email, courseTitle, isAvailable, courseStartDate, courseStartTime }: ConfirmationEmailRequest = await req.json();
 
     console.log(`Processing course confirmation for ${email} - course: ${courseTitle}`);
-    console.log('Request data:', { name, email, courseTitle, isAvailable });
+    console.log('Request data:', { name, email, courseTitle, isAvailable, courseStartDate, courseStartTime });
+
+    // Get course information if not provided
+    let finalStartDate = courseStartDate;
+    let finalStartTime = courseStartTime;
+    
+    if (!courseStartDate || !courseStartTime) {
+      console.log('Fetching course information from database...');
+      const { data: courseInstance, error: courseError } = await supabase
+        .from('course_instances')
+        .select('start_date, start_time')
+        .eq('course_title', courseTitle)
+        .eq('is_active', true)
+        .single();
+      
+      if (courseInstance && !courseError) {
+        finalStartDate = finalStartDate || courseInstance.start_date;
+        finalStartTime = finalStartTime || courseInstance.start_time;
+        console.log('Found course info:', { start_date: courseInstance.start_date, start_time: courseInstance.start_time });
+      } else {
+        console.log('Could not find course information:', courseError);
+      }
+    }
 
     // Get the email template from database
     const { data: template, error: templateError } = await supabase
@@ -87,6 +111,23 @@ const handler = async (req: Request): Promise<Response> => {
     let personalizedContent = template.content
       .replace(/\[NAMN\]/g, name)
       .replace(/\[KURSNAMN\]/g, courseTitle);
+    
+    // Add course date and time if available
+    if (finalStartDate) {
+      const formattedDate = new Date(finalStartDate).toLocaleDateString('sv-SE');
+      personalizedContent = personalizedContent.replace(/\[DATUM\]/g, formattedDate);
+      personalizedContent = personalizedContent.replace(/Kursstart:\s*\[DATUM\]/g, `Kursstart: ${formattedDate}`);
+    }
+    
+    if (finalStartTime) {
+      const formattedTime = finalStartTime.substring(0, 5); // Format HH:MM
+      personalizedContent = personalizedContent.replace(/\[TID\]/g, formattedTime);
+      personalizedContent = personalizedContent.replace(/Tid:\s*\[TID\]/g, `Tid: ${formattedTime}`);
+    }
+    
+    // Remove location/place references
+    personalizedContent = personalizedContent.replace(/Plats:\s*\[PLATS\]\n?/g, '');
+    personalizedContent = personalizedContent.replace(/Plats:\s*\[PLATS\]<br\s*\/?>/g, '');
     
     let personalizedSubject = template.subject
       .replace(/\[NAMN\]/g, name)

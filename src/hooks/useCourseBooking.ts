@@ -152,7 +152,9 @@ export const useCourseBooking = (courseTitle: string) => {
           name: values.name,
           email: values.email,
           courseTitle: actualCourseTitle,
-          isAvailable: !isHouseTeamsOrContinuation
+          isAvailable: !isHouseTeamsOrContinuation,
+          courseStartDate: courseInstance.start_date,
+          courseStartTime: courseInstance.start_time
         };
         
         console.log('📧 Calling edge function with payload:', emailPayload);
