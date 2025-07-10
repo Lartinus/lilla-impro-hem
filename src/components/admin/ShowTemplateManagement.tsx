@@ -170,8 +170,8 @@ const ShowTemplateManagement = () => {
     const templateData = {
       name: formData.get('name') as string,
       title_template: formData.get('title_template') as string,
-      regular_price: parseInt(formData.get('regular_price') as string) || 0,
-      discount_price: parseInt(formData.get('discount_price') as string) || 0,
+      regular_price: Math.round((parseFloat(formData.get('regular_price') as string) || 0) * 100),
+      discount_price: Math.round((parseFloat(formData.get('discount_price') as string) || 0) * 100),
       max_tickets: parseInt(formData.get('max_tickets') as string) || 100,
       description: formData.get('description') as string,
       is_active: formData.get('is_active') === 'on',
@@ -234,22 +234,24 @@ const ShowTemplateManagement = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="regular_price">Ordinarie pris (öre)</Label>
+                  <Label htmlFor="regular_price">Ordinarie pris (kr)</Label>
                   <Input
                     id="regular_price"
                     name="regular_price"
                     type="number"
-                    defaultValue={editingTemplate?.regular_price || 0}
+                    step="0.01"
+                    defaultValue={editingTemplate ? (editingTemplate.regular_price / 100).toString() : '0'}
                   />
                 </div>
                 
                 <div>
-                  <Label htmlFor="discount_price">Rabatterat pris (öre)</Label>
+                  <Label htmlFor="discount_price">Rabatterat pris (kr)</Label>
                   <Input
                     id="discount_price"
                     name="discount_price"
                     type="number"
-                    defaultValue={editingTemplate?.discount_price || 0}
+                    step="0.01"
+                    defaultValue={editingTemplate ? (editingTemplate.discount_price / 100).toString() : '0'}
                   />
                 </div>
                 
