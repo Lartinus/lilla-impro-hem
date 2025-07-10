@@ -1037,13 +1037,23 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
   // Delete participant mutation
   const deleteParticipantMutation = useMutation({
     mutationFn: async ({ email, tableName }: { email: string; tableName: string }) => {
+      console.log('🗑️ Attempting to delete participant:', { email, tableName });
+      
       const { data, error } = await supabase.rpc('delete_course_participant', {
         table_name: tableName,
         participant_email: email
       });
 
-      if (error) throw error;
-      if (data === false) throw new Error('Deltagaren kunde inte hittas eller raderas');
+      console.log('🗑️ Delete response:', { data, error });
+
+      if (error) {
+        console.error('❌ Database error:', error);
+        throw new Error(`Databasfel: ${error.message}`);
+      }
+      
+      if (data === false) {
+        throw new Error('Deltagaren kunde inte hittas eller du har inte behörighet att radera');
+      }
       
       return data;
     },
