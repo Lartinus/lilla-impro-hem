@@ -72,6 +72,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log('Using email template:', template.name);
+    console.log('DEBUG: Template content from DB:', template.content);
 
     // Get course information if not provided
     let finalStartDate = courseStartDate;
