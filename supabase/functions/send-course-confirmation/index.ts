@@ -234,7 +234,7 @@ async function sendFallbackEmail(
     ? courseTitle 
     : courseTitle + '!';
   
-  let emailContent = `Hej ${name}!
+  let emailContent = `Hej!
 
 Tack för din anmälan till ${courseDisplayName}`;
 
