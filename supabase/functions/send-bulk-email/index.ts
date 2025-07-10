@@ -309,7 +309,7 @@ const handler = async (req: Request): Promise<Response> => {
                   text-align: center;
                 ">
                   <div style="max-width: 600px; margin: 0 auto;">
-                    <img src="https://gcimnsbeexkkqragmdzo.supabase.co/storage/v1/object/public/images/LIT_red_large.png" alt="Lilla Improteatern" style="
+                    <img src="https://gcimnsbeexkkqragmdzo.supabase.co/storage/v1/object/public/images/1752141748739-LIT_red_large.png" alt="Lilla Improteatern" style="
                       width: 180px;
                       height: auto;
                       margin: 0 auto 20px auto;
