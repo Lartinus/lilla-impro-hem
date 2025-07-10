@@ -19,10 +19,19 @@ export function convertMarkdownToHtml(markdown: string): string {
   });
   
   // Standard parse med GFM aktiverat
-  const result = marked.parse(cleaned);
+  let result = marked.parse(cleaned);
   
   // Hantera både synkron och asynkron marked.parse
-  return typeof result === 'string' ? result : '';
+  const htmlString = typeof result === 'string' ? result : '';
+  
+  // Lägg till Satoshi-font för rubriker
+  return htmlString
+    .replace(/<h1>/g, '<h1 style="font-family: \'Satoshi\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', system-ui, sans-serif;">')
+    .replace(/<h2>/g, '<h2 style="font-family: \'Satoshi\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', system-ui, sans-serif;">')
+    .replace(/<h3>/g, '<h3 style="font-family: \'Satoshi\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', system-ui, sans-serif;">')
+    .replace(/<h4>/g, '<h4 style="font-family: \'Satoshi\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', system-ui, sans-serif;">')
+    .replace(/<h5>/g, '<h5 style="font-family: \'Satoshi\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', system-ui, sans-serif;">')
+    .replace(/<h6>/g, '<h6 style="font-family: \'Satoshi\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', system-ui, sans-serif;">');
 }
 
 /**
@@ -33,11 +42,20 @@ export function convertMarkdownToHtmlForRedBox(markdown: string): string {
   const cleaned = markdown.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
   
   // Standard parse med GFM och breaks aktiverat
-  const result = marked.parse(cleaned, {
+  let result = marked.parse(cleaned, {
     gfm: true,
     breaks: true,
   });
   
   // Hantera både synkron och asynkron marked.parse
-  return typeof result === 'string' ? result : '';
+  const htmlString = typeof result === 'string' ? result : '';
+  
+  // Lägg till Satoshi-font för rubriker
+  return htmlString
+    .replace(/<h1>/g, '<h1 style="font-family: \'Satoshi\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', system-ui, sans-serif;">')
+    .replace(/<h2>/g, '<h2 style="font-family: \'Satoshi\', -apple-system, BlinkMacSystemFont, \'Segue UI\', system-ui, sans-serif;">')
+    .replace(/<h3>/g, '<h3 style="font-family: \'Satoshi\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', system-ui, sans-serif;">')
+    .replace(/<h4>/g, '<h4 style="font-family: \'Satoshi\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', system-ui, sans-serif;">')
+    .replace(/<h5>/g, '<h5 style="font-family: \'Satoshi\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', system-ui, sans-serif;">')
+    .replace(/<h6>/g, '<h6 style="font-family: \'Satoshi\', -apple-system, BlinkMacSystemFont, \'Segoe UI\', system-ui, sans-serif;">');
 }
