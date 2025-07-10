@@ -53,98 +53,39 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    // Get the email template from database
-    const { data: template, error: templateError } = await supabase
-      .from('email_templates')
-      .select('*')
-      .eq('name', 'Kursbekräftelse - AUTO')
-      .eq('is_active', true)
-      .single();
-
-    if (templateError || !template) {
-      console.error('Could not fetch email template:', templateError);
-      console.error('Template search result:', { template, templateError });
-      throw new Error('Email template not found');
-    }
-
-    console.log('Using email template:', template.name);
-
-    // First, try to add contact to Resend
-    try {
-      const contactData = {
-        email: email,
-        firstName: name.split(' ')[0] || name,
-        lastName: name.split(' ').slice(1).join(' ') || '',
-        unsubscribed: false,
-      };
-
-      console.log('Adding contact to Resend:', contactData);
-      
-      const contactResponse = await resend.contacts.create({
-        audienceId: Deno.env.get('RESEND_AUDIENCE_ID') || 'default',
-        ...contactData
-      });
-
-      console.log('Contact added successfully:', contactResponse);
-
-      // Add tags to categorize the contact
-      if (contactResponse.data?.id) {
-        try {
-          await resend.contacts.update({
-            audienceId: Deno.env.get('RESEND_AUDIENCE_ID') || 'default',
-            id: contactResponse.data.id,
-            unsubscribed: false,
-          });
-          console.log('Contact tags updated');
-        } catch (tagError) {
-          console.log('Could not update contact tags:', tagError);
-          // Continue anyway - not critical
-        }
-      }
-    } catch (contactError: any) {
-      console.log('Contact creation failed (continuing with email):', contactError);
-      // Continue with email sending even if contact creation fails
-      // This could happen if contact already exists or other API issues
-    }
-
-    // Personalize the template content
-    let personalizedContent = template.content
-      .replace(/\[NAMN\]/g, name)
-      .replace(/\[KURSNAMN\]/g, courseTitle);
+    // Fixed email content instead of using database template
+    const subject = `Tack för din bokning - ${courseTitle}`;
     
+    let emailContent = `Hej ${name}!
+
+Tack för din anmälan till ${courseTitle}!`;
+
     // Add course date and time if available
     if (finalStartDate) {
       const formattedDate = new Date(finalStartDate).toLocaleDateString('sv-SE');
-      personalizedContent = personalizedContent.replace(/\[DATUM\]/g, formattedDate);
-      personalizedContent = personalizedContent.replace(/Kursstart:\s*\[DATUM\]/g, `Kursstart: ${formattedDate}`);
+      emailContent += `
+
+Kursstart: ${formattedDate}`;
     }
     
     if (finalStartTime) {
       const formattedTime = finalStartTime.substring(0, 5); // Format HH:MM
-      personalizedContent = personalizedContent.replace(/\[TID\]/g, formattedTime);
-      personalizedContent = personalizedContent.replace(/Tid:\s*\[TID\]/g, `Tid: ${formattedTime}`);
+      emailContent += `
+Tid: ${formattedTime}`;
     }
-    
-    // Remove location/place references
-    personalizedContent = personalizedContent.replace(/Plats:\s*\[PLATS\]\n?/g, '');
-    personalizedContent = personalizedContent.replace(/Plats:\s*\[PLATS\]<br\s*\/?>/g, '');
-    
-    let personalizedSubject = template.subject
-      .replace(/\[NAMN\]/g, name)
-      .replace(/\[KURSNAMN\]/g, courseTitle);
 
-    // Create styled HTML email (same style as bulk emails)
-    const isPlainText = !template.content.includes('<') && !template.content.includes('>');
-    
-    let htmlContent;
-    if (isPlainText) {
-      // Convert plain text to styled HTML
-      const textWithBreaks = personalizedContent.replace(/\n/g, '<br>');
-      htmlContent = createStyledEmailTemplate(personalizedSubject, textWithBreaks, template.title, template.background_image, template.title_size, template.image_position);
-    } else {
-      // Use HTML content but wrap in template
-      htmlContent = createStyledEmailTemplate(personalizedSubject, personalizedContent, template.title, template.background_image, template.title_size, template.image_position);
-    }
+    emailContent += `
+
+Du kommer att få ett mejl med kursdetaljer senast en vecka innan kursstart
+
+Har du frågor? Svara på detta mejl så hör vi av oss.
+
+Med vänliga hälsningar
+Lilla Improteatern`;
+
+    // Create simple HTML email
+    const textWithBreaks = emailContent.replace(/\n/g, '<br>');
+    const htmlContent = createStyledEmailTemplate(subject, textWithBreaks);
 
     function createStyledEmailTemplate(subject: string, content: string, title?: string, backgroundImage?: string, titleSize?: string, imagePosition?: string) {
       const hasBackground = backgroundImage && backgroundImage.trim() !== '';
@@ -242,7 +183,7 @@ const handler = async (req: Request): Promise<Response> => {
                   margin: 0 0 12px 0;
                   color: #1a1a1a;
                 ">
-                  Hej ${personalizedContent.includes('[NAMN]') ? personalizedContent.match(/Hej\s+(\w+)/)?.[1] || personalizedContent.match(/(\w+)!/)?.[1] || 'där' : 'där'}!
+                  Hej ${name.split(' ')[0] || 'där'}!
                 </h2>
                 <p style="
                   font-size: 16px;
@@ -328,18 +269,17 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Send the email
-    console.log('Sending confirmation email using template:', template.name);
+    console.log('Sending confirmation email with fixed template');
     const emailResponse = await resend.emails.send({
       from: "Lilla Improteatern <noreply@improteatern.se>",
       to: [email],
-      subject: personalizedSubject,
+      subject: subject,
       html: htmlContent,
-      text: personalizedContent, // Keep plain text version for fallback
+      text: emailContent, // Keep plain text version for fallback
       tags: [
         { name: 'type', value: 'course-confirmation' },
         { name: 'course', value: courseTitle.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase().slice(0, 50) },
-        { name: 'available', value: isAvailable ? 'yes' : 'no' },
-        { name: 'template', value: template.name.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase().slice(0, 50) }
+        { name: 'available', value: isAvailable ? 'yes' : 'no' }
       ]
     });
 
