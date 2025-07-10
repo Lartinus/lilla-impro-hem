@@ -72,8 +72,31 @@ export const ensureCourseTableExists = async (courseTitle: string) => {
         return existingInstance;
       }
       
-      // For existing instances with valid table names, we'll trust they're working
-      console.log('✅ Using existing instance without re-verification');
+      // Check if the table actually exists in the database
+      const tableExists = await checkTableExists(existingInstance.table_name);
+      if (!tableExists) {
+        console.log('⚠️ Table does not exist:', existingInstance.table_name, 'Setting table_name to empty for fallback');
+        
+        // Update the instance to have empty table_name so it uses course_bookings table
+        const { data: updatedInstance, error: updateError } = await supabase
+          .from('course_instances')
+          .update({ table_name: '' })
+          .eq('id', existingInstance.id)
+          .select()
+          .single();
+          
+        if (updateError) {
+          console.error('❌ Failed to update table_name to empty:', updateError);
+          // Return original instance with empty table_name for fallback
+          return { ...existingInstance, table_name: '' };
+        }
+        
+        console.log('✅ Updated instance to use course_bookings table fallback');
+        return updatedInstance;
+      }
+      
+      // For existing instances with valid table names that exist, trust they're working
+      console.log('✅ Using existing instance with verified table');
       
       return existingInstance;
     }
