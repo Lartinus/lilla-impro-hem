@@ -163,7 +163,7 @@ const handler = async (req: Request): Promise<Response> => {
         <body style="
           margin: 0;
           padding: 0;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+          font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
           background-color: #ffffff;
           line-height: 1.6;
           color: #333333;
@@ -322,27 +322,6 @@ const handler = async (req: Request): Promise<Response> => {
             </div>
           </div>
 
-          <!-- Footer -->
-          <div style="
-            background-color: #f9f9f9;
-            padding: 20px;
-            text-align: center;
-            border-top: 1px solid #e8e8e8;
-          ">
-            <p style="
-              font-size: 12px;
-              color: #999999;
-              margin: 0;
-            ">
-              Vill du inte längre få våra mejl? 
-              <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(email)}" style="
-                color: #666666;
-                text-decoration: underline;
-              ">
-                Avprenumerera här
-              </a>
-            </p>
-          </div>
         </body>
         </html>
       `;
