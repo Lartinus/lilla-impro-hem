@@ -61,7 +61,26 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (recipients && recipients.length > 0) {
       // Direct recipients array provided (from EmailManagement component)
-      emailRecipients = recipients.map(email => ({ email }));
+      // For manual groups, we need to get names from email_contacts
+      if (group_name && group_name !== 'Alla kontakter') {
+        // This is a manual group, get contact details with names
+        const { data: contacts, error: contactsError } = await supabase
+          .from('email_contacts')
+          .select('email, name')
+          .in('email', recipients);
+        
+        if (!contactsError && contacts) {
+          emailRecipients = contacts.map(contact => ({
+            email: contact.email,
+            name: contact.name
+          }));
+        } else {
+          // Fallback to just emails if we can't get names
+          emailRecipients = recipients.map(email => ({ email }));
+        }
+      } else {
+        emailRecipients = recipients.map(email => ({ email }));
+      }
       console.log(`Using direct recipients: ${recipients.length} emails`);
     } else if (recipientGroup && recipientGroup.startsWith('manual_')) {
       // Manual group - get from email_group_members
