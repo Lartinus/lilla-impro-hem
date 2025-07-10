@@ -25,9 +25,11 @@ const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
 
       {/* Kurskort */}
       {courses.length === 0 ? (
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="col-span-2 text-center text-white text-xl">
-            Vi har inga kurser planerade just nu! Kom gärna tillbaka senare eller följ oss i våra kanaler för info om framtida kurser.
+        <div className="bg-white shadow-lg border-4 border-white mb-6">
+          <div className="p-6 md:p-8">
+            <p className="text-black text-center text-xl">
+              Vi har inga kurser planerade just nu! Kom gärna tillbaka senare eller följ oss i våra kanaler för info om framtida kurser.
+            </p>
           </div>
         </div>
       ) : (
