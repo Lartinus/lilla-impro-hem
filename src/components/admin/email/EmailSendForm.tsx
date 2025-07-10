@@ -122,7 +122,9 @@ export function EmailSendForm({
             color: #333333;
             font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
           ">
-            ${htmlContent}
+            <div style="font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;">
+              ${htmlContent}
+            </div>
           </div>
         </div>
       </body>
@@ -314,7 +316,10 @@ export function EmailSendForm({
                   __html: createSimpleEmailTemplate(emailSubject, bulkEmailTemplateData.content, bulkEmailTemplateData.background_image)
                 }}
                 className="[&_h1]:text-4xl [&_h1]:font-bold [&_h1]:mb-4 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:mb-2 [&_p]:mb-2 [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1"
-                style={{ fontFamily: "'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif" }}
+                style={{ 
+                  fontFamily: "'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+                  '--font-family': "'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"
+                } as React.CSSProperties}
               />
             ) : (
               <p className="text-muted-foreground text-sm">Skriv markdown-innehåll för att se förhandsvisningen...</p>

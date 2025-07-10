@@ -137,11 +137,13 @@ export function CourseImportDialog({ emailGroups, groupMemberCounts }: CourseImp
                 <SelectValue placeholder="Välj en kurs att importera från" />
               </SelectTrigger>
               <SelectContent>
-                {courseInstances.map((course) => (
-                  <SelectItem key={course.table_name} value={course.table_name}>
-                    {course.course_title}
-                  </SelectItem>
-                ))}
+                {courseInstances
+                  .filter((course) => course.table_name && course.table_name.trim() !== '')
+                  .map((course) => (
+                    <SelectItem key={course.table_name} value={course.table_name}>
+                      {course.course_title}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>

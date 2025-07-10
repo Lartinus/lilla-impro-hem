@@ -297,7 +297,9 @@ const handler = async (req: Request): Promise<Response> => {
                     color: #333333;
                     font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
                   ">
-                    ${contentText}
+                    <div style="font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;">
+                      ${contentText}
+                    </div>
                   </div>
                 </div>
 
