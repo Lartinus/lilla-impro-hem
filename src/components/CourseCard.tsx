@@ -43,6 +43,7 @@ interface Course {
   hours_per_session?: number;
   price?: number;
   discount_price?: number;
+  table_name?: string;
 }
 
 interface CourseCardProps {
@@ -121,6 +122,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         {shouldShowButton && (
           <CourseBookingForm 
             courseTitle={course.course_title}
+            tableName={course.table_name}
             isAvailable={courseAvailability}
             showButton={shouldShowButton}
             buttonText={buttonText}

@@ -166,6 +166,7 @@ export type Database = {
           start_time: string | null
           subtitle: string | null
           table_name: string
+          weekday: string | null
         }
         Insert: {
           completed_at?: string | null
@@ -189,6 +190,7 @@ export type Database = {
           start_time?: string | null
           subtitle?: string | null
           table_name: string
+          weekday?: string | null
         }
         Update: {
           completed_at?: string | null
@@ -212,6 +214,7 @@ export type Database = {
           start_time?: string | null
           subtitle?: string | null
           table_name?: string
+          weekday?: string | null
         }
         Relationships: [
           {

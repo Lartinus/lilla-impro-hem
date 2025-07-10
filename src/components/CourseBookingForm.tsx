@@ -26,6 +26,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CourseBookingFormProps {
   courseTitle: string;
+  tableName?: string;
   isAvailable: boolean;
   showButton: boolean;
   buttonText?: string;
@@ -35,6 +36,7 @@ interface CourseBookingFormProps {
 
 const CourseBookingForm = ({ 
   courseTitle, 
+  tableName,
   isAvailable, 
   showButton, 
   buttonText = 'Anmäl dig',
@@ -42,7 +44,7 @@ const CourseBookingForm = ({
   maxParticipants 
 }: CourseBookingFormProps) => {
   const [open, setOpen] = useState(false);
-  const { handleSubmit: submitBooking, isSubmitting } = useCourseBooking(courseTitle);
+  const { handleSubmit: submitBooking, isSubmitting } = useCourseBooking(tableName || courseTitle);
   const isMobile = useIsMobile();
   const formContainerRef = useRef<HTMLDivElement>(null);
 
