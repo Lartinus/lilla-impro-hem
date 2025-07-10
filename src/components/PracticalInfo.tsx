@@ -31,18 +31,39 @@ export const PracticalInfo = ({
     });
   };
 
+  const formatTime = (timeString: string) => {
+    return timeString.substring(0, 5); // Remove seconds, keep HH:MM
+  };
+
+  const getWeekdayInSwedish = (dateString: string) => {
+    const date = new Date(dateString);
+    const weekdays = ['söndagar', 'måndagar', 'tisdagar', 'onsdagar', 'torsdagar', 'fredagar', 'lördagar'];
+    return weekdays[date.getDay()];
+  };
+
   // Parse practical info text if provided, otherwise use defaults
   const getPracticalItems = () => {
     const items = [];
     
     if (practicalInfoText) {
-      // Split by common delimiters and clean up
-      const lines = practicalInfoText
-        .split(/[,\n\r•\-]/)
-        .map(line => line.trim())
-        .filter(line => line.length > 0);
-      
-      return lines;
+      // Handle discount price specially to avoid splitting it into multiple items
+      if (practicalInfoText.includes('Rabatterat pris:')) {
+        // Split by line breaks only for practical info text to preserve discount price as one item
+        const lines = practicalInfoText
+          .split(/\n/)
+          .map(line => line.trim())
+          .filter(line => line.length > 0);
+        
+        return lines;
+      } else {
+        // Split by common delimiters and clean up
+        const lines = practicalInfoText
+          .split(/[,\n\r•\-]/)
+          .map(line => line.trim())
+          .filter(line => line.length > 0);
+        
+        return lines;
+      }
     }
     
     // Default items if no practical info provided
@@ -51,9 +72,13 @@ export const PracticalInfo = ({
     }
     
     if (startDate) {
-      const dateStr = `Startdatum: ${formatDate(startDate)}`;
-      const timeStr = startTime ? ` kl. ${startTime}` : '';
-      items.push(dateStr + timeStr);
+      items.push(`Startdatum ${formatDate(startDate)}`);
+      
+      if (startTime) {
+        const weekday = getWeekdayInSwedish(startDate);
+        const formattedTime = formatTime(startTime);
+        items.push(`${weekday.charAt(0).toUpperCase() + weekday.slice(1)} ${formattedTime}`);
+      }
     }
     
     if (maxParticipants && maxParticipants > 0) {
