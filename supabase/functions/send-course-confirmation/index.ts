@@ -94,6 +94,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Extract first name from full name
     const firstName = name.split(' ')[0];
+    console.log('DEBUG: Full name received:', name);
+    console.log('DEBUG: Extracted first name:', firstName);
 
     // Prepare variables for template
     const variables = {
@@ -115,6 +117,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Process content with variables
     const personalizedContent = convertMarkdownToHtmlWithVariables(template.content, variables);
+    console.log('DEBUG: Personalized content after replacement:', personalizedContent);
 
     // Create styled email template
     const htmlContent = createStyledEmailTemplate(personalizedSubject, personalizedContent, template);
