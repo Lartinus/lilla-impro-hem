@@ -1043,7 +1043,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       });
 
       if (error) throw error;
-      if (!data) throw new Error('Kunde inte radera deltagaren');
+      if (data === false) throw new Error('Deltagaren kunde inte hittas eller raderas');
       
       return data;
     },
