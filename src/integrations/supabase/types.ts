@@ -1072,14 +1072,6 @@ export type Database = {
         Args: { table_name: string }
         Returns: boolean
       }
-      test_delete_no_auth: {
-        Args: { participant_email: string }
-        Returns: boolean
-      }
-      test_delete_participant: {
-        Args: { participant_email: string }
-        Returns: boolean
-      }
     }
     Enums: {
       app_role: "admin" | "staff" | "user"
