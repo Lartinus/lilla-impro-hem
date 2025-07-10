@@ -214,147 +214,192 @@ export function EmailTemplatesManager({ emailTemplates, templatesLoading }: Emai
         </Button>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Tillgängliga mallar</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {templatesLoading ? (
-            <div className="text-center py-4">Laddar mallar...</div>
-          ) : emailTemplates.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              Inga mallar hittades. Skapa din första mall!
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Namn</TableHead>
-                   <TableHead>Ämne</TableHead>
-                   <TableHead>Skapad</TableHead>
-                   <TableHead className="w-[120px]">Åtgärder</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {emailTemplates.map((template) => (
-                  <TableRow key={template.id}>
-                    <TableCell className="font-medium">{template.name}</TableCell>
-                    <TableCell>{template.subject}</TableCell>
-                    <TableCell>
-                      {new Date(template.created_at).toLocaleDateString('sv-SE')}
-                    </TableCell>
-                     <TableCell>
-                       <div className="flex gap-2">
-                         <Button 
-                           variant="ghost" 
-                           size="sm"
-                           onClick={() => handlePreviewTemplate(template)}
-                           title="Förhandsgranska"
-                         >
-                           <Eye className="w-4 h-4" />
-                         </Button>
-                         <Button 
-                           variant="ghost" 
-                           size="sm"
-                           onClick={() => handleEditTemplate(template)}
-                           title="Redigera"
-                         >
-                           <Edit className="w-4 h-4" />
-                         </Button>
-                         <Button 
-                           variant="ghost" 
-                           size="sm"
-                           onClick={() => handleDeleteTemplate(template.id)}
-                           title="Ta bort"
-                         >
-                           <Trash2 className="w-4 h-4" />
-                         </Button>
-                       </div>
-                     </TableCell>
+      {!isTemplateDialogOpen && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Tillgängliga mallar</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {templatesLoading ? (
+              <div className="text-center py-4">Laddar mallar...</div>
+            ) : emailTemplates.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                Inga mallar hittades. Skapa din första mall!
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Namn</TableHead>
+                     <TableHead>Ämne</TableHead>
+                     <TableHead>Skapad</TableHead>
+                     <TableHead className="w-[120px]">Åtgärder</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+                </TableHeader>
+                <TableBody>
+                  {emailTemplates.map((template) => (
+                    <TableRow key={template.id}>
+                      <TableCell className="font-medium">{template.name}</TableCell>
+                      <TableCell>{template.subject}</TableCell>
+                      <TableCell>
+                        {new Date(template.created_at).toLocaleDateString('sv-SE')}
+                      </TableCell>
+                       <TableCell>
+                         <div className="flex gap-2">
+                           <Button 
+                             variant="ghost" 
+                             size="sm"
+                             onClick={() => handlePreviewTemplate(template)}
+                             title="Förhandsgranska"
+                           >
+                             <Eye className="w-4 h-4" />
+                           </Button>
+                           <Button 
+                             variant="ghost" 
+                             size="sm"
+                             onClick={() => handleEditTemplate(template)}
+                             title="Redigera"
+                           >
+                             <Edit className="w-4 h-4" />
+                           </Button>
+                           <Button 
+                             variant="ghost" 
+                             size="sm"
+                             onClick={() => handleDeleteTemplate(template.id)}
+                             title="Ta bort"
+                           >
+                             <Trash2 className="w-4 h-4" />
+                           </Button>
+                         </div>
+                       </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
-      <Dialog open={isTemplateDialogOpen} onOpenChange={setIsTemplateDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>
-              {editingTemplate ? 'Redigera mall' : 'Skapa ny mall'}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="template-name">Namn</Label>
-              <Input
-                id="template-name"
-                value={templateForm.name}
-                onChange={(e) => setTemplateForm({...templateForm, name: e.target.value})}
-                placeholder="Mallens namn"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="template-description">Beskrivning (valfritt)</Label>
-              <Input
-                id="template-description"
-                value={templateForm.description}
-                onChange={(e) => setTemplateForm({...templateForm, description: e.target.value})}
-                placeholder="Kort beskrivning av mallen"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="template-subject">Ämne</Label>
-              <Input
-                id="template-subject"
-                value={templateForm.subject}
-                onChange={(e) => setTemplateForm({...templateForm, subject: e.target.value})}
-                placeholder="Standard ämnesrad"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="template-content">Innehåll (Markdown)</Label>
-              <Textarea
-                id="template-content"
-                value={templateForm.content}
-                onChange={(e) => setTemplateForm({...templateForm, content: e.target.value})}
-                placeholder="# Rubrik&#10;&#10;Här kommer brödtexten..."
-                rows={8}
-                className="font-mono text-sm"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>Bakgrundsbild (valfritt)</Label>
-                <ImagePicker
-                  value={templateForm.background_image}
-                  onSelect={(url) => setTemplateForm({...templateForm, background_image: url})}
-                  triggerClassName="h-8 px-3 text-sm"
+      {isTemplateDialogOpen && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                {editingTemplate ? 'Redigera mall' : 'Skapa ny mall'}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setIsTemplateDialogOpen(false)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  ✕
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="template-name">Namn</Label>
+                <Input
+                  id="template-name"
+                  value={templateForm.name}
+                  onChange={(e) => setTemplateForm({...templateForm, name: e.target.value})}
+                  placeholder="Mallens namn"
                 />
               </div>
-              {templateForm.background_image && (
-                <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
-                  <span className="font-medium">Vald bild:</span> {templateForm.background_image.split('/').pop()}
+              
+              <div className="space-y-2">
+                <Label htmlFor="template-description">Beskrivning (valfritt)</Label>
+                <Input
+                  id="template-description"
+                  value={templateForm.description}
+                  onChange={(e) => setTemplateForm({...templateForm, description: e.target.value})}
+                  placeholder="Kort beskrivning av mallen"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="template-subject">Ämne</Label>
+                <Input
+                  id="template-subject"
+                  value={templateForm.subject}
+                  onChange={(e) => setTemplateForm({...templateForm, subject: e.target.value})}
+                  placeholder="Standard ämnesrad"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="template-content">Innehåll (Markdown)</Label>
+                <Textarea
+                  id="template-content"
+                  value={templateForm.content}
+                  onChange={(e) => setTemplateForm({...templateForm, content: e.target.value})}
+                  placeholder="# Rubrik&#10;&#10;Här kommer brödtexten..."
+                  rows={12}
+                  className="font-mono text-sm"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Bakgrundsbild (valfritt)</Label>
+                  <ImagePicker
+                    value={templateForm.background_image}
+                    onSelect={(url) => setTemplateForm({...templateForm, background_image: url})}
+                    triggerClassName="h-8 px-3 text-sm"
+                  />
                 </div>
-              )}
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsTemplateDialogOpen(false)}>
-              Avbryt
-            </Button>
-            <Button onClick={handleSaveTemplate}>
-              {editingTemplate ? 'Uppdatera' : 'Skapa'} mall
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+                {templateForm.background_image && (
+                  <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
+                    <span className="font-medium">Vald bild:</span> {templateForm.background_image.split('/').pop()}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-2 pt-4">
+                <Button variant="outline" onClick={() => setIsTemplateDialogOpen(false)}>
+                  Avbryt
+                </Button>
+                <Button onClick={handleSaveTemplate}>
+                  {editingTemplate ? 'Uppdatera' : 'Skapa'} mall
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Live-förhandsvisning</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="border rounded-lg bg-muted/30 max-h-[70vh] overflow-y-auto">
+                {templateForm.subject || templateForm.content ? (
+                  <div 
+                    dangerouslySetInnerHTML={{ 
+                      __html: createPreviewEmailTemplate(
+                        templateForm.subject || 'Ämne saknas', 
+                        templateForm.content || 'Inget innehåll ännu...', 
+                        templateForm.background_image || undefined
+                      )
+                    }}
+                    className="[&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-3 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-2 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2 [&_p]:mb-2 [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1"
+                    style={{ 
+                      fontFamily: "'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+                      transform: 'scale(0.85)',
+                      transformOrigin: 'top left',
+                      width: '118%'
+                    } as React.CSSProperties}
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-40 text-muted-foreground">
+                    Börja skriv för att se förhandsvisning
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       <Dialog open={isPreviewDialogOpen} onOpenChange={setIsPreviewDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[80vh]">
