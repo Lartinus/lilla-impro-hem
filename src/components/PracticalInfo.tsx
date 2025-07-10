@@ -68,7 +68,7 @@ export const PracticalInfo = ({
     }
     
     if (discountPrice && discountPrice > 0) {
-      items.push(`Rabatterat pris: ${discountPrice} kr (pensionär, student eller omtag)`);
+      items.push(`Rabatterat pris: ${discountPrice} kr (pensionär eller student)`);
     }
     
     // Add any additional practical info text at the end
