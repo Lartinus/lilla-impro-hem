@@ -774,7 +774,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       // Check if it's a template and use its title
       const template = courseTemplates.find(t => t.id === courseData.courseType);
       if (template) {
-        courseTitle = template.title_template || courseData.customName || 'Untitled Course';
+        courseTitle = (template.title_template || courseData.customName || 'Untitled Course').trim();
         tableName = `course_${template.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
       } else {
         // Legacy handling for non-template courses
