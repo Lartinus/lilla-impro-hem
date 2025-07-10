@@ -252,3 +252,5 @@ export const useCourseBooking = (courseTitle: string) => {
 };
 
 export { formSchema, houseTeamsSchema };
+
+// Note: This file is getting long (255+ lines). Consider refactoring into smaller, focused files.

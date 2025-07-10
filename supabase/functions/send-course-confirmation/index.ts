@@ -48,9 +48,14 @@ const handler = async (req: Request): Promise<Response> => {
     // Create email content
     const subject = `Tack för din bokning - ${courseTitle}`;
     
+    // Check if course title already ends with punctuation to avoid duplication
+    const courseDisplayName = courseTitle.endsWith('!') || courseTitle.endsWith('?') || courseTitle.endsWith('.') 
+      ? courseTitle 
+      : courseTitle + '!';
+    
     let emailContent = `Hej ${name}!
 
-Tack för din anmälan till ${courseTitle}!`;
+Tack för din anmälan till ${courseDisplayName}`;
 
     // Add course date and time if available
     if (finalStartDate) {
