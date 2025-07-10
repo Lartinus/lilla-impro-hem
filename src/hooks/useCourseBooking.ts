@@ -1,41 +1,16 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 import { ensureCourseTableExists } from '@/utils/courseTableUtils';
-import * as z from 'zod';
-
-const formSchema = z.object({
-  name: z.string()
-    .min(2, 'Namn måste vara minst 2 tecken')
-    .max(100, 'Namn får vara max 100 tecken'),
-  email: z.string().email('Ogiltig e-postadress'),
-  phone: z.string()
-    .min(6, 'Telefonnummer måste vara minst 6 tecken')
-    .max(20, 'Telefonnummer får vara max 20 tecken')
-    .regex(/^[+0-9\s\-()]+$/, 'Telefonnummer får endast innehålla siffror, +, -, (), och mellanslag'),
-  address: z.string().min(1, 'Adress är obligatorisk'),
-  postalCode: z.string().min(1, 'Postnummer är obligatoriskt'),
-  city: z.string().min(1, 'Stad är obligatorisk'),
-});
-
-const houseTeamsSchema = z.object({
-  name: z.string()
-    .min(2, 'Namn måste vara minst 2 tecken')
-    .max(100, 'Namn får vara max 100 tecken'),
-  email: z.string().email('Ogiltig e-postadress'),
-  phone: z.string()
-    .min(6, 'Telefonnummer måste vara minst 6 tecken')
-    .max(20, 'Telefonnummer får vara max 20 tecken')
-    .regex(/^[+0-9\s\-()]+$/, 'Telefonnummer får endast innehålla siffror, +, -, (), och mellanslag'),
-  message: z.string().optional(),
-});
+import { sendConfirmationEmail } from '@/utils/courseBookingEmail';
+import { checkDuplicateBooking, insertBooking } from '@/utils/courseBookingDatabase';
+import { getBookingErrorMessage, type BookingResult } from '@/utils/courseBookingErrors';
+import type { CourseBookingData } from '@/schemas/courseBookingSchemas';
 
 export const useCourseBooking = (courseTitle: string) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = async (values: z.infer<typeof formSchema> | z.infer<typeof houseTeamsSchema>) => {
+  const handleSubmit = async (values: CourseBookingData): Promise<BookingResult> => {
     setIsSubmitting(true);
     
     try {
@@ -65,110 +40,24 @@ export const useCourseBooking = (courseTitle: string) => {
       console.log('📋 Using table for booking:', tableName);
       
       // Check for duplicate booking
-      try {
-        if (tableName === 'course_bookings') {
-          // For the general course_bookings table, check differently
-          const { data: existingBookings, error: duplicateCheckError } = await supabase
-            .from('course_bookings')
-            .select('id')
-            .eq('course_title', courseTitle)
-            .eq('email', values.email.toLowerCase())
-            .limit(1);
-            
-          if (duplicateCheckError) {
-            console.error('⚠️ Error checking for duplicate booking:', duplicateCheckError);
-            // Continue with booking attempt - don't block on this check
-          } else if (existingBookings && existingBookings.length > 0) {
-            toast({ 
-              title: "Redan anmäld", 
-              description: "Du har redan anmält dig till denna kurs med den e-postadressen.",
-              variant: "destructive" 
-            });
-            return { success: false, error: 'duplicate' };
-          }
-        } else {
-          // For specific course tables, use the RPC function
-          const { data: isDuplicate, error: duplicateCheckError } = await supabase.rpc('check_duplicate_course_booking', {
-            table_name: tableName,
-            email_address: values.email.toLowerCase()
-          });
-          
-          if (duplicateCheckError) {
-            console.error('⚠️ Error checking for duplicate booking:', duplicateCheckError);
-            // Continue with booking attempt - don't block on this check
-          } else if (isDuplicate) {
-            toast({ 
-              title: "Redan anmäld", 
-              description: "Du har redan anmält dig till denna kurs med den e-postadressen.",
-              variant: "destructive" 
-            });
-            return { success: false, error: 'duplicate' };
-          }
-        }
-      } catch (duplicateError) {
-        console.error('⚠️ Duplicate check failed:', duplicateError);
-        // Continue anyway - better to allow a potential duplicate than block a valid booking
+      const isDuplicate = await checkDuplicateBooking(values.email, courseTitle, tableName);
+      
+      if (isDuplicate) {
+        toast({ 
+          title: "Redan anmäld", 
+          description: "Du har redan anmält dig till denna kurs med den e-postadressen.",
+          variant: "destructive" 
+        });
+        return { success: false, error: 'duplicate' };
       }
       
       // Insert the booking
-      console.log('💾 Attempting to insert booking...');
       try {
-        if (tableName === 'course_bookings') {
-          // Use direct insert to course_bookings table for courses without specific tables
-          const { error: insertError } = await supabase
-            .from('course_bookings')
-            .insert({
-              course_title: courseTitle,
-              name: values.name,
-              phone: values.phone,
-              email: values.email.toLowerCase(),
-              address: 'address' in values ? values.address || null : null,
-              postal_code: 'postalCode' in values ? values.postalCode || null : null,
-              city: 'city' in values ? values.city || null : null,
-              message: 'message' in values ? values.message || null : null
-            });
-            
-          if (insertError) {
-            console.error('❌ Database error during booking (course_bookings):', insertError);
-            throw insertError;
-          }
-        } else {
-          // Use RPC function for courses with specific tables
-          const { error: insertError } = await supabase.rpc('insert_course_booking', {
-            table_name: tableName,
-            booking_name: values.name,
-            booking_phone: values.phone,
-            booking_email: values.email,
-            booking_address: 'address' in values ? values.address || '' : '',
-            booking_postal_code: 'postalCode' in values ? values.postalCode || '' : '',
-            booking_city: 'city' in values ? values.city || '' : '',
-            booking_message: 'message' in values ? values.message || '' : ''
-          });
-          
-          if (insertError) {
-            console.error('❌ Database error during booking (RPC):', insertError);
-            throw insertError;
-          }
-        }
+        await insertBooking(values, courseTitle, tableName);
       } catch (insertError: any) {
         console.error('❌ Database error during booking:', insertError);
         
-        // Handle specific database validation errors
-        let errorMessage = "Något gick fel vid anmälan. Kontrollera dina uppgifter och försök igen.";
-        
-        if (insertError.message?.includes('Ogiltig e-postadress')) {
-          errorMessage = "Ogiltig e-postadress. Kontrollera att du har angett rätt format.";
-        } else if (insertError.message?.includes('Ogiltigt telefonnummer')) {
-          errorMessage = "Ogiltigt telefonnummer. Ange ett nummer mellan 6-20 tecken.";
-        } else if (insertError.message?.includes('Namn får inte vara tomt')) {
-          errorMessage = "Namn är obligatoriskt och får inte vara tomt.";
-        } else if (insertError.message?.includes('Namn är för långt')) {
-          errorMessage = "Namnet är för långt. Maximalt 100 tecken tillåtet.";
-        } else if (insertError.message?.includes('duplicate key') || insertError.message?.includes('unique constraint')) {
-          errorMessage = "Du har redan anmält dig till denna kurs med den e-postadressen.";
-        } else if (insertError.message?.includes('permission denied')) {
-          errorMessage = "Åtkomst nekad. Kontakta support om problemet kvarstår.";
-        }
+        const errorMessage = getBookingErrorMessage(insertError);
         
         toast({ 
           title: "Anmälan misslyckades", 
@@ -179,49 +68,8 @@ export const useCourseBooking = (courseTitle: string) => {
         return { success: false, error: insertError };
       }
       
-      console.log('✅ Course booking submitted successfully to table:', tableName);
-      
       // Send confirmation email
-      try {
-        const isHouseTeamsOrContinuation = courseTitle.includes("House teams") || courseTitle.includes("fortsättning");
-        
-        console.log('📧 Sending confirmation email for course:', courseTitle);
-        console.log('📧 Email data:', { name: values.name, email: values.email, isAvailable: !isHouseTeamsOrContinuation });
-        
-        // Check if courseTitle looks like a table name and fix it
-        let actualCourseTitle = courseTitle;
-        if (courseTitle.startsWith('course_')) {
-          console.log('⚠️ Course title looks like table name, trying to get real title from instance');
-          actualCourseTitle = courseInstance.course_title || courseTitle;
-        }
-        
-        const emailPayload = {
-          name: values.name,
-          email: values.email,
-          courseTitle: actualCourseTitle,
-          isAvailable: !isHouseTeamsOrContinuation,
-          courseStartDate: courseInstance.start_date,
-          courseStartTime: courseInstance.start_time
-        };
-        
-        console.log('📧 Calling edge function with payload:', emailPayload);
-        
-        const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-course-confirmation', {
-          body: emailPayload
-        });
-
-        if (emailError) {
-          console.error('⚠️ Error sending confirmation email:', emailError);
-          console.error('⚠️ Email error details:', JSON.stringify(emailError, null, 2));
-          // Don't fail the booking just because email failed
-        } else {
-          console.log('📧 Confirmation email sent successfully');
-          console.log('📧 Email response:', emailResponse);
-        }
-      } catch (emailError) {
-        console.error('⚠️ Exception while sending confirmation email:', emailError);
-        // Don't fail the booking just because email failed
-      }
+      await sendConfirmationEmail(values, courseTitle, courseInstance);
       
       toast({ 
         title: "Anmälan skickad!", 
@@ -250,7 +98,3 @@ export const useCourseBooking = (courseTitle: string) => {
     isSubmitting
   };
 };
-
-export { formSchema, houseTeamsSchema };
-
-// Note: This file is getting long (255+ lines). Consider refactoring into smaller, focused files.

@@ -143,6 +143,42 @@ export type Database = {
         }
         Relationships: []
       }
+      course_improboost__1752182394475: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          name: string
+          phone: string
+          postal_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          phone: string
+          postal_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string
+          postal_code?: string | null
+        }
+        Relationships: []
+      }
       course_instances: {
         Row: {
           completed_at: string | null
