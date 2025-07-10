@@ -1039,21 +1039,23 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     mutationFn: async ({ email, tableName }: { email: string; tableName: string }) => {
       console.log('🗑️ Attempting to delete participant:', { email, tableName });
       
-      // Use the simplified admin function
-      const { data, error } = await supabase.rpc('admin_delete_participant', {
-        table_name: tableName,
-        participant_email: email
+      // Use edge function for deletion
+      const { data, error } = await supabase.functions.invoke('delete-course-participant', {
+        body: {
+          table_name: tableName,
+          participant_email: email
+        }
       });
 
       console.log('🗑️ Delete response:', { data, error });
 
       if (error) {
-        console.error('❌ Database error:', error);
+        console.error('❌ Edge function error:', error);
         throw new Error(`Databasfel: ${error.message}`);
       }
       
-      if (data === false) {
-        throw new Error('Deltagaren kunde inte hittas i kursen');
+      if (!data?.success) {
+        throw new Error(data?.error || 'Deltagaren kunde inte hittas i kursen');
       }
       
       return data;
