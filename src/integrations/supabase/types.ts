@@ -951,6 +951,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_course_participant: {
+        Args: {
+          table_name: string
+          participant_name: string
+          participant_email: string
+          participant_phone?: string
+          participant_address?: string
+          participant_postal_code?: string
+          participant_city?: string
+          participant_message?: string
+        }
+        Returns: boolean
+      }
       check_duplicate_course_booking: {
         Args: { table_name: string; email_address: string }
         Returns: boolean
@@ -978,6 +991,10 @@ export type Database = {
           booking_id: string
           expires_at: string
         }[]
+      }
+      delete_course_participant: {
+        Args: { table_name: string; participant_email: string }
+        Returns: boolean
       }
       drop_course_booking_table: {
         Args: { table_name: string }

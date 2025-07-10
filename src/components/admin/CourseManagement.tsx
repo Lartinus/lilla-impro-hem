@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, User, Download, Archive, RotateCcw, ChevronUp, ChevronDown } from 'lucide-react';
+import { Eye, Users, ArrowUpDown, ArrowUp, ArrowDown, Plus, Trash2, Power, PowerOff, Edit, CalendarIcon, User, Download, Archive, RotateCcw, ChevronUp, ChevronDown, UserPlus, UserMinus } from 'lucide-react';
 import { RepeatablePracticalInfo } from './RepeatablePracticalInfo';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -391,6 +391,12 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
   const [isParticipantsDialogOpen, setIsParticipantsDialogOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<CourseWithBookings | null>(null);
   const [participants, setParticipants] = useState<CourseParticipant[]>([]);
+  const [isAddParticipantFormOpen, setIsAddParticipantFormOpen] = useState(false);
+  const [newParticipant, setNewParticipant] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
   const [newCourse, setNewCourse] = useState<NewCourseForm>({
     courseType: '',
     customName: '',
@@ -1028,6 +1034,105 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     window.URL.revokeObjectURL(url);
   };
 
+  // Delete participant mutation
+  const deleteParticipantMutation = useMutation({
+    mutationFn: async ({ email, tableName }: { email: string; tableName: string }) => {
+      const { data, error } = await supabase.rpc('delete_course_participant', {
+        table_name: tableName,
+        participant_email: email
+      });
+
+      if (error) throw error;
+      if (!data) throw new Error('Kunde inte radera deltagaren');
+      
+      return data;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Deltagare raderad",
+        description: "Deltagaren har raderats från kursen."
+      });
+      // Refresh participants list
+      if (selectedCourse) {
+        handleViewParticipants(selectedCourse);
+      }
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte radera deltagaren: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Add participant mutation
+  const addParticipantMutation = useMutation({
+    mutationFn: async ({ name, email, phone, tableName }: { name: string; email: string; phone: string; tableName: string }) => {
+      const { data, error } = await supabase.rpc('add_course_participant', {
+        table_name: tableName,
+        participant_name: name,
+        participant_email: email,
+        participant_phone: phone
+      });
+
+      if (error) throw error;
+      
+      return data;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Deltagare tillagd",
+        description: "Deltagaren har lagts till i kursen."
+      });
+      // Reset form and close
+      setNewParticipant({ name: '', email: '', phone: '' });
+      setIsAddParticipantFormOpen(false);
+      // Refresh participants list
+      if (selectedCourse) {
+        handleViewParticipants(selectedCourse);
+      }
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte lägga till deltagaren: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
+  const handleDeleteParticipant = (email: string) => {
+    if (!selectedCourse) return;
+    
+    if (confirm('Är du säker på att du vill radera denna deltagare från kursen?')) {
+      deleteParticipantMutation.mutate({
+        email,
+        tableName: selectedCourse.table_name
+      });
+    }
+  };
+
+  const handleAddParticipant = () => {
+    if (!selectedCourse || !newParticipant.name.trim() || !newParticipant.email.trim()) {
+      toast({
+        title: "Ofullständig information",
+        description: "Namn och e-post är obligatoriska.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    addParticipantMutation.mutate({
+      name: newParticipant.name,
+      email: newParticipant.email,
+      phone: newParticipant.phone,
+      tableName: selectedCourse.table_name
+    });
+  };
+
   const handleMoveUp = (course: CourseWithBookings) => {
     moveCourseUpMutation.mutate(course);
   };
@@ -1519,54 +1624,137 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
 
       {/* Participants Dialog */}
       <Dialog open={isParticipantsDialogOpen} onOpenChange={setIsParticipantsDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle className="flex items-center justify-between">
               <span>Deltagare - {selectedCourse?.course_title}</span>
-              {participants.length > 0 && (
+              <div className="flex gap-2">
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  onClick={exportParticipants}
-                  className="ml-2"
+                  onClick={() => setIsAddParticipantFormOpen(!isAddParticipantFormOpen)}
                 >
-                  <Download className="w-4 h-4 mr-1" />
-                  Exportera CSV
+                  <UserPlus className="w-4 h-4 mr-1" />
+                  Lägg till deltagare
                 </Button>
-              )}
+                {participants.length > 0 && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={exportParticipants}
+                  >
+                    <Download className="w-4 h-4 mr-1" />
+                    Exportera CSV
+                  </Button>
+                )}
+              </div>
             </DialogTitle>
           </DialogHeader>
-          <div className="mt-4">
-            {participants.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <Users className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                <p>Inga anmälningar än</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="text-sm text-muted-foreground">
-                  Totalt {participants.length} anmälda deltagare
-                </div>
-                <div className="border rounded-lg">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Namn</TableHead>
-                        <TableHead>E-post</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {participants.map((participant, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="font-medium">{participant.name}</TableCell>
-                          <TableCell>{participant.email}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </div>
+          
+          <div className="flex-1 overflow-hidden flex flex-col gap-4">
+            {/* Add Participant Form */}
+            {isAddParticipantFormOpen && (
+              <Card>
+                <CardContent className="p-4">
+                  <h3 className="font-medium mb-3">Lägg till ny deltagare</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                      <Label htmlFor="participantName">Namn *</Label>
+                      <Input
+                        id="participantName"
+                        value={newParticipant.name}
+                        onChange={(e) => setNewParticipant({...newParticipant, name: e.target.value})}
+                        placeholder="Förnamn Efternamn"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="participantEmail">E-post *</Label>
+                      <Input
+                        id="participantEmail"
+                        type="email"
+                        value={newParticipant.email}
+                        onChange={(e) => setNewParticipant({...newParticipant, email: e.target.value})}
+                        placeholder="namn@exempel.se"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="participantPhone">Telefon</Label>
+                      <Input
+                        id="participantPhone"
+                        value={newParticipant.phone}
+                        onChange={(e) => setNewParticipant({...newParticipant, phone: e.target.value})}
+                        placeholder="070-123 45 67"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 mt-3">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setIsAddParticipantFormOpen(false);
+                        setNewParticipant({ name: '', email: '', phone: '' });
+                      }}
+                    >
+                      Avbryt
+                    </Button>
+                    <Button 
+                      onClick={handleAddParticipant}
+                      disabled={addParticipantMutation.isPending || !newParticipant.name.trim() || !newParticipant.email.trim()}
+                    >
+                      {addParticipantMutation.isPending ? 'Lägger till...' : 'Lägg till'}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             )}
+
+            {/* Participants List */}
+            <div className="flex-1 overflow-hidden">
+              {participants.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Users className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>Inga anmälningar än</p>
+                </div>
+              ) : (
+                <div className="space-y-4 h-full overflow-hidden flex flex-col">
+                  <div className="text-sm text-muted-foreground">
+                    Totalt {participants.length} anmälda deltagare
+                  </div>
+                  <div className="border rounded-lg flex-1 overflow-hidden">
+                    <div className="overflow-auto h-full">
+                      <Table>
+                        <TableHeader className="sticky top-0 bg-background">
+                          <TableRow>
+                            <TableHead>Namn</TableHead>
+                            <TableHead>E-post</TableHead>
+                            <TableHead className="w-20">Åtgärder</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {participants.map((participant, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="font-medium">{participant.name}</TableCell>
+                              <TableCell>{participant.email}</TableCell>
+                              <TableCell>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => handleDeleteParticipant(participant.email)}
+                                  disabled={deleteParticipantMutation.isPending}
+                                  className="p-2"
+                                >
+                                  <UserMinus className="w-3 h-3" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </DialogContent>
       </Dialog>
