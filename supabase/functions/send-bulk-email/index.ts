@@ -232,7 +232,7 @@ const handler = async (req: Request): Promise<Response> => {
           }
           
           // Personalize content by replacing [NAMN] with recipient name (first name only)
-          const firstName = recipient.name ? recipient.name.split(' ')[0] : 'Vän';
+          const firstName = recipient.name ? recipient.name.split(' ')[0] : '';
           let personalizedContent = finalContent.replace(/\[NAMN\]/g, firstName);
           let personalizedSubject = finalSubject.replace(/\[NAMN\]/g, firstName);
           
