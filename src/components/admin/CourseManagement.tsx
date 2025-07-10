@@ -667,11 +667,28 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       const { error } = await supabase
         .from('course_instances')
         .update({
-          course_title: formData.courseType === 'custom' ? formData.customName :
-                       formData.courseType === 'helgworkshop' ? formData.customName : 
-                       formData.courseType === 'niv1' ? 'Nivå 1 - Scenarbete & Improv Comedy' :
-                       formData.courseType === 'niv2' ? 'Nivå 2 - Långform improviserad komik' :
-                       formData.courseType === 'houseteam' ? 'House Team & fortsättning' : course.course_title,
+          course_title: (() => {
+            // Check if it's a template
+            const template = courseTemplates.find(t => t.id === formData.courseType);
+            if (template) {
+              return template.title_template || formData.customName || course.course_title;
+            }
+            
+            // Handle legacy course types
+            switch (formData.courseType) {
+              case 'custom':
+              case 'helgworkshop':
+                return formData.customName;
+              case 'niv1':
+                return 'Nivå 1 - Scenarbete & Improv Comedy';
+              case 'niv2':
+                return 'Nivå 2 - Långform improviserad komik';
+              case 'houseteam':
+                return 'House Team & fortsättning';
+              default:
+                return course.course_title;
+            }
+          })(),
           subtitle: formData.subtitle,
           start_date: formData.startDate?.toISOString().split('T')[0],
           start_time: formData.startTime,
@@ -728,7 +745,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       // Check if it's a template and use its title
       const template = courseTemplates.find(t => t.id === courseData.courseType);
       if (template) {
-        courseTitle = template.title_template;
+        courseTitle = template.title_template || courseData.customName || 'Untitled Course';
         tableName = `course_${template.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${Date.now()}`;
       } else {
         // Legacy handling for non-template courses
