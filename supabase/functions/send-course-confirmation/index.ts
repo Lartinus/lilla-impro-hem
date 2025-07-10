@@ -13,12 +13,12 @@ function convertMarkdownToHtmlWithVariables(
   
   let processedMarkdown = markdown;
   
-  // Replace variables in markdown text
-  Object.entries(variables).forEach(([key, value]) => {
-    console.log(`DEBUG: Replacing [${key}] with "${value}"`);
-    const regex = new RegExp(`\\[${key.toUpperCase()}\\]`, 'gi');
-    processedMarkdown = processedMarkdown.replace(regex, value || 'vän');
-  });
+    // Replace variables in markdown text
+    Object.entries(variables).forEach(([key, value]) => {
+      console.log(`DEBUG: Replacing [${key}] with "${value}"`);
+      const regex = new RegExp(`\\[${key.toUpperCase()}\\]`, 'gi');
+      processedMarkdown = processedMarkdown.replace(regex, value || '');
+    });
   
   // Convert line breaks to <br> tags for HTML
   return processedMarkdown.replace(/\n/g, '<br>');
