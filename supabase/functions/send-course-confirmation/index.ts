@@ -87,12 +87,7 @@ Lilla Improteatern`;
     const textWithBreaks = emailContent.replace(/\n/g, '<br>');
     const htmlContent = createStyledEmailTemplate(subject, textWithBreaks);
 
-    function createStyledEmailTemplate(subject: string, content: string, title?: string, backgroundImage?: string, titleSize?: string, imagePosition?: string) {
-      const hasBackground = backgroundImage && backgroundImage.trim() !== '';
-      const hasTitle = title && title.trim() !== '';
-      const finalTitleSize = titleSize || '32';
-      
-      // Clean, Moccamaster-inspired design
+    function createStyledEmailTemplate(subject: string, content: string) {
       return `
         <!DOCTYPE html>
         <html lang="sv" style="margin: 0; padding: 0;">
@@ -109,160 +104,37 @@ Lilla Improteatern`;
           line-height: 1.6;
           color: #333333;
         ">
-          <!-- Header Section -->
-          <div style="
-            background-color: #ffffff;
-            padding: 40px 20px 0;
-            text-align: center;
-          ">
-            ${hasBackground ? `
-              <div style="
-                max-width: 600px;
-                margin: 0 auto 40px;
-                height: 200px;
-                background-image: url('${backgroundImage}');
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                border-radius: 8px;
-              "></div>
-            ` : ''}
-            
-            <div style="max-width: 600px; margin: 0 auto;">
-              ${hasTitle ? `
-                <h1 style="
-                  font-size: ${finalTitleSize}px;
-                  font-weight: 300;
-                  margin: 0 0 12px 0;
-                  color: #1a1a1a;
-                  letter-spacing: -0.025em;
-                  line-height: 1.2;
-                ">
-                  ${title}
-                </h1>
-              ` : `
-                <h1 style="
-                  font-size: 28px;
-                  font-weight: 300;
-                  margin: 0 0 12px 0;
-                  color: #1a1a1a;
-                  letter-spacing: -0.025em;
-                  line-height: 1.2;
-                ">
-                  Tack för din bokning
-                </h1>
-              `}
-              <p style="
-                font-size: 16px;
-                color: #666666;
-                margin: 0 0 40px 0;
-                font-weight: 400;
-              ">
-                Din bokning är bekräftad
-              </p>
-            </div>
-          </div>
-          
-          <!-- Main Content -->
           <div style="
             max-width: 600px;
-            margin: 0 auto;
-            padding: 0 20px 40px;
+            margin: 40px auto;
+            padding: 40px;
           ">
-            <div style="
-              background-color: #ffffff;
-              border: 1px solid #e8e8e8;
-              border-radius: 8px;
-              padding: 40px;
+            <h1 style="
+              font-size: 28px;
+              font-weight: 400;
+              margin: 0 0 8px 0;
+              color: #1a1a1a;
+              text-align: center;
             ">
-              <!-- Welcome Message -->
-              <div style="margin-bottom: 32px; text-align: center;">
-                <h2 style="
-                  font-size: 20px;
-                  font-weight: 400;
-                  margin: 0 0 12px 0;
-                  color: #1a1a1a;
-                ">
-                  Hej ${name.split(' ')[0] || 'där'}!
-                </h2>
-                <p style="
-                  font-size: 16px;
-                  color: #666666;
-                  margin: 0;
-                  line-height: 1.5;
-                ">
-                  Tack för din kursbokning. Vi ser fram emot att träffa dig!
-                </p>
-              </div>
-
-              <!-- Content Box -->
-              <div style="
-                background-color: #f9f9f9;
-                border-radius: 6px;
-                padding: 24px;
-                margin-bottom: 32px;
-                border-left: 3px solid #1a1a1a;
-              ">
-                <div style="
-                  font-size: 15px;
-                  line-height: 1.6;
-                  color: #333333;
-                ">
-                  ${content}
-                </div>
-              </div>
-
-              <!-- Next Steps -->
-              <div style="
-                text-align: center;
-                margin-bottom: 32px;
-                padding: 24px 0;
-                border-top: 1px solid #e8e8e8;
-                border-bottom: 1px solid #e8e8e8;
-              ">
-                <h3 style="
-                  font-size: 17px;
-                  font-weight: 500;
-                  margin: 0 0 16px 0;
-                  color: #1a1a1a;
-                ">
-                  Vad händer nu?
-                </h3>
-                <div style="
-                  font-size: 15px;
-                  color: #666666;
-                  line-height: 1.6;
-                ">
-                  <p style="margin: 0 0 8px 0;">
-                    Du kommer att få ett mejl med kursdetaljer senast en vecka innan kursstart
-                  </p>
-                  <p style="margin: 0;">
-                    Har du frågor? Svara på detta mejl så hör vi av oss
-                  </p>
-                </div>
-              </div>
-
-              <!-- Signature -->
-              <div style="text-align: center;">
-                <p style="
-                  font-size: 14px;
-                  color: #999999;
-                  margin: 0 0 4px 0;
-                ">
-                  Med vänliga hälsningar
-                </p>
-                <p style="
-                  font-size: 16px;
-                  font-weight: 500;
-                  color: #1a1a1a;
-                  margin: 0;
-                ">
-                  Lilla Improteatern
-                </p>
-              </div>
+              Tack för din bokning
+            </h1>
+            <p style="
+              font-size: 16px;
+              color: #666666;
+              margin: 0 0 40px 0;
+              text-align: center;
+            ">
+              Din bokning är bekräftad
+            </p>
+            
+            <div style="
+              font-size: 16px;
+              line-height: 1.6;
+              color: #333333;
+            ">
+              ${content}
             </div>
           </div>
-
         </body>
         </html>
       `;
