@@ -197,6 +197,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log(`Found ${emailRecipients.length} recipients`);
+    console.log('DEBUG: First few recipients:', emailRecipients.slice(0, 3));
 
     if (emailRecipients.length === 0) {
       return new Response(
