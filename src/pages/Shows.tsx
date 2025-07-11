@@ -175,7 +175,7 @@ const Shows = () => {
         {/* Fast nyhetsbrevknapp under alla föreställningar */}
         {shows.length > 0 && (
           <div className="text-center mt-16 mx-[12px] md:mx-0">
-            <div className="bg-[#3B82F6] backdrop-blur-md border border-border/50 p-6 max-w-md mx-auto shadow-2xl">
+            <div className="bg-background/95 backdrop-blur-md border border-border/50 p-6 max-w-md mx-auto shadow-2xl">
               <h3 className="text-lg font-semibold text-foreground mb-3">Missa inga föreställningar!</h3>
               <p className="text-muted-foreground mb-4 text-sm">
                 Prenumerera på vårt nyhetsbrev och få information om nya föreställningar direkt till din inkorg.
