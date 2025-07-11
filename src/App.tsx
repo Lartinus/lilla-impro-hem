@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Courses from "./pages/Courses";
 import Corporate from "./pages/Corporate";
 import About from "./pages/About";
+import Lokal from "./pages/Lokal";
 import Shows from "./pages/Shows";
 import ShowDetails from "./pages/ShowDetails";
 import Mohippa from "./pages/Mohippa";
@@ -45,6 +46,7 @@ const App = () => (
             <Route path="/mohippa" element={<Mohippa />} />
             <Route path="/anlita-oss" element={<AnlitaOss />} />
             <Route path="/om-oss" element={<About />} />
+            <Route path="/lokal" element={<Lokal />} />
             <Route path="/shows" element={<Shows />} />
             <Route path="/shows/:slug" element={<ShowDetails />} />
             <Route path="/avprenumerera" element={<Unsubscribe />} />

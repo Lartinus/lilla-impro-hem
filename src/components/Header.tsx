@@ -30,7 +30,8 @@ const Header = () => {
             <NavLink to="/kurser">Kurser</NavLink>
             <NavLink to="/shows">Föreställningar</NavLink>
             <NavLink to="/anlita-oss">Anlita oss</NavLink>
-            <NavLink to="/om-oss">Om oss & kontakt</NavLink>            
+            <NavLink to="/lokal">Lokal</NavLink>
+            <NavLink to="/om-oss">Om oss & kontakt</NavLink>
           </nav>
 
           {/* Mobilmeny‐knapp */}
@@ -52,6 +53,7 @@ const Header = () => {
               <NavLink to="/kurser" disableUnderline>Kurser</NavLink>
               <NavLink to="/shows"  disableUnderline>Föreställningar</NavLink>
               <NavLink to="/anlita-oss" disableUnderline>Anlita oss</NavLink>
+              <NavLink to="/lokal" disableUnderline>Lokal</NavLink>
               <NavLink to="/om-oss"  disableUnderline>Om oss</NavLink>
             </nav>
           </div>
