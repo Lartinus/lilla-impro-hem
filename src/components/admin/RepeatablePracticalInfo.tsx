@@ -38,12 +38,9 @@ export const RepeatablePracticalInfo = ({ value, onChange, baseInfo }: Repeatabl
   const updateValue = (newAdditionalItems: string[]) => {
     setAdditionalItems(newAdditionalItems);
     
-    // Combine base info with filtered additional items
-    const baseItems = baseInfo ? baseInfo.split('\n').filter(item => item.trim() !== '') : [];
+    // Only save additional items, not base info
     const filteredAdditionalItems = newAdditionalItems.filter(item => item.trim() !== '');
-    const allItems = [...baseItems, ...filteredAdditionalItems];
-    
-    onChange(allItems.join('\n'));
+    onChange(filteredAdditionalItems.join('\n'));
   };
 
   const addItem = () => {

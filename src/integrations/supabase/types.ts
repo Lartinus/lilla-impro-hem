@@ -269,7 +269,7 @@ export type Database = {
           },
         ]
       }
-      course_niv__1_1752147042033: {
+      course_niv__1____improv_comedy_1752228020726: {
         Row: {
           address: string | null
           city: string | null
