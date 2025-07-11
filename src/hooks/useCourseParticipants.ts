@@ -75,11 +75,16 @@ export const useCourseParticipants = () => {
       
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       toast({
         title: "Deltagare raderad",
         description: "Deltagaren har raderats från kursen."
       });
+      
+      // Update local participants list by removing the deleted participant
+      setParticipants(prev => prev.filter(p => p.email !== variables.email));
+      
+      // Also invalidate the admin courses query to update participant counts
       queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
     },
     onError: (error) => {
