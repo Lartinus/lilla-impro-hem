@@ -28,9 +28,9 @@ const Header = () => {
           <nav className="hidden lg:flex items-center text-theatre-light space-x-12 font-satoshi">
             <NavLink to="/">Hem</NavLink>
             <NavLink to="/kurser">Kurser</NavLink>
-            <NavLink to="/anlita-oss">Anlita oss</NavLink>
-            <NavLink to="/om-oss">Om oss & kontakt</NavLink>
             <NavLink to="/shows">Föreställningar</NavLink>
+            <NavLink to="/anlita-oss">Anlita oss</NavLink>
+            <NavLink to="/om-oss">Om oss & kontakt</NavLink>            
           </nav>
 
           {/* Mobilmeny‐knapp */}
@@ -50,9 +50,9 @@ const Header = () => {
             <nav className="flex flex-col space-y-6 text-theatre-light font-satoshi">
               <NavLink to="/"    disableUnderline>Hem</NavLink>
               <NavLink to="/kurser" disableUnderline>Kurser</NavLink>
+              <NavLink to="/shows"  disableUnderline>Föreställningar</NavLink>
               <NavLink to="/anlita-oss" disableUnderline>Anlita oss</NavLink>
               <NavLink to="/om-oss"  disableUnderline>Om oss</NavLink>
-              <NavLink to="/shows"  disableUnderline>Föreställningar</NavLink>
             </nav>
           </div>
         )}
