@@ -7,21 +7,21 @@ const ServiceBoxes = () => {
   // All data och bilder är hårdkodad
   const services = [
     {
-      title: "Kurser i Improv Comedy - från nybörjare till ensemble.",
+      title: "Kurser för dig som vill utvecklas på scen",
       cta: "Utforska våra kurser",
       link: "/kurser",
       image: "/uploads/images/kurser_LIT_2024.jpg"
     },
     {
-      title: "Föreställningar med hög variation och fokus på humor.",
-      cta: "Se kommande föreställningar",
+      title: "Föreställningar med stor bredd och mycket skratt",
+      cta: "Kommande föreställningar",
       link: "/shows",
       image: "/uploads/images/Improvision2024.jpg"
     },
     {
-      title: "Workshops och events för företag, myndigheter och organisationer.",
+      title: "Events och underhållning för företag och privata tillställningar",
       cta: "Läs mer",
-      link: "/foretag",
+      link: "/anlita-oss",
       image: "/uploads/images/corporate_LIT_2024.jpg"
     }
   ];
