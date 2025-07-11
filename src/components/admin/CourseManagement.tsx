@@ -20,7 +20,8 @@ import {
   Download, 
   UserPlus, 
   UserMinus,
-  Users
+  Users,
+  X
 } from 'lucide-react';
 import { RepeatablePracticalInfo } from './RepeatablePracticalInfo';
 import { format } from 'date-fns';
@@ -482,29 +483,41 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="grid gap-2">
                     <Label>Startdatum (valfritt)</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
+                    <div className="flex gap-2">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "flex-1 justify-start text-left font-normal",
+                              !newCourse.startDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {newCourse.startDate ? format(newCourse.startDate, "PPP") : "Välj datum"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={newCourse.startDate}
+                            onSelect={(date) => setNewCourse({...newCourse, startDate: date})}
+                            initialFocus
+                            className="p-3 pointer-events-auto"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      {newCourse.startDate && (
                         <Button
                           variant="outline"
-                          className={cn(
-                            "justify-start text-left font-normal",
-                            !newCourse.startDate && "text-muted-foreground"
-                          )}
+                          size="icon"
+                          onClick={() => setNewCourse({...newCourse, startDate: undefined})}
+                          title="Rensa startdatum"
                         >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {newCourse.startDate ? format(newCourse.startDate, "PPP") : "Välj datum"}
+                          <X className="h-4 w-4" />
                         </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={newCourse.startDate}
-                          onSelect={(date) => setNewCourse({...newCourse, startDate: date})}
-                          initialFocus
-                          className="p-3 pointer-events-auto"
-                        />
-                      </PopoverContent>
-                    </Popover>
+                      )}
+                    </div>
                   </div>
 
                   <div className="grid gap-2">
