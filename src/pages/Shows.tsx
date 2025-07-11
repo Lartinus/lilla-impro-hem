@@ -182,7 +182,7 @@ const Shows = () => {
               </p>
               <Button 
                 onClick={() => setNewsletterModalOpen(true)}
-                className="w-full bg-primary hover:bg-primary/90"
+                className="w-full bg-accent-text hover:bg-accent-hover"
               >
                 <Mail className="w-4 h-4 mr-2" />
                 Prenumerera på nyhetsbrev
