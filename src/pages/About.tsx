@@ -7,17 +7,17 @@ import SimpleParallaxHero from "@/components/SimpleParallaxHero";
 const performers = [{
   id: 1,
   name: "Hjalmar Hardestam",
-  bio: "Hjalmar har undervisat på flera improvisationsscener runtom i Sverige. Han är baserad i Stockholm men har tidigare undervisat på Improverket och Gbgimpro i Göteborg och på Dramaverket i Karlstad. Han driver även Göteborg Improv Comedy Club samt podcasten Impropodden. Hjalmar har spelat på flera europeiska festivaler – bland annat i Amsterdam, Edinburgh och Nottingham – och är utbildad vid Improv Olympic och The Annoyance i Chicago samt The Free Association i London.",
+  bio: "Hjalmar har arbetat med Improv Comedy sedan 2020. Han är bland annat utbildad vid iO och The Annoyance i Chicago, The Free Association i London och har spelat på flera internationella festivaler. Han driver Göteborg Improv Comedy Club, podcasten Impropodden samt är producent för Dramaverket.",
   image: "/uploads/images/Hjalmar_Hardestam_2024.jpg"
 }, {
   id: 2,
   name: "Ellen Bobeck",
-  bio: "Ellen har arbetat med improvisationsteater sedan 2018, både som skådespelare och pedagog. Hon undervisar på flera olika skolor och teatrar i Stockholm, och har stått på scen på festivaler i bland annat Berlin, Oslo, Dublin och Edinburgh. Förutom Spinoff spelar hon även med trion Britta, och är konstnärlig ledare för musikalensemblen Floden STHLM – där hon kombinerar musikalisk känsla med improviserat berättande.",
+  bio: "Ellen har arbetat med Improv Comedy sedan 2018. Hon är bland annat utbildad vid The Free Association i London, har spelat på internationella festivaler och undervisar på teatrar och skolor i Stockholm. Hon spelar med Spinoff och Britta, och är konstnärlig ledare för musikalensemblen Floden STHLM.",
   image: "/uploads/images/Ellen_Bobeck_2024.jpg"
 }, {
   id: 3,
   name: "David Rosenqvist",
-  bio: "David började med improvisationsteater 2013 och har sedan dess varit en aktiv del av improscenerna i Karlstad, Örebro och Stockholm. Han var med och startade Dramaverket 2014 och senare Spinoff 2021. I dag spelar han både med Dramaverket och Floden STHLM, och gästar under våren 2025 även Stockholm Improvisationsteater. Till vardags jobbar David som producent inom event och teater - med ett öga för struktur, sammanhang och att få saker att hända.",
+  bio: "David har spelat impro sedan 2013 och varit aktiv i Karlstad, Örebro och Stockholm. Han var med och grundade Dramaverket och Spinoff, och spelar nu på flera teatrar runt om i Stockholm. Till vardags arbetar han som producent inom event och teater – med känsla för struktur och kreativt genomförande.",
   image: "/uploads/images/David_Rosenqvist_2024.jpg"
 }];
 
