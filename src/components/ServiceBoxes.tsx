@@ -19,7 +19,7 @@ const ServiceBoxes = () => {
       image: "/uploads/images/Improvision2024.jpg"
     },
     {
-      title: "Events och underhållning för företag och privata tillställningar",
+      title: "Underhållning för företag och privata tillställningar",
       cta: "Läs mer",
       link: "/anlita-oss",
       image: "/uploads/images/corporate_LIT_2024.jpg"
