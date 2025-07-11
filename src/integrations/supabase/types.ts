@@ -754,6 +754,39 @@ export type Database = {
         }
         Relationships: []
       }
+      security_audit_log: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          ip_address: unknown | null
+          target_user_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          target_user_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          target_user_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       show_performers: {
         Row: {
           actor_id: string
@@ -1032,6 +1065,10 @@ export type Database = {
           expires_at: string
         }[]
       }
+      current_user_is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       delete_course_participant: {
         Args: { table_name: string; participant_email: string }
         Returns: boolean
@@ -1107,6 +1144,10 @@ export type Database = {
       is_valid_phone: {
         Args: { phone: string }
         Returns: boolean
+      }
+      log_security_event: {
+        Args: { p_action: string; p_target_user_id?: string; p_details?: Json }
+        Returns: undefined
       }
       sync_email_contacts: {
         Args: Record<PropertyKey, never>
