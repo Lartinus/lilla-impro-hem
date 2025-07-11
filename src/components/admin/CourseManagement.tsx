@@ -586,7 +586,8 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                 </div>
 
                 <RepeatablePracticalInfo
-                  value={(() => {
+                  value={newCourse.practicalInfo}
+                  baseInfo={(() => {
                     const baseItems = [];
                     if (newCourse.sessions && newCourse.sessions > 0) {
                       baseItems.push(`Antal tillfällen: ${newCourse.sessions}`);
