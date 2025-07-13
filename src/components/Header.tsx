@@ -38,7 +38,7 @@ const Header = () => {
           {/* Mobilmeny‐knapp */}
           <Button
             variant="ghost"
-            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 font-satoshi p-4 mt-2 [&_svg]:!size-auto"
+            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 p-4 mt-2 [&_svg]:!size-auto"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
@@ -48,7 +48,7 @@ const Header = () => {
 
         {isMenuOpen && (
           <div className="lg:hidden pb-8 pt-4 px-6 animate-fade-in">
-            <nav className="flex flex-col space-y-8 text-theatre-light font-satoshi [&_a]:!font-bold [&_a]:!text-lg">
+            <nav className="flex flex-col space-y-8 text-theatre-light [&_a]:!text-lg">
               <NavLink to="/">Hem</NavLink>
               <NavLink to="/kurser">Kurser</NavLink>
               <NavLink to="/shows">Föreställningar</NavLink>
