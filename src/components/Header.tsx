@@ -19,7 +19,7 @@ const Header = () => {
           <img
             src="/uploads/LIT_white_tiny.png"
             alt="Lilla Improteatern"
-            className="h-[120px] lg:h-[160px] w-auto flex-shrink-0"
+            className="h-[140px] lg:h-[160px] w-auto flex-shrink-0"
           />
         </Link>
           </div>
