@@ -48,13 +48,13 @@ const Header = () => {
 
         {isMenuOpen && (
           <div className="lg:hidden pb-8 pt-4 px-6 animate-fade-in">
-            <nav className="flex flex-col space-y-8 text-theatre-light hover-underline font-satoshi font-bold text-xl">
-              <NavLink to="/" disableUnderline>HEM</NavLink>
-              <NavLink to="/kurser" disableUnderline>KURSER</NavLink>
-              <NavLink to="/shows" disableUnderline>FÖRESTÄLLNINGAR</NavLink>
-              <NavLink to="/anlita-oss" disableUnderline>ANLITA OSS</NavLink>
-              <NavLink to="/lokal" disableUnderline>LOKAL</NavLink>
-              <NavLink to="/om-oss" disableUnderline>OM OSS & KONTAKT</NavLink>
+            <nav className="flex flex-col space-y-8 text-theatre-light font-satoshi font-bold text-xl">
+              <NavLink to="/">HEM</NavLink>
+              <NavLink to="/kurser">KURSER</NavLink>
+              <NavLink to="/shows">FÖRESTÄLLNINGAR</NavLink>
+              <NavLink to="/anlita-oss">ANLITA OSS</NavLink>
+              <NavLink to="/lokal">LOKAL</NavLink>
+              <NavLink to="/om-oss">OM OSS & KONTAKT</NavLink>
             </nav>
           </div>
         )}
