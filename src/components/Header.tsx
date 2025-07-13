@@ -12,7 +12,7 @@ const Header = () => {
   return (
 <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
   <div className="container mx-auto px-2 lg:px-8 overflow-visible">
-    <div className="flex items-center justify-between h-[120px] lg:h-[160px]">
+    <div className="flex items-center justify-between h-20 lg:h-28">
       {/* Logo */}
       <div className="flex items-center -ml-5 lg:-ml-8 overflow-visible">
         <Link to="/" className="flex items-center">
@@ -25,7 +25,8 @@ const Header = () => {
           </div>
 
           {/* Desktopnav*/}
-          <nav className="hidden lg:flex items-center text-theatre-light font-satoshi font-semibold space-x-12 text-lg">
+          <nav
+  className="hidden lg:flex relative top-2 lg:top-4 text-theatre-light font-satoshi font-semibold space-x-12 text-lg">
             <NavLink to="/">HEM</NavLink>
             <NavLink to="/kurser">KURSER</NavLink>
             <NavLink to="/shows">FÖRESTÄLLNINGAR</NavLink>
