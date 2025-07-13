@@ -1,6 +1,6 @@
 
 // src/components/Header.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NavLink from '@/components/NavLink';
@@ -8,11 +8,21 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi transition-all duration-300">
       <div className="container mx-auto px-1 lg:px-5">
-        <div className="flex items-center justify-between h-14">
+        <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-12 lg:h-14' : 'h-16 lg:h-14'}`}>
           {/* Logo */}
           <div className="flex items-center overflow-visible -ml-4 lg:ml-0">
             <Link to="/" className="flex items-center">
@@ -37,12 +47,11 @@ const Header = () => {
           {/* Mobilmeny‐knapp */}
           <Button
             variant="ghost"
-            size="sm"
-            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 font-satoshi [&>svg]:text-theatre-light"
+            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 font-satoshi [&>svg]:text-theatre-light p-3"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
-            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </Button>
         </div>
 
