@@ -26,7 +26,7 @@ const Header = () => {
 
           {/* Desktopnav*/}
           <nav
-  className="hidden lg:flex relative top-1 lg:top-2 text-theatre-light font-satoshi font-bold space-x-12 text-xl">
+  className="hidden lg:flex relative top-1 lg:top-2 text-theatre-light font-satoshi font-bold space-x-12 [&_a]:!text-xl">
             <NavLink to="/">HEM</NavLink>
             <NavLink to="/kurser">KURSER</NavLink>
             <NavLink to="/shows">FÖRESTÄLLNINGAR</NavLink>
@@ -48,7 +48,7 @@ const Header = () => {
 
         {isMenuOpen && (
           <div className="lg:hidden pb-8 pt-4 px-6 animate-fade-in">
-            <nav className="flex flex-col space-y-8 text-theatre-light font-satoshi font-bold [&_a]:!text-2xl">
+            <nav className="flex flex-col space-y-8 text-theatre-light font-satoshi font-bold [&_a]:!text-xl">
               <NavLink to="/">HEM</NavLink>
               <NavLink to="/kurser">KURSER</NavLink>
               <NavLink to="/shows">FÖRESTÄLLNINGAR</NavLink>
