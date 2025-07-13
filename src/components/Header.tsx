@@ -1,4 +1,3 @@
-
 // src/components/Header.tsx
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
@@ -10,23 +9,22 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-<header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
-  <div className="container mx-auto px-2 lg:px-8 overflow-visible">
-    <div className="flex items-center justify-between h-20 lg:h-28">
-      {/* Logo */}
-      <div className="flex items-center -ml-5 lg:-ml-8 overflow-visible">
-        <Link to="/" className="flex items-center">
-          <img
-            src="/uploads/LIT_white_tiny.png"
-            alt="Lilla Improteatern"
-            className="h-[120px] lg:h-[160px] w-auto flex-shrink-0"
-          />
-        </Link>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
+      <div className="container mx-auto px-2 lg:px-8 overflow-visible">
+        <div className="flex items-center justify-between h-20 lg:h-28">
+          {/* Logo */}
+          <div className="flex items-center -ml-5 lg:-ml-8 overflow-visible">
+            <Link to="/" className="flex items-center">
+              <img
+                src="/uploads/LIT_white_tiny.png"
+                alt="Lilla Improteatern"
+                className="h-[120px] lg:h-[160px] w-auto flex-shrink-0"
+              />
+            </Link>
           </div>
 
-          {/* Desktopnav*/}
-          <nav
-  className="hidden lg:flex relative top-1 lg:top-2 text-theatre-light font-satoshi font-semibold space-x-12 text-lg">
+          {/* Desktopnav */}
+          <nav className="hidden lg:flex relative top-1 lg:top-2 text-theatre-light font-satoshi font-semibold space-x-12 text-lg">
             <NavLink to="/">HEM</NavLink>
             <NavLink to="/kurser">KURSER</NavLink>
             <NavLink to="/shows">FÖRESTÄLLNINGAR</NavLink>
@@ -38,11 +36,19 @@ const Header = () => {
           {/* Mobilmeny‐knapp */}
           <Button
             variant="ghost"
-            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 font-satoshi [&>svg]:text-theatre-light p-4"
+            className="
+              flex lg:hidden 
+              text-theatre-light hover:bg-theatre-light/20 
+              font-satoshi [&>svg]:text-theatre-light 
+              p-6            /* Ökad padding för större klickyta */
+            "
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
-            {isMenuOpen ? <X size={50} strokeWidth={3} /> : <Menu size={50} strokeWidth={3} />}
+            {isMenuOpen 
+              ? <X size={48} strokeWidth={3} />   /* Ökat från 36 → 48 */
+              : <Menu size={48} strokeWidth={3} /> /* Ökat från 36 → 48 */
+            }
           </Button>
         </div>
 
