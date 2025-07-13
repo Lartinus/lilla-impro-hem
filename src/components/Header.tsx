@@ -10,18 +10,18 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
-      <div className="container mx-auto px-2 lg:px-8">
-        <div className="flex items-center justify-between h-20 lg:h-28">
-          {/* Logo */}
-          <div className="flex items-center overflow-visible -ml-8 lg:ml-0">
-            <Link to="/" className="flex items-center">
-              <img
-                src="/uploads/LIT_white_tiny.png"
-                alt="Lilla Improteatern"
-                className="h-[120px] lg:h-[160px] w-auto flex-shrink-0"
-              />
-            </Link>
+<header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
+  <div className="container mx-auto px-2 lg:px-8 overflow-visible">
+    <div className="flex items-center justify-between h-20 lg:h-28">
+      {/* Logo */}
+      <div className="flex items-center -ml-12 lg:-ml-8 overflow-visible">
+        <Link to="/" className="flex items-center">
+          <img
+            src="/uploads/LIT_white_tiny.png"
+            alt="Lilla Improteatern"
+            className="h-[120px] lg:h-[160px] w-auto flex-shrink-0"
+          />
+        </Link>
           </div>
 
           {/* Desktopnav*/}
