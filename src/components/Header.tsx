@@ -48,7 +48,7 @@ const Header = () => {
 
         {isMenuOpen && (
           <div className="lg:hidden pb-8 pt-4 px-6 animate-fade-in">
-            <nav className="flex flex-col space-y-8 text-theatre-light font-satoshi font-bold text-5xl">
+            <nav className="flex flex-col space-y-8 text-theatre-light font-satoshi font-bold !text-5xl">
               <NavLink to="/">HEM</NavLink>
               <NavLink to="/kurser">KURSER</NavLink>
               <NavLink to="/shows">FÖRESTÄLLNINGAR</NavLink>
