@@ -38,11 +38,11 @@ const Header = () => {
           {/* Mobilmeny‐knapp */}
           <Button
             variant="ghost"
-            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 font-satoshi p-4"
+            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 font-satoshi p-4 [&_svg]:!size-auto"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
-            {isMenuOpen ? <X size={144} strokeWidth={4} className="text-theatre-light" /> : <Menu size={144} strokeWidth={4} className="text-theatre-light" />}
+            {isMenuOpen ? <X size={144} strokeWidth={4} className="text-theatre-light w-36 h-36" /> : <Menu size={144} strokeWidth={4} className="text-theatre-light w-36 h-36" />}
           </Button>
         </div>
 
