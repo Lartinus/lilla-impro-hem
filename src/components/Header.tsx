@@ -14,7 +14,7 @@ const Header = () => {
   <div className="container mx-auto px-2 lg:px-8 overflow-visible">
     <div className="flex items-center justify-between h-20 lg:h-28">
       {/* Logo */}
-      <div className="flex items-center -ml-12 lg:-ml-8 overflow-visible">
+      <div className="flex items-center -ml-8 lg:-ml-8 overflow-visible">
         <Link to="/" className="flex items-center">
           <img
             src="/uploads/LIT_white_tiny.png"
