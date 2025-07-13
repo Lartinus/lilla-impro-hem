@@ -23,7 +23,7 @@ const Index = () => {
         <div className="mt-[300px] md:mt-[400px] md:flex md:items-center md:justify-center md:min-h-screen my-[30px] py-[20px]">
           <div className="p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-white mx-3 md:mx-0 md:max-w-5xl md:mx-auto relative z-10">
             
-            <div className="mx-1 md:mx-0 md:max-w-6xl lg:max-w-7xl pb-1">
+            <div className="mx-2 md:mx-0 lg:max-w-7xl pb-1">
               <h1 className="mt-[10px] mb-[25px] md:mb-[30px]">
                 Lilla improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv&nbsp;Comedy.
               </h1>
