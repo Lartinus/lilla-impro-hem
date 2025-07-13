@@ -21,27 +21,27 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi transition-all duration-300">
-      <div className="container mx-auto px-1 lg:px-5">
-        <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-12 lg:h-14' : 'h-16 lg:h-14'}`}>
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-16 lg:h-20' : 'h-20 lg:h-24'}`}>
           {/* Logo */}
-          <div className="flex items-center overflow-visible -ml-4 lg:ml-0">
+          <div className="flex items-center overflow-visible">
             <Link to="/" className="flex items-center">
               <img
                 src="/uploads/LIT_white_tiny.png"
                 alt="Lilla Improteatern"
-                className="h-[100px] lg:h-[120px] w-auto flex-shrink-0"
+                className={`w-auto flex-shrink-0 transition-all duration-300 ${isScrolled ? 'h-[80px] lg:h-[100px]' : 'h-[120px] lg:h-[140px]'}`}
               />
             </Link>
           </div>
 
           {/* Desktopnav*/}
-          <nav className="hidden lg:flex items-center text-theatre-light space-x-12 font-satoshi">
-            <NavLink to="/">Hem</NavLink>
-            <NavLink to="/kurser">Kurser</NavLink>
-            <NavLink to="/shows">Föreställningar</NavLink>
-            <NavLink to="/anlita-oss">Anlita oss</NavLink>
-            <NavLink to="/lokal">Lokal</NavLink>
-            <NavLink to="/om-oss">Om oss & kontakt</NavLink>
+          <nav className={`hidden lg:flex items-center text-theatre-light font-satoshi font-semibold transition-all duration-300 ${isScrolled ? 'space-x-8 text-base' : 'space-x-12 text-lg'}`}>
+            <NavLink to="/">HEM</NavLink>
+            <NavLink to="/kurser">KURSER</NavLink>
+            <NavLink to="/shows">FÖRESTÄLLNINGAR</NavLink>
+            <NavLink to="/anlita-oss">ANLITA OSS</NavLink>
+            <NavLink to="/lokal">LOKAL</NavLink>
+            <NavLink to="/om-oss">OM OSS & KONTAKT</NavLink>
           </nav>
 
           {/* Mobilmeny‐knapp */}
@@ -56,14 +56,14 @@ const Header = () => {
         </div>
 
         {isMenuOpen && (
-          <div className="lg:hidden pb-6 pt-2 px-4 animate-fade-in">
-            <nav className="flex flex-col space-y-6 text-theatre-light font-satoshi">
-              <NavLink to="/"    disableUnderline>Hem</NavLink>
-              <NavLink to="/kurser" disableUnderline>Kurser</NavLink>
-              <NavLink to="/shows"  disableUnderline>Föreställningar</NavLink>
-              <NavLink to="/anlita-oss" disableUnderline>Anlita oss</NavLink>
-              <NavLink to="/lokal" disableUnderline>Lokal</NavLink>
-              <NavLink to="/om-oss"  disableUnderline>Om oss</NavLink>
+          <div className="lg:hidden pb-8 pt-4 px-6 animate-fade-in">
+            <nav className="flex flex-col space-y-8 text-theatre-light font-satoshi font-semibold text-lg">
+              <NavLink to="/" disableUnderline>HEM</NavLink>
+              <NavLink to="/kurser" disableUnderline>KURSER</NavLink>
+              <NavLink to="/shows" disableUnderline>FÖRESTÄLLNINGAR</NavLink>
+              <NavLink to="/anlita-oss" disableUnderline>ANLITA OSS</NavLink>
+              <NavLink to="/lokal" disableUnderline>LOKAL</NavLink>
+              <NavLink to="/om-oss" disableUnderline>OM OSS & KONTAKT</NavLink>
             </nav>
           </div>
         )}
