@@ -11,7 +11,7 @@ const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
       {/* Inledande kort */}
       <div className="bg-white shadow-lg border-4 border-white mb-6">
         <div className="p-6 md:p-8">
-          <h1 className="text-2xl md:text-4xl">
+          <h1 className="text-3xl md:text-4xl">
             Improv Comedy för dig som vill utvecklas på scen
           </h1>
           <div className="text-black space-y-4">
