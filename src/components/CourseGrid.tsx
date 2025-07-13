@@ -11,9 +11,9 @@ const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
       {/* Inledande kort */}
       <div className="bg-white shadow-lg border-4 border-white mb-6">
         <div className="p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-black mb-4">
+          <h1>
             Improv Comedy för dig som vill utvecklas på scen
-          </h2>
+          </h1>
           <div className="text-black space-y-4">
             <p>
               Lilla Improteatern är platsen för dig som vill utvecklas som improvisatör och bli skickligare på att spela roliga scener tillsammans med andra.
