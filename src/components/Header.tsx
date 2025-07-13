@@ -42,7 +42,7 @@ const Header = () => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
-            {isMenuOpen ? <X size={36} strokeWidth={3} /> : <Menu size={36} strokeWidth={3} />}
+            {isMenuOpen ? <X size={50} strokeWidth={3} /> : <Menu size={50} strokeWidth={3} />}
           </Button>
         </div>
 
