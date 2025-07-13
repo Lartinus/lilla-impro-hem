@@ -1,6 +1,6 @@
 
 // src/components/Header.tsx
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NavLink from '@/components/NavLink';
@@ -8,34 +8,24 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi transition-all duration-300">
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-16 lg:h-20' : 'h-20 lg:h-24'}`}>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
+      <div className="container mx-auto px-2 lg:px-8">
+        <div className="flex items-center justify-between h-20 lg:h-28">
           {/* Logo */}
-          <div className="flex items-center overflow-visible">
+          <div className="flex items-center overflow-visible -ml-2 lg:ml-0">
             <Link to="/" className="flex items-center">
               <img
                 src="/uploads/LIT_white_tiny.png"
                 alt="Lilla Improteatern"
-                className={`w-auto flex-shrink-0 transition-all duration-300 ${isScrolled ? 'h-[80px] lg:h-[100px]' : 'h-[120px] lg:h-[140px]'}`}
+                className="h-[120px] lg:h-[160px] w-auto flex-shrink-0"
               />
             </Link>
           </div>
 
           {/* Desktopnav*/}
-          <nav className={`hidden lg:flex items-center text-theatre-light font-satoshi font-semibold transition-all duration-300 ${isScrolled ? 'space-x-8 text-base' : 'space-x-12 text-lg'}`}>
+          <nav className="hidden lg:flex items-center text-theatre-light font-satoshi font-semibold space-x-12 text-lg">
             <NavLink to="/">HEM</NavLink>
             <NavLink to="/kurser">KURSER</NavLink>
             <NavLink to="/shows">FÖRESTÄLLNINGAR</NavLink>
@@ -47,11 +37,11 @@ const Header = () => {
           {/* Mobilmeny‐knapp */}
           <Button
             variant="ghost"
-            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 font-satoshi [&>svg]:text-theatre-light p-3"
+            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 font-satoshi [&>svg]:text-theatre-light p-4"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
-            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            {isMenuOpen ? <X size={36} strokeWidth={3} /> : <Menu size={36} strokeWidth={3} />}
           </Button>
         </div>
 
