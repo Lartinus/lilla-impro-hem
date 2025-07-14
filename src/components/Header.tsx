@@ -26,7 +26,7 @@ const Header = () => {
 
           {/* Desktopnav*/}
           <nav
-  className="hidden lg:flex relative top-1 lg:top-2 text-theatre-light font-satoshi font-bold space-x-12">
+  className="hidden lg:flex relative top-1 lg:top-2 text-theatre-light font-satoshi [&_a]:!text-lg space-x-12">
             <NavLink to="/">Hem</NavLink>
             <NavLink to="/kurser">Kurser</NavLink>
             <NavLink to="/shows">Föreställningar</NavLink>
