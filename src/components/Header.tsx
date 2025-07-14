@@ -12,7 +12,7 @@ const Header = () => {
   return (
 <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
   <div className="container mx-auto px-2 lg:px-8 overflow-visible">
-    <div className="flex items-center justify-between h-16 lg:h-24">
+    <div className="flex items-center justify-between h-20 lg:h-26">
       {/* Logo */}
       <div className="flex items-center -ml-5 lg:-ml-8 overflow-visible">
         <Link to="/" className="flex items-center">
