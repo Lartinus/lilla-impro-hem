@@ -26,13 +26,13 @@ const Header = () => {
 
           {/* Desktopnav*/}
           <nav
-  className="hidden lg:flex relative top-1 lg:top-2 text-theatre-light font-satoshi [&_a]:!text-lg space-x-12">
-            <NavLink to="/">Hem</NavLink>
-            <NavLink to="/kurser">Kurser</NavLink>
-            <NavLink to="/shows">Föreställningar</NavLink>
-            <NavLink to="/anlita-oss">Anlita oss</NavLink>
-            <NavLink to="/lokal">Lokal</NavLink>
-            <NavLink to="/om-oss">Om oss & kontakt</NavLink>
+  className="hidden lg:flex relative top-1 lg:top-2 text-theatre-light font-satoshi [&_a]:!text-base space-x-12">
+            <NavLink to="/">HEM</NavLink>
+            <NavLink to="/kurser">KURSER</NavLink>
+            <NavLink to="/shows">FÖRESTÄLLNINGAR</NavLink>
+            <NavLink to="/anlita-oss">ANLITA OSS</NavLink>
+            <NavLink to="/lokal">LOKAL</NavLink>
+            <NavLink to="/om-oss">OM OSS & KONTAKT</NavLink>
           </nav>
 
           {/* Mobilmeny‐knapp */}
