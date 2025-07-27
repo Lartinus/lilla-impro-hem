@@ -80,6 +80,26 @@ export const useCourseManagementMutations = (
         .eq('id', course.id);
 
       if (error) throw error;
+
+      // Reorder the remaining courses to have sequential sort_order (1, 2, 3, etc.)
+      const { data: remainingCourses, error: fetchError } = await supabase
+        .from('course_instances')
+        .select('id, sort_order')
+        .order('sort_order', { ascending: true });
+
+      if (fetchError) throw fetchError;
+
+      // Update sort_order to be sequential starting from 1
+      if (remainingCourses && remainingCourses.length > 0) {
+        const updates = remainingCourses.map((course, index) => 
+          supabase
+            .from('course_instances')
+            .update({ sort_order: index + 1 })
+            .eq('id', course.id)
+        );
+
+        await Promise.all(updates);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
