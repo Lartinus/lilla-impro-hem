@@ -42,7 +42,7 @@ const ServiceBoxes = () => {
               <div className="absolute inset-0 bg-black/20"></div>
             </div>
             {/* Content section */}
-            <div className="bg-[#1A1A1A] p-4 md:p-8 flex-1 flex flex-col justify-between text-left">
+            <div className="bg-[#F3F4F6] p-4 md:p-8 flex-1 flex flex-col justify-between text-left">
               <div className="space-y-6">
                 <div className="w-full h-px bg-white/30"></div>
                 <p className="text-theatre-text-primary leading-relaxed font-light text-base">
