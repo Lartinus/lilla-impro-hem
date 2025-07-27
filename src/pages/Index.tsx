@@ -42,7 +42,7 @@ const Index = () => {
       </section>
 
       {/* Logotyp placerad EFTER den vita boxen för att garantera att den hamnar under */}
-      <div className="relative z-30 text-center pb-12 md:pb-16">
+      <div className="relative z-30 text-left md:text-center pb-12 md:pb-16">
         <div className="mt-8 md:mt-12 mb-8">
           <img
             src="/uploads/LIT_WoB_large.png"
