@@ -152,7 +152,7 @@
 
   /* Huvudrubrik */
   h1 {
-    font-family: "RetroVoice", sans-serif;
+    font-family: "Satoshi", sans-serif;
     font-weight: 700;
     font-size: clamp(2.2rem, 5vw, 3.25rem);
     color: var(--theatre-dark);
