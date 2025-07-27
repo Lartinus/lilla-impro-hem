@@ -42,12 +42,12 @@ const Index = () => {
       </section>
 
       {/* Logotyp placerad EFTER den vita boxen för att garantera att den hamnar under */}
-      <div className="relative z-30 md:text-center pb-12 md:pb-16">
+      <div className="relative z-30 text-center pb-12 md:pb-16">
         <div className="mt-8 md:mt-12 mb-8">
           <img
             src="/uploads/LIT_WoB_large.png"
             alt="Lilla Improteatern logotyp"
-            className="h-40 md:h-48 lg:h-56 mx-auto items-left md:items-center mb-4 drop-shadow-lg"
+            className="h-40 md:h-48 lg:h-56 mx-auto item-left md:item-center mb-4 drop-shadow-lg"
           />
           <p className="text-white text-sm">
             Följ oss på @lillaimproteatern eller via{' '}
