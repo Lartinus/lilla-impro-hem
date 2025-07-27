@@ -157,6 +157,7 @@
     font-size: clamp(2.2rem, 5vw, 3.25rem);
     color: var(--theatre-dark);
     line-height: 1;
+    text-transform: uppercase;
   }
 
   /* Sekundära rubriker */
