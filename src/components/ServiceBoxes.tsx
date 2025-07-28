@@ -16,7 +16,7 @@ const ServiceBoxes = () => {
     {
       title: "Föreställningar",
       subtitle: "Med stor bredd och mycket skratt",
-      cta: "Föreställningar",
+      cta: "Kommande föreställningar",
       link: "/shows",
       image: "/uploads/images/Improvision2024.jpg"
     },
