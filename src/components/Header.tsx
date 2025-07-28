@@ -52,7 +52,7 @@ const Header = () => {
         {isMenuOpen && (
           <div className="fixed top-0 right-0 w-full lg:w-80 h-screen bg-black z-[100] animate-slide-in-right">
             
-            <div className="flex flex-col h-full pt-24 lg:pt-32 pr-16 text-right">
+            <div className="flex flex-col h-full pt-24 lg:pt-32 pr-8 lg:pr-16 text-right">
               <nav className="flex flex-col items-end space-y-2">
                 <Link 
                   to="/" 
