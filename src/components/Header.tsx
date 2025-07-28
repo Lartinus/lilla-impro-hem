@@ -51,8 +51,8 @@ const Header = () => {
 
         {isMenuOpen && (
           <div className="fixed top-0 right-0 w-full lg:w-80 h-screen bg-black z-[100] animate-slide-in-right">
-            {/* Duplicerad logotyp som ligger över menyn */}
-            <div className="absolute top-0 left-0 z-[130] flex items-center -ml-6 lg:-ml-8 h-20 lg:h-28">
+            {/* Duplicerad logotyp som bara visas på mobil när menyn täcker logotypen */}
+            <div className="absolute top-0 left-0 z-[130] flex items-center -ml-6 lg:-ml-8 h-20 lg:h-28 lg:hidden">
               <Link to="/" onClick={() => setIsMenuOpen(false)}>
                 <img
                   src="/uploads/LIT_white_tiny.png"
@@ -62,17 +62,6 @@ const Header = () => {
               </Link>
             </div>
             
-            {/* Stäng-knapp inne i menyn */}
-            <div className="flex justify-end pt-6 pr-8 z-[130] relative">
-              <Button
-                variant="ghost"
-                className="text-theatre-light hover:bg-theatre-light/20 p-4"
-                onClick={() => setIsMenuOpen(false)}
-                aria-label="Stäng meny"
-              >
-                <X size={32} strokeWidth={2} className="text-theatre-light w-12 h-12" />
-              </Button>
-            </div>
             <div className="flex flex-col h-full pt-8 px-8 text-right">
               <nav className="flex flex-col items-end space-y-4">
                 <Link 
