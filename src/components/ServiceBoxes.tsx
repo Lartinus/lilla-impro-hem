@@ -52,7 +52,7 @@ const ServiceBoxes = () => {
                   <h2>
                     {service.title}
                   </h2>
-                  <p className="text-base leading-relaxed">
+                  <p className="text-sm leading-relaxed">
                     {service.subtitle}
                   </p>
                 </div>
