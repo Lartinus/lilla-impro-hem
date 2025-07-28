@@ -25,9 +25,8 @@ const Header = () => {
         </Link>
           </div>
 
-          {/* Desktopnav*/}
-          <nav
-  className="hidden lg:flex relative top-1 lg:top-2 text-theatre-light font-satoshi [&_a]:!text-sm space-x-12">
+          {/* Dold desktop nav - använder bara hamburgermeny nu */}
+          <nav className="hidden">
             <NavLink to="/">Hem</NavLink>
             <NavLink to="/kurser">Kurser</NavLink>
             <NavLink to="/shows">Föreställningar</NavLink>
@@ -36,10 +35,10 @@ const Header = () => {
             <NavLink to="/om-oss">Om oss & kontakt</NavLink>
           </nav>
 
-          {/* Mobilmeny‐knapp */}
+          {/* Hamburger meny-knapp för alla skärmstorlekar */}
           <Button
             variant="ghost"
-            className="flex lg:hidden text-theatre-light hover:bg-theatre-light/20 p-4 mt-2 [&_svg]:!size-auto"
+            className="text-theatre-light hover:bg-theatre-light/20 p-4 mt-2 [&_svg]:!size-auto"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
@@ -48,8 +47,8 @@ const Header = () => {
         </div>
 
         {isMenuOpen && (
-          <div className="lg:hidden fixed inset-0 top-20 bg-theatre-tertiary z-40 animate-fade-in">
-            <div className="flex flex-col h-full pt-8 px-8">
+          <div className="fixed inset-0 top-20 bg-black z-40 animate-fade-in">
+            <div className="flex flex-col h-full pt-8 px-8 max-w-md">
               <nav className="flex flex-col space-y-4">
                 <Link 
                   to="/" 
