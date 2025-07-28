@@ -38,7 +38,7 @@ const Header = () => {
           {/* Hamburger meny-knapp för alla skärmstorlekar */}
           <Button
             variant="ghost"
-            className="text-theatre-light hover:bg-theatre-light/20 p-4 mt-2 [&_svg]:!size-auto relative z-[110]"
+            className="text-theatre-light hover:bg-theatre-light/20 p-4 pr-8 mt-2 [&_svg]:!size-auto relative z-[110]"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
