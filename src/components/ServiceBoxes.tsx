@@ -8,7 +8,7 @@ const ServiceBoxes = () => {
   const services = [
     {
       title: "Kurser",
-      subtitle: "FÖR DIG SOM VILL UTVECKLAS PÅ SCEN",
+      subtitle: "För dig som vill utvecklas på scen",
       cta: "Utforska våra kurser",
       link: "/kurser",
       image: "/uploads/images/kurser_LIT_2024.jpg"
@@ -52,7 +52,7 @@ const ServiceBoxes = () => {
                   <h2>
                     {service.title}
                   </h2>
-                  <p className="text-xs leading-relaxed">
+                  <p className="text-sm leading-relaxed">
                     {service.subtitle}
                   </p>
                 </div>
