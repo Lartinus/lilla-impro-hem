@@ -42,14 +42,28 @@ const Header = () => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
-            <Menu size={32} strokeWidth={2} className="text-theatre-light w-12 h-12" />
+            {isMenuOpen ? 
+              <X size={32} strokeWidth={2} className="text-theatre-light w-12 h-12" /> : 
+              <Menu size={32} strokeWidth={2} className="text-theatre-light w-12 h-12" />
+            }
           </Button>
         </div>
 
         {isMenuOpen && (
-          <div className="fixed top-0 right-0 w-full lg:w-80 h-screen bg-black z-[100] animate-fade-in">
+          <div className="fixed top-0 right-0 w-full lg:w-80 h-screen bg-black z-[100] animate-slide-in-right">
+            {/* Duplicerad logotyp som ligger över menyn */}
+            <div className="absolute top-0 left-0 z-[130] flex items-center -ml-6 lg:-ml-8 h-20 lg:h-28">
+              <Link to="/" onClick={() => setIsMenuOpen(false)}>
+                <img
+                  src="/uploads/LIT_white_tiny.png"
+                  alt="Lilla Improteatern"
+                  className="h-[140px] lg:h-[160px] w-auto flex-shrink-0"
+                />
+              </Link>
+            </div>
+            
             {/* Stäng-knapp inne i menyn */}
-            <div className="flex justify-end pt-6 pr-8">
+            <div className="flex justify-end pt-6 pr-8 z-[130] relative">
               <Button
                 variant="ghost"
                 className="text-theatre-light hover:bg-theatre-light/20 p-4"
