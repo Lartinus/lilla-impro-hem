@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NavLink from '@/components/NavLink';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   return (
 <header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
@@ -47,15 +48,65 @@ const Header = () => {
         </div>
 
         {isMenuOpen && (
-          <div className="lg:hidden pb-8 pt-4 px-6 animate-fade-in">
-            <nav className="flex flex-col space-y-8 text-theatre-light [&_a]:!text-lg">
-              <NavLink to="/">Hem</NavLink>
-              <NavLink to="/kurser">Kurser</NavLink>
-              <NavLink to="/shows">Föreställningar</NavLink>
-              <NavLink to="/anlita-oss">Anlita oss</NavLink>
-              <NavLink to="/lokal">Lokal</NavLink>
-              <NavLink to="/om-oss">Om oss & kontakt</NavLink>
-            </nav>
+          <div className="lg:hidden fixed inset-0 top-20 bg-black/95 backdrop-blur-md z-40 animate-fade-in">
+            <div className="flex flex-col h-full pt-12 px-8">
+              <nav className="flex flex-col space-y-8">
+                <Link 
+                  to="/" 
+                  className={`text-2xl font-light transition-colors py-2 ${
+                    location.pathname === '/' ? 'text-theatre-accent' : 'text-white hover:text-white/80'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  HEM
+                </Link>
+                <Link 
+                  to="/kurser" 
+                  className={`text-2xl font-light transition-colors py-2 ${
+                    location.pathname === '/kurser' ? 'text-theatre-accent' : 'text-white hover:text-white/80'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  KURSER
+                </Link>
+                <Link 
+                  to="/shows" 
+                  className={`text-2xl font-light transition-colors py-2 ${
+                    location.pathname === '/shows' ? 'text-theatre-accent' : 'text-white hover:text-white/80'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  FÖRESTÄLLNINGAR
+                </Link>
+                <Link 
+                  to="/anlita-oss" 
+                  className={`text-2xl font-light transition-colors py-2 ${
+                    location.pathname === '/anlita-oss' ? 'text-theatre-accent' : 'text-white hover:text-white/80'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  ANLITA OSS
+                </Link>
+                <Link 
+                  to="/lokal" 
+                  className={`text-2xl font-light transition-colors py-2 ${
+                    location.pathname === '/lokal' ? 'text-theatre-accent' : 'text-white hover:text-white/80'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  LOKAL
+                </Link>
+                <Link 
+                  to="/om-oss" 
+                  className={`text-2xl font-light transition-colors py-2 ${
+                    location.pathname === '/om-oss' ? 'text-theatre-accent' : 'text-white hover:text-white/80'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  OM OSS & KONTAKT
+                </Link>
+              </nav>
+            </div>
           </div>
         )}
       </div>
