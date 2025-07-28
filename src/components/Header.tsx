@@ -51,18 +51,8 @@ const Header = () => {
 
         {isMenuOpen && (
           <div className="fixed top-0 right-0 w-full lg:w-80 h-screen bg-black z-[100] animate-slide-in-right">
-            {/* Duplicerad logotyp som bara visas på mobil när menyn täcker logotypen */}
-            <div className="absolute top-0 left-0 z-[110] flex items-center -ml-6 lg:-ml-8 h-20 lg:h-28 lg:hidden">
-              <Link to="/" onClick={() => setIsMenuOpen(false)}>
-                <img
-                  src="/uploads/LIT_white_tiny.png"
-                  alt="Lilla Improteatern"
-                  className="h-[140px] lg:h-[160px] w-auto flex-shrink-0"
-                />
-              </Link>
-            </div>
             
-            <div className="flex flex-col h-full pt-8 px-8 text-right">
+            <div className="flex flex-col h-full pt-20 px-8 text-right">
               <nav className="flex flex-col items-end space-y-4">
                 <Link 
                   to="/" 
