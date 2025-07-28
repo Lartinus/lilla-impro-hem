@@ -33,7 +33,7 @@ const ServiceBoxes = () => {
     <div className="grid md:grid-cols-3 gap-8 mt-8">
       {services.map((service, index) => (
         <div key={index} className="group">
-          <div className="border border-color-primary rounded-none overflow-hidden transition-all duration-300 h-full flex flex-col min-h-[300px]">
+          <div className="rounded-none overflow-hidden transition-all duration-300 h-full flex flex-col min-h-[300px]">
             {/* Image section - prioritized loading */}
             <div className="relative h-48 overflow-hidden">
                 <OptimizedImage
