@@ -7,19 +7,22 @@ const ServiceBoxes = () => {
   // All data och bilder är hårdkodad
   const services = [
     {
-      title: "Kurser för dig som vill utvecklas på scen",
+      title: "Kurser",
+      subtitle: "För dig som vill utvecklas på scen",
       cta: "Utforska våra kurser",
       link: "/kurser",
       image: "/uploads/images/kurser_LIT_2024.jpg"
     },
     {
-      title: "Föreställningar med stor bredd och mycket skratt",
+      title: "Föreställningar",
+      subtitle: "Med stor bredd och mycket skratt",
       cta: "Föreställningar",
       link: "/shows",
       image: "/uploads/images/Improvision2024.jpg"
     },
     {
-      title: "Underhållning för företag och privata tillställningar",
+      title: "Underhållning",
+      subtitle: "För företag och privata tillställningar",
       cta: "Läs mer",
       link: "/anlita-oss",
       image: "/uploads/images/corporate_LIT_2024.jpg"
@@ -43,24 +46,28 @@ const ServiceBoxes = () => {
             </div>
             {/* Content section */}
             <div className="bg-[#F3F4F6] p-4 md:p-8 flex-1 flex flex-col justify-between text-left">
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="w-full h-px bg-white/30"></div>
-                <p className="leading-relaxed text-base">
-                  {service.title}
-                </p>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-satoshi font-medium">
+                    {service.title}
+                  </h3>
+                  <p className="text-base leading-relaxed">
+                    {service.subtitle}
+                  </p>
+                </div>
               </div>
               <div className="pt-6 pb-4">
                 {service.link.startsWith('/') ? (
-                  <Link 
-                    to={service.link} 
-                    className="text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all block"
-                  >
-                    {service.cta} →
-                  </Link>
+                  <Button asChild>
+                    <Link to={service.link}>
+                      {service.cta} →
+                    </Link>
+                  </Button>
                 ) : (
-                  <span className="text-base underline underline-offset-4 decoration-white/50 hover:decoration-white transition-all cursor-pointer">
+                  <Button>
                     {service.cta} →
-                  </span>
+                  </Button>
                 )}
               </div>
             </div>
