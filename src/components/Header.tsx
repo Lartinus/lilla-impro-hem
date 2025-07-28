@@ -48,7 +48,7 @@ const Header = () => {
 
         {isMenuOpen && (
           <div className="fixed top-0 right-0 w-full lg:w-80 h-screen bg-black z-[100] animate-fade-in">
-            <div className="flex flex-col h-full pt-24 lg:pt-8 px-8 text-right">
+            <div className="flex flex-col h-full pt-32 lg:pt-24 px-8 text-right">
               <nav className="flex flex-col items-end space-y-4">
                 <Link 
                   to="/" 
