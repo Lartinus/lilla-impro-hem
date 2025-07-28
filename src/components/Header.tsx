@@ -38,13 +38,13 @@ const Header = () => {
           {/* Hamburger meny-knapp för alla skärmstorlekar */}
           <Button
             variant="ghost"
-            className="text-theatre-light hover:bg-theatre-light/20 p-4 mt-2 relative z-[110] flex justify-end pr-8"
+            className="text-theatre-light hover:bg-theatre-light/20 p-4 pr-8 mt-2 [&_svg]:!size-auto relative z-[110]"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
             {isMenuOpen ? 
-              <X size={32} strokeWidth={2} className="text-theatre-light w-8 h-8" /> : 
-              <Menu size={32} strokeWidth={2} className="text-theatre-light w-8 h-8" />
+              <X size={32} strokeWidth={2} className="text-theatre-light w-12 h-12" /> : 
+              <Menu size={32} strokeWidth={2} className="text-theatre-light w-12 h-12" />
             }
           </Button>
         </div>
@@ -52,7 +52,7 @@ const Header = () => {
         {isMenuOpen && (
           <div className="fixed top-0 right-0 w-full lg:w-80 h-screen bg-black z-[100] animate-slide-in-right">
             
-            <div className="flex flex-col h-full pt-24 lg:pt-32 px-8 text-right">
+            <div className="flex flex-col h-full pt-24 lg:pt-32 pr-16 text-right">
               <nav className="flex flex-col items-end space-y-2">
                 <Link 
                   to="/" 
