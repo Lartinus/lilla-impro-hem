@@ -49,7 +49,7 @@ const ServiceBoxes = () => {
               <div className="space-y-4">
                 <div className="w-full h-px bg-white/30"></div>
                 <div className="space-y-2">
-                  <h3 className="text-lg font-satoshi font-medium">
+                  <h3 className="text-xl font-satoshi font-medium">
                     {service.title}
                   </h3>
                   <p className="text-base leading-relaxed">
