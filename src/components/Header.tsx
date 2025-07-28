@@ -11,7 +11,7 @@ const Header = () => {
   const location = useLocation();
 
   return (
-<header className="fixed top-0 left-0 right-0 z-50 bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
+<header className="fixed top-0 left-0 right-0 z-[110] bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
   <div className="container mx-auto px-2 lg:px-8 overflow-visible">
     <div className="flex items-center justify-between h-20 lg:h-28">
       {/* Logo */}
@@ -47,8 +47,8 @@ const Header = () => {
         </div>
 
         {isMenuOpen && (
-          <div className="fixed top-20 right-0 w-80 h-[calc(100vh-5rem)] bg-black z-[100] animate-fade-in">
-            <div className="flex flex-col h-full pt-8 px-8 text-right">
+          <div className="fixed top-0 right-0 w-full lg:w-80 h-screen bg-black z-[100] animate-fade-in">
+            <div className="flex flex-col h-full pt-24 lg:pt-8 px-8 text-right">
               <nav className="flex flex-col items-end space-y-4">
                 <Link 
                   to="/" 
