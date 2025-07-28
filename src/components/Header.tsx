@@ -48,13 +48,13 @@ const Header = () => {
         </div>
 
         {isMenuOpen && (
-          <div className="lg:hidden fixed inset-0 top-20 bg-black/95 backdrop-blur-md z-40 animate-fade-in">
-            <div className="flex flex-col h-full pt-12 px-8">
-              <nav className="flex flex-col space-y-8">
+          <div className="lg:hidden fixed inset-0 top-20 bg-theatre-tertiary z-40 animate-fade-in">
+            <div className="flex flex-col h-full pt-8 px-8">
+              <nav className="flex flex-col space-y-4">
                 <Link 
                   to="/" 
-                  className={`text-2xl font-light transition-colors py-2 ${
-                    location.pathname === '/' ? 'text-theatre-accent' : 'text-white hover:text-white/80'
+                  className={`text-lg font-light transition-colors py-1 ${
+                    location.pathname === '/' ? 'text-theatre-accent' : 'text-theatre-light hover:text-theatre-light/80'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -62,8 +62,8 @@ const Header = () => {
                 </Link>
                 <Link 
                   to="/kurser" 
-                  className={`text-2xl font-light transition-colors py-2 ${
-                    location.pathname === '/kurser' ? 'text-theatre-accent' : 'text-white hover:text-white/80'
+                  className={`text-lg font-light transition-colors py-1 ${
+                    location.pathname === '/kurser' ? 'text-theatre-accent' : 'text-theatre-light hover:text-theatre-light/80'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -71,8 +71,8 @@ const Header = () => {
                 </Link>
                 <Link 
                   to="/shows" 
-                  className={`text-2xl font-light transition-colors py-2 ${
-                    location.pathname === '/shows' ? 'text-theatre-accent' : 'text-white hover:text-white/80'
+                  className={`text-lg font-light transition-colors py-1 ${
+                    location.pathname === '/shows' ? 'text-theatre-accent' : 'text-theatre-light hover:text-theatre-light/80'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -80,8 +80,8 @@ const Header = () => {
                 </Link>
                 <Link 
                   to="/anlita-oss" 
-                  className={`text-2xl font-light transition-colors py-2 ${
-                    location.pathname === '/anlita-oss' ? 'text-theatre-accent' : 'text-white hover:text-white/80'
+                  className={`text-lg font-light transition-colors py-1 ${
+                    location.pathname === '/anlita-oss' ? 'text-theatre-accent' : 'text-theatre-light hover:text-theatre-light/80'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -89,8 +89,8 @@ const Header = () => {
                 </Link>
                 <Link 
                   to="/lokal" 
-                  className={`text-2xl font-light transition-colors py-2 ${
-                    location.pathname === '/lokal' ? 'text-theatre-accent' : 'text-white hover:text-white/80'
+                  className={`text-lg font-light transition-colors py-1 ${
+                    location.pathname === '/lokal' ? 'text-theatre-accent' : 'text-theatre-light hover:text-theatre-light/80'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -98,8 +98,8 @@ const Header = () => {
                 </Link>
                 <Link 
                   to="/om-oss" 
-                  className={`text-2xl font-light transition-colors py-2 ${
-                    location.pathname === '/om-oss' ? 'text-theatre-accent' : 'text-white hover:text-white/80'
+                  className={`text-lg font-light transition-colors py-1 ${
+                    location.pathname === '/om-oss' ? 'text-theatre-accent' : 'text-theatre-light hover:text-theatre-light/80'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
