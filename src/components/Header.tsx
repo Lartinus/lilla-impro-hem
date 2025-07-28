@@ -11,11 +11,11 @@ const Header = () => {
   const location = useLocation();
 
   return (
-<header className="fixed top-0 left-0 right-0 z-[150] bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
+<header className="fixed top-0 left-0 right-0 z-[40] bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
   <div className="container mx-auto px-2 lg:px-8 overflow-visible">
     <div className="flex items-center justify-between h-20 lg:h-28">
       {/* Logo */}
-      <div className="flex items-center -ml-6 lg:-ml-8 overflow-visible">
+      <div className="flex items-center -ml-6 lg:-ml-8 overflow-visible relative z-[110]">
         <Link to="/" className="flex items-center">
           <img
             src="/uploads/LIT_white_tiny.png"
@@ -38,7 +38,7 @@ const Header = () => {
           {/* Hamburger meny-knapp för alla skärmstorlekar */}
           <Button
             variant="ghost"
-            className="text-theatre-light hover:bg-theatre-light/20 p-4 mt-2 [&_svg]:!size-auto"
+            className="text-theatre-light hover:bg-theatre-light/20 p-4 mt-2 [&_svg]:!size-auto relative z-[110]"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
@@ -52,7 +52,7 @@ const Header = () => {
         {isMenuOpen && (
           <div className="fixed top-0 right-0 w-full lg:w-80 h-screen bg-black z-[100] animate-slide-in-right">
             {/* Duplicerad logotyp som bara visas på mobil när menyn täcker logotypen */}
-            <div className="absolute top-0 left-0 z-[130] flex items-center -ml-6 lg:-ml-8 h-20 lg:h-28 lg:hidden">
+            <div className="absolute top-0 left-0 z-[110] flex items-center -ml-6 lg:-ml-8 h-20 lg:h-28 lg:hidden">
               <Link to="/" onClick={() => setIsMenuOpen(false)}>
                 <img
                   src="/uploads/LIT_white_tiny.png"
