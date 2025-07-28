@@ -47,9 +47,9 @@ const Header = () => {
         </div>
 
         {isMenuOpen && (
-          <div className="fixed inset-0 top-20 bg-theatre-tertiary/95 backdrop-blur-sm z-40 animate-fade-in">
-            <div className="flex flex-col h-full pt-8 px-8 text-left">
-              <nav className="flex flex-col items-start space-y-4">
+          <div className="fixed inset-0 top-20 bg-black/90 z-40 animate-fade-in">
+            <div className="flex flex-col h-full pt-8 px-8 text-right">
+              <nav className="flex flex-col items-end space-y-4">
                 <Link 
                   to="/" 
                   className={`text-lg font-light transition-colors py-1 ${
