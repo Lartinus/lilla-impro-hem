@@ -59,13 +59,13 @@ const ServiceBoxes = () => {
               </div>
               <div className="pt-6 pb-4">
                 {service.link.startsWith('/') ? (
-                  <Button asChild>
+                  <Button asChild size="sm" className="md:text-xs md:px-4 md:py-2 lg:text-sm lg:px-4 lg:py-2">
                     <Link to={service.link}>
                       {service.cta} →
                     </Link>
                   </Button>
                 ) : (
-                  <Button>
+                  <Button size="sm" className="md:text-xs md:px-4 md:py-2 lg:text-sm lg:px-4 lg:py-2">
                     {service.cta} →
                   </Button>
                 )}
