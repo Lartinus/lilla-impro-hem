@@ -11,7 +11,7 @@ const Header = () => {
   const location = useLocation();
 
   return (
-<header className="fixed top-0 left-0 right-0 z-[120] bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
+<header className="fixed top-0 left-0 right-0 z-[150] bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
   <div className="container mx-auto px-2 lg:px-8 overflow-visible">
     <div className="flex items-center justify-between h-20 lg:h-28">
       {/* Logo */}
