@@ -47,7 +47,7 @@ const Header = () => {
         </div>
 
         {isMenuOpen && (
-          <div className="fixed inset-0 top-20 z-[100] animate-fade-in" style={{ backgroundColor: 'rgba(0, 0, 0, 0.95)' }}>
+          <div className="fixed top-20 right-0 w-80 h-[calc(100vh-5rem)] bg-black z-[100] animate-fade-in">
             <div className="flex flex-col h-full pt-8 px-8 text-right">
               <nav className="flex flex-col items-end space-y-4">
                 <Link 
