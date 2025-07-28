@@ -11,7 +11,7 @@ const Header = () => {
   const location = useLocation();
 
   return (
-<header className="fixed top-0 left-0 right-0 z-[110] bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
+<header className="fixed top-0 left-0 right-0 z-[120] bg-theatre-tertiary text-theatre-light backdrop-blur-md font-satoshi">
   <div className="container mx-auto px-2 lg:px-8 overflow-visible">
     <div className="flex items-center justify-between h-20 lg:h-28">
       {/* Logo */}
@@ -42,13 +42,24 @@ const Header = () => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Stäng meny' : 'Öppna meny'}
           >
-            {isMenuOpen ? <X size={32} strokeWidth={2} className="text-theatre-light w-12 h-12" /> : <Menu size={32} strokeWidth={2} className="text-theatre-light w-12 h-12" />}
+            <Menu size={32} strokeWidth={2} className="text-theatre-light w-12 h-12" />
           </Button>
         </div>
 
         {isMenuOpen && (
           <div className="fixed top-0 right-0 w-full lg:w-80 h-screen bg-black z-[100] animate-fade-in">
-            <div className="flex flex-col h-full pt-32 lg:pt-24 px-8 text-right">
+            {/* Stäng-knapp inne i menyn */}
+            <div className="flex justify-end pt-6 pr-8">
+              <Button
+                variant="ghost"
+                className="text-theatre-light hover:bg-theatre-light/20 p-4"
+                onClick={() => setIsMenuOpen(false)}
+                aria-label="Stäng meny"
+              >
+                <X size={32} strokeWidth={2} className="text-theatre-light w-12 h-12" />
+              </Button>
+            </div>
+            <div className="flex flex-col h-full pt-8 px-8 text-right">
               <nav className="flex flex-col items-end space-y-4">
                 <Link 
                   to="/" 
