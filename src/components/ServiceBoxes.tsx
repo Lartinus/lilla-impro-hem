@@ -1,7 +1,7 @@
 // src/components/ServiceBoxes.tsx
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import OptimizedImage from './OptimizedImage';
+import OptimizedImage from '@/components/OptimizedImage';  // uppdaterad import
 
 const services = [
   {
@@ -30,39 +30,39 @@ const services = [
 export default function ServiceBoxes() {
   return (
     <div className="grid md:grid-cols-3 gap-8">
-      {services.map((service, idx) => (
-        <div key={idx} className="group flex flex-col bg-card-background rounded-[10px] overflow-hidden">
-          {/* Bildsektion = 50% av box‐höjd */}
+      {services.map((svc, idx) => (
+        <div
+          key={idx}
+          className="group flex flex-col bg-card-background rounded-[10px] overflow-hidden"
+        >
+          {/* Bildsektion = halva höjden */}
           <div className="relative h-[200px] lg:h-[250px] overflow-hidden">
             <OptimizedImage
-              src={service.image}
-              alt={service.title}
+              src={svc.image}
+              alt={svc.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               preferredSize="medium"
             />
-            <div className="absolute inset-0 bg-black/20"></div>
+            <div className="absolute inset-0 bg-black/20" />
           </div>
+
           {/* Innehåll */}
           <div className="flex-1 p-6 flex flex-col justify-between">
             <div className="space-y-2">
-              <h2 className="font-tanker text-[40px] text-text-gray">
-                {service.title}
+              <h2 className="font-tanker text-[40px] text-text-gray leading-tight">
+                {svc.title}
               </h2>
               <p className="font-satoshi text-[16px] text-text-black leading-relaxed">
-                {service.subtitle}
+                {svc.subtitle}
               </p>
             </div>
             <div className="mt-4">
-              {service.link.startsWith('/') ? (
+              {svc.link.startsWith('/') ? (
                 <Button asChild size="sm">
-                  <Link to={service.link}>
-                    {service.cta} →
-                  </Link>
+                  <Link to={svc.link}>{svc.cta} →</Link>
                 </Button>
               ) : (
-                <Button size="sm">
-                  {service.cta} →
-                </Button>
+                <Button size="sm">{svc.cta} →</Button>
               )}
             </div>
           </div>
