@@ -7,7 +7,7 @@ import { useShowTags } from '@/hooks/useShowTags';
 import ShowCardSimple from '@/components/ShowCardSimple';
 import ShowTag from '@/components/ShowTag';
 import MainCard from '@/components/MainCard';
-import SimpleParallaxHero from '@/components/SimpleParallaxHero';
+
 import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
 import { NewsletterSignupModal } from '@/components/NewsletterSignupModal';
 import { Button } from '@/components/ui/button';
@@ -59,9 +59,14 @@ export default function Shows() {
     return (
       <>
         <Header />
-        <SimpleParallaxHero 
-          imageSrc="/uploads/images/shows_2024.jpg"
-        />
+        {/* Hero Image */}
+        <div className="h-[360px] relative overflow-hidden">
+          <img 
+            src="/uploads/images/shows_2024.jpg" 
+            alt="" 
+            className="w-full h-full object-cover object-center filter brightness-50"
+          />
+        </div>
         <SubtleLoadingOverlay isVisible={true} />
         <Footer />
       </>
@@ -72,9 +77,14 @@ export default function Shows() {
     return (
       <>
         <Header />
-        <SimpleParallaxHero 
-          imageSrc="/uploads/images/shows_2024.jpg"
-        />
+        {/* Hero Image */}
+        <div className="h-[360px] relative overflow-hidden">
+          <img 
+            src="/uploads/images/shows_2024.jpg" 
+            alt="" 
+            className="w-full h-full object-cover object-center filter brightness-50"
+          />
+        </div>
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-4">Kunde inte ladda föreställningar</h2>
@@ -93,78 +103,86 @@ export default function Shows() {
     <>
       <Header />
       
-      <SimpleParallaxHero 
-        imageSrc="/uploads/images/shows_2024.jpg"
-      />
+      {/* Hero Image */}
+      <div className="h-[360px] relative overflow-hidden">
+        <img 
+          src="/uploads/images/shows_2024.jpg" 
+          alt="" 
+          className="w-full h-full object-cover object-center filter brightness-50"
+        />
+      </div>
       
       <SubtleLoadingOverlay isVisible={shouldShowLoading} />
 
-      <div className="container mx-auto px-4 py-8">
-        <MainCard>
-          {/* Om våra föreställningar */}
-          <section className="mb-12">
-            <h1 className="text-3xl font-bold mb-6 font-satoshi">Om våra föreställningar</h1>
-            <p className="text-[16px] font-satoshi mb-6">
-              Hos oss kan du se högkvalitativ impro från vår ensemble, avancerade kursare (house teams), 
-              kursuppspel från våra baskurser eller gästspel från grupper som vi bjudit in. 
-              För tydlighetens skull markerar vi alltid våra föreställningar med någon av följande tags
-            </p>
-            
-            {showTags && showTags.length > 0 && (
-              <div className="flex flex-wrap gap-4 mb-8">
-                {showTags.map((tag) => (
-                  <div key={tag.id} className="flex flex-col items-center gap-2">
-                    <ShowTag name={tag.name} color={tag.color} size="large" />
-                    {tag.description && (
-                      <p className="text-sm text-gray-600 text-center max-w-[120px] font-satoshi">
-                        {tag.description}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-
-          {/* Aktuella föreställningar */}
-          <section className="mb-12">
-            <h1 className="text-3xl font-bold mb-8 font-satoshi">Aktuella Föreställningar</h1>
-            
-            {shows.length > 0 ? (
-              <div className="space-y-6">
-                {shows.map((show, index) => (
-                  <ShowCardSimple 
-                    key={show.id}
-                    show={show}
-                    onImageLoad={handleImageLoad}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <h2 className="text-xl font-semibold mb-4 font-satoshi">Inga föreställningar just nu</h2>
-                <p className="text-gray-600 mb-6 font-satoshi">
-                  Vi har inga föreställningar inplanerade för tillfället. Håll utkik för kommande evenemang!
-                </p>
-              </div>
-            )}
-          </section>
-        </MainCard>
-
-        {/* Newsletter signup section - gray box */}
-        <div className="w-full bg-[#D9D9D9] -mx-6 md:-mx-8">
-          <div className="px-6 md:px-8 py-8">
-            <div className="text-center">
-              <h1 className="text-3xl font-bold mb-4 font-satoshi">Få informationen direkt i din inkorg</h1>
+      <div className="min-h-screen bg-[#FAFAFA]">
+        <div className="max-w-[1000px] mx-auto px-4 relative">
+          {/* White overlapping card */}
+          <div className="bg-white rounded-t-[20px] px-6 md:px-8 pt-8 pb-0 -mt-16 relative z-10">
+            {/* Om våra föreställningar */}
+            <section className="mb-12">
+              <h1 className="text-3xl font-bold mb-6 font-satoshi">Om våra föreställningar</h1>
               <p className="text-[16px] font-satoshi mb-6">
-                Prenumerera på vårt nyhetsbrev och få information om nya föreställningar direkt till din inkorg.
+                Hos oss kan du se högkvalitativ impro från vår ensemble, avancerade kursare (house teams), 
+                kursuppspel från våra baskurser eller gästspel från grupper som vi bjudit in. 
+                För tydlighetens skull markerar vi alltid våra föreställningar med någon av följande tags
               </p>
-              <Button 
-                onClick={() => setIsNewsletterModalOpen(true)}
-                className="bg-accent-color hover:bg-accent-hover text-white font-satoshi"
-              >
-                Prenumerera på nyhetsbrev
-              </Button>
+              
+              {showTags && showTags.length > 0 && (
+                <div className="flex flex-wrap gap-4 mb-8">
+                  {showTags.map((tag) => (
+                    <div key={tag.id} className="flex flex-col items-center gap-2">
+                      <ShowTag name={tag.name} color={tag.color} size="large" />
+                      {tag.description && (
+                        <p className="text-sm text-gray-600 text-center max-w-[120px] font-satoshi">
+                          {tag.description}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {/* Aktuella föreställningar */}
+            <section className="mb-12">
+              <h1 className="text-3xl font-bold mb-8 font-satoshi">Aktuella Föreställningar</h1>
+              
+              {shows.length > 0 ? (
+                <div className="space-y-6">
+                  {shows.map((show, index) => (
+                    <ShowCardSimple 
+                      key={show.id}
+                      show={show}
+                      onImageLoad={handleImageLoad}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <h2 className="text-xl font-semibold mb-4 font-satoshi">Inga föreställningar just nu</h2>
+                  <p className="text-gray-600 mb-6 font-satoshi">
+                    Vi har inga föreställningar inplanerade för tillfället. Håll utkik för kommande evenemang!
+                  </p>
+                </div>
+              )}
+            </section>
+          </div>
+
+          {/* Newsletter signup section - gray box */}
+          <div className="w-full bg-[#D9D9D9] -mx-6 md:-mx-8 mt-8">
+            <div className="px-6 md:px-8 py-8">
+              <div className="text-center">
+                <h1 className="text-3xl font-bold mb-4 font-satoshi">Få informationen direkt i din inkorg</h1>
+                <p className="text-[16px] font-satoshi mb-6">
+                  Prenumerera på vårt nyhetsbrev och få information om nya föreställningar direkt till din inkorg.
+                </p>
+                <Button 
+                  onClick={() => setIsNewsletterModalOpen(true)}
+                  className="bg-accent-color hover:bg-accent-hover text-white font-satoshi"
+                >
+                  Prenumerera på nyhetsbrev
+                </Button>
+              </div>
             </div>
           </div>
         </div>
