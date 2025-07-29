@@ -92,7 +92,7 @@ const Courses = () => {
             <InterestSignupSection />
           </div>
 
-          <div className="bg-[#D9D9D9] mx-[-1.5rem] sm:mx-[-4rem] md:mx-[-2rem] lg:mx-auto lg:w-[940px] lg:mx-auto lg:w-[940px] max-w-full overflow-hidden">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="px-0 py-6 md:px-8 md:py-8">
             <section>
               <h1>För dig som vill bli duktig på hantverket</h1>
