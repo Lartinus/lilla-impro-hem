@@ -9,10 +9,10 @@ export default function Index() {
   const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
 
   return (
-    <div className="relative bg-background-gray min-h-screen">
+    <div className="relative bg-background min-h-screen">
       <Header />
 
-      {/* 1) Statisk hero-bild */}
+      {/* 1) Statisk hero‐bild */}
       <div
         className="
           absolute inset-x-0
@@ -35,7 +35,7 @@ export default function Index() {
           "
         >
           Vi är en plats för dig som vill lära dig,<br/>
-          utöva och uppleva Improv&nbsp;Comedy.
+          utöva och uppleva Improv Comedy.
         </h3>
 
         {/* Pil endast på mobil */}
@@ -46,12 +46,11 @@ export default function Index() {
 
       {/* 3) Vitt kort med service-boxar */}
       <section className="relative z-10 mt-[580px] px-4 md:px-0">
-        <div className="mx-auto max-w-6xl bg-white rounded-[10px] p-6 md:p-12 lg:p-16">
+        <div className="mx-auto max-w-6xl bg-card-background rounded-[10px] p-6 md:p-12 lg:p-16">
           <ServiceBoxes />
         </div>
       </section>
 
-      {/* NewsletterSignupModal */}
       <NewsletterSignupModal
         open={newsletterModalOpen}
         onOpenChange={setNewsletterModalOpen}
