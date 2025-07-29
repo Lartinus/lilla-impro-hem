@@ -92,7 +92,7 @@ const Courses = () => {
 
           {/* Grå info-ruta */}
           <div className="w-full bg-[#D9D9D9]">
-            <div className="px-4 md:px-0 md:mx-auto md:max-w-[936px] py-8">
+            <div className="px-4 md:px-8 md:mx-auto md:max-w-[936px] lg:px-8 py-8">
               <section className="space-y-6">
                 <h2 className="font-tanker text-[32px] underline mb-4">
                   För dig som vill bli duktig på hantverket
@@ -145,7 +145,7 @@ const Courses = () => {
           </div>
 
           {/* Luft innan footer */}
-          <div className="h-12" />
+          <div className="h-12 hidden lg:block" />
         </div>
       </div>
 
