@@ -7,7 +7,7 @@ import CourseInfoSection from '@/components/CourseInfoSection';
 import { InterestSignupSection } from '@/components/InterestSignupSection';
 import { useEffect } from 'react';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
-import SimpleParallaxHero from "@/components/SimpleParallaxHero";
+
 import { useToast } from '@/hooks/use-toast';
 
 const Courses = () => {
@@ -30,7 +30,11 @@ const Courses = () => {
       <div className="min-h-screen flex flex-col bg-[#FAFAFA]">
         <Header />
         <div className="h-[360px] overflow-hidden">
-          <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
+          <img 
+            src="/uploads/images/kurser_LIT_2024.jpg" 
+            alt="Kurser på Lilla Improteatern"
+            className="w-full h-[360px] object-cover object-center"
+          />
         </div>
         <div className="relative z-10 mx-4 md:mx-auto max-w-[1000px] -mt-8">
           <div className="bg-[#F3F3F3] pb-0">
@@ -55,7 +59,11 @@ const Courses = () => {
     <div className="min-h-screen flex flex-col bg-[#FAFAFA] relative overflow-x-hidden overflow-y-visible">
       <Header />
       <div className="h-[360px] overflow-hidden">
-        <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
+        <img 
+          src="/uploads/images/kurser_LIT_2024.jpg" 
+          alt="Kurser på Lilla Improteatern"
+          className="w-full h-[360px] object-cover object-center"
+        />
       </div>
       
       {/* Main content card overlapping the image */}
@@ -84,8 +92,8 @@ const Courses = () => {
           </div>
         </div>
 
-        {/* För dig som vill bli duktig på hantverket - separate gray box, within main card */}
-        <div className="bg-[#D9D9D9] p-6 md:p-8">
+        {/* För dig som vill bli duktig på hantverket - separate gray box, narrower width */}
+        <div className="bg-[#D9D9D9] p-6 md:p-8 max-w-[66%] mx-auto">
           <section>
             <h1>För dig som vill bli duktig på hantverket</h1>
             <div className="space-y-4 mb-6">
