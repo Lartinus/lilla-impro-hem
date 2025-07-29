@@ -4,12 +4,12 @@ import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const navItems = [
-  { to: '/',         label: 'Hem' },
-  { to: '/kurser',   label: 'Kurser' },
-  { to: '/shows',    label: 'Föreställningar' },
-  { to: '/anlita-oss', label: 'Boka oss' },
-  { to: '/lokal',    label: 'Lokal' },
-  { to: '/om-oss',   label: 'Om oss & kontakt' },
+  { to: '/',          label: 'Hem' },
+  { to: '/kurser',    label: 'Kurser' },
+  { to: '/shows',     label: 'Föreställningar' },
+  { to: '/anlita-oss',label: 'Boka oss' },
+  { to: '/lokal',     label: 'Lokal' },
+  { to: '/om-oss',    label: 'Om oss & kontakt' },
 ];
 
 export default function Header() {
@@ -17,17 +17,19 @@ export default function Header() {
   const { pathname } = useLocation();
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      {/* Bas-header */}
-      <div className="bg-primary-red flex items-center justify-between px-4 lg:px-8 h-16 lg:h-20">
-        {/* Logo */}
+    <header className="fixed inset-x-0 top-0 z-50 bg-primary-red">
+      <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-20 lg:h-28">
+        
+        {/* Logotyp */}
         <Link to="/" className="logo-symbol font-tanker text-white text-2xl lg:text-3xl">
           O|O
         </Link>
-        {/* Titel på desktop */}
+
+        {/* Titel (endast desktop enligt skiss) */}
         <span className="hidden lg:block font-tanker text-white text-xl lg:text-2xl">
           LILLA IMPROTEATERN
         </span>
+
         {/* Hamburger / Stäng */}
         <button
           onClick={() => setOpen(o => !o)}
@@ -41,11 +43,14 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Öppen meny */}
+      {/* Öppen meny: läggs precis under headerns höjd */}
       {open && (
-        <div className="fixed inset-x-0 top-0 z-40 bg-primary-red pt-16 lg:pt-20">
+        <div
+          className="fixed inset-x-0 top-20 lg:top-28 z-40 bg-primary-red"
+          style={{ paddingTop: 0 }}
+        >
           {/* Stäng-knapp */}
-          <div className="flex justify-end px-4 lg:px-8 py-4">
+          <div className="flex justify-end px-6 lg:px-8 py-4">
             <button
               onClick={() => setOpen(false)}
               aria-label="Stäng meny"
@@ -62,11 +67,13 @@ export default function Header() {
                 to={to}
                 onClick={() => setOpen(false)}
                 className={`
-                  font-satoshi uppercase 
-                  text-white hover:text-primary-red 
-                  transition-colors 
-                  ${pathname === to ? 'text-primary-red' : 'text-white'} 
+                  font-satoshi uppercase
+                  transition-colors
                   text-2xl lg:text-3xl
+                  ${pathname === to 
+                    ? 'text-primary-red' 
+                    : 'text-white hover:text-primary-red'
+                  }
                 `}
               >
                 {label}
