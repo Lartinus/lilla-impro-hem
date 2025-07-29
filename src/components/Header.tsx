@@ -45,31 +45,30 @@ export default function Header() {
 
       {/* Öppen meny */}
       {open && (
-        <div className="fixed inset-x-0 top-20 lg:top-28 z-40 bg-primary-red text-primary-foreground">
-          {/* Navigeringslänkar */}
-          <nav className="flex flex-col items-end pr-6 lg:pr-16 space-y-2 pb-6">
-            {navItems.map(({ to, label }) => {
-              const isActive = pathname === to;
-              return (
-                <Link
-                  key={to}
-                  to={to}
-                  onClick={() => setOpen(false)}
-                  className={`
-                    font-satoshi uppercase text-2xl lg:text-3xl transition-colors
-                    ${isActive
-                      ? 'text-primary-red'
-                      : 'text-primary-foreground hover:text-primary-red'
-                    }
-                  `}
-                >
-                  {label}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-      )}
+      <div className="fixed inset-x-0 top-20 lg:top-28 z-40 bg-primary-red text-primary-foreground">
+        <nav className="flex flex-col items-end pr-6 lg:pr-16 space-y-2 pb-6">
+          {navItems.map(({ to, label }) => {
+            const isActive = pathname === to;
+            return (
+          <Link
+            key={to}
+            to={to}
+            onClick={() => setOpen(false)}
+            className={`
+              font-satoshi uppercase text-2xl lg:text-3xl transition-colors
+              ${isActive
+                ? 'text-primary-red'
+                : 'text-primary-foreground hover:text-primary-red'
+              }
+            `}
+          >
+            {label}
+          </Link>
+        );
+      })}
+    </nav>
+  </div>
+)}
     </header>
   );
 }
