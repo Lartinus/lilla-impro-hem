@@ -68,43 +68,49 @@ const ShowCardSimple = ({
 
   return (
     <div className="bg-white rounded-[10px] overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 relative">
-      <div className="relative aspect-[4/3]">
-        <OptimizedImage
-          src={show.image}
-          alt={show.title}
-          className="w-full h-full object-cover"
-          onLoad={onImageLoad}
-        />
-        {isSoldOut && <SoldOut />}
-      </div>
-      
-      <div className="p-6">
-        <div className="flex justify-between items-start mb-3">
+      <div className="flex flex-col md:flex-row">
+        <div className="relative md:w-2/5 aspect-[16/9] md:aspect-[4/3]">
+          <OptimizedImage
+            src={show.image}
+            alt={show.title}
+            className="w-full h-full object-cover"
+            onLoad={onImageLoad}
+          />
+          {isSoldOut && <SoldOut />}
+        </div>
+        
+        <div className="p-6 md:w-3/5 flex flex-col justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-1 font-satoshi">{show.title}</h2>
-            <h3 className="text-gray-600 font-satoshi">{formatDateTime(show.date, show.time)}</h3>
+            <div className="flex justify-between items-start mb-3">
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold text-gray-900 mb-1 font-satoshi">{show.title}</h2>
+                <h3 className="text-gray-600 font-satoshi">{formatDateTime(show.date, show.time)}</h3>
+              </div>
+              {show.tag && (
+                <div className="ml-3 flex-shrink-0">
+                  <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
+                </div>
+              )}
+            </div>
+            
+            <div className="border-t border-dashed border-gray-300 pt-3 mb-3">
+              <div className="flex items-center text-gray-600 mb-2">
+                <MapPin className="h-4 w-4 mr-1" />
+                <span className="font-satoshi">{show.location}</span>
+              </div>
+              {show.description && (
+                <p className="text-gray-700 text-sm font-satoshi mb-3">{show.description}</p>
+              )}
+            </div>
           </div>
-          {show.tag && (
-            <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
-          )}
+          
+          <Link 
+            to={`/forestallning/${show.slug}`}
+            className="text-accent-color hover:text-accent-hover font-medium font-satoshi self-start"
+          >
+            Läs mer →
+          </Link>
         </div>
-        
-        <div className="border-t border-dashed border-gray-300 pt-3 mb-3">
-          <div className="flex items-center text-gray-600 mb-2">
-            <MapPin className="h-4 w-4 mr-1" />
-            <span className="font-satoshi">{show.location}</span>
-          </div>
-          {show.description && (
-            <p className="text-gray-700 text-sm font-satoshi mb-3">{show.description}</p>
-          )}
-        </div>
-        
-        <Link 
-          to={`/forestallning/${show.slug}`}
-          className="text-accent-color hover:text-accent-hover font-medium font-satoshi"
-        >
-          Läs mer →
-        </Link>
       </div>
     </div>
   );
