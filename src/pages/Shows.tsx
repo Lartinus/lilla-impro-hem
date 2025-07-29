@@ -52,8 +52,8 @@ export default function Shows() {
 
   const { handleImageLoad, allImagesLoaded } = useImageLoader(imageUrls);
   
-  // Check if we should show loading overlay
-  const shouldShowLoading = showsLoading || tagsLoading || (shows.length > 0 && !allImagesLoaded);
+  // Check if we should show loading overlay - don't wait forever for images
+  const shouldShowLoading = showsLoading || tagsLoading;
 
   if (shouldShowLoading) {
     return (

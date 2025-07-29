@@ -29,14 +29,22 @@ export default function OptimizedImage({
   }, [src])()
 
   const handleLoad = useCallback(() => {
+    console.log('OptimizedImage: Image loaded successfully:', originalSrc)
     setIsLoading(false)
-    if (onLoad && originalSrc) onLoad(originalSrc)
+    if (onLoad && originalSrc) {
+      console.log('OptimizedImage: Calling onLoad callback for:', originalSrc)
+      onLoad(originalSrc)
+    }
   }, [onLoad, originalSrc])
 
   const handleError = useCallback(() => {
+    console.log('OptimizedImage: Image failed to load:', originalSrc)
     setHasError(true)
     setIsLoading(false)
-    if (onLoad && originalSrc) onLoad(originalSrc)
+    if (onLoad && originalSrc) {
+      console.log('OptimizedImage: Calling onLoad callback after error for:', originalSrc)
+      onLoad(originalSrc)
+    }
   }, [onLoad, originalSrc])
 
   if (!imageUrl || hasError) {
