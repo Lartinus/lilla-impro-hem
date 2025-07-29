@@ -1,12 +1,8 @@
 // src/pages/Index.tsx
 import Header from '@/components/Header';
 import ServiceBoxes from '@/components/ServiceBoxes';
-import { NewsletterSignupModal } from '@/components/NewsletterSignupModal';
 import { ArrowDown } from 'lucide-react';
 import { useState } from 'react';
-
-export default function Index() {
-  const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
 
   return (
     <div className="relative bg-background min-h-screen">
@@ -50,11 +46,6 @@ export default function Index() {
           <ServiceBoxes />
         </div>
       </section>
-
-      <NewsletterSignupModal
-        open={newsletterModalOpen}
-        onOpenChange={setNewsletterModalOpen}
-      />
     </div>
   );
 }
