@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const CourseCardSkeleton = () => {
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none">
+    <Card className="course-cards-gray transition-all duration-300 border-none shadow-none">
       <CardContent className="p-6 md:p-6 lg:p-8">
         {/* Title skeleton */}
         <Skeleton className="h-6 w-4/5 mb-1" />
@@ -22,7 +22,7 @@ const CourseCardSkeleton = () => {
         {/* Teacher section skeleton */}
         <div className="mb-6">
           <Skeleton className="h-5 w-24 mb-3" />
-          <div className="bg-theatre-light/10 rounded-none border-3 border-red-800 p-4">
+          <div className="course-outline-red rounded-none p-4">
             <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4">
               <Skeleton className="w-32 h-32 rounded-none flex-shrink-0" />
               <div className="flex-1 min-w-0">

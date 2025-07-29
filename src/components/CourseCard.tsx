@@ -69,16 +69,18 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   const buttonVariant = isHouseTeams ? "blue" : "default";
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 bg-card-background flex flex-col course-card">
+    <Card className="course-cards-gray transition-all duration-300 flex flex-col course-card border-none shadow-none">
       <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
         <div className="mb-3">
           <h2>
             {course.course_title}
           </h2>
           {course.subtitle && (
-            <p className="mt-1 font-bold text-xs">
-              {course.subtitle}
-            </p>
+            <div className="course-dashed-line">
+              <h3 className="mt-1 font-bold">
+                {course.subtitle}
+              </h3>
+            </div>
           )}
         </div>
         <div 

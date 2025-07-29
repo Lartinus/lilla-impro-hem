@@ -114,13 +114,13 @@ export const InterestSignupSection = () => {
   }
 
   return (
-    <section className="py-8 px-0.5 md:px-4">
-      <div className="md:max-w-5xl md:mx-auto">
-        <div className="grid md:grid-cols-2 gap-6 mx-[12px] md:mx-0">
+    <section>
+      <div>
+        <div className="grid md:grid-cols-2 gap-6">
           {interestSignups.map((signup) => (
             <Card 
               key={signup.id} 
-              className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none flex flex-col"
+              className="course-cards-gray transition-all duration-300 flex flex-col border-none shadow-none"
             >
               <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
                 <div className="mb-3">

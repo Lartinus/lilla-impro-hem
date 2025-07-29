@@ -16,8 +16,8 @@ interface CourseLeaderInfoProps {
 export default function CourseLeaderInfo({ courseLeaders }: CourseLeaderInfoProps) {
   return (
     <div className="mb-6">
-      <h4 className="mb-2">Kursledare</h4>
-      <div className="rounded-none border-3 border-red-800 p-4">
+      <h2 className="mb-2">Kursledare</h2>
+      <div className="course-outline-red rounded-none p-4">
         <div className="space-y-6">
           {courseLeaders.map((courseLeader, index) => (
             <div key={courseLeader.id} className="flex flex-col lg:flex-row items-start space-y-4 lg:space-y-0 lg:space-x-4">

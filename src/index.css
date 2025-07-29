@@ -40,6 +40,10 @@
   /* White */
   --white:               255 255 255; /* #FFFFFF */
 
+  /* Course specific colors */
+  --course-card-gray:    231 231 231; /* #E7E7E7 */
+  --course-outline-red:  185 28 28;   /* #B91C1C */
+
   /* Design system mappings */
   --background:           var(--background-gray);
   --foreground:           var(--text-black);
@@ -184,6 +188,28 @@ textarea:focus,
 select:focus {
   outline:        2px solid rgb(var(--primary-red));
   outline-offset: 2px;
+}
+
+/* Course page specific styles */
+.course-dashed-line {
+  border-bottom: 2px dashed rgb(var(--text-gray));
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.course-cards-gray {
+  background-color: rgb(var(--course-card-gray));
+}
+
+.course-outline-red {
+  border: 3px solid rgb(var(--course-outline-red));
+}
+
+/* Black bullet points */
+.bullet-black li::before {
+  content: "•";
+  color: black;
+  margin-right: 0.5rem;
 }
 
 /* Responsive text sizing */
