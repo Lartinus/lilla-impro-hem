@@ -15,7 +15,7 @@ export default function Index() {
         <div
           className="
             w-full
-            h-[60vh] md:h-[70vh]
+            h-[50vh]
             bg-[url('/uploads/images/parallax/ParallaxImage1.jpg')]
             bg-cover bg-center
           "
@@ -23,42 +23,32 @@ export default function Index() {
           {/* Dark overlay for better text readability */}
           <div className="absolute inset-0 bg-black/40" />
           
-          {/* Text overlay - positioned in upper center area */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
+          {/* Text overlay - positioned in upper area */}
+          <div className="absolute top-[20%] left-1/2 transform -translate-x-1/2 px-4">
             <h3 className="font-rajdhani text-[18px] md:text-[20px] text-white text-center max-w-[400px] leading-tight mb-6">
               Vi är en plats för dig som vill lära dig,<br />
               utöva och uppleva Improv&nbsp;Comedy.
             </h3>
 
-            {/* Arrow only on mobile */}
-            <span className="block md:hidden">
+            {/* Arrow visible on both mobile and desktop */}
+            <div className="flex justify-center">
               <ArrowDown
                 size={24}
                 strokeWidth={2}
                 className="text-white animate-bounce"
               />
-            </span>
+            </div>
           </div>
         </div>
 
-        {/* Service boxes layout */}
-        <div className="relative">
-          {/* Desktop: ServiceBoxes overlapping the image significantly */}
-          <div className="hidden md:block absolute -top-32 left-1/2 transform -translate-x-1/2 w-full max-w-6xl px-4">
-            <ServiceBoxes />
-          </div>
-
-          {/* Mobile: ServiceBoxes in ContentOverlay with minimal overlap */}
-          <div className="md:hidden -mt-4">
-            <ContentOverlay className="mx-0 p-6 relative z-10">
-              <ServiceBoxes />
-            </ContentOverlay>
-          </div>
+        {/* Service boxes positioned absolutely over the hero image */}
+        <div className="absolute bottom-[-120px] md:bottom-[-100px] left-1/2 transform -translate-x-1/2 w-full max-w-6xl px-4 z-10">
+          <ServiceBoxes />
         </div>
       </div>
 
-      {/* Spacer for desktop layout to account for overlapping ServiceBoxes */}
-      <div className="hidden md:block h-60" />
+      {/* Spacer for layout to account for overlapping ServiceBoxes */}
+      <div className="h-[200px] md:h-[180px]" />
       
       <Footer />
     </div>
