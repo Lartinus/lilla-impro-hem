@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CourseGrid from '@/components/CourseGrid';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
+import CourseInfoSection from '@/components/CourseInfoSection';
 import { InterestSignupSection } from '@/components/InterestSignupSection';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
 
@@ -12,11 +13,11 @@ export default function Courses() {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data: adminCourses, isLoading: adminLoading } = useAdminCourses();
+  const { data: adminCourses, isLoading: loading } = useAdminCourses();
   const courses = adminCourses || [];
 
-  // --- Laddar-skeleton ---
-  if (adminLoading) {
+  // --- Loading state med skeletons ---
+  if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-[#FAFAFA]">
         <Header />
@@ -35,9 +36,9 @@ export default function Courses() {
                   <CourseCardSkeleton key={i} />
                 ))}
               </div>
-              <div className="text-center text-gray-600 text-sm mt-8">
+              <p className="text-center text-gray-600 text-sm mt-8">
                 Laddar kurser...
-              </div>
+              </p>
             </div>
           </div>
         </div>
@@ -47,7 +48,7 @@ export default function Courses() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFAFA] relative overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-[#FAFAFA] overflow-x-hidden">
       <Header />
 
       {/* Hero-bild */}
@@ -60,10 +61,11 @@ export default function Courses() {
         />
       </div>
 
-      {/* Vit kort med kursinfo + grid */}
-      <div className="relative z-10 mx-0 md:mx-auto max-w-[1000px] -mt-16 flex-1 min-w-0">
+      {/* Vit överlappande kort med kurs-översikt */}
+      <div className="relative z-10 mx-0 md:mx-auto max-w-[1000px] -mt-16">
         <div className="bg-[#F3F3F3] rounded-t-lg overflow-hidden">
           <div className="p-6 md:p-8 space-y-8">
+            {/* Om våra kurser */}
             <section>
               <h1 className="font-tanker text-[32px] mb-4">Om våra kurser</h1>
               <p className="font-satoshi text-[16px] leading-relaxed">
@@ -78,20 +80,23 @@ export default function Courses() {
               </p>
             </section>
 
+            {/* Aktuella kurser */}
             <section>
               <h1 className="font-tanker text-[32px] mb-4">Aktuella kurser</h1>
               <CourseGrid courses={courses} />
             </section>
 
+            {/* Interest-signup (2-kolumners grid) */}
             <InterestSignupSection />
           </div>
         </div>
       </div>
 
-      {/* För dig som… */}
-      <div className="container mx-auto px-6 lg:px-8 mt-8 mb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-start-2 md:col-span-2 bg-[#D9D9D9] rounded-lg p-6 md:p-8">
+      {/* För dig som ...  */}
+      <div className="w-full mt-8 px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Spänt över båda kolumnerna på desktop */}
+          <div className="md:col-span-2 bg-[#D9D9D9] p-6 md:p-8">
             <h2 className="font-tanker text-[40px] text-text-gray underline mb-6 leading-tight">
               För dig som vill bli duktig på hantverket
             </h2>
