@@ -40,7 +40,7 @@ export default function ServiceBoxes() {
       {services.map((svc, idx) => (
         <div
           key={idx}
-          className="group flex flex-col bg-card-background rounded-[10px] overflow-hidden"
+          className="group flex flex-col bg-card-background overflow-hidden"
         >
           {/* Bild‐sektion = halva höjden */}
           <div className="relative h-[200px] lg:h-[250px] overflow-hidden">
@@ -54,7 +54,7 @@ export default function ServiceBoxes() {
           </div>
 
           {/* Innehåll */}
-          <div className="flex-1 p-6 flex flex-col justify-between">
+          <div className="flex-1 p-6 flex flex-col justify-between text-center">
             <div className="space-y-2">
               <h2 className="font-tanker text-[40px] text-text-gray leading-tight">
                 {svc.title}
@@ -65,11 +65,11 @@ export default function ServiceBoxes() {
             </div>
             <div className="mt-4">
               {svc.link.startsWith('/') ? (
-                <Button asChild size="sm">
+                <Button asChild size="default">
                   <Link to={svc.link}>{svc.cta} →</Link>
                 </Button>
               ) : (
-                <Button size="sm">{svc.cta} →</Button>
+                <Button size="default">{svc.cta} →</Button>
               )}
             </div>
           </div>
