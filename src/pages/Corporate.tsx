@@ -1,5 +1,6 @@
 
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import CorporateInquiryForm from "@/components/CorporateInquiryForm";
 import { useEffect, useState } from 'react';
 
@@ -129,6 +130,8 @@ const Corporate = () => {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 };

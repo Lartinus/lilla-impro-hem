@@ -1,6 +1,7 @@
 // src/pages/Mohippa.tsx
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import PrivateInquiryForm from '@/components/PrivateInquiryForm';
 import { ArrowRight } from 'lucide-react';
 
@@ -101,6 +102,8 @@ export default function Mohippa() {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 }

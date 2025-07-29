@@ -1,5 +1,6 @@
 
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import CourseGrid from '@/components/CourseGrid';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 import CourseInfoSection from '@/components/CourseInfoSection';
@@ -52,6 +53,8 @@ const Courses = () => {
         <InterestSignupSection />
         <CourseInfoSection />
       </section>
+      
+      <Footer />
     </div>
   );
 };

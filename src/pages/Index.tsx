@@ -1,4 +1,5 @@
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 import ServiceBoxes from '@/components/ServiceBoxes'
 import { ArrowDown } from 'lucide-react'
 
@@ -49,6 +50,8 @@ export default function Index() {
           <ServiceBoxes />
         </div>
       </section>
+      
+      <Footer />
     </div>
   )
 }

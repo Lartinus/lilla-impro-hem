@@ -1,5 +1,6 @@
 
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import ShowCardSimple from '@/components/ShowCardSimple';
 import ShowCardSkeleton from '@/components/ShowCardSkeleton';
 import { useAdminShows, formatAdminShowForCard } from '@/hooks/useAdminShows';
@@ -196,6 +197,8 @@ const Shows = () => {
         open={newsletterModalOpen} 
         onOpenChange={setNewsletterModalOpen} 
       />
+      
+      <Footer />
     </div>
   );
 };

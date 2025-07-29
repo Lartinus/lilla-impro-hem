@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
@@ -187,6 +188,8 @@ export default function AnlitaOss() {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 }
