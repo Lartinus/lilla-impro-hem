@@ -120,17 +120,19 @@ export const InterestSignupSection = () => {
           {interestSignups.map((signup) => (
             <Card 
               key={signup.id} 
-              className="bg-[#E7E7E7] transition-all duration-300 flex flex-col border-none shadow-none"
+              className="bg-[#E7E7E7] transition-all duration-300 flex flex-col border-none shadow-none rounded-none"
             >
               <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
                 <div className="mb-3">
                   <h2>
                     {signup.title}
                   </h2>
-                  {signup.subtitle && (
-                    <p className="mt-1 font-bold text-xs">
-                      {signup.subtitle}
-                    </p>
+                   {signup.subtitle && (
+                     <div className="course-dashed-line">
+                       <h3 className="mt-1 font-bold text-xs">
+                         {signup.subtitle}
+                       </h3>
+                     </div>
                   )}
                 </div>
                 

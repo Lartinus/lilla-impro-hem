@@ -103,7 +103,7 @@ export const PracticalInfo = ({
 
   return (
     <div className="mb-6">
-      <h4 className="mb-2">Praktisk information</h4>
+      <h2 className="mb-2">Praktisk information</h2>
       <ul className="space-y-2">
         {items.map((item, index) => (
           <li key={index} className="flex items-start space-x-3">

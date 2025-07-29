@@ -27,7 +27,7 @@ const Courses = () => {
   // Show enhanced loading state with skeletons
   if (adminLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
+      <div className="min-h-screen flex flex-col bg-[#FAFAFA]">
         <Header />
         <div className="h-[360px] overflow-hidden">
           <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
@@ -52,7 +52,7 @@ const Courses = () => {
 
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
+    <div className="min-h-screen flex flex-col bg-[#FAFAFA] relative overflow-x-hidden overflow-y-visible">
       <Header />
       <div className="h-[360px] overflow-hidden">
         <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
@@ -84,8 +84,8 @@ const Courses = () => {
           </div>
         </div>
 
-        {/* För dig som vill bli duktig på hantverket - separate gray box */}
-        <div className="bg-[#D9D9D9] p-6 md:p-8">
+        {/* För dig som vill bli duktig på hantverket - separate gray box, full width */}
+        <div className="bg-[#D9D9D9] p-6 md:p-8 mx-[-1.5rem] md:mx-[-2rem]">
           <section>
             <h1>För dig som vill bli duktig på hantverket</h1>
             <div className="space-y-4 mb-6">
@@ -125,6 +125,9 @@ const Courses = () => {
           </section>
         </div>
       </div>
+      
+      {/* Extra space to show background behind the card */}
+      <div className="h-16"></div>
       
       <Footer />
     </div>
