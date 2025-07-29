@@ -37,25 +37,6 @@
   /* White */
   --white:               255 255 255; /* #FFFFFF */
 
-  /* Design system mappings */
-  --background:           var(--background-gray);
-  --foreground:           var(--text-black);
-  --card:                 var(--card-background);
-  --card-foreground:      var(--text-black);
-  --primary:              var(--primary-red);
-  --primary-foreground:   var(--white);
-  --secondary:            var(--guest-blue-gray);
-  --secondary-foreground: var(--white);
-  --muted:                var(--card-background);
-  --muted-foreground:     var(--text-gray);
-  --accent:               var(--action-blue);
-  --accent-foreground:    var(--white);
-  --destructive:          var(--primary-red);
-  --destructive-foreground: var(--white);
-  --border:               var(--text-gray);
-  --input:                var(--card-background);
-  --ring:                 var(--primary-red);
-  --radius:               10px;
 }
 
 /* ==========================================================================
