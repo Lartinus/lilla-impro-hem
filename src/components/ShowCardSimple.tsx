@@ -67,7 +67,7 @@ const ShowCardSimple = ({
   console.log(`  - isSoldOut: ${isSoldOut} (totalTickets: ${show.totalTickets}, available: ${availableTickets}, loading: ${isLoading})`);
 
   return (
-    <div className="bg-white overflow-hidden relative">
+    <div className="bg-[#E7E7E7] overflow-hidden relative">
       <div className="flex flex-col h-full">
         <div className="relative aspect-[16/9]">
           <OptimizedImage
@@ -79,22 +79,22 @@ const ShowCardSimple = ({
           {isSoldOut && <SoldOut />}
         </div>
         
-        <div className="p-6 flex flex-col flex-1">
+        <div className="p-4 flex flex-col flex-1">
           <div className="flex-1">
+            <div className="mb-3">
+              <h2 className="mb-2">{show.title}</h2>
+              <h3 className="mb-3">{formatDateTime(show.date, show.time)}</h3>
+            </div>
+            
             {show.tag && (
-              <div className="mb-6">
+              <div className="mb-4">
                 <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
               </div>
             )}
             
-            <div className="mb-6">
-              <h2 className="mb-4">{show.title}</h2>
-              <h3 className="mb-6">{formatDateTime(show.date, show.time)}</h3>
-            </div>
-            
-            <div className="border-t border-dashed border-gray-300 pt-6 mb-6">
+            <div className="border-t border-dashed border-gray-300 pt-4 mb-4">
               {show.description && (
-                <p className="text-gray-700 text-sm font-satoshi leading-relaxed">{show.description}</p>
+                <p className="text-gray-700 text-base font-satoshi leading-relaxed">{show.description}</p>
               )}
             </div>
           </div>
