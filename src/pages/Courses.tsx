@@ -139,7 +139,7 @@ const Courses = () => {
                   viktigaste att du vill utvecklas som scenimprovisatör.
                 </p>
                 <p className="text-[16px] font-satoshi">Hos oss får du:</p>
-                <ul className="list-disc list-inside space-y-2 text-[16px] font-satoshi">
+                <ul className="list-disc list-outside ml-4 space-y-2 text-[16px] font-satoshi">
                   <li>Konkreta verktyg för att skapa humor på scen</li>
                   <li>Träning i lyssnande, timing och scenspråk</li>
                   <li>Scentid och feedback</li>
