@@ -58,6 +58,7 @@ export type Database = {
           show_time: string
           slug: string
           sort_order: number | null
+          tag_id: string | null
           title: string
           updated_at: string
           venue: string
@@ -77,6 +78,7 @@ export type Database = {
           show_time: string
           slug: string
           sort_order?: number | null
+          tag_id?: string | null
           title: string
           updated_at?: string
           venue: string
@@ -96,13 +98,22 @@ export type Database = {
           show_time?: string
           slug?: string
           sort_order?: number | null
+          tag_id?: string | null
           title?: string
           updated_at?: string
           venue?: string
           venue_address?: string | null
           venue_maps_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "admin_shows_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "show_tags"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       course_bookings: {
         Row: {
@@ -269,7 +280,7 @@ export type Database = {
           },
         ]
       }
-      course_niv__1____improv_comedy_1752228020726: {
+      course_niv__2___improv_comedy__l_ngform_1753659988035: {
         Row: {
           address: string | null
           city: string | null
@@ -306,42 +317,6 @@ export type Database = {
         Relationships: []
       }
       course_niv_1_scenarbete_improv_comedy_1749454350362: {
-        Row: {
-          address: string | null
-          city: string | null
-          created_at: string
-          email: string
-          id: string
-          message: string | null
-          name: string
-          phone: string
-          postal_code: string | null
-        }
-        Insert: {
-          address?: string | null
-          city?: string | null
-          created_at?: string
-          email: string
-          id?: string
-          message?: string | null
-          name: string
-          phone: string
-          postal_code?: string | null
-        }
-        Update: {
-          address?: string | null
-          city?: string | null
-          created_at?: string
-          email?: string
-          id?: string
-          message?: string | null
-          name?: string
-          phone?: string
-          postal_code?: string | null
-        }
-        Relationships: []
-      }
-      course_niv_2_l_ngform_improviserad_komik_1749806847850: {
         Row: {
           address: string | null
           city: string | null
@@ -825,6 +800,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      show_tags: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number | null
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       show_templates: {
         Row: {

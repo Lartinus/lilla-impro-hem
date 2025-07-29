@@ -1,3 +1,12 @@
+export interface ShowTag {
+  id: string;
+  name: string;
+  description?: string | null;
+  color: string;
+  is_active: boolean;
+  sort_order?: number;
+}
+
 export interface AdminShow {
   id: string;
   title: string;
@@ -14,6 +23,7 @@ export interface AdminShow {
   max_tickets?: number;
   is_active: boolean;
   sort_order?: number;
+  tag_id?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -25,6 +35,7 @@ export interface AdminShowWithPerformers extends AdminShow {
     bio: string;
     image_url?: string | null;
   }>;
+  show_tag?: ShowTag | null;
 }
 
 export interface NewShowForm {

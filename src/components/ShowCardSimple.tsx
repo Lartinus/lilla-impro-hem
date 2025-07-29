@@ -1,20 +1,25 @@
 
-import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
 import OptimizedImage from './OptimizedImage';
 import SoldOut from './SoldOut';
+import ShowTag from './ShowTag';
 import { useAvailableTickets } from '@/hooks/useTicketSync';
 
 interface SimpleShow {
-  id: number;
+  id: string;
   title: string;
   date: string;
-  time?: any;
+  time: string;
   location: string;
   slug: string;
-  image?: any; // Image object
-  totalTickets: number; // Required to get proper ticket counts
+  image: string | null;
+  totalTickets: number;
+  description?: string | null;
+  tag?: {
+    name: string;
+    color: string;
+  } | null;
 }
 
 interface ShowCardSimpleProps {
@@ -37,19 +42,18 @@ const ShowCardSimple = ({
   console.log(`  - availableTickets calculated: ${availableTickets}`);
   console.log(`  - isLoading: ${isLoading}`);
 
-  const formatDateTime = (dateString: string) => {
+  const formatDateTime = (date: string, time: string) => {
     try {
-      const dateObj = new Date(dateString);
+      const dateObj = new Date(date);
       const day = dateObj.getDate();
       const month = dateObj.toLocaleDateString('sv-SE', {
         month: 'long'
       });
-      const hours = dateObj.getHours();
-      const minutes = dateObj.getMinutes();
-      const timeStr = `${hours.toString().padStart(2, '0')}.${minutes.toString().padStart(2, '0')}`;
+      const [hours, minutes] = time.split(':');
+      const timeStr = `${hours.padStart(2, '0')}.${minutes.padStart(2, '0')}`;
       return `${day} ${month} ${timeStr}`;
     } catch {
-      return dateString;
+      return `${date} ${time}`;
     }
   };
 
@@ -63,50 +67,46 @@ const ShowCardSimple = ({
   console.log(`  - isSoldOut: ${isSoldOut} (totalTickets: ${show.totalTickets}, available: ${availableTickets}, loading: ${isLoading})`);
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 bg-card-background overflow-hidden relative">
-      <CardContent className="p-0">
-        {/* Optimized Show Image */}
-        {show.image && (
-          <OptimizedImage 
-            src={show.image} 
-            alt={show.title} 
-            className="w-full h-48 md:h-56 object-cover" 
-            preferredSize="medium"
-            onLoad={onImageLoad} // Let OptimizedImage handle the URL callback directly
-          />
-        )}
-
-        <div className="p-4">
-          <h2 className="show-card my-0 py-0">
-            {show.title}
-          </h2>
-          
-          <div className="space-y-1 my-4">
-            <p className="show-card date-time">
-              {formatDateTime(show.date)}
-            </p>
-            <p className="text-sm flex items-center font-satoshi">
-              <MapPin size={16} className="mr-1 text-primary-red" />
-              {show.location}
-            </p>
+    <div className="bg-white rounded-[10px] overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 relative">
+      <div className="relative aspect-[4/3]">
+        <OptimizedImage
+          src={show.image}
+          alt={show.title}
+          className="w-full h-full object-cover"
+          onLoad={onImageLoad}
+        />
+        {isSoldOut && <SoldOut />}
+      </div>
+      
+      <div className="p-6">
+        <div className="flex justify-between items-start mb-3">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-1 font-satoshi">{show.title}</h2>
+            <h3 className="text-gray-600 font-satoshi">{formatDateTime(show.date, show.time)}</h3>
           </div>
-
-          <Link 
-            to={`/shows/${show.slug}`} 
-            className="inline-flex items-center text-action-blue hover:text-action-blue-hover font-medium transition-colors text-sm font-satoshi"
-          >
-            Läs mer →
-          </Link>
+          {show.tag && (
+            <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
+          )}
         </div>
-
-        {/* SoldOut positioned in bottom-right corner */}
-        {isSoldOut && (
-          <div className="absolute bottom-3 right-3">
-            <SoldOut />
+        
+        <div className="border-t border-dashed border-gray-300 pt-3 mb-3">
+          <div className="flex items-center text-gray-600 mb-2">
+            <MapPin className="h-4 w-4 mr-1" />
+            <span className="font-satoshi">{show.location}</span>
           </div>
-        )}
-      </CardContent>
-    </Card>
+          {show.description && (
+            <p className="text-gray-700 text-sm font-satoshi mb-3">{show.description}</p>
+          )}
+        </div>
+        
+        <Link 
+          to={`/forestallning/${show.slug}`}
+          className="text-accent-color hover:text-accent-hover font-medium font-satoshi"
+        >
+          Läs mer →
+        </Link>
+      </div>
+    </div>
   );
 };
 

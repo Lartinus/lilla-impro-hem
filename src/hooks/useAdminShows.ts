@@ -1,31 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-
-interface AdminShow {
-  id: string;
-  title: string;
-  slug: string;
-  image_url?: string | null;
-  show_date: string;
-  show_time: string;
-  venue: string;
-  venue_address?: string | null;
-  venue_maps_url?: string | null;
-  description?: string | null;
-  regular_price: number;
-  discount_price: number;
-  max_tickets?: number;
-  is_active: boolean;
-  sort_order?: number;
-  created_at: string;
-  updated_at: string;
-  performers: Array<{
-    id: string;
-    name: string;
-    bio?: string | null;
-    image_url?: string | null;
-  }>;
-}
+import type { AdminShowWithPerformers } from '@/types/showManagement';
 
 export const useAdminShows = () => {
   return useQuery({
@@ -51,6 +26,7 @@ export const useAdminShows = () => {
           max_tickets,
           is_active,
           sort_order,
+          tag_id,
           created_at,
           updated_at,
           show_performers (
@@ -60,6 +36,14 @@ export const useAdminShows = () => {
               bio,
               image_url
             )
+          ),
+          show_tags (
+            id,
+            name,
+            description,
+            color,
+            is_active,
+            sort_order
           )
         `)
         .eq('is_active', true)
@@ -74,8 +58,9 @@ export const useAdminShows = () => {
       
       const formattedData = (data || []).map(show => ({
         ...show,
-        performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || []
-      })) as AdminShow[];
+        performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
+        show_tag: show.show_tags || null
+      })) as AdminShowWithPerformers[];
       
       console.log('🎭 Formatted admin shows:', formattedData);
       return formattedData;
@@ -84,19 +69,18 @@ export const useAdminShows = () => {
 };
 
 // Format admin show data for compatibility with existing ShowCardSimple
-export const formatAdminShowForCard = (show: AdminShow) => ({
-  id: parseInt(show.id.slice(-8), 16), // Convert UUID to number for compatibility
+export const formatAdminShowForCard = (show: AdminShowWithPerformers) => ({
+  id: show.id,
   title: show.title,
-  date: show.show_date + 'T' + show.show_time, // Combine date and time
+  date: show.show_date,
   time: show.show_time,
   location: show.venue,
   slug: show.slug,
-  image: show.image_url ? {
-    data: {
-      attributes: {
-        url: show.image_url // Keep full URL for Supabase storage images
-      }
-    }
-  } : null,
-  totalTickets: show.max_tickets || 100
+  image: show.image_url,
+  totalTickets: show.max_tickets || 100,
+  description: show.description,
+  tag: show.show_tag ? {
+    name: show.show_tag.name,
+    color: show.show_tag.color
+  } : null
 });
