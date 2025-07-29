@@ -23,15 +23,15 @@ export default function Index() {
           {/* Dark overlay for better text readability */}
           <div className="absolute inset-0 bg-black/40" />
           
-          {/* Text overlay */}
+          {/* Text overlay - positioned in upper center area */}
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
-            <h3 className="font-rajdhani text-[18px] md:text-[20px] text-white text-center max-w-[400px] leading-tight">
+            <h3 className="font-rajdhani text-[18px] md:text-[20px] text-white text-center max-w-[400px] leading-tight mb-6">
               Vi är en plats för dig som vill lära dig,<br />
               utöva och uppleva Improv&nbsp;Comedy.
             </h3>
 
             {/* Arrow only on mobile */}
-            <span className="block mt-6 md:hidden">
+            <span className="block md:hidden">
               <ArrowDown
                 size={24}
                 strokeWidth={2}
@@ -41,26 +41,24 @@ export default function Index() {
           </div>
         </div>
 
-        {/* Service boxes - desktop: overlapping image, mobile: in content overlay */}
+        {/* Service boxes layout */}
         <div className="relative">
-          {/* Desktop: ServiceBoxes overlapping the image */}
-          <div className="hidden md:block absolute -top-20 left-1/2 transform -translate-x-1/2 w-full max-w-6xl px-4">
-            <div className="bg-card-background p-8 lg:p-12">
-              <ServiceBoxes />
-            </div>
+          {/* Desktop: ServiceBoxes overlapping the image significantly */}
+          <div className="hidden md:block absolute -top-32 left-1/2 transform -translate-x-1/2 w-full max-w-6xl px-4">
+            <ServiceBoxes />
           </div>
 
-          {/* Mobile: ServiceBoxes in ContentOverlay */}
-          <div className="md:hidden">
-            <ContentOverlay className="mx-4 -mt-8 p-6 relative z-10">
+          {/* Mobile: ServiceBoxes in ContentOverlay with minimal overlap */}
+          <div className="md:hidden -mt-4">
+            <ContentOverlay className="mx-0 p-6 relative z-10">
               <ServiceBoxes />
             </ContentOverlay>
           </div>
         </div>
       </div>
 
-      {/* Spacer for desktop layout */}
-      <div className="hidden md:block h-40" />
+      {/* Spacer for desktop layout to account for overlapping ServiceBoxes */}
+      <div className="hidden md:block h-60" />
       
       <Footer />
     </div>
