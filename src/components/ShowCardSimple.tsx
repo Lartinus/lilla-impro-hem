@@ -82,19 +82,19 @@ const ShowCardSimple = ({
         <div className="p-6 flex flex-col flex-1">
           <div className="flex-1">
             {show.tag && (
-              <div className="mb-4">
+              <div className="mb-6">
                 <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
               </div>
             )}
             
-            <div className="mb-4">
-              <h2>{show.title}</h2>
-              <h3>{formatDateTime(show.date, show.time)}</h3>
+            <div className="mb-6">
+              <h2 className="mb-4">{show.title}</h2>
+              <h3 className="mb-6">{formatDateTime(show.date, show.time)}</h3>
             </div>
             
-            <div className="border-t border-dashed border-gray-300 pt-3 mb-3">
+            <div className="border-t border-dashed border-gray-300 pt-6 mb-6">
               {show.description && (
-                <p className="text-gray-700 text-sm font-satoshi mb-3">{show.description}</p>
+                <p className="text-gray-700 text-sm font-satoshi leading-relaxed">{show.description}</p>
               )}
             </div>
           </div>
@@ -102,9 +102,9 @@ const ShowCardSimple = ({
           <Link to={`/forestallning/${show.slug}`}>
             <Button 
               variant="default"
-              className="w-full mt-4"
+              className="w-full"
             >
-              Läs mer
+              Läs mer →
             </Button>
           </Link>
         </div>
