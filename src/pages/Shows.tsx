@@ -130,14 +130,7 @@ export default function Shows() {
               {showTags && showTags.length > 0 && (
                 <div className="flex flex-wrap gap-4 mb-8">
                   {showTags.map((tag) => (
-                    <div key={tag.id} className="flex flex-col items-center gap-2">
-                      <ShowTag name={tag.name} color={tag.color} size="large" />
-                      {tag.description && (
-                        <p className="text-sm text-gray-600 text-center max-w-[120px] font-satoshi">
-                          {tag.description}
-                        </p>
-                      )}
-                    </div>
+                    <ShowTag key={tag.id} name={tag.name} color={tag.color} size="large" />
                   ))}
                 </div>
               )}
@@ -148,7 +141,7 @@ export default function Shows() {
               <h1 className="text-3xl font-bold mb-8 font-satoshi">Aktuella Föreställningar</h1>
               
               {shows.length > 0 ? (
-                <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {shows.map((show, index) => (
                     <ShowCardSimple 
                       key={show.id}

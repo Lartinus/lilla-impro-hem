@@ -4,6 +4,7 @@ import { MapPin } from 'lucide-react';
 import OptimizedImage from './OptimizedImage';
 import SoldOut from './SoldOut';
 import ShowTag from './ShowTag';
+import { Button } from '@/components/ui/button';
 import { useAvailableTickets } from '@/hooks/useTicketSync';
 
 interface SimpleShow {
@@ -67,9 +68,9 @@ const ShowCardSimple = ({
   console.log(`  - isSoldOut: ${isSoldOut} (totalTickets: ${show.totalTickets}, available: ${availableTickets}, loading: ${isLoading})`);
 
   return (
-    <div className="bg-white rounded-[10px] overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 relative">
-      <div className="flex flex-col md:flex-row h-full">
-        <div className="relative md:w-1/2 aspect-[16/9] md:aspect-[3/2] md:min-h-[280px]">
+    <div className="bg-white overflow-hidden relative">
+      <div className="flex flex-col h-full">
+        <div className="relative aspect-[16/9]">
           <OptimizedImage
             src={show.image}
             alt={show.title}
@@ -79,8 +80,8 @@ const ShowCardSimple = ({
           {isSoldOut && <SoldOut />}
         </div>
         
-        <div className="p-6 md:w-1/2 flex flex-col justify-between min-h-[280px]">
-          <div>
+        <div className="p-6 flex flex-col flex-1">
+          <div className="flex-1">
             {show.tag && (
               <div className="mb-4">
                 <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
@@ -103,11 +104,13 @@ const ShowCardSimple = ({
             </div>
           </div>
           
-          <Link 
-            to={`/forestallning/${show.slug}`}
-            className="text-accent-color hover:text-accent-hover font-medium font-satoshi self-start"
-          >
-            Läs mer →
+          <Link to={`/forestallning/${show.slug}`}>
+            <Button 
+              variant="default"
+              className="w-full mt-4"
+            >
+              Läs mer
+            </Button>
           </Link>
         </div>
       </div>
