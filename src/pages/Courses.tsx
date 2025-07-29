@@ -93,7 +93,7 @@ const Courses = () => {
           </div>
 
           <div className="bg-[#D9D9D9] lg:mx-auto lg:w-[940px] max-w-full overflow-hidden">
-            <div className="px-4 py-6 md:px-8 md:py-8">
+            <div className="px-2 py-6 md:px-8 md:py-8">
             <section>
               <h1>För dig som vill bli duktig på hantverket</h1>
               <div className="space-y-4 mb-6">
