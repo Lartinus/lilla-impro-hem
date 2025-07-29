@@ -17,9 +17,8 @@ export default function Header() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-primary-red text-primary-foreground">
-      {/* Stängd header (85px hög) */}
       <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-[85px]">
-        {/* Logotyp */}
+        {/* Logotyp (md+) */}
         <Link
           to="/"
           className="hidden md:block logo-symbol font-tanker text-[32px] text-primary-foreground"
@@ -27,7 +26,7 @@ export default function Header() {
           O|O
         </Link>
 
-        {/* Titel */}
+        {/* Titel på desktop */}
         <Link
           to="/"
           className="hidden lg:block font-tanker text-xl lg:text-2xl text-primary-foreground"
@@ -39,26 +38,26 @@ export default function Header() {
         <button
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Stäng meny' : 'Öppna meny'}
-          className="w-10 h-10 relative flex flex-col items-center justify-center p-0"
+          className="w-10 h-10 flex flex-col items-center justify-center p-0"
         >
           {open ? (
-            // CSS-baserat kryss (24px högt, 4px brett)
+            // Rent CSS-X (ingen Lucide-ikon)
             <>
-              <span className="absolute w-[4px] h-[24px] bg-primary-foreground rotate-45" />
-              <span className="absolute w-[4px] h-[24px] bg-primary-foreground -rotate-45" />
+              <span className="absolute w-[4px] h-8 bg-primary-foreground rotate-45" />
+              <span className="absolute w-[4px] h-8 bg-primary-foreground -rotate-45" />
             </>
           ) : (
-            // Tre streck, full knappbredd (40px), 4px höjd, 11px mellanrum
+            // Tre vågräta streck, 11px emellan
             <>
-              <span className="block w-full h-[4px] bg-primary-foreground mb-[11px]" />
-              <span className="block w-full h-[4px] bg-primary-foreground mb-[11px]" />
-              <span className="block w-full h-[4px] bg-primary-foreground" />
+              <span className="w-8 h-[4px] bg-primary-foreground mb-[6px]" />
+              <span className="w-8 h-[4px] bg-primary-foreground mb-[6px]" />
+              <span className="w-8 h-[4px] bg-primary-foreground" />
             </>
           )}
         </button>
       </div>
 
-      {/* Öppen meny (börjar direkt under headern) */}
+      {/* Öppen meny */}
       {open && (
         <div className="fixed inset-x-0 top-[85px] z-40 bg-primary-red text-primary-foreground">
           <nav className="flex flex-col items-end pr-6 lg:pr-16 space-y-2 pb-6 pt-4">
