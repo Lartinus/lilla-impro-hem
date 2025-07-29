@@ -24,8 +24,8 @@ export default function Index() {
           <div className="absolute inset-0 bg-black/40" />
           
           {/* Text overlay - positioned in lower area */}
-          <div className="absolute bottom-[20%] left-1/2 transform -translate-x-1/2 px-4">
-            <h3 className="font-rajdhani text-[16px] sm:text-[18px] md:text-[20px] text-white text-center max-w-[400px] leading-relaxed sm:leading-tight mb-6">
+          <div className="absolute bottom-[20%] left-1/2 transform -translate-x-1/2 px-4 w-full max-w-[90vw] sm:max-w-[500px]">
+            <h3 className="font-rajdhani text-[16px] sm:text-[18px] md:text-[20px] text-white text-center leading-relaxed sm:leading-tight mb-6">
               Vi är en plats för dig som vill lära dig,<br />
               utöva och uppleva Improv&nbsp;Comedy.
             </h3>

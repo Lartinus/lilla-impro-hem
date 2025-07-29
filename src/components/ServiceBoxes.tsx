@@ -36,7 +36,7 @@ const services: Service[] = [
 
 export default function ServiceBoxes() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[15px] justify-items-center">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-[15px] justify-items-center max-w-[930px] mx-auto">
       {services.map((svc, idx) => (
         <div
           key={idx}
@@ -63,7 +63,7 @@ export default function ServiceBoxes() {
                 {svc.subtitle}
               </p>
             </div>
-            <div className="mt-4">
+            <div className="mt-4 flex justify-center">
               {svc.link.startsWith('/') ? (
                 <Button asChild variant="homepage" size="homepage">
                   <Link to={svc.link} className="flex justify-between items-center w-full">
