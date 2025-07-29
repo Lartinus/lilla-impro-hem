@@ -205,7 +205,16 @@ select:focus {
   border: 3px solid rgb(var(--course-outline-red));
 }
 
-/* Black bullet points */
+/* Black bullet points - global for all lists */
+ul li::marker {
+  color: black;
+}
+
+ul li {
+  list-style-type: disc;
+  list-style-position: outside;
+}
+
 .bullet-black li::before {
   content: "•";
   color: black;

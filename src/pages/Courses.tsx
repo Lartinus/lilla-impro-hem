@@ -59,8 +59,8 @@ const Courses = () => {
       </div>
       
       {/* Main content card overlapping the image */}
-      <div className="relative z-10 mx-4 md:mx-auto max-w-[1000px] -mt-8">
-        <div className="bg-[#F3F3F3] pb-0">
+      <div className="relative z-10 mx-4 md:mx-auto max-w-[1000px] -mt-16">
+        <div className="bg-[#F3F3F3] pb-0 rounded-t-lg">
           <div className="p-6 md:p-8 space-y-8">
             
             {/* Om våra kurser */}
@@ -84,8 +84,8 @@ const Courses = () => {
           </div>
         </div>
 
-        {/* För dig som vill bli duktig på hantverket - separate gray box, full width */}
-        <div className="bg-[#D9D9D9] p-6 md:p-8 mx-[-1.5rem] md:mx-[-2rem]">
+        {/* För dig som vill bli duktig på hantverket - separate gray box, within main card */}
+        <div className="bg-[#D9D9D9] p-6 md:p-8">
           <section>
             <h1>För dig som vill bli duktig på hantverket</h1>
             <div className="space-y-4 mb-6">
