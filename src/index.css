@@ -12,14 +12,61 @@
 }
 
 /* ==========================================================================
-   2) Typography & core components
+   2) Root variables (Light mode)
+   ========================================================================== */
+:root {
+  /* Primary Colors */
+  --primary-red:         220 38 38;   /* #DC2626 */
+  --primary-red-hover:   185 28 28;   /* #B91C1C */
+
+  /* Background Colors */
+  --footer-black:        10 10 10;    /* #0A0A0A */
+  --card-background:     231 231 231; /* #E7E7E7 */
+  --background-gray:     243 243 243; /* #F3F3F3 */
+  --guest-blue-gray:     31 41 55;    /* #1F2937 */
+
+  /* Text Colors */
+  --text-gray:           44 44 44;    /* #2C2C2C */
+  --course-tag-gray:     68 64 60;    /* #44403C */
+  --text-black:          0 0 0;       /* #000000 */
+
+  /* Action Colors */
+  --action-blue:         37 99 235;   /* #2563EB */
+  --action-blue-hover:   29 78 216;   /* #1D4ED8 */
+
+  /* White */
+  --white:               255 255 255; /* #FFFFFF */
+
+  /* Design system mappings */
+  --background:           var(--background-gray);
+  --foreground:           var(--text-black);
+  --card:                 var(--card-background);
+  --card-foreground:      var(--text-black);
+  --primary:              var(--primary-red);
+  --primary-foreground:   var(--white);
+  --secondary:            var(--guest-blue-gray);
+  --secondary-foreground: var(--white);
+  --muted:                var(--card-background);
+  --muted-foreground:     var(--text-gray);
+  --accent:               var(--action-blue);
+  --accent-foreground:    var(--white);
+  --destructive:          var(--primary-red);
+  --destructive-foreground: var(--white);
+  --border:               var(--text-gray);
+  --input:                var(--card-background);
+  --ring:                 var(--primary-red);
+  --radius:               10px;
+}
+
+/* ==========================================================================
+   3) Typography & core components
    ========================================================================== */
 
 /* Body & text rendering */
 body {
   font-family: 'Satoshi', sans-serif;
-  background-color: #F3F3F3;  /* background-gray */
-  color:           #000000;   /* text-black */
+  background-color: hsl(var(--background));
+  color:           hsl(var(--foreground));
   line-height:     1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -31,7 +78,7 @@ h1 {
   font-family:    'Tanker', sans-serif;
   font-size:      32px;
   font-weight:    400;
-  color:          #2C2C2C;    /* text-gray */
+  color:          hsl(var(--text-gray));
   text-decoration: underline;
   margin-bottom:  16px;
   line-height:    1.2;
@@ -41,7 +88,7 @@ h2 {
   font-family:    'Tanker', sans-serif;
   font-size:      24px;
   font-weight:    400;
-  color:          #2C2C2C;    /* text-gray */
+  color:          hsl(var(--text-gray));
   margin-bottom:  12px;
   line-height:    1.3;
 }
@@ -50,7 +97,7 @@ h3 {
   font-family:    'Rajdhani', sans-serif;
   font-size:      16px;
   font-weight:    400;
-  color:          #000000;    /* text-black */
+  color:          hsl(var(--text-black));
   margin-bottom:  8px;
   line-height:    1.4;
 }
@@ -60,7 +107,7 @@ p {
   font-family:    'Satoshi', sans-serif;
   font-size:      16px;
   font-weight:    400;
-  color:          #000000;    /* text-black */
+  color:          hsl(var(--text-black));
   margin-bottom:  16px;
   line-height:    1.5;
 }
@@ -69,53 +116,53 @@ p {
 .logo-symbol {
   font-family:    'Tanker', sans-serif;
   font-weight:    400;
-  color:          #2C2C2C;    /* text-gray */
+  color:          hsl(var(--text-gray));
 }
 
 /* Cards */
 .card-component {
-  background-color: #E7E7E7;  /* card-background */
-  border-radius:    10px;
+  background-color: hsl(var(--card-background));
+  border-radius:    var(--radius);
   border:           none;
   box-shadow:       none;
 }
 
 /* Buttons */
 .btn-primary {
-  background-color:    #DC2626; /* primary-red */
-  color:               #FFFFFF; /* white */
-  border-radius:       10px;
+  background-color:    hsl(var(--primary-red));
+  color:               hsl(var(--white));
+  border-radius:       var(--radius);
   border:              none;
   font-family:         'Satoshi', sans-serif;
   font-weight:         400;
   transition:          background-color 0.2s ease;
 }
 .btn-primary:hover {
-  background-color:    #B91C1C; /* primary-red-hover */
+  background-color:    hsl(var(--primary-red-hover));
 }
 
 .btn-secondary {
-  background-color:    #2563EB; /* action-blue */
-  color:               #FFFFFF; /* white */
-  border-radius:       10px;
+  background-color:    hsl(var(--action-blue));
+  color:               hsl(var(--white));
+  border-radius:       var(--radius);
   border:              none;
   font-family:         'Satoshi', sans-serif;
   font-weight:         400;
   transition:          background-color 0.2s ease;
 }
 .btn-secondary:hover {
-  background-color:    #1D4ED8; /* action-blue-hover */
+  background-color:    hsl(var(--action-blue-hover));
 }
 
 /* Utility text colors */
-.text-white-override { color: #FFFFFF; }
-.text-primary-gray   { color: #2C2C2C; }
-.text-course-tag     { color: #44403C; }
+.text-white-override { color: hsl(var(--white)) !important; }
+.text-primary-gray   { color: hsl(var(--text-gray)); }
+.text-course-tag     { color: hsl(var(--course-tag-gray)); }
 
 /* Utility backgrounds */
-.bg-card-component    { background-color: #E7E7E7; }  /* card-background */
-.bg-footer-black      { background-color: #0A0A0A; }  /* footer-black */
-.bg-guest-blue-gray   { background-color: #1F2937; }  /* guest-blue-gray */
+.bg-card-component    { background-color: hsl(var(--card-background)); }
+.bg-footer-black      { background-color: hsl(var(--footer-black)); }
+.bg-guest-blue-gray   { background-color: hsl(var(--guest-blue-gray)); }
 
 /* Links */
 a {
@@ -139,7 +186,7 @@ button:focus,
 input:focus,
 textarea:focus,
 select:focus {
-  outline:        2px solid #DC2626;  /* primary-red */
+  outline:        2px solid hsl(var(--primary-red));
   outline-offset: 2px;
 }
 
