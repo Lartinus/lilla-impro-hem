@@ -93,7 +93,8 @@ const Courses = () => {
           </div>
 
           {/* För dig som vill bli duktig på hantverket - separate gray box, 940px width */}
-          <div className="bg-[#D9D9D9] px-6 py-6 md:px-8 md:py-8 mx-[-1.5rem] md:mx-auto md:w-[940px]">
+          <div className="bg-[#D9D9D9] mx-[-1.5rem] md:mx-auto md:w-[940px]">
+            <div className="px-6 py-6 md:px-8 md:py-8">
             <section>
               <h1>För dig som vill bli duktig på hantverket</h1>
               <div className="space-y-4 mb-6">
@@ -131,6 +132,7 @@ const Courses = () => {
                 </li>
               </ul>
             </section>
+            </div>
           </div>
           
           {/* MainCard avslut efter informationssektionen */}
