@@ -50,8 +50,8 @@ export default function Header() {
           ) : (
             // Tre streck, full knappbredd (40px), 4px höjd, 11px mellanrum
             <>
-              <span className="block w-full h-[4px] bg-primary-foreground mb-[11px]" />
-              <span className="block w-full h-[4px] bg-primary-foreground mb-[11px]" />
+              <span className="block w-full h-[4px] bg-primary-foreground mb-[6px]" />
+              <span className="block w-full h-[4px] bg-primary-foreground mb-[6px]" />
               <span className="block w-full h-[4px] bg-primary-foreground" />
             </>
           )}
