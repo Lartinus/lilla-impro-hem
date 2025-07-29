@@ -120,7 +120,7 @@ export default function Shows() {
             <div className="p-6 md:p-8 space-y-8">
               {/* Om våra föreställningar */}
               <section>
-                <h1 className="text-3xl font-bold mb-6 font-satoshi">Om våra föreställningar</h1>
+                <h1>Om våra föreställningar</h1>
                 <p className="text-[16px] font-satoshi mb-6">
                   Hos oss kan du se högkvalitativ impro från vår ensemble, avancerade kursare (house teams), 
                   kursuppspel från våra baskurser eller gästspel från grupper som vi bjudit in. 
@@ -138,7 +138,7 @@ export default function Shows() {
 
               {/* Aktuella föreställningar */}
               <section>
-                <h1 className="text-3xl font-bold mb-8 font-satoshi">Aktuella Föreställningar</h1>
+                <h1>Aktuella Föreställningar</h1>
                 
                 {shows.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -165,13 +165,13 @@ export default function Shows() {
             <div className="bg-[#D9D9D9] mx-0 mb-0 md:mx-[31px] md:mb-[30px]">
               <div className="px-6 md:px-8 py-8">
                 <div className="text-left">
-                  <h1 className="text-3xl font-bold mb-4 font-satoshi">Få informationen direkt i din inkorg</h1>
+                  <h1>Få informationen direkt i din inkorg</h1>
                   <p className="text-[16px] font-satoshi mb-6">
                     Prenumerera på vårt nyhetsbrev och få information om nya föreställningar direkt till din inkorg.
                   </p>
                   <Button 
                     onClick={() => setIsNewsletterModalOpen(true)}
-                    className="bg-accent-color hover:bg-accent-hover text-white font-satoshi"
+                    variant="default"
                   >
                     Skriv upp dig →
                   </Button>
