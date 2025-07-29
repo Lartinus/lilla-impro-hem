@@ -4,12 +4,12 @@ import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const navItems = [
-  { to: '/',          label: 'Hem' },
-  { to: '/kurser',    label: 'Kurser' },
-  { to: '/shows',     label: 'Föreställningar' },
-  { to: '/anlita-oss',label: 'Boka oss' },
-  { to: '/lokal',     label: 'Lokal' },
-  { to: '/om-oss',    label: 'Om oss & kontakt' },
+  { to: '/',           label: 'Hem' },
+  { to: '/kurser',     label: 'Kurser' },
+  { to: '/shows',      label: 'Föreställningar' },
+  { to: '/anlita-oss', label: 'Boka oss' },
+  { to: '/lokal',      label: 'Lokal' },
+  { to: '/om-oss',     label: 'Om oss & kontakt' },
 ];
 
 export default function Header() {
@@ -18,8 +18,8 @@ export default function Header() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-primary-red text-primary-foreground">
-      {/* Stängd header */}
-      <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-20 lg:h-28">
+      {/* Stängd header (85px hög) */}
+      <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-[85px]">
         {/* Logotyp */}
         <Link to="/" className="logo-symbol font-tanker text-2xl lg:text-3xl">
           O|O
@@ -43,32 +43,32 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Öppen meny */}
+      {/* Öppen meny – börjar direkt under headern (85px offset) */}
       {open && (
-      <div className="fixed inset-x-0 top-20 lg:top-28 z-40 bg-primary-red text-primary-foreground">
-        <nav className="flex flex-col items-end pr-6 lg:pr-16 space-y-2 pb-6">
-          {navItems.map(({ to, label }) => {
-            const isActive = pathname === to;
-            return (
-          <Link
-            key={to}
-            to={to}
-            onClick={() => setOpen(false)}
-            className={`
-              font-satoshi uppercase text-2xl lg:text-3xl transition-colors
-              ${isActive
-                ? 'text-primary-red'
-                : 'text-primary-foreground hover:text-primary-red'
-              }
-            `}
-          >
-            {label}
-          </Link>
-        );
-      })}
-    </nav>
-  </div>
-)}
+        <div className="fixed inset-x-0 top-[85px] z-40 bg-primary-red text-primary-foreground">
+          <nav className="flex flex-col items-end pr-6 lg:pr-16 space-y-2 pb-6 pt-4">
+            {navItems.map(({ to, label }) => {
+              const isActive = pathname === to;
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  onClick={() => setOpen(false)}
+                  className={`
+                    font-satoshi uppercase text-2xl lg:text-3xl transition-colors
+                    ${isActive
+                      ? 'text-primary-foreground'
+                      : 'text-primary-foreground hover:text-primary-red'
+                    }
+                  `}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
