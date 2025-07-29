@@ -21,7 +21,7 @@ export default function Header() {
       {/* Stängd header (85px hög) */}
       <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-[85px]">
         {/* Logotyp */}
-        <Link to="/" className="hidden md:block logo-symbol font-tanker text-[32px]">
+        <Link to="/" className="hidden md:block logo-symbol text-primary-foreground font-tanker text-[32px]">
           O|O
         </Link>
 
