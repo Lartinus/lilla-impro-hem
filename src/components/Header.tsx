@@ -1,6 +1,5 @@
 // src/components/Header.tsx
 import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const navItems = [
@@ -20,30 +19,44 @@ export default function Header() {
     <header className="fixed inset-x-0 top-0 z-50 bg-primary-red text-primary-foreground">
       {/* Stängd header (85px hög) */}
       <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-[85px]">
-        {/* Logotyp */}
-        <Link to="/" className="hidden md:block logo-symbol font-tanker text-[32px] text-primary-foreground">
+        {/* Logotyp (md+) */}
+        <Link
+          to="/"
+          className="hidden md:block logo-symbol font-tanker text-[32px] text-primary-foreground"
+        >
           O|O
         </Link>
 
         {/* Titel på desktop */}
-        <span className="hidden lg:block font-tanker text-xl lg:text-2xl">
+        <Link
+          to="/"
+          className="hidden lg:block font-tanker text-xl lg:text-2xl text-primary-foreground"
+        >
           LILLA IMPROTEATERN
-        </span>
+        </Link>
 
-        {/* Hamburger / Stäng-ikon */}
+        {/* Hamburger / Close-knapp */}
         <button
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Stäng meny' : 'Öppna meny'}
-          className="p-2 text-primary-foreground hover:bg-primary-foreground/10 rounded"
+          className="w-10 h-10 relative flex items-center justify-center"
         >
-          {open
-            ? <X size={40} strokeWidth={4} />
-            : <Menu size={40} strokeWidth={4} />
-          }
+          {open ? (
+            <>
+              <span className="absolute block w-[4px] h-8 bg-primary-foreground rotate-45" />
+              <span className="absolute block w-[4px] h-8 bg-primary-foreground -rotate-45" />
+            </>
+          ) : (
+            <>
+              <span className="block w-full h-[4px] bg-primary-foreground mb-[11px]" />
+              <span className="block w-full h-[4px] bg-primary-foreground mb-[11px]" />
+              <span className="block w-full h-[4px] bg-primary-foreground" />
+            </>
+          )}
         </button>
       </div>
 
-      {/* Öppen meny – börjar precis under headern */}
+      {/* Öppen meny (börjar direkt under headerns 85px) */}
       {open && (
         <div className="fixed inset-x-0 top-[85px] z-40 bg-primary-red text-primary-foreground">
           <nav className="flex flex-col items-end pr-6 lg:pr-16 space-y-2 pb-6 pt-4">
