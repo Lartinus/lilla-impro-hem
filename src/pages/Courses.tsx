@@ -16,10 +16,10 @@ const Courses = () => {
   const courses = adminCourses || [];
   const practicalInfo = ['Kommer inom kort.'];
 
-  // Laddnings-skelett
+  // Laddnings-skelett - simplified version
   if (adminLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#FAFAFA]">
+      <div className="min-h-screen flex flex-col bg-white">
         <Header />
         <div className="h-[360px] overflow-hidden">
           <img
@@ -29,15 +29,19 @@ const Courses = () => {
           />
         </div>
         <div className="relative z-10 mx-4 md:mx-auto max-w-[1000px] -mt-8">
-          <div className="bg-[#F3F3F3] pb-0">
+          <div className="bg-white pb-0 shadow-md">
             <div className="p-6 md:p-8 space-y-8">
+              <div className="text-center text-gray-600 text-lg">
+                Laddar kurser...
+              </div>
               <div className="grid md:grid-cols-2 gap-6">
                 {[...Array(4)].map((_, index) => (
-                  <CourseCardSkeleton key={index} />
+                  <div key={index} className="bg-gray-100 p-6 min-h-[300px] animate-pulse">
+                    <div className="h-6 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  </div>
                 ))}
-              </div>
-              <div className="text-center text-gray-600 text-sm mt-8">
-                Laddar kurser...
               </div>
             </div>
           </div>
