@@ -25,7 +25,7 @@ export default function Header() {
           O|O
         </Link>
 
-        {/* Titel på desktop */}
+        {/* Logotyp centrerad */}
         <span className="font-tanker text-[28px] lg:text-[28px]">
           LILLA IMPROTEATERN
         </span>
@@ -34,7 +34,7 @@ export default function Header() {
         <button
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Stäng meny' : 'Öppna meny'}
-          className="p-2 text-primary-foreground hover:bg-primary-foreground/10 rounded"
+          className="p-2 text-primary-foreground hover:bg-primary-foreground/10"
         >
           {open
             ? <X size={28} strokeWidth={2} />
