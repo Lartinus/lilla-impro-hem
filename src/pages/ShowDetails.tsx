@@ -3,6 +3,7 @@ import TicketPurchaseComplete from '@/components/TicketPurchaseComplete';
 import PerformersSection from '@/components/PerformersSection';
 import OtherShowsSection from '@/components/OtherShowsSection';
 import OptimizedImage from '@/components/OptimizedImage';
+import ShowTag from '@/components/ShowTag';
 import { useParams, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAdminShows } from '@/hooks/useAdminShows';
@@ -121,32 +122,44 @@ const ShowDetails = () => {
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Title and date */}
         <div className="mb-6">
-          <h1 className="text-4xl font-bold mb-2">{formattedShow.title}</h1>
-          <h2 className="text-2xl text-gray-700">{formatDateTime(formattedShow.date)}</h2>
+          <h2>{formattedShow.title}</h2>
+          <h3>{formatDateTime(formattedShow.date)}</h3>
         </div>
 
         {/* Location with map link */}
         <div className="mb-6">
-          <div className="flex items-center">
+          <h3 className="flex items-center">
             <MapPin size={20} className="text-red-600 mr-2" />
             <a 
               href={formattedShow.mapLink} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-lg text-black hover:underline"
+              className="hover:underline"
             >
               {formattedShow.location}
             </a>
-          </div>
+          </h3>
         </div>
+
+        {/* Ticket prices */}
+        <div className="mb-6">
+          <h3>Ordinarie pris: {formattedShow.ticketPrice} kr</h3>
+          <h3>Rabatterat pris: {formattedShow.discountPrice} kr</h3>
+        </div>
+
+        {/* Dashed line and tag */}
+        {show?.show_tag && (
+          <div className="mb-6">
+            <div className="border-t border-dashed border-gray-400 pt-4">
+              <ShowTag name={show.show_tag.name} color={show.show_tag.color} />
+            </div>
+          </div>
+        )}
 
         {/* Description */}
         {formattedShow.description && (
           <div className="mb-8">
-            <div 
-              className="text-lg leading-relaxed text-gray-800" 
-              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(formattedShow.description) }}
-            />
+            <p dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(formattedShow.description) }} />
           </div>
         )}
 
@@ -167,7 +180,7 @@ const ShowDetails = () => {
 
         {/* Ticket purchase section */}
         <div className="mb-12">
-          <h3 className="text-2xl font-bold mb-6">KÖP BILJETTER</h3>
+          <h2>KÖP BILJETTER</h2>
           <TicketPurchaseComplete
             onPurchase={() => {}}
             ticketPrice={formattedShow.ticketPrice}
@@ -183,7 +196,7 @@ const ShowDetails = () => {
         {/* Performers section */}
         {formattedShow.performers && formattedShow.performers.length > 0 && (
           <div className="mb-12">
-            <h3 className="text-2xl font-bold mb-6">MEDVERKANDE</h3>
+            <h2>MEDVERKANDE</h2>
             <PerformersSection performers={formattedShow.performers} />
           </div>
         )}
