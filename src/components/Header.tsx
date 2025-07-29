@@ -26,7 +26,7 @@ export default function Header() {
         </Link>
 
         {/* Titel på desktop */}
-        <span className="hidden lg:block font-tanker text-xl lg:text-2xl">
+        <span className="font-tanker text-[28px] lg:text-[28px]">
           LILLA IMPROTEATERN
         </span>
 
