@@ -1,14 +1,14 @@
 
-import Header from '@/components/Header';
-import ShowDetailsHeader from '@/components/ShowDetailsHeader';
-import ShowInfo from '@/components/ShowInfo';
 import TicketPurchaseComplete from '@/components/TicketPurchaseComplete';
 import PerformersSection from '@/components/PerformersSection';
 import OtherShowsSection from '@/components/OtherShowsSection';
-import { useParams } from 'react-router-dom';
+import OptimizedImage from '@/components/OptimizedImage';
+import { useParams, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAdminShows } from '@/hooks/useAdminShows';
 import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
+import { MapPin, ArrowLeft } from 'lucide-react';
+import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 
 const ShowDetails = () => {
   const { slug } = useParams();
@@ -56,10 +56,24 @@ const ShowDetails = () => {
     totalTickets: s.max_tickets || 100
   }));
 
+  const formatDateTime = (dateString: string) => {
+    try {
+      const dateObj = new Date(dateString);
+      const day = dateObj.getDate();
+      const month = dateObj.toLocaleDateString('sv-SE', { month: 'long' });
+      const hours = dateObj.getHours();
+      const minutes = dateObj.getMinutes();
+      const timeStr = `${hours.toString().padStart(2, '0')}.${minutes.toString().padStart(2, '0')}`;
+      
+      return `${day} ${month} ${timeStr}`;
+    } catch {
+      return dateString;
+    }
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
-        <Header />
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <SubtleLoadingOverlay isVisible={true} />
       </div>
     );
@@ -67,15 +81,12 @@ const ShowDetails = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
-        <Header />
-        <div className="pt-32 text-center flex-1 flex items-center justify-center">
-          <div>
-            <h1 className="text-2xl text-white">Ett fel uppstod</h1>
-            <p className="mt-4 text-theatre-light/80">
-              Kunde inte ladda föreställningarna. Försök igen senare.
-            </p>
-          </div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <h1 className="text-2xl text-black mb-4">Ett fel uppstod</h1>
+          <p className="text-gray-600">
+            Kunde inte ladda föreställningarna. Försök igen senare.
+          </p>
         </div>
       </div>
     );
@@ -83,72 +94,114 @@ const ShowDetails = () => {
 
   if (!formattedShow) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
-        <Header />
-        <div className="pt-32 text-center flex-1 flex items-center justify-center">
-          <div>
-            <h1 className="text-2xl text-white">Föreställning hittades inte</h1>
-            <p className="mt-4 text-theatre-light/80">
-              Denna föreställning existerar inte eller har tagits bort.
-            </p>
-          </div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <h1 className="text-2xl text-black mb-4">Föreställning hittades inte</h1>
+          <p className="text-gray-600">
+            Denna föreställning existerar inte eller har tagits bort.
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
-      <Header />
-      
-      <ShowDetailsHeader showsUrl="/shows" />
+    <div className="min-h-screen bg-white">
+      {/* Large full-width image */}
+      <div className="w-full h-96">
+        <OptimizedImage
+          src={show?.image_url}
+          alt={formattedShow.title}
+          className="w-full h-full object-cover"
+          fallbackText="Ingen bild"
+        />
+      </div>
 
-      <section className="py-2 px-0.5 md:px-4 pb-8 flex-1">
-        <div className="mx-[12px] md:mx-0 md:max-w-4xl md:mx-auto">
-          <div className="border-4 border-white shadow-lg bg-white rounded-none p-6 md:p-8">
-            <ShowInfo 
-              title={formattedShow.title}
-              date={formattedShow.date}
-              location={formattedShow.location}
-              mapLink={formattedShow.mapLink}
-              description={formattedShow.description}
-            />
-            
-            {formattedShow.practicalInfo && formattedShow.practicalInfo.length > 0 && (
-              <div className="mb-6">
-                <div className="text-content-primary font-bold mb-3">Praktisk information</div>
-                <div className="space-y-2">
-                  {formattedShow.practicalInfo.map((item, index) => (
-                    <div key={index} className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-accent-color-primary rounded-full flex-shrink-0 mt-2"></div>
-                      <p className="text-content-secondary text-base">{item}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            <div className={formattedShow.performers && formattedShow.performers.length > 0 ? 'mb-8' : ''}>
-              <TicketPurchaseComplete
-                onPurchase={() => {}} // Not used anymore, handled internally
-                ticketPrice={formattedShow.ticketPrice}
-                discountPrice={formattedShow.discountPrice}
-                totalTickets={formattedShow.totalTickets}
-                showSlug={formattedShow.slug}
-                showTitle={formattedShow.title}
-                showDate={formattedShow.date}
-                showLocation={formattedShow.location}
-              />
-            </div>
-            
-            {formattedShow.performers && formattedShow.performers.length > 0 && (
-              <PerformersSection performers={formattedShow.performers} />
-            )}
-          </div>
-          
-          <OtherShowsSection shows={formattedOtherShows} />
+      {/* Main content */}
+      <div className="max-w-4xl mx-auto px-6 py-8">
+        {/* Title and date */}
+        <div className="mb-6">
+          <h1 className="text-4xl font-bold mb-2">{formattedShow.title}</h1>
+          <h2 className="text-2xl text-gray-700">{formatDateTime(formattedShow.date)}</h2>
         </div>
-      </section>
+
+        {/* Location with map link */}
+        <div className="mb-6">
+          <div className="flex items-center">
+            <MapPin size={20} className="text-red-600 mr-2" />
+            <a 
+              href={formattedShow.mapLink} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-lg text-black hover:underline"
+            >
+              {formattedShow.location}
+            </a>
+          </div>
+        </div>
+
+        {/* Description */}
+        {formattedShow.description && (
+          <div className="mb-8">
+            <div 
+              className="text-lg leading-relaxed text-gray-800" 
+              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(formattedShow.description) }}
+            />
+          </div>
+        )}
+
+        {/* Practical info */}
+        {formattedShow.practicalInfo && formattedShow.practicalInfo.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-xl font-bold mb-4">Praktisk information</h3>
+            <div className="space-y-2">
+              {formattedShow.practicalInfo.map((item, index) => (
+                <div key={index} className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-red-600 rounded-full flex-shrink-0 mt-2"></div>
+                  <p className="text-gray-700">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Ticket purchase section */}
+        <div className="mb-12">
+          <h3 className="text-2xl font-bold mb-6">KÖP BILJETTER</h3>
+          <TicketPurchaseComplete
+            onPurchase={() => {}}
+            ticketPrice={formattedShow.ticketPrice}
+            discountPrice={formattedShow.discountPrice}
+            totalTickets={formattedShow.totalTickets}
+            showSlug={formattedShow.slug}
+            showTitle={formattedShow.title}
+            showDate={formattedShow.date}
+            showLocation={formattedShow.location}
+          />
+        </div>
+
+        {/* Performers section */}
+        {formattedShow.performers && formattedShow.performers.length > 0 && (
+          <div className="mb-12">
+            <h3 className="text-2xl font-bold mb-6">MEDVERKANDE</h3>
+            <PerformersSection performers={formattedShow.performers} />
+          </div>
+        )}
+
+        {/* Other shows section */}
+        <OtherShowsSection shows={formattedOtherShows} />
+
+        {/* Back link */}
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <Link 
+            to="/shows" 
+            className="inline-flex items-center text-black hover:text-gray-600 transition-colors"
+          >
+            <ArrowLeft size={16} className="mr-2" />
+            Tillbaka till föreställningar
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };
