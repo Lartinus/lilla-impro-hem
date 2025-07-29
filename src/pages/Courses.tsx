@@ -95,8 +95,8 @@ const Courses = () => {
           </div>
 
           {/* Grå info-ruta */}
-          <div className="w-full bg-[#D9D9D9] -mx-6 md:-mx-0">
-            <div className="px-4 md:px-8 py-8">
+          <div className="w-full bg-[#D9D9D9] -mx-6 md:mx-8">
+            <div className="px-6 md:px-8 py-8">
               <section className="space-y-6">
                 <h1>
                   För dig som vill bli duktig på hantverket
