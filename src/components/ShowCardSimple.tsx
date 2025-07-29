@@ -87,11 +87,11 @@ const ShowCardSimple = ({
             </div>
             
             <div className="border-t-2 border-dashed border-black pt-4 mb-4">
-              {show.tag && (
-                <div className="mb-4 flex justify-end">
+              <div className="flex justify-end mb-4">
+                {show.tag && (
                   <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
-                </div>
-              )}
+                )}
+              </div>
               
               {show.description && (
                 <p className="text-gray-700 text-base font-satoshi leading-relaxed">{show.description}</p>
