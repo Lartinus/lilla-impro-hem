@@ -29,12 +29,12 @@ export default function Index() {
       <div className="relative z-10 mt-[500px] lg:mt-[550px] flex flex-col items-center">
         <h3
           className="
-            font-rajdhani text-[16px] md:text-[16px]
+            font-rajdhani text-[16px]
             text-white text-center
             w-[355px] leading-tight
           "
         >
-          Vi är en plats för dig som vill lära dig, <br/>
+          Vi är en plats för dig som vill lära dig,<br/>
           utöva och uppleva Improv&nbsp;Comedy.
         </h3>
 
@@ -51,8 +51,9 @@ export default function Index() {
         </div>
       </section>
 
+      {/* NewsletterSignupModal */}
       <NewsletterSignupModal
-        open={newsletterSignupOpen}
+        open={newsletterModalOpen}
         onOpenChange={setNewsletterModalOpen}
       />
     </div>
