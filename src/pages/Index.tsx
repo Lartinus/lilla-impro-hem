@@ -2,8 +2,8 @@
 import Header from '@/components/Header';
 import ServiceBoxes from '@/components/ServiceBoxes';
 import { ArrowDown } from 'lucide-react';
-import { useState } from 'react';
 
+export default function Index() {
   return (
     <div className="relative bg-background min-h-screen">
       <Header />
