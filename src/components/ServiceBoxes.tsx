@@ -68,13 +68,13 @@ export default function ServiceBoxes() {
                 <Button asChild variant="homepage" size="homepage">
                   <Link to={svc.link} className="flex justify-between items-center w-full">
                     <span>{svc.cta}</span>
-                    <span>→</span>
+                    <span className="text-2xl font-bold">→</span>
                   </Link>
                 </Button>
               ) : (
                 <Button variant="homepage" size="homepage" className="flex justify-between items-center w-full">
                   <span>{svc.cta}</span>
-                  <span>→</span>
+                  <span className="text-2xl font-bold">→</span>
                 </Button>
               )}
             </div>

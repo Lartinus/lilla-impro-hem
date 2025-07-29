@@ -173,7 +173,8 @@ export default function Shows() {
                     onClick={() => setIsNewsletterModalOpen(true)}
                     variant="default"
                   >
-                    Skriv upp dig →
+                    <span>Skriv upp dig</span>
+                    <span className="text-2xl font-bold">→</span>
                   </Button>
                 </div>
               </div>

@@ -19,7 +19,7 @@ const buttonVariants = cva(
           "bg-action-blue text-white hover:bg-action-blue-hover",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        blue: "bg-action-blue text-white hover:bg-action-blue-hover justify-center gap-2",
+        blue: "bg-action-blue text-white hover:bg-action-blue-hover",
         homepage: "bg-primary-red text-white hover:bg-primary-red-hover",
       },
       size: {
