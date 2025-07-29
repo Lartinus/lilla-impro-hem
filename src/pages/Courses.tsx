@@ -56,7 +56,7 @@ const Courses = () => {
 
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFAFA] relative overflow-x-hidden overflow-y-visible">
+    <div className="min-h-screen flex flex-col bg-[#FAFAFA] relative overflow-x-hidden">
       <Header />
       <div className="h-[360px] overflow-hidden">
         <img 
@@ -68,8 +68,8 @@ const Courses = () => {
       </div>
       
       {/* Main content card overlapping the image */}
-      <div className="relative z-10 mx-0 md:mx-auto max-w-[1000px] -mt-16 flex-1">
-        <div className="bg-[#F3F3F3] rounded-t-lg min-h-full">
+      <div className="relative z-10 mx-0 md:mx-auto max-w-[1000px] -mt-16 flex-1 min-w-0">
+        <div className="bg-[#F3F3F3] rounded-t-lg min-h-full overflow-hidden">
           <div className="p-6 md:p-8 space-y-8">
             
             {/* Om våra kurser */}
@@ -92,9 +92,9 @@ const Courses = () => {
             <InterestSignupSection />
           </div>
 
-          {/* För dig som vill bli duktig på hantverket - separate gray box, 940px width */}
-          <div className="bg-[#D9D9D9] mx-[-1.5rem] md:mx-auto md:w-[940px]">
-            <div className="px-6 py-6 md:px-8 md:py-8">
+          {/* För dig som vill bli duktig på hantverket - separate gray box, responsive width */}
+          <div className="bg-[#D9D9D9] mx-[-1.5rem] lg:mx-auto lg:w-[940px] max-w-full overflow-hidden">
+            <div className="px-4 py-6 sm:px-6 md:px-8 lg:px-8 md:py-8">
             <section>
               <h1>För dig som vill bli duktig på hantverket</h1>
               <div className="space-y-4 mb-6">
