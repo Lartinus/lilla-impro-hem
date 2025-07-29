@@ -70,7 +70,7 @@ export default function Header() {
                   to={to}
                   onClick={() => setOpen(false)}
                   className={`
-                    font-satoshi uppercase text-2xl lg:text-3xl transition-colors
+                    font-tanker uppercase text-2xl lg:text-3xl transition-colors
                     ${isActive
                       ? 'text-primary-foreground'
                       : 'text-primary-foreground hover:text-primary-red'

@@ -36,11 +36,11 @@ const services: Service[] = [
 
 export default function ServiceBoxes() {
   return (
-    <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[15px] justify-items-center">
       {services.map((svc, idx) => (
         <div
           key={idx}
-          className="group flex flex-col bg-[#E7E7E7] overflow-hidden transition-transform duration-300"
+          className="group flex flex-col bg-[#E7E7E7] overflow-hidden transition-transform duration-300 w-full max-w-[300px]"
         >
           {/* Bild‐sektion = halva höjden */}
           <div className="relative h-[200px] lg:h-[250px] overflow-hidden">
@@ -56,7 +56,7 @@ export default function ServiceBoxes() {
           {/* Innehåll */}
           <div className="flex-1 p-6 flex flex-col justify-between text-center bg-[#E7E7E7]">
             <div className="space-y-2">
-              <h2 className="font-tanker text-[40px] text-text-gray leading-tight">
+              <h2 className="font-tanker text-[28px] sm:text-[32px] lg:text-[40px] text-text-gray leading-tight">
                 {svc.title}
               </h2>
               <p className="font-satoshi text-[16px] text-text-black leading-relaxed">
@@ -65,11 +65,17 @@ export default function ServiceBoxes() {
             </div>
             <div className="mt-4">
               {svc.link.startsWith('/') ? (
-                <Button asChild size="default">
-                  <Link to={svc.link}>{svc.cta} →</Link>
+                <Button asChild variant="homepage" size="homepage">
+                  <Link to={svc.link} className="flex justify-between items-center w-full">
+                    <span>{svc.cta}</span>
+                    <span>→</span>
+                  </Link>
                 </Button>
               ) : (
-                <Button size="default">{svc.cta} →</Button>
+                <Button variant="homepage" size="homepage" className="flex justify-between items-center w-full">
+                  <span>{svc.cta}</span>
+                  <span>→</span>
+                </Button>
               )}
             </div>
           </div>

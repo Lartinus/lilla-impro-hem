@@ -25,7 +25,7 @@ export default function Index() {
           
           {/* Text overlay - positioned in lower area */}
           <div className="absolute bottom-[20%] left-1/2 transform -translate-x-1/2 px-4">
-            <h3 className="font-rajdhani text-[18px] md:text-[20px] text-white text-center max-w-[400px] leading-tight mb-6">
+            <h3 className="font-rajdhani text-[16px] sm:text-[18px] md:text-[20px] text-white text-center max-w-[400px] leading-relaxed sm:leading-tight mb-6">
               Vi är en plats för dig som vill lära dig,<br />
               utöva och uppleva Improv&nbsp;Comedy.
             </h3>
@@ -44,7 +44,7 @@ export default function Index() {
       </div>
 
       {/* White section with ServiceBoxes */}
-      <div className="bg-white py-16 md:py-20">
+      <div className="bg-white py-16 md:py-20 rounded-t-lg md:rounded-t-none">
         <div className="container mx-auto px-4 max-w-6xl">
           <ServiceBoxes />
         </div>
