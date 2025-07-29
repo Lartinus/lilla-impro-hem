@@ -4,12 +4,12 @@ import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const navItems = [
-  { to: '/',         label: 'Hem' },
-  { to: '/kurser',   label: 'Kurser' },
-  { to: '/shows',    label: 'Föreställningar' },
-  { to: '/anlita-oss', label: 'Boka oss' },
-  { to: '/lokal',    label: 'Lokal' },
-  { to: '/om-oss',   label: 'Om oss & kontakt' },
+  { to: '/',          label: 'Hem' },
+  { to: '/kurser',    label: 'Kurser' },
+  { to: '/shows',     label: 'Föreställningar' },
+  { to: '/anlita-oss',label: 'Boka oss' },
+  { to: '/lokal',     label: 'Lokal' },
+  { to: '/om-oss',    label: 'Om oss & kontakt' },
 ];
 
 export default function Header() {
@@ -17,7 +17,8 @@ export default function Header() {
   const { pathname } = useLocation();
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-primary text-primary-foreground">
+    <header className="fixed inset-x-0 top-0 z-50 bg-primary-red text-primary-foreground">
+      {/* Stängd header */}
       <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-20 lg:h-28">
         {/* Logotyp */}
         <Link to="/" className="logo-symbol font-tanker text-2xl lg:text-3xl">
@@ -29,7 +30,7 @@ export default function Header() {
           LILLA IMPROTEATERN
         </span>
 
-        {/* Hamburger / Stäng */}
+        {/* Hamburger / Stäng-ikon */}
         <button
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Stäng meny' : 'Öppna meny'}
@@ -44,7 +45,8 @@ export default function Header() {
 
       {/* Öppen meny */}
       {open && (
-        <div className="fixed inset-x-0 top-20 lg:top-28 z-40 bg-primary text-primary-foreground">
+        <div className="fixed inset-x-0 top-20 lg:top-28 z-40 bg-primary-red text-primary-foreground">
+          {/* Stäng-knapp */}
           <div className="flex justify-end px-6 lg:px-8 py-4">
             <button
               onClick={() => setOpen(false)}
@@ -54,23 +56,27 @@ export default function Header() {
               <X size={28} strokeWidth={2} />
             </button>
           </div>
+          {/* Navigeringslänkar */}
           <nav className="flex flex-col items-end pr-6 lg:pr-16 space-y-2 pb-6">
-            {navItems.map(({ to, label }) => (
-              <Link
-                key={to}
-                to={to}
-                onClick={() => setOpen(false)}
-                className={`
-                  font-satoshi uppercase text-2xl lg:text-3xl transition-colors
-                  ${pathname === to 
-                    ? 'text-primary-foreground' 
-                    : 'text-primary-foreground hover:text-primary'
-                  }
-                `}
-              >
-                {label}
-              </Link>
-            ))}
+            {navItems.map(({ to, label }) => {
+              const isActive = pathname === to;
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  onClick={() => setOpen(false)}
+                  className={`
+                    font-satoshi uppercase text-2xl lg:text-3xl transition-colors
+                    ${isActive
+                      ? 'text-primary-red'
+                      : 'text-primary-foreground hover:text-primary-red'
+                    }
+                  `}
+                >
+                  {label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
       )}
