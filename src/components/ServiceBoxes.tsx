@@ -33,7 +33,7 @@ export default function ServiceBoxes() {
     <div className="grid md:grid-cols-3 gap-8">
       {services.map((svc, idx) => (
         <div key={idx} className="group flex flex-col bg-card-background rounded-[10px] overflow-hidden">
-          {/* Bildsektion = halva höjden */}
+          {/* Bild (50% av höjden) */}
           <div className="relative h-[200px] lg:h-[250px] overflow-hidden">
             <OptimizedImage
               src={svc.image}

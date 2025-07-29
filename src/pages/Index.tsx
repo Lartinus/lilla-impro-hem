@@ -9,12 +9,12 @@ export default function Index() {
     <div className="relative bg-background min-h-screen">
       <Header />
 
-      {/* 1) Statisk hero-bild (530px hög, rundade nederhörn) */}
+      {/* 1) Statisk hero-bild (530px hög) */}
       <div
         className="absolute inset-x-0 top-[56px] lg:top-[112px] h-[530px] bg-[url('/uploads/images/parallax/ParallaxImage1.jpg')] bg-cover bg-center rounded-b-[10px] z-0"
       />
 
-      {/* 2) Tagline + pil, centrerat mot service-boxarna */}
+      {/* 2) Tagline + pil */}
       <div className="relative z-10 mt-[500px] lg:mt-[550px] flex flex-col items-center">
         <h3 className="font-rajdhani text-[16px] text-white text-center w-[355px] leading-tight">
           Vi är en plats för dig som vill lära dig,<br/>utöva och uppleva Improv Comedy.
