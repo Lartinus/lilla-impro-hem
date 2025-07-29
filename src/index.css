@@ -112,13 +112,6 @@ p {
   line-height:    1.5;
 }
 
-/* Logo symbol */
-.logo-symbol {
-  font-family:    'Tanker', sans-serif;
-  font-weight:    400;
-  color:          rgb(var(--text-gray));
-}
-
 /* Cards */
 .card-component {
   background-color: rgb(var(--card-background));
