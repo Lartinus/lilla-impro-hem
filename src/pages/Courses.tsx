@@ -95,7 +95,7 @@ const Courses = () => {
           </div>
 
           {/* Grå info-ruta */}
-          <div className="bg-[#D9D9D9] mx-10 mb-10">
+          <div className="bg-[#D9D9D9] mx-8 mb-8">
             <div className="px-6 md:px-8 py-8">
               <section className="space-y-6">
                 <h1>
