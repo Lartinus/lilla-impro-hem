@@ -69,7 +69,7 @@ const ShowCardSimple = ({
   return (
     <div className="bg-[#E7E7E7] overflow-hidden relative">
       <div className="flex flex-col h-full">
-        <div className="relative aspect-[16/6]">
+        <div className="relative h-60">
           <OptimizedImage
             src={show.image}
             alt={show.title}
@@ -86,10 +86,13 @@ const ShowCardSimple = ({
               <h3 className="mb-3">{formatDateTime(show.date, show.time)}</h3>
             </div>
             
-            <div className="border-t-2 border-dashed border-black pt-4 mb-4">
-              <div className="flex justify-end mb-4">
+            <div className="pt-4 mb-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex-1 border-t-2 border-dashed border-black"></div>
                 {show.tag && (
-                  <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
+                  <div className="ml-4">
+                    <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
+                  </div>
                 )}
               </div>
               
