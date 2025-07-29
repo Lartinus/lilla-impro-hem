@@ -205,7 +205,8 @@ const CourseBookingForm = ({
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant={buttonVariant} className="w-full rounded-none">
-            {isHouseTeamsOrContinuation ? buttonText : 'Boka din plats'}
+            <span>{isHouseTeamsOrContinuation ? buttonText : 'Boka din plats'}</span>
+            <span className="text-2xl font-bold">→</span>
           </Button>
         </SheetTrigger>
         <SheetContent side="bottom" className="h-[100vh] w-full p-0 flex flex-col overflow-hidden">
@@ -224,7 +225,8 @@ const CourseBookingForm = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant={buttonVariant} className="w-full rounded-none">
-          {isHouseTeamsOrContinuation ? buttonText : 'Boka din plats'}
+          <span>{isHouseTeamsOrContinuation ? buttonText : 'Boka din plats'}</span>
+          <span className="text-2xl font-bold">→</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] max-h-[80vh] rounded-none overflow-hidden">

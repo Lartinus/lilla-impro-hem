@@ -108,7 +108,7 @@ const ShowCardSimple = ({
               className="w-full"
             >
               <span>Läs mer</span>
-              <span className="text-xl font-bold">→</span>
+              <span className="text-2xl font-bold">→</span>
             </Button>
           </Link>
         </div>
