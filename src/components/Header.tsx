@@ -46,16 +46,6 @@ export default function Header() {
       {/* Öppen meny */}
       {open && (
         <div className="fixed inset-x-0 top-20 lg:top-28 z-40 bg-primary-red text-primary-foreground">
-          {/* Stäng-knapp */}
-          <div className="flex justify-end px-6 lg:px-8 py-4">
-            <button
-              onClick={() => setOpen(false)}
-              aria-label="Stäng meny"
-              className="p-2 text-primary-foreground hover:bg-primary-foreground/10 rounded"
-            >
-              <X size={28} strokeWidth={2} />
-            </button>
-          </div>
           {/* Navigeringslänkar */}
           <nav className="flex flex-col items-end pr-6 lg:pr-16 space-y-2 pb-6">
             {navItems.map(({ to, label }) => {
