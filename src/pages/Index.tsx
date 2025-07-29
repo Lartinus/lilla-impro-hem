@@ -1,7 +1,6 @@
-// src/pages/Index.tsx
-import Header from '@/components/Header';
-import ServiceBoxes from '@/components/ServiceBoxes';
-import { ArrowDown } from 'lucide-react';
+import Header from '@/components/Header'
+import ServiceBoxes from '@/components/ServiceBoxes'
+import { ArrowDown } from 'lucide-react'
 
 export default function Index() {
   return (
@@ -30,13 +29,17 @@ export default function Index() {
             w-[355px] leading-tight
           "
         >
-          Vi är en plats för dig som vill lära dig,<br/>
-          utöva och uppleva Improv Comedy.
+          Vi är en plats för dig som vill lära dig,<br />
+          utöva och uppleva Improv&nbsp;Comedy.
         </h3>
 
         {/* Pil endast på mobil */}
         <span className="block mt-4 md:hidden">
-          <ArrowDown size={24} strokeWidth={2} className="text-white animate-bounce" />
+          <ArrowDown
+            size={24}
+            strokeWidth={2}
+            className="text-white animate-bounce"
+          />
         </span>
       </div>
 
@@ -47,5 +50,5 @@ export default function Index() {
         </div>
       </section>
     </div>
-  );
+  )
 }

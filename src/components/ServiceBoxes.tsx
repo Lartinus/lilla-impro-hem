@@ -1,9 +1,16 @@
-// src/components/ServiceBoxes.tsx
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import OptimizedImage from '@/components/OptimizedImage';
+import { Button } from '@/components/ui/button'
+import { Link } from 'react-router-dom'
+import OptimizedImage from '@/components/OptimizedImage'
 
-const services = [
+interface Service {
+  title: string
+  subtitle: string
+  cta: string
+  link: string
+  image: string
+}
+
+const services: Service[] = [
   {
     title: 'Kurser',
     subtitle: 'För dig som vill utvecklas på scen',
@@ -25,7 +32,7 @@ const services = [
     link: '/anlita-oss',
     image: '/uploads/images/corporate_LIT_2024.jpg',
   },
-];
+]
 
 export default function ServiceBoxes() {
   return (
@@ -35,7 +42,7 @@ export default function ServiceBoxes() {
           key={idx}
           className="group flex flex-col bg-card-background rounded-[10px] overflow-hidden"
         >
-          {/* Bildsektion = halva höjden */}
+          {/* Bild‐sektion = halva höjden */}
           <div className="relative h-[200px] lg:h-[250px] overflow-hidden">
             <OptimizedImage
               src={svc.image}
@@ -69,5 +76,5 @@ export default function ServiceBoxes() {
         </div>
       ))}
     </div>
-  );
+  )
 }
