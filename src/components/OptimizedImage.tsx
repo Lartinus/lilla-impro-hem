@@ -42,7 +42,7 @@ export default function OptimizedImage({
 
   if (!imageUrl || hasError) {
     return (
-      <div className={`bg-gray-300 flex items-center justify-center ${className}`}>
+      <div className={`${className} bg-gray-300 flex items-center justify-center`}>
         <span className="text-gray-600 text-sm">{fallbackText}</span>
       </div>
     );

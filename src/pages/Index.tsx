@@ -5,7 +5,7 @@ import { ArrowDown } from 'lucide-react';
 
 export default function Index() {
   return (
-    <div className="relative bg-background min-h-screen">
+    <div className="relative bg-background-gray min-h-screen">
       <Header />
 
       {/* 1) Statisk hero‐bild */}

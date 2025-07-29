@@ -1,5 +1,4 @@
 // src/components/ServiceBoxes.tsx
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import OptimizedImage from '@/components/OptimizedImage';
@@ -32,8 +31,11 @@ export default function ServiceBoxes() {
   return (
     <div className="grid md:grid-cols-3 gap-8">
       {services.map((svc, idx) => (
-        <div key={idx} className="group flex flex-col bg-card-background rounded-[10px] overflow-hidden">
-          {/* Bild (50% av höjden) */}
+        <div
+          key={idx}
+          className="group flex flex-col bg-card-background rounded-[10px] overflow-hidden"
+        >
+          {/* Bildsektion = halva höjden */}
           <div className="relative h-[200px] lg:h-[250px] overflow-hidden">
             <OptimizedImage
               src={svc.image}
@@ -43,11 +45,16 @@ export default function ServiceBoxes() {
             />
             <div className="absolute inset-0 bg-black/20" />
           </div>
+
           {/* Innehåll */}
           <div className="flex-1 p-6 flex flex-col justify-between">
             <div className="space-y-2">
-              <h2 className="font-tanker text-[40px] text-text-gray leading-tight">{svc.title}</h2>
-              <p className="font-satoshi text-[16px] text-text-black leading-relaxed">{svc.subtitle}</p>
+              <h2 className="font-tanker text-[40px] text-text-gray leading-tight">
+                {svc.title}
+              </h2>
+              <p className="font-satoshi text-[16px] text-text-black leading-relaxed">
+                {svc.subtitle}
+              </p>
             </div>
             <div className="mt-4">
               {svc.link.startsWith('/') ? (
