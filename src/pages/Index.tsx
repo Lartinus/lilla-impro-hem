@@ -23,8 +23,8 @@ export default function Index() {
           {/* Dark overlay for better text readability */}
           <div className="absolute inset-0 bg-black/40" />
           
-          {/* Text overlay - positioned in upper area */}
-          <div className="absolute top-[20%] left-1/2 transform -translate-x-1/2 px-4">
+          {/* Text overlay - positioned in lower area */}
+          <div className="absolute bottom-[20%] left-1/2 transform -translate-x-1/2 px-4">
             <h3 className="font-rajdhani text-[18px] md:text-[20px] text-white text-center max-w-[400px] leading-tight mb-6">
               Vi är en plats för dig som vill lära dig,<br />
               utöva och uppleva Improv&nbsp;Comedy.
@@ -41,14 +41,14 @@ export default function Index() {
           </div>
         </div>
 
-        {/* Service boxes positioned absolutely over the hero image */}
-        <div className="absolute bottom-[-120px] md:bottom-[-100px] left-1/2 transform -translate-x-1/2 w-full max-w-6xl px-4 z-10">
+      </div>
+
+      {/* White section with ServiceBoxes */}
+      <div className="bg-white py-16 md:py-20">
+        <div className="container mx-auto px-4 max-w-6xl">
           <ServiceBoxes />
         </div>
       </div>
-
-      {/* Spacer for layout to account for overlapping ServiceBoxes */}
-      <div className="h-[200px] md:h-[180px]" />
       
       <Footer />
     </div>

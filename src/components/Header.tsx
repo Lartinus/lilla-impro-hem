@@ -19,7 +19,7 @@ export default function Header() {
     <header className="fixed inset-x-0 top-0 z-50 bg-primary-red text-primary-foreground">
       {/* Stängd header (85px hög) */}
       <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-[85px]">
-        {/* Logotyp */}
+        {/* Vänster sida - Logo på desktop */}
         <Link
           to="/"
           className="hidden md:block logo-symbol font-tanker text-[32px] text-primary-foreground"
@@ -27,19 +27,19 @@ export default function Header() {
           O|O
         </Link>
 
-        {/* Titel */}
+        {/* Mitt - LILLA IMPROTEATERN text (centerad på desktop, vänsterjusterad på mobil) */}
         <Link
           to="/"
-          className="hidden lg:block font-tanker text-xl lg:text-2xl text-primary-foreground"
+          className="font-tanker text-[28px] text-primary-foreground md:absolute md:left-1/2 md:transform md:-translate-x-1/2"
         >
           LILLA IMPROTEATERN
         </Link>
 
-        {/* Hamburger / Close-knapp */}
+        {/* Höger sida - Hamburger-meny (alltid längst till höger) */}
         <button
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Stäng meny' : 'Öppna meny'}
-          className="w-10 h-10 relative flex flex-col items-center justify-center p-0"
+          className="w-10 h-10 relative flex flex-col items-center justify-center p-0 ml-auto"
         >
           {open ? (
             // CSS-baserat kryss (24px högt, 4px brett)
