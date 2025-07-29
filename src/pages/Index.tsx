@@ -41,26 +41,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Logotyp placerad EFTER den vita boxen för att garantera att den hamnar under */}
-      <div className="relative z-30 text-center pb-12 md:pb-16">
-        <div className="mt-8 md:mt-12 mb-8">
-          <img
-            src="/uploads/LIT_WoB_large.png"
-            alt="Lilla Improteatern logotyp"
-            className="h-40 md:h-48 lg:h-56 mx-auto mb-4 drop-shadow-lg"
-          />
-          <p className="text-white-override text-sm font-satoshi">
-            Följ oss på @lillaimproteatern eller via{' '}
-            <button 
-              onClick={() => setNewsletterModalOpen(true)}
-              className="underline hover:no-underline transition-all duration-200 cursor-pointer"
-            >
-              nyhetsbrevet
-            </button>
-          </p>
-        </div>
-      </div>
-
       <NewsletterSignupModal 
         open={newsletterModalOpen} 
         onOpenChange={setNewsletterModalOpen} 
