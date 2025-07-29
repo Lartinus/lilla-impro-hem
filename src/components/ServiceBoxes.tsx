@@ -1,10 +1,9 @@
-
+// src/components/ServiceBoxes.tsx
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import OptimizedImage from './OptimizedImage';
 
 const ServiceBoxes = () => {
-  // All data och bilder är hårdkodad
   const services = [
     {
       title: "Kurser",
@@ -31,38 +30,33 @@ const ServiceBoxes = () => {
 
   return (
     <div className="grid md:grid-cols-3 gap-8 mt-8">
-      {services.map((service, index) => (
-        <div key={index} className="group">
-          <div className="rounded-none overflow-hidden transition-all duration-300 h-full flex flex-col min-h-[300px]">
-            {/* Image section - prioritized loading */}
-            <div className="relative h-48 overflow-hidden">
-                <OptimizedImage
-                  src={service.image}
-                  alt={service.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  preferredSize="medium"
-                />
-              <div className="absolute inset-0 bg-black/20"></div>
+      {services.map((service, idx) => (
+        <div key={idx} className="group h-full">
+          <div className="overflow-hidden transition-all duration-300 h-full flex flex-col">
+            {/* Bilden tar 50% av höjden */}
+            <div className="relative flex-1 overflow-hidden">
+              <OptimizedImage
+                src={service.image}
+                alt={service.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                preferredSize="medium"
+              />
+              <div className="absolute inset-0 bg-black/20" />
             </div>
-            {/* Content section */}
+            {/* Innehållssektion */}
             <div className="bg-card-background p-4 md:p-8 flex-1 flex flex-col justify-between text-left">
-              <div className="space-y-4">
-                <div className="w-full h-px bg-text-gray/30"></div>
-                <div className="space-y-2">
-                  <h2>
-                    {service.title}
-                  </h2>
-                  <p className="text-sm leading-relaxed">
-                    {service.subtitle}
-                  </p>
-                </div>
+              <div>
+                <h2 className="font-tanker text-[40px] leading-tight">
+                  {service.title}
+                </h2>
+                <p className="font-satoshi text-[16px] mt-2">
+                  {service.subtitle}
+                </p>
               </div>
-              <div className="pt-6 pb-4">
+              <div className="pt-6">
                 {service.link.startsWith('/') ? (
                   <Button asChild size="sm" className="md:text-xs md:px-4 md:py-2 lg:text-sm lg:px-4 lg:py-2">
-                    <Link to={service.link}>
-                      {service.cta} →
-                    </Link>
+                    <Link to={service.link}>{service.cta} →</Link>
                   </Button>
                 ) : (
                   <Button size="sm" className="md:text-xs md:px-4 md:py-2 lg:text-sm lg:px-4 lg:py-2">

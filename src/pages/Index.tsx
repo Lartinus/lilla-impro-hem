@@ -1,29 +1,43 @@
-
+// src/pages/Index.tsx
 import Header from '@/components/Header';
 import ServiceBoxes from '@/components/ServiceBoxes';
-import MultiLayerParallaxBackground from '@/components/MultiLayerParallaxBackground';
-
 import { NewsletterSignupModal } from '@/components/NewsletterSignupModal';
 import { useState } from 'react';
 
 const Index = () => {
   const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
 
-  // Enkelt sätt att stänga av parallax-bakgrunden
-  const enableParallaxBackground = true;
-
   return (
     <div className="min-h-[180vh] bg-background-gray relative">
-      {/* Parallax bakgrund - lägg till/ta bort enkelt */}
-      <MultiLayerParallaxBackground enabled={enableParallaxBackground} />
-      
+      {/* Header */}
       <Header />
 
-      <section className="min-h-[140vh] flex flex-col px-0.5 relative overflow-hidden py-0 md:px-0">
-        <div className="mt-[300px] md:mt-[400px] md:flex md:items-center md:justify-center md:min-h-screen my-[30px] py-[20px]">
-          <div className="p-4 md:p-12 lg:p-16 text-left md:text-center space-y-4 bg-card-background mx-3 md:mx-0 md:max-w-5xl md:mx-auto relative z-10 rounded-[10px]">
-            
-            <div className="mx-1 md:mx-0 md:max-w-6xl lg:max-w-7xl pb-1">
+      {/* Parallax-bild (85px under header, 530px hög) */}
+      <div
+        className="absolute inset-x-0 top-[85px] h-[530px]
+                   bg-[url('/uploads/images/parallax/ParallaxImage1.jpg')]
+                   bg-cover bg-center
+                   rounded-b-[10px]"
+      />
+
+      {/* Main content – börjar 485px ner och är relativ för att positionera tagline */}
+      <section className="relative pt-[485px] px-0.5 md:px-0">
+        {/* Den lilla tagline-boxen */}
+        <div
+          className="absolute top-0 left-1/2 transform -translate-x-1/2
+                     w-[355px] h-[50px]
+                     bg-background-gray
+                     flex items-center justify-center"
+        >
+          <h3 className="font-rajdhani text-[16px] leading-none text-text-black text-center">
+            Vi är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
+          </h3>
+        </div>
+
+        <div className="flex flex-col md:flex-row md:items-center md:justify-center md:min-h-screen my-[30px] py-[20px]">
+          <div className="p-4 md:p-12 lg:p-16 bg-card-background mx-3 md:mx-0 md:max-w-5xl relative z-10 rounded-[10px] space-y-4">
+            {/* Intro-text */}
+            <div className="mx-1 md:mx-0 lg:max-w-3xl">
               <h1 className="mt-[10px] mb-[25px] md:mb-[30px]">
                 Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv&nbsp;Comedy.
               </h1>
@@ -34,6 +48,7 @@ const Index = () => {
               </div>
             </div>
 
+            {/* Service-båtar */}
             <div className="space-y-4">
               <ServiceBoxes />
             </div>
@@ -41,9 +56,10 @@ const Index = () => {
         </div>
       </section>
 
-      <NewsletterSignupModal 
-        open={newsletterModalOpen} 
-        onOpenChange={setNewsletterModalOpen} 
+      {/* Newsletter modal */}
+      <NewsletterSignupModal
+        open={newsletterModalOpen}
+        onOpenChange={setNewsletterModalOpen}
       />
     </div>
   );
