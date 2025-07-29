@@ -4,7 +4,6 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CourseGrid from '@/components/CourseGrid';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
-import CourseInfoSection from '@/components/CourseInfoSection';
 import { InterestSignupSection } from '@/components/InterestSignupSection';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
 
@@ -15,6 +14,11 @@ export default function Courses() {
 
   const { data: adminCourses, isLoading: loading } = useAdminCourses();
   const courses = adminCourses || [];
+
+  // Praktisk info för CourseGrid
+  const practicalInfo = [
+    "Kommer inom kort."
+  ];
 
   // --- Loading state med skeletons ---
   if (loading) {
@@ -83,7 +87,10 @@ export default function Courses() {
             {/* Aktuella kurser */}
             <section>
               <h1 className="font-tanker text-[32px] mb-4">Aktuella kurser</h1>
-              <CourseGrid courses={courses} />
+              <CourseGrid
+                courses={courses}
+                practicalInfo={practicalInfo}
+              />
             </section>
 
             {/* Interest-signup (2-kolumners grid) */}
