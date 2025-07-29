@@ -39,5 +39,6 @@ export const getDefaultShowForm = () => ({
   discount_price: 250,
   max_tickets: 100,
   is_active: true,
-  performer_ids: []
+  performer_ids: [],
+  tag_id: null
 });

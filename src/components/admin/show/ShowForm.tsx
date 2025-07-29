@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { ImagePicker } from '../ImagePicker';
 import { ActorSelector } from '../ActorSelector';
-import type { NewShowForm, ShowTemplate, Venue, Actor } from '@/types/showManagement';
+import type { NewShowForm, ShowTemplate, Venue, Actor, ShowTag } from '@/types/showManagement';
 import { generateSlug, generateTitleFromTemplate } from '@/utils/showUtils';
 
 interface ShowFormProps {
@@ -17,6 +17,7 @@ interface ShowFormProps {
   showTemplates?: ShowTemplate[];
   venues?: Venue[];
   actors?: Actor[];
+  showTags?: ShowTag[];
 }
 
 export function ShowForm({
@@ -27,7 +28,8 @@ export function ShowForm({
   setSelectedTemplate,
   showTemplates,
   venues,
-  actors
+  actors,
+  showTags
 }: ShowFormProps) {
   const handleTemplateSelection = (templateId: string) => {
     setSelectedTemplate(templateId);
@@ -155,6 +157,26 @@ export function ShowForm({
             </option>
           ))}
         </select>
+      </div>
+
+      <div>
+        <Label htmlFor="tag">Tag (valfritt)</Label>
+        <select
+          id="tag"
+          value={newShow.tag_id || ''}
+          onChange={(e) => setNewShow(prev => ({ ...prev, tag_id: e.target.value || null }))}
+          className="w-full px-3 py-2 border border-input bg-background rounded-md"
+        >
+          <option value="">Ingen tag...</option>
+          {showTags?.map((tag) => (
+            <option key={tag.id} value={tag.id}>
+              {tag.name}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-muted-foreground mt-1">
+          Välj en tag för att kategorisera föreställningen
+        </p>
       </div>
 
       <div>

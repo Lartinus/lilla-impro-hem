@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2, Eye, EyeOff, ChevronUp, ChevronDown } from 'lucide-react';
+import ShowTag from '@/components/ShowTag';
 import type { AdminShowWithPerformers } from '@/types/showManagement';
 
 interface MobileShowCardProps {
@@ -73,6 +74,11 @@ export function MobileShowCard({
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <span>{show.venue}</span>
               </div>
+              {show.show_tag && (
+                <div className="flex items-center gap-2 mt-2">
+                  <ShowTag name={show.show_tag.name} color={show.show_tag.color} size="small" />
+                </div>
+              )}
             </div>
           </div>
         </div>

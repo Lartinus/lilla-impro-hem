@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import type { AdminShowWithPerformers, ShowTemplate, Venue, Actor } from '@/types/showManagement';
+import type { AdminShowWithPerformers, ShowTemplate, Venue, Actor, ShowTag } from '@/types/showManagement';
 
 export const useShowData = (showCompleted: boolean = false) => {
   const showsQuery = useQuery({
@@ -17,6 +17,14 @@ export const useShowData = (showCompleted: boolean = false) => {
               bio,
               image_url
             )
+          ),
+          show_tags (
+            id,
+            name,
+            color,
+            description,
+            is_active,
+            sort_order
           )
         `);
 
@@ -35,7 +43,8 @@ export const useShowData = (showCompleted: boolean = false) => {
       
       return (data || []).map(show => ({
         ...show,
-        performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || []
+        performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
+        show_tag: show.show_tags || null
       })) as AdminShowWithPerformers[];
     }
   });
@@ -82,11 +91,26 @@ export const useShowData = (showCompleted: boolean = false) => {
     }
   });
 
+  const showTagsQuery = useQuery({
+    queryKey: ['show-tags'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('show_tags')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order');
+      
+      if (error) throw error;
+      return data as ShowTag[] || [];
+    }
+  });
+
   return {
     shows: showsQuery.data,
     showsLoading: showsQuery.isLoading,
     venues: venuesQuery.data,
     actors: actorsQuery.data,
-    showTemplates: showTemplatesQuery.data
+    showTemplates: showTemplatesQuery.data,
+    showTags: showTagsQuery.data
   };
 };

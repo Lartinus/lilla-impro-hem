@@ -53,6 +53,7 @@ export interface NewShowForm {
   max_tickets: number;
   is_active: boolean;
   performer_ids: string[];
+  tag_id?: string | null;
 }
 
 export interface ShowTemplate {

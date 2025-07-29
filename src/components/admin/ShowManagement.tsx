@@ -22,7 +22,7 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const [newShow, setNewShow] = useState<NewShowForm>(getDefaultShowForm());
 
-  const { shows, showsLoading, venues, actors, showTemplates } = useShowData(showCompleted);
+  const { shows, showsLoading, venues, actors, showTemplates, showTags } = useShowData(showCompleted);
   const {
     createShowMutation,
     updateShowMutation,
@@ -56,7 +56,8 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
       discount_price: show.discount_price,
       max_tickets: show.max_tickets || 100,
       is_active: show.is_active,
-      performer_ids: show.performers.map(p => p.id)
+      performer_ids: show.performers.map(p => p.id),
+      tag_id: show.tag_id || null
     });
     setIsEditMode(true);
     setIsShowDialogOpen(true);
@@ -158,6 +159,7 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
                   <TableHead>Titel</TableHead>
                   <TableHead>Datum & Tid</TableHead>
                   <TableHead>Plats</TableHead>
+                  <TableHead>Tag</TableHead>
                   <TableHead>Pris</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Åtgärder</TableHead>
@@ -207,6 +209,7 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
               showTemplates={showTemplates}
               venues={venues}
               actors={actors}
+              showTags={showTags}
             />
 
             <div className="flex justify-end gap-2">

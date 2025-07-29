@@ -3,6 +3,7 @@ import { TableRow, TableCell } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2, Eye, EyeOff, ChevronUp, ChevronDown } from 'lucide-react';
+import ShowTag from '@/components/ShowTag';
 import type { AdminShowWithPerformers } from '@/types/showManagement';
 
 interface ShowRowProps {
@@ -63,6 +64,13 @@ export function ShowRow({
         <div className="flex items-center gap-1">
           {show.venue}
         </div>
+      </TableCell>
+      <TableCell>
+        {show.show_tag ? (
+          <ShowTag name={show.show_tag.name} color={show.show_tag.color} size="small" />
+        ) : (
+          <span className="text-muted-foreground text-sm">Ingen tag</span>
+        )}
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-1">
