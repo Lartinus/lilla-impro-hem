@@ -115,66 +115,67 @@ export default function Shows() {
       <SubtleLoadingOverlay isVisible={shouldShowLoading} />
 
       <div className="min-h-screen bg-[#FAFAFA]">
-        <div className="max-w-[1000px] mx-auto px-4 relative">
-          {/* White overlapping card */}
-          <div className="bg-white rounded-t-[20px] px-6 md:px-8 pt-8 pb-0 -mt-16 relative z-10">
-            {/* Om våra föreställningar */}
-            <section className="mb-12">
-              <h1 className="text-3xl font-bold mb-6 font-satoshi">Om våra föreställningar</h1>
-              <p className="text-[16px] font-satoshi mb-6">
-                Hos oss kan du se högkvalitativ impro från vår ensemble, avancerade kursare (house teams), 
-                kursuppspel från våra baskurser eller gästspel från grupper som vi bjudit in. 
-                För tydlighetens skull markerar vi alltid våra föreställningar med någon av följande tags
-              </p>
-              
-              {showTags && showTags.length > 0 && (
-                <div className="flex flex-wrap gap-4 mb-8">
-                  {showTags.map((tag) => (
-                    <ShowTag key={tag.id} name={tag.name} color={tag.color} size="large" />
-                  ))}
-                </div>
-              )}
-            </section>
-
-            {/* Aktuella föreställningar */}
-            <section className="mb-12">
-              <h1 className="text-3xl font-bold mb-8 font-satoshi">Aktuella Föreställningar</h1>
-              
-              {shows.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {shows.map((show, index) => (
-                    <ShowCardSimple 
-                      key={show.id}
-                      show={show}
-                      onImageLoad={handleImageLoad}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <h2 className="text-xl font-semibold mb-4 font-satoshi">Inga föreställningar just nu</h2>
-                  <p className="text-gray-600 mb-6 font-satoshi">
-                    Vi har inga föreställningar inplanerade för tillfället. Håll utkik för kommande evenemang!
-                  </p>
-                </div>
-              )}
-            </section>
-          </div>
-
-          {/* Newsletter signup section - gray box */}
-          <div className="w-full bg-[#D9D9D9] -mx-6 md:-mx-8 mt-8">
-            <div className="px-6 md:px-8 py-8">
-              <div className="text-center">
-                <h1 className="text-3xl font-bold mb-4 font-satoshi">Få informationen direkt i din inkorg</h1>
+        <div className="relative z-10 mx-0 md:mx-auto max-w-[1000px] -mt-16">
+          <div className="bg-[#F3F3F3] rounded-t-lg overflow-hidden">
+            <div className="p-6 md:p-8 space-y-8">
+              {/* Om våra föreställningar */}
+              <section>
+                <h1 className="text-3xl font-bold mb-6 font-satoshi">Om våra föreställningar</h1>
                 <p className="text-[16px] font-satoshi mb-6">
-                  Prenumerera på vårt nyhetsbrev och få information om nya föreställningar direkt till din inkorg.
+                  Hos oss kan du se högkvalitativ impro från vår ensemble, avancerade kursare (house teams), 
+                  kursuppspel från våra baskurser eller gästspel från grupper som vi bjudit in. 
+                  För tydlighetens skull markerar vi alltid våra föreställningar med någon av följande tags
                 </p>
-                <Button 
-                  onClick={() => setIsNewsletterModalOpen(true)}
-                  className="bg-accent-color hover:bg-accent-hover text-white font-satoshi"
-                >
-                  Prenumerera på nyhetsbrev
-                </Button>
+                
+                {showTags && showTags.length > 0 && (
+                  <div className="flex flex-wrap gap-4 mb-8">
+                    {showTags.map((tag) => (
+                      <ShowTag key={tag.id} name={tag.name} color={tag.color} size="large" />
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              {/* Aktuella föreställningar */}
+              <section>
+                <h1 className="text-3xl font-bold mb-8 font-satoshi">Aktuella Föreställningar</h1>
+                
+                {shows.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {shows.map((show, index) => (
+                      <ShowCardSimple 
+                        key={show.id}
+                        show={show}
+                        onImageLoad={handleImageLoad}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <h2 className="text-xl font-semibold mb-4 font-satoshi">Inga föreställningar just nu</h2>
+                    <p className="text-gray-600 mb-6 font-satoshi">
+                      Vi har inga föreställningar inplanerade för tillfället. Håll utkik för kommande evenemang!
+                    </p>
+                  </div>
+                )}
+              </section>
+            </div>
+
+            {/* Newsletter signup section - gray box */}
+            <div className="bg-[#D9D9D9] mx-0 mb-0 md:mx-[31px] md:mb-[30px]">
+              <div className="px-6 md:px-8 py-8">
+                <div className="text-left">
+                  <h1 className="text-3xl font-bold mb-4 font-satoshi">Få informationen direkt i din inkorg</h1>
+                  <p className="text-[16px] font-satoshi mb-6">
+                    Prenumerera på vårt nyhetsbrev och få information om nya föreställningar direkt till din inkorg.
+                  </p>
+                  <Button 
+                    onClick={() => setIsNewsletterModalOpen(true)}
+                    className="bg-accent-color hover:bg-accent-hover text-white font-satoshi"
+                  >
+                    Skriv upp dig →
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
