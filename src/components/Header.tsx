@@ -1,88 +1,64 @@
-// src/components/Header.tsx
+// src/pages/Index.tsx
+import Header from '@/components/Header';
+import ServiceBoxes from '@/components/ServiceBoxes';
+import { NewsletterSignupModal } from '@/components/NewsletterSignupModal';
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
 
-const navItems = [
-  { to: '/',           label: 'Hem' },
-  { to: '/kurser',     label: 'Kurser' },
-  { to: '/shows',      label: 'Föreställningar' },
-  { to: '/anlita-oss', label: 'Boka oss' },
-  { to: '/lokal',      label: 'Lokal' },
-  { to: '/om-oss',     label: 'Om oss & kontakt' },
-];
-
-export default function Header() {
-  const [open, setOpen] = useState(false);
-  const { pathname } = useLocation();
+const Index = () => {
+  const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-primary-red text-primary-foreground">
-      <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-[85px]">
-        {/* Logotyp (md+) */}
-        <Link
-          to="/"
-          className="hidden md:block logo-symbol font-tanker text-[32px] text-primary-foreground"
-        >
-          O|O
-        </Link>
+    <div className="min-h-[180vh] bg-background-gray relative">
+      {/* HEADER – ignore for denna del */}
+      <Header />
 
-        {/* Titel på desktop */}
-        <Link
-          to="/"
-          className="hidden lg:block font-tanker text-xl lg:text-2xl text-primary-foreground"
-        >
-          LILLA IMPROTEATERN
-        </Link>
+      {/* 1. Statisk “hero”-bild */}
+      <div
+        className="absolute inset-x-0 top-[85px] h-[530px]
+                   bg-[url('/uploads/images/parallax/ParallaxImage1.jpg')]
+                   bg-cover bg-center
+                   rounded-b-[10px]"
+      />
 
-        {/* Hamburger / Close-knapp */}
-        <button
-          onClick={() => setOpen(o => !o)}
-          aria-label={open ? 'Stäng meny' : 'Öppna meny'}
-          className="w-10 h-10 flex flex-col items-center justify-center p-0"
-        >
-          {open ? (
-            // Rent CSS-X (ingen Lucide-ikon)
-            <>
-              <span className="absolute w-[4px] h-8 bg-primary-foreground rotate-45" />
-              <span className="absolute w-[4px] h-8 bg-primary-foreground -rotate-45" />
-            </>
-          ) : (
-            // Tre vågräta streck, 11px emellan
-            <>
-              <span className="w-8 h-[4px] bg-primary-foreground mb-[6px]" />
-              <span className="w-8 h-[4px] bg-primary-foreground mb-[6px]" />
-              <span className="w-8 h-[4px] bg-primary-foreground" />
-            </>
-          )}
-        </button>
+      {/* 2. Den lilla tagline‐boxen */}
+      <div
+        className="absolute inset-x-0 top-[85px] 
+                   h-[50px] flex justify-center items-center"
+      >
+        <h3 className="font-rajdhani text-[16px] text-text-black text-center w-[355px]">
+          Vi är en plats för dig som vill lära dig,<br/>
+          utöva och uppleva Improv Comedy.
+        </h3>
       </div>
 
-      {/* Öppen meny */}
-      {open && (
-        <div className="fixed inset-x-0 top-[85px] z-40 bg-primary-red text-primary-foreground">
-          <nav className="flex flex-col items-end pr-6 lg:pr-16 space-y-2 pb-6 pt-4">
-            {navItems.map(({ to, label }) => {
-              const isActive = pathname === to;
-              return (
-                <Link
-                  key={to}
-                  to={to}
-                  onClick={() => setOpen(false)}
-                  className={`
-                    font-satoshi uppercase text-2xl lg:text-3xl transition-colors
-                    ${isActive
-                      ? 'text-primary-foreground'
-                      : 'text-primary-foreground hover:text-primary-red'
-                    }
-                  `}
-                >
-                  {label}
-                </Link>
-              );
-            })}
-          </nav>
+      {/* 3. Allt innehåll börjar 485px under headerns botten */}
+      <main className="relative pt-[485px] px-4 md:px-0">
+        <div className="mx-auto md:flex md:items-start md:justify-center md:space-x-8">
+          {/* Info-kortet */}
+          <div className="bg-card-background rounded-[10px] p-6 md:p-12 lg:p-16 max-w-3xl w-full space-y-6">
+            <h1 className="font-tanker text-[32px] lg:text-[40px] leading-tight">
+              Lilla Improteatern är en plats för dig som vill lära dig, utöva och uppleva Improv Comedy.
+            </h1>
+            <hr className="border-t border-text-gray" />
+            <p className="font-satoshi text-[16px] leading-relaxed">
+              Improv Comedy är underhållningen som skapas i stunden och som aldrig sker igen. Hos oss kan du lära dig hantverket med några av Sveriges bästa pedagoger, uppleva proffsiga föreställningar eller boka workshops anpassade för både privatpersoner och företag. Oavsett om du är nybörjare eller erfaren improvisatör är du välkommen till Lilla improteatern.
+            </p>
+          </div>
         </div>
-      )}
-    </header>
+
+        {/* 4. Service-boxarna */}
+        <div className="mt-12 md:mt-16">
+          <ServiceBoxes />
+        </div>
+      </main>
+
+      {/* Newsletter-modal */}
+      <NewsletterSignupModal
+        open={newsletterModalOpen}
+        onOpenChange={setNewsletterModalOpen}
+      />
+    </div>
   );
-}
+};
+
+export default Index;
