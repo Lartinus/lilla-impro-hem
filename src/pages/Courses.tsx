@@ -92,9 +92,8 @@ const Courses = () => {
             <InterestSignupSection />
           </div>
 
-          {/* För dig som vill bli duktig på hantverket - separate gray box, responsive width */}
           <div className="bg-[#D9D9D9] mx-[-1.5rem] lg:mx-auto lg:w-[940px] max-w-full overflow-hidden">
-            <div className="px-4 py-6 sm:px-6 md:px-8 lg:px-8 md:py-8">
+            <div className="px-6 py-6 sm:px-8 md:px-8 lg:px-8 md:py-8">
             <section>
               <h1>För dig som vill bli duktig på hantverket</h1>
               <div className="space-y-4 mb-6">
