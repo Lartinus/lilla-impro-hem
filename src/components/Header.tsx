@@ -21,12 +21,12 @@ export default function Header() {
       {/* Stängd header (85px hög) */}
       <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-[85px]">
         {/* Logotyp */}
-        <Link to="/" className="logo-symbol font-tanker text-2xl lg:text-3xl">
+        <Link to="/" className="hidden logo-symbol font-tanker md:text-[32px]">
           O|O
         </Link>
 
         {/* Titel på desktop */}
-        <span className="font-tanker text-[28px] lg:text-[28px]">
+        <span className="font-tanker text-[28px] lg:text-[32px]">
           LILLA IMPROTEATERN
         </span>
 
