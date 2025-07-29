@@ -68,8 +68,8 @@ const ShowCardSimple = ({
 
   return (
     <div className="bg-white rounded-[10px] overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 relative">
-      <div className="flex flex-col md:flex-row">
-        <div className="relative md:w-2/5 aspect-[16/9] md:aspect-[4/3]">
+      <div className="flex flex-col md:flex-row h-full">
+        <div className="relative md:w-1/2 aspect-[16/9] md:aspect-[3/2] md:min-h-[280px]">
           <OptimizedImage
             src={show.image}
             alt={show.title}
@@ -79,18 +79,17 @@ const ShowCardSimple = ({
           {isSoldOut && <SoldOut />}
         </div>
         
-        <div className="p-6 md:w-3/5 flex flex-col justify-between">
+        <div className="p-6 md:w-1/2 flex flex-col justify-between min-h-[280px]">
           <div>
-            <div className="flex justify-between items-start mb-3">
-              <div className="flex-1">
-                <h2 className="text-xl font-semibold text-gray-900 mb-1 font-satoshi">{show.title}</h2>
-                <h3 className="text-gray-600 font-satoshi">{formatDateTime(show.date, show.time)}</h3>
+            {show.tag && (
+              <div className="mb-4">
+                <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
               </div>
-              {show.tag && (
-                <div className="ml-3 flex-shrink-0">
-                  <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
-                </div>
-              )}
+            )}
+            
+            <div className="mb-4">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2 font-satoshi leading-tight">{show.title}</h2>
+              <h3 className="text-lg text-gray-600 font-satoshi">{formatDateTime(show.date, show.time)}</h3>
             </div>
             
             <div className="border-t border-dashed border-gray-300 pt-3 mb-3">
