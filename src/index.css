@@ -12,30 +12,30 @@
 }
 
 /* ==========================================================================
-   2) Root variables (Light mode)
+   2) Root variables (Light mode, RGB values)
    ========================================================================== */
 :root {
-  /* Primary Colors */
-  --primary-red:          #DC2626;
-  --primary-red-hover:    #B91C1C;
+  /* Primary Colors (RGB) */
+  --primary-red:         220 38 38;   /* #DC2626 */
+  --primary-red-hover:   185 28 28;   /* #B91C1C */
 
   /* Background Colors */
-  --footer-black:         #0A0A0A;
-  --card-background:      #E7E7E7;
-  --background-gray:      #F3F3F3;
-  --guest-blue-gray:      #1F2937;
+  --footer-black:        10 10 10;    /* #0A0A0A */
+  --card-background:     231 231 231; /* #E7E7E7 */
+  --background-gray:     243 243 243; /* #F3F3F3 */
+  --guest-blue-gray:     31 41 55;    /* #1F2937 */
 
   /* Text Colors */
-  --text-gray:            #2C2C2C;
-  --course-tag-gray:      #44403C;
-  --text-black:           #000000;
+  --text-gray:           44 44 44;    /* #2C2C2C */
+  --course-tag-gray:     68 64 60;    /* #44403C */
+  --text-black:          0 0 0;       /* #000000 */
 
   /* Action Colors */
-  --action-blue:          #2563EB;
-  --action-blue-hover:    #1D4ED8;
+  --action-blue:         37 99 235;   /* #2563EB */
+  --action-blue-hover:   29 78 216;   /* #1D4ED8 */
 
   /* White */
-  --white:                #FFFFFF;
+  --white:               255 255 255; /* #FFFFFF */
 
   /* Design system mappings */
   --background:           var(--background-gray);
@@ -59,18 +59,18 @@
 }
 
 /* ==========================================================================
-   3) Typography & core components
+   3) Typography & core components (use rgb(var(--...)))
    ========================================================================== */
 
 /* Body & text rendering */
 body {
   font-family: 'Satoshi', sans-serif;
-  background-color: hsl(var(--background));
-  color:           hsl(var(--foreground));
-  line-height:     1.5;
+  background-color: rgb(var(--background));
+  color:            rgb(var(--foreground));
+  line-height:      1.5;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing:  grayscale;
+  text-rendering:           optimizeLegibility;
 }
 
 /* Headings */
@@ -78,7 +78,7 @@ h1 {
   font-family:    'Tanker', sans-serif;
   font-size:      32px;
   font-weight:    400;
-  color:          hsl(var(--text-gray));
+  color:          rgb(var(--text-gray));
   text-decoration: underline;
   margin-bottom:  16px;
   line-height:    1.2;
@@ -88,7 +88,7 @@ h2 {
   font-family:    'Tanker', sans-serif;
   font-size:      24px;
   font-weight:    400;
-  color:          hsl(var(--text-gray));
+  color:          rgb(var(--text-gray));
   margin-bottom:  12px;
   line-height:    1.3;
 }
@@ -97,7 +97,7 @@ h3 {
   font-family:    'Rajdhani', sans-serif;
   font-size:      16px;
   font-weight:    400;
-  color:          hsl(var(--text-black));
+  color:          rgb(var(--text-black));
   margin-bottom:  8px;
   line-height:    1.4;
 }
@@ -107,7 +107,7 @@ p {
   font-family:    'Satoshi', sans-serif;
   font-size:      16px;
   font-weight:    400;
-  color:          hsl(var(--text-black));
+  color:          rgb(var(--text-black));
   margin-bottom:  16px;
   line-height:    1.5;
 }
@@ -116,12 +116,12 @@ p {
 .logo-symbol {
   font-family:    'Tanker', sans-serif;
   font-weight:    400;
-  color:          hsl(var(--text-gray));
+  color:          rgb(var(--text-gray));
 }
 
 /* Cards */
 .card-component {
-  background-color: hsl(var(--card-background));
+  background-color: rgb(var(--card-background));
   border-radius:    var(--radius);
   border:           none;
   box-shadow:       none;
@@ -129,8 +129,8 @@ p {
 
 /* Buttons */
 .btn-primary {
-  background-color:    hsl(var(--primary-red));
-  color:               hsl(var(--white));
+  background-color:    rgb(var(--primary-red));
+  color:               rgb(var(--white));
   border-radius:       var(--radius);
   border:              none;
   font-family:         'Satoshi', sans-serif;
@@ -138,12 +138,12 @@ p {
   transition:          background-color 0.2s ease;
 }
 .btn-primary:hover {
-  background-color:    hsl(var(--primary-red-hover));
+  background-color:    rgb(var(--primary-red-hover));
 }
 
 .btn-secondary {
-  background-color:    hsl(var(--action-blue));
-  color:               hsl(var(--white));
+  background-color:    rgb(var(--action-blue));
+  color:               rgb(var(--white));
   border-radius:       var(--radius);
   border:              none;
   font-family:         'Satoshi', sans-serif;
@@ -151,18 +151,18 @@ p {
   transition:          background-color 0.2s ease;
 }
 .btn-secondary:hover {
-  background-color:    hsl(var(--action-blue-hover));
+  background-color:    rgb(var(--action-blue-hover));
 }
 
 /* Utility text colors */
-.text-white-override { color: hsl(var(--white)) !important; }
-.text-primary-gray   { color: hsl(var(--text-gray)); }
-.text-course-tag     { color: hsl(var(--course-tag-gray)); }
+.text-white-override { color: rgb(var(--white)) !important; }
+.text-primary-gray   { color: rgb(var(--text-gray)); }
+.text-course-tag     { color: rgb(var(--course-tag-gray)); }
 
 /* Utility backgrounds */
-.bg-card-component    { background-color: hsl(var(--card-background)); }
-.bg-footer-black      { background-color: hsl(var(--footer-black)); }
-.bg-guest-blue-gray   { background-color: hsl(var(--guest-blue-gray)); }
+.bg-card-component    { background-color: rgb(var(--card-background)); }
+.bg-footer-black      { background-color: rgb(var(--footer-black)); }
+.bg-guest-blue-gray   { background-color: rgb(var(--guest-blue-gray)); }
 
 /* Links */
 a {
@@ -186,7 +186,7 @@ button:focus,
 input:focus,
 textarea:focus,
 select:focus {
-  outline:        2px solid hsl(var(--primary-red));
+  outline:        2px solid rgb(var(--primary-red));
   outline-offset: 2px;
 }
 
