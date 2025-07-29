@@ -21,12 +21,12 @@ export default function Header() {
       {/* Stängd header (85px hög) */}
       <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-[85px]">
         {/* Logotyp */}
-        <Link to="/" className="hidden md:block logo-symbol font-tanker text-[32px] text-white">
+        <Link to="/" className="hidden md:block logo-symbol font-tanker text-[32px] text-primary-foreground">
           O|O
         </Link>
 
-        {/* Logotyp centrerad */}
-        <span className="font-tanker text-[28px] lg:text-[28px]">
+        {/* Titel på desktop */}
+        <span className="hidden lg:block font-tanker text-xl lg:text-2xl">
           LILLA IMPROTEATERN
         </span>
 
@@ -34,16 +34,16 @@ export default function Header() {
         <button
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Stäng meny' : 'Öppna meny'}
-          className="p-2 text-primary-foreground hover:bg-primary-foreground/10"
+          className="p-2 text-primary-foreground hover:bg-primary-foreground/10 rounded"
         >
           {open
-            ? <X size={28} strokeWidth={2} />
-            : <Menu size={28} strokeWidth={2} />
+            ? <X size={40} strokeWidth={4} />
+            : <Menu size={40} strokeWidth={4} />
           }
         </button>
       </div>
 
-      {/* Öppen meny – börjar direkt under headern (85px offset) */}
+      {/* Öppen meny – börjar precis under headern */}
       {open && (
         <div className="fixed inset-x-0 top-[85px] z-40 bg-primary-red text-primary-foreground">
           <nav className="flex flex-col items-end pr-6 lg:pr-16 space-y-2 pb-6 pt-4">
