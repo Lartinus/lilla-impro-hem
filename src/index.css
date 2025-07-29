@@ -16,26 +16,26 @@
    ========================================================================== */
 :root {
   /* Primary Colors */
-  --primary-red:         220 38 38;   /* #DC2626 */
-  --primary-red-hover:   185 28 28;   /* #B91C1C */
+  --primary-red:          #DC2626;
+  --primary-red-hover:    #B91C1C;
 
   /* Background Colors */
-  --footer-black:        10 10 10;    /* #0A0A0A */
-  --card-background:     231 231 231; /* #E7E7E7 */
-  --background-gray:     243 243 243; /* #F3F3F3 */
-  --guest-blue-gray:     31 41 55;    /* #1F2937 */
+  --footer-black:         #0A0A0A;
+  --card-background:      #E7E7E7;
+  --background-gray:      #F3F3F3;
+  --guest-blue-gray:      #1F2937;
 
   /* Text Colors */
-  --text-gray:           44 44 44;    /* #2C2C2C */
-  --course-tag-gray:     68 64 60;    /* #44403C */
-  --text-black:          0 0 0;       /* #000000 */
+  --text-gray:            #2C2C2C;
+  --course-tag-gray:      #44403C;
+  --text-black:           #000000;
 
   /* Action Colors */
-  --action-blue:         37 99 235;   /* #2563EB */
-  --action-blue-hover:   29 78 216;   /* #1D4ED8 */
+  --action-blue:          #2563EB;
+  --action-blue-hover:    #1D4ED8;
 
   /* White */
-  --white:               255 255 255; /* #FFFFFF */
+  --white:                #FFFFFF;
 
   /* Design system mappings */
   --background:           var(--background-gray);
