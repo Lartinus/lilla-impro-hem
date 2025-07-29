@@ -107,7 +107,8 @@ const ShowCardSimple = ({
               variant="default"
               className="w-full"
             >
-              Läs mer →
+              <span>Läs mer</span>
+              <span className="text-lg">→</span>
             </Button>
           </Link>
         </div>
