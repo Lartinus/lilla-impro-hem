@@ -87,7 +87,7 @@ export default function Shows() {
         </div>
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">Kunde inte ladda föreställningar</h2>
+            <h2>Kunde inte ladda föreställningar</h2>
             <p className="text-gray-600 mb-8">Det uppstod ett fel när föreställningarna skulle hämtas.</p>
             <Button onClick={handleRetry}>
               Försök igen
@@ -152,7 +152,7 @@ export default function Shows() {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <h2 className="text-xl font-semibold mb-4 font-satoshi">Inga föreställningar just nu</h2>
+                    <h2>Inga föreställningar just nu</h2>
                     <p className="text-gray-600 mb-6 font-satoshi">
                       Vi har inga föreställningar inplanerade för tillfället. Håll utkik för kommande evenemang!
                     </p>

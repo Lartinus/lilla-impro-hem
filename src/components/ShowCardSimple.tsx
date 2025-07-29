@@ -1,6 +1,5 @@
 
 import { Link } from 'react-router-dom';
-import { MapPin } from 'lucide-react';
 import OptimizedImage from './OptimizedImage';
 import SoldOut from './SoldOut';
 import ShowTag from './ShowTag';
@@ -89,15 +88,11 @@ const ShowCardSimple = ({
             )}
             
             <div className="mb-4">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2 font-satoshi leading-tight">{show.title}</h2>
-              <h3 className="text-lg text-gray-600 font-satoshi">{formatDateTime(show.date, show.time)}</h3>
+              <h2>{show.title}</h2>
+              <h3>{formatDateTime(show.date, show.time)}</h3>
             </div>
             
             <div className="border-t border-dashed border-gray-300 pt-3 mb-3">
-              <div className="flex items-center text-gray-600 mb-2">
-                <MapPin className="h-4 w-4 mr-1" />
-                <span className="font-satoshi">{show.location}</span>
-              </div>
               {show.description && (
                 <p className="text-gray-700 text-sm font-satoshi mb-3">{show.description}</p>
               )}
