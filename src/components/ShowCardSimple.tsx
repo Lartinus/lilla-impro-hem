@@ -63,7 +63,7 @@ const ShowCardSimple = ({
   console.log(`  - isSoldOut: ${isSoldOut} (totalTickets: ${show.totalTickets}, available: ${availableTickets}, loading: ${isLoading})`);
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 border-4 border-white shadow-lg bg-white rounded-none overflow-hidden relative">
+    <Card className="group hover:shadow-lg transition-all duration-300 bg-card-background overflow-hidden relative">
       <CardContent className="p-0">
         {/* Optimized Show Image */}
         {show.image && (
@@ -85,15 +85,15 @@ const ShowCardSimple = ({
             <p className="show-card date-time">
               {formatDateTime(show.date)}
             </p>
-            <p className="text-sm flex items-center">
-              <MapPin size={16} className="mr-1 text-red-700" />
+            <p className="text-sm flex items-center font-satoshi">
+              <MapPin size={16} className="mr-1 text-primary-red" />
               {show.location}
             </p>
           </div>
 
           <Link 
             to={`/shows/${show.slug}`} 
-            className="inline-flex items-center text-accent-color-text hover:text-accent-color-hover font-medium transition-colors text-sm"
+            className="inline-flex items-center text-action-blue hover:text-action-blue-hover font-medium transition-colors text-sm font-satoshi"
           >
             Läs mer →
           </Link>

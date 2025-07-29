@@ -45,9 +45,9 @@ const ServiceBoxes = () => {
               <div className="absolute inset-0 bg-black/20"></div>
             </div>
             {/* Content section */}
-            <div className="bg-[#F3F4F6] p-4 md:p-8 flex-1 flex flex-col justify-between text-left">
+            <div className="bg-card-background p-4 md:p-8 flex-1 flex flex-col justify-between text-left">
               <div className="space-y-4">
-                <div className="w-full h-px bg-white/30"></div>
+                <div className="w-full h-px bg-text-gray/30"></div>
                 <div className="space-y-2">
                   <h2>
                     {service.title}

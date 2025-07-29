@@ -48,8 +48,8 @@ const AdminDashboard = () => {
   // Loading state
   if (authLoading || roleLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center font-satoshi">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center font-satoshi bg-background-gray">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-red"></div>
       </div>
     );
   }
@@ -57,7 +57,7 @@ const AdminDashboard = () => {
   // Show login form if not authenticated
   if (!user) {
     return (
-      <div className="min-h-screen bg-background font-satoshi">
+      <div className="min-h-screen bg-background-gray font-satoshi">
         <Header />
         <main className="container mx-auto px-4 py-8 pt-32">
           <div className="max-w-md mx-auto">
@@ -100,7 +100,7 @@ const AdminDashboard = () => {
   // Show access denied if not admin
   if (userRole !== 'admin') {
     return (
-      <div className="min-h-screen bg-background font-satoshi">
+      <div className="min-h-screen bg-background-gray font-satoshi">
         <Header />
         <main className="container mx-auto px-4 py-8 pt-32">
           <div className="max-w-md mx-auto">
@@ -159,15 +159,15 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-satoshi">
+    <div className="min-h-screen bg-background-gray font-satoshi">
       <Header />
       
       <main className="container mx-auto px-4 py-8 pt-20">
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Administratörspanel</h1>
-              <p className="text-muted-foreground mt-2">Hantera kurser, biljetter och kommunikation</p>
+              <h1 className="text-2xl lg:text-3xl font-tanker text-text-gray">Administratörspanel</h1>
+              <p className="text-text-gray mt-2 font-satoshi">Hantera kurser, biljetter och kommunikation</p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <Badge variant="secondary" className="text-xs lg:text-sm flex items-center">
@@ -189,7 +189,7 @@ const AdminDashboard = () => {
 
         {/* Dashboard Overview */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-foreground mb-6">Översikt</h2>
+          <h2 className="text-2xl font-tanker text-text-gray mb-6">Översikt</h2>
           <Card>
             <CardContent className="p-6">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
