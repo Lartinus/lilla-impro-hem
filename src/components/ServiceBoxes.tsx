@@ -1,41 +1,20 @@
 // src/components/ServiceBoxes.tsx
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import OptimizedImage from '@/components/OptimizedImage';  // uppdaterad import
+import OptimizedImage from '@/components/OptimizedImage';
 
 const services = [
-  {
-    title: 'Kurser',
-    subtitle: 'För dig som vill utvecklas på scen',
-    cta: 'Utforska våra kurser',
-    link: '/kurser',
-    image: '/uploads/images/kurser_LIT_2024.jpg',
-  },
-  {
-    title: 'Föreställningar',
-    subtitle: 'Med stor bredd och mycket skratt',
-    cta: 'Kommande föreställningar',
-    link: '/shows',
-    image: '/uploads/images/Improvision2024.jpg',
-  },
-  {
-    title: 'Underhållning',
-    subtitle: 'För företag och privata tillställningar',
-    cta: 'Läs mer',
-    link: '/anlita-oss',
-    image: '/uploads/images/corporate_LIT_2024.jpg',
-  },
+  { title: 'Kurser', subtitle: 'För dig som vill utvecklas på scen', cta: 'Utforska våra kurser', link: '/kurser', image: '/uploads/images/kurser_LIT_2024.jpg' },
+  { title: 'Föreställningar', subtitle: 'Med stor bredd och mycket skratt', cta: 'Kommande föreställningar', link: '/shows', image: '/uploads/images/Improvision2024.jpg' },
+  { title: 'Underhållning', subtitle: 'För företag och privata tillställningar', cta: 'Läs mer', link: '/anlita-oss', image: '/uploads/images/corporate_LIT_2024.jpg' },
 ];
 
 export default function ServiceBoxes() {
   return (
     <div className="grid md:grid-cols-3 gap-8">
       {services.map((svc, idx) => (
-        <div
-          key={idx}
-          className="group flex flex-col bg-card-background rounded-[10px] overflow-hidden"
-        >
-          {/* Bildsektion = halva höjden */}
+        <div key={idx} className="group flex flex-col bg-card-background rounded-[10px] overflow-hidden">
+          {/* Bilden tar halva höjden */}
           <div className="relative h-[200px] lg:h-[250px] overflow-hidden">
             <OptimizedImage
               src={svc.image}
@@ -49,12 +28,8 @@ export default function ServiceBoxes() {
           {/* Innehåll */}
           <div className="flex-1 p-6 flex flex-col justify-between">
             <div className="space-y-2">
-              <h2 className="font-tanker text-[40px] text-text-gray leading-tight">
-                {svc.title}
-              </h2>
-              <p className="font-satoshi text-[16px] text-text-black leading-relaxed">
-                {svc.subtitle}
-              </p>
+              <h2 className="font-tanker text-[40px] text-text-gray leading-tight">{svc.title}</h2>
+              <p className="font-satoshi text-[16px] text-text-black leading-relaxed">{svc.subtitle}</p>
             </div>
             <div className="mt-4">
               {svc.link.startsWith('/') ? (
