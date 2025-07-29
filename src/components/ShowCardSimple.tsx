@@ -86,9 +86,9 @@ const ShowCardSimple = ({
               <h3 className="mb-3">{formatDateTime(show.date, show.time)}</h3>
             </div>
             
-            <div className="border-t border-dashed border-gray-300 pt-4 mb-4">
+            <div className="border-t-2 border-dashed border-black pt-4 mb-4">
               {show.tag && (
-                <div className="mb-4">
+                <div className="mb-4 flex justify-end">
                   <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
                 </div>
               )}
