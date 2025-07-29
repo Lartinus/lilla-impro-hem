@@ -3,64 +3,65 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import OptimizedImage from './OptimizedImage';
 
-const ServiceBoxes = () => {
-  const services = [
-    {
-      title: "Kurser",
-      subtitle: "För dig som vill utvecklas på scen",
-      cta: "Utforska våra kurser",
-      link: "/kurser",
-      image: "/uploads/images/kurser_LIT_2024.jpg"
-    },
-    {
-      title: "Föreställningar",
-      subtitle: "Med stor bredd och mycket skratt",
-      cta: "Kommande föreställningar",
-      link: "/shows",
-      image: "/uploads/images/Improvision2024.jpg"
-    },
-    {
-      title: "Underhållning",
-      subtitle: "För företag och privata tillställningar",
-      cta: "Läs mer",
-      link: "/anlita-oss",
-      image: "/uploads/images/corporate_LIT_2024.jpg"
-    }
-  ];
+const services = [
+  {
+    title: 'Kurser',
+    subtitle: 'För dig som vill utvecklas på scen',
+    cta: 'Utforska våra kurser',
+    link: '/kurser',
+    image: '/uploads/images/kurser_LIT_2024.jpg',
+  },
+  {
+    title: 'Föreställningar',
+    subtitle: 'Med stor bredd och mycket skratt',
+    cta: 'Kommande föreställningar',
+    link: '/shows',
+    image: '/uploads/images/Improvision2024.jpg',
+  },
+  {
+    title: 'Underhållning',
+    subtitle: 'För företag och privata tillställningar',
+    cta: 'Läs mer',
+    link: '/anlita-oss',
+    image: '/uploads/images/corporate_LIT_2024.jpg',
+  },
+];
 
+export default function ServiceBoxes() {
   return (
     <div className="grid md:grid-cols-3 gap-8">
-      {services.map((svc, i) => (
-        <div key={i} className="group flex flex-col h-full rounded-[10px] overflow-hidden">
-          {/* Bilden = halva höjden */}
-          <div className="relative flex-1 h-0">
+      {services.map((service, idx) => (
+        <div key={idx} className="group flex flex-col bg-card-background rounded-[10px] overflow-hidden">
+          {/* Bildsektion = 50% av box‐höjd */}
+          <div className="relative h-[200px] lg:h-[250px] overflow-hidden">
             <OptimizedImage
-              src={svc.image}
-              alt={svc.title}
-              className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+              src={service.image}
+              alt={service.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               preferredSize="medium"
             />
-            <div className="absolute inset-0 bg-black/20" />
+            <div className="absolute inset-0 bg-black/20"></div>
           </div>
-
-          {/* Textinnehåll = andra halvan */}
-          <div className="bg-card-background p-4 md:p-8 flex-1 flex flex-col justify-between">
-            <div>
-              <h2 className="font-tanker text-[40px] leading-snug">
-                {svc.title}
+          {/* Innehåll */}
+          <div className="flex-1 p-6 flex flex-col justify-between">
+            <div className="space-y-2">
+              <h2 className="font-tanker text-[40px] text-text-gray">
+                {service.title}
               </h2>
-              <p className="font-satoshi text-[16px] mt-2">
-                {svc.subtitle}
+              <p className="font-satoshi text-[16px] text-text-black leading-relaxed">
+                {service.subtitle}
               </p>
             </div>
-            <div className="pt-6">
-              {svc.link.startsWith('/') ? (
-                <Button asChild size="sm" className="md:px-4 md:py-2 lg:px-4 lg:py-2">
-                  <Link to={svc.link}>{svc.cta} →</Link>
+            <div className="mt-4">
+              {service.link.startsWith('/') ? (
+                <Button asChild size="sm">
+                  <Link to={service.link}>
+                    {service.cta} →
+                  </Link>
                 </Button>
               ) : (
-                <Button size="sm" className="md:px-4 md:py-2 lg:px-4 lg:py-2">
-                  {svc.cta} →
+                <Button size="sm">
+                  {service.cta} →
                 </Button>
               )}
             </div>
@@ -69,6 +70,4 @@ const ServiceBoxes = () => {
       ))}
     </div>
   );
-};
-
-export default ServiceBoxes;
+}
