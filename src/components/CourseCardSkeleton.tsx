@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const CourseCardSkeleton = () => {
   return (
-    <Card className="course-cards-gray transition-all duration-300 border-none shadow-none">
+    <Card className="bg-[#E7E7E7] transition-all duration-300 border-none shadow-none">
       <CardContent className="p-6 md:p-6 lg:p-8">
         {/* Title skeleton */}
         <Skeleton className="h-6 w-4/5 mb-1" />

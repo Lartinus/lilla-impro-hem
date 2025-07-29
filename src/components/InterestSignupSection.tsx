@@ -120,7 +120,7 @@ export const InterestSignupSection = () => {
           {interestSignups.map((signup) => (
             <Card 
               key={signup.id} 
-              className="course-cards-gray transition-all duration-300 flex flex-col border-none shadow-none"
+              className="bg-[#E7E7E7] transition-all duration-300 flex flex-col border-none shadow-none"
             >
               <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
                 <div className="mb-3">

@@ -29,9 +29,12 @@ const Courses = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary">
         <Header />
-        <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
-        <div className="relative z-10 -mt-20 mx-4 md:mx-auto max-w-[1000px]">
-          <div className="course-cards-gray rounded-t-lg pb-0">
+        <div className="h-[360px] overflow-hidden">
+          <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
+        </div>
+        <div className="relative z-10 mx-4 md:mx-auto max-w-[1000px] mt-[330px] md:mt-[380px]">
+          <div className="bg-[#F3F3F3] rounded-t-lg pb-0 -mt-[330px] md:-mt-[380px]">
+            <div className="pt-[330px] md:pt-[380px]"></div>
             <div className="p-6 md:p-8 space-y-8">
               <div className="grid md:grid-cols-2 gap-6">
                 {[...Array(4)].map((_, index) => (
@@ -52,11 +55,14 @@ const Courses = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
       <Header />
-      <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
+      <div className="h-[360px] overflow-hidden">
+        <SimpleParallaxHero imageSrc="/uploads/images/kurser_LIT_2024.jpg" />
+      </div>
       
-      {/* Main content card overlapping the hero image */}
-      <div className="relative z-10 -mt-20 mx-4 md:mx-auto max-w-[1000px]">
-        <div className="course-cards-gray rounded-t-lg pb-0">
+      {/* Main content card positioned from top */}
+      <div className="relative z-10 mx-4 md:mx-auto max-w-[1000px] mt-[330px] md:mt-[380px]">
+        <div className="bg-[#F3F3F3] rounded-t-lg pb-0 -mt-[330px] md:-mt-[380px]">
+          <div className="pt-[330px] md:pt-[380px]"></div>
           <div className="p-6 md:p-8 space-y-8">
             
             {/* Om våra kurser */}
@@ -96,12 +102,13 @@ const Courses = () => {
                 </p>
               </div>
 
-              <h2>Behöver jag erfarenhet sedan tidigare?</h2>
+              <div className="bg-[#D9D9D9] p-6 rounded-none">
+                <h2>Behöver jag erfarenhet sedan tidigare?</h2>
               <p>
                 Du är välkommen oavsett om du är nybörjare, vill utvecklas som komisk scenperson eller redan är rutinerad. För oss är det viktigaste att du vill utvecklas som scenimprovisatör.
               </p>
               <p>Hos oss får du:</p>
-              <ul className="bullet-black list-none pl-0 space-y-2">
+              <ul className="list-none pl-0 space-y-2">
                 <li className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-black rounded-full flex-shrink-0 mt-2"></div>
                   <span>Konkreta verktyg för att skapa humor på scen</span>
@@ -115,6 +122,7 @@ const Courses = () => {
                   <span>Scentid och feedback</span>
                 </li>
               </ul>
+              </div>
             </section>
           </div>
         </div>
