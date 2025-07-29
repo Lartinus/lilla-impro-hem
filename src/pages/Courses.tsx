@@ -8,13 +8,10 @@ import { InterestSignupSection } from '@/components/InterestSignupSection';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
 
 export default function Courses() {
-  // Scrolla alltid upp vid navigering hit
   useEffect(() => window.scrollTo(0, 0), []);
 
   const { data: adminCourses, isLoading: loading } = useAdminCourses();
   const courses = adminCourses || [];
-
-  // practicalInfo måste skickas in
   const practicalInfo = ['Kommer inom kort.'];
 
   if (loading) {
@@ -51,7 +48,7 @@ export default function Courses() {
     <div className="min-h-screen flex flex-col bg-[#FAFAFA] overflow-x-hidden">
       <Header />
 
-      {/* Hero‐bild */}
+      {/* Hero-bild */}
       <div className="h-[360px] overflow-hidden">
         <img
           src="/uploads/images/kurser_LIT_2024.jpg"
@@ -90,11 +87,11 @@ export default function Courses() {
         </div>
       </div>
 
-      {/* Grå info‐sektion */}
+      {/* Grå info-sektion */}
       <div className="mt-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Spannar båda kolumner på desktop */}
-          <div className="md:col-span-2 bg-[#D9D9D9] p-6 md:px-12 md:py-8">
+        {/* Wrapper som begränsar bredd på desktop, men låter vara full-width på mobil */}
+        <div className="mx-auto max-w-[1000px] px-0">
+          <div className="bg-[#D9D9D9] p-6 md:p-12">
             <h2 className="font-tanker text-[40px] text-text-gray underline mb-6 leading-tight">
               För dig som vill bli duktig på hantverket
             </h2>
@@ -147,7 +144,7 @@ export default function Courses() {
         </div>
       </div>
 
-      {/* Avstånd till footer */}
+      {/* Avstånd mellan info-sektionen och footern */}
       <div className="h-6"></div>
 
       <Footer />
