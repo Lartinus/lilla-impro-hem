@@ -16,7 +16,6 @@ const Courses = () => {
   const courses = adminCourses || [];
   const practicalInfo = ['Kommer inom kort.'];
 
-  // Laddnings-skelett
   if (adminLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-[#FAFAFA]">
@@ -32,8 +31,8 @@ const Courses = () => {
           <div className="bg-[#F3F3F3] pb-0">
             <div className="p-6 md:p-8 space-y-8">
               <div className="grid md:grid-cols-2 gap-6">
-                {[...Array(4)].map((_, index) => (
-                  <CourseCardSkeleton key={index} />
+                {[...Array(4)].map((_, i) => (
+                  <CourseCardSkeleton key={i} />
                 ))}
               </div>
               <div className="text-center text-gray-600 text-sm mt-8">
@@ -51,7 +50,7 @@ const Courses = () => {
     <div className="min-h-screen flex flex-col bg-[#FAFAFA] overflow-x-hidden">
       <Header />
 
-      {/* Header-bild */}
+      {/* Hero-bild */}
       <div className="h-[360px] overflow-hidden">
         <img
           src="/uploads/images/kurser_LIT_2024.jpg"
@@ -61,9 +60,9 @@ const Courses = () => {
         />
       </div>
 
-      {/* Vitt kort med kurs-översikt */}
-      <div className="relative z-10 mx-0 md:mx-auto max-w-[1000px] -mt-16">
-        <div className="bg-[#F3F3F3] rounded-t-lg overflow-hidden">
+      {/* Vit "card" med kursöversikt */}
+      <div className="relative z-10 -mt-16 mx-4 md:mx-auto max-w-[1000px]">
+        <div className="bg-white rounded-t-lg overflow-hidden shadow">
           <div className="p-6 md:p-8 space-y-8">
             {/* Om våra kurser */}
             <section>
@@ -71,12 +70,12 @@ const Courses = () => {
               <p>
                 Lilla Improteatern är platsen för dig som vill utvecklas som
                 improvisatör och bli skickligare på att spela roliga scener
-                tillsammans med andra. Improv Comedy är ett hantverk. Med flera
-                års erfarenhet som improvisatörer och pedagoger har vi skapat
-                ett kurssystem som tar dig från grundläggande scenarbete till
-                långform och ensemblearbete. Våra kurser bygger på Game of the
-                scene och ger dig konkreta verktyg, massor av träning, scentid
-                och återkoppling.
+                tillsammans med andra. Improv Comedy är ett hantverk. Med
+                flera års erfarenhet som improvisatörer och pedagoger har
+                vi skapat ett kurssystem som tar dig från grundläggande
+                scenarbete till långform och ensemblearbete. Våra kurser
+                bygger på Game of the scene och ger dig konkreta verktyg,
+                massor av träning, scentid och återkoppling.
               </p>
             </section>
 
@@ -90,62 +89,65 @@ const Courses = () => {
             <InterestSignupSection />
           </div>
 
-          {/* Grå info-ruta */}
-          <div className="w-full bg-[#D9D9D9]">
-            <div className="px-4 md:px-0 md:mx-auto md:max-w-[936px] py-8">
-              <section className="space-y-6">
-                <h2 className="font-tanker text-[32px] underline mb-4">
-                  För dig som vill bli duktig på hantverket
-                </h2>
-                <div className="space-y-4 text-[16px] font-satoshi">
-                  <p>
-                    Lilla Improteatern är platsen för dig som vill bli
-                    skickligare på att skapa roliga scener tillsammans med
-                    andra. Här lär du dig inte bara hur man improviserar — du
-                    förstår varför det funkar, vad som gör en scen rolig och
-                    hur du skapar det tillsammans med andra.
-                  </p>
-                  <p>
-                    Improv comedy är ett hantverk. Genom ett tydligt pedagogiskt
-                    upplägg förankrat i många års erfarenhet som både
-                    improvisatörer och pedagoger erbjuder vi ett kurssystem som
-                    sträcker sig från grundläggande scenträning till
-                    långformsformat och ensemblearbete. Hos oss lär du dig att
-                    spela komiska scener med glädje, tydliga verktyg och ett
-                    fokus på samspelet.
-                  </p>
-                  <p>
-                    Vår undervisning bygger på att steg för steg utveckla dina
-                    färdigheter som improvisatör, där vi förstår vad som är kul.
-                    Inte genom att tvinga fram skämt, utan genom att spela scener
-                    som känns levande, enkla och roliga i stunden.
-                  </p>
-                  <p>
-                    Vi tränar dig i att upptäcka det roliga och följa det i en
-                    lekfull struktur där du får växa som improvisatör.
-                  </p>
-                </div>
-
-                <h3 className="font-tanker text-[24px] mb-2">
-                  Behöver jag erfarenhet sedan tidigare?
-                </h3>
-                <p className="text-[16px] font-satoshi mb-2">
-                  Du är välkommen oavsett om du är nybörjare, vill utvecklas som
-                  komisk scenperson eller redan är rutinerad. För oss är det
-                  viktigaste att du vill utvecklas som scenimprovisatör.
+          {/* GRÅ INFO-RUTA */}
+          <div className="bg-[#D9D9D9]">
+            {/* Mobil: ingen horisontal padding, Desktop: inuti samma 1000px‐container */}
+            <div className="px-0 md:px-6 lg:px-8 xl:px-0 xl:mx-auto xl:max-w-[1000px] py-8">
+              <h2 className="font-tanker text-[32px] underline mb-4">
+                För dig som vill bli duktig på hantverket
+              </h2>
+              <div className="space-y-4 font-satoshi text-[16px] leading-relaxed">
+                <p>
+                  Lilla Improteatern är platsen för dig som vill bli
+                  skickligare på att skapa roliga scener tillsammans med
+                  andra. Här lär du dig inte bara hur man improviserar —
+                  du förstår varför det funkar, vad som gör en scen rolig
+                  och hur du skapar det tillsammans med andra.
                 </p>
-                <p className="text-[16px] font-satoshi">Hos oss får du:</p>
-                <ul className="list-disc list-inside space-y-2 text-[16px] font-satoshi">
-                  <li>Konkreta verktyg för att skapa humor på scen</li>
-                  <li>Träning i lyssnande, timing och scenspråk</li>
-                  <li>Scentid och feedback</li>
-                </ul>
-              </section>
+                <p>
+                  Improv comedy är ett hantverk. Genom ett tydligt
+                  pedagogiskt upplägg förankrat i många års erfarenhet
+                  som både improvisatörer och pedagoger erbjuder vi ett
+                  kurssystem som sträcker sig från grundläggande
+                  scenträning till långformsformat och ensemblearbete.
+                  Hos oss lär du dig att spela komiska scener med glädje,
+                  tydliga verktyg och ett fokus på samspelet.
+                </p>
+                <p>
+                  Vår undervisning bygger på att steg för steg utveckla
+                  dina färdigheter som improvisatör, där vi förstår vad
+                  som är kul. Inte genom att tvinga fram skämt, utan genom
+                  att spela scener som känns levande, enkla och roliga i
+                  stunden.
+                </p>
+                <p>
+                  Vi tränar dig i att upptäcka det roliga och följa det i
+                  en lekfull struktur där du får växa som improvisatör.
+                </p>
+              </div>
+
+              <h3 className="font-tanker text-[24px] mt-6 mb-2">
+                Behöver jag erfarenhet sedan tidigare?
+              </h3>
+              <p className="font-satoshi text-[16px] mb-2">
+                Du är välkommen oavsett om du är nybörjare, vill
+                utvecklas som komisk scenperson eller redan är
+                rutinerad. För oss är det viktigaste att du vill
+                utvecklas som scenimprovisatör.
+              </p>
+              <p className="font-satoshi text-[16px] mb-4">
+                Hos oss får du:
+              </p>
+              <ul className="list-disc list-inside space-y-2 font-satoshi text-[16px]">
+                <li>Konkreta verktyg för att skapa humor på scen</li>
+                <li>Träning i lyssnande, timing och scenspråk</li>
+                <li>Scentid och feedback</li>
+              </ul>
             </div>
           </div>
 
-          {/* Luft innan footer */}
-          <div className="h-12" />
+          {/* Luft före footer */}
+          <div className="h-12 bg-white" />
         </div>
       </div>
 
