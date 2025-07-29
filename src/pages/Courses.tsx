@@ -88,7 +88,6 @@ const Courses = () => {
 
             {/* Interest signup */}
             <InterestSignupSection />
-          </div>
 
           {/* Grå info-ruta */}
           <div className="w-full bg-[#D9D9D9]">
@@ -143,12 +142,7 @@ const Courses = () => {
               </section>
             </div>
           </div>
-
-          {/* Luft innan footer */}
-          <div className="h-12 hidden lg:block" />
-        </div>
-      </div>
-
+         </div>
       <Footer />
     </div>
   );
