@@ -69,7 +69,7 @@ const ShowCardSimple = ({
   return (
     <div className="bg-[#E7E7E7] overflow-hidden relative">
       <div className="flex flex-col h-full">
-        <div className="relative aspect-[16/8]">
+        <div className="relative aspect-[16/6]">
           <OptimizedImage
             src={show.image}
             alt={show.title}
@@ -87,14 +87,14 @@ const ShowCardSimple = ({
             </div>
             
             <div className="border-t border-dashed border-gray-300 pt-4 mb-4">
-              {show.description && (
-                <p className="text-gray-700 text-base font-satoshi leading-relaxed mb-4">{show.description}</p>
-              )}
-              
               {show.tag && (
-                <div>
+                <div className="mb-4">
                   <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
                 </div>
+              )}
+              
+              {show.description && (
+                <p className="text-gray-700 text-base font-satoshi leading-relaxed">{show.description}</p>
               )}
             </div>
           </div>
