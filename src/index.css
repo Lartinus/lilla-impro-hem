@@ -241,3 +241,46 @@ select:focus {
     --radius:               10px;
   }
 }
+
+/* =====================================================================
+   5) Lovable “dark theme” override via data-theme-attribut
+   ===================================================================== */
+[data-theme="dark"] {
+  /* Återställ exakt samma värden som i :root (light) */
+  --primary-red:         220 38 38 !important;
+  --primary-red-hover:   185 28 28 !important;
+
+  --footer-black:        10 10 10 !important;
+  --card-background:     231 231 231 !important;
+  --background-gray:     243 243 243 !important;
+  --guest-blue-gray:     31 41 55 !important;
+
+  --text-gray:           44 44 44 !important;
+  --course-tag-gray:     68 64 60 !important;
+  --text-black:          0 0 0 !important;
+
+  --action-blue:         37 99 235 !important;
+  --action-blue-hover:   29 78 216 !important;
+
+  --white:               255 255 255 !important;
+
+  --background:          var(--background-gray) !important;
+  --foreground:          var(--text-black) !important;
+  --card:                var(--card-background) !important;
+  --card-foreground:     var(--text-black) !important;
+  --primary:             var(--primary-red) !important;
+  --primary-foreground:  var(--white) !important;
+  --secondary:           var(--guest-blue-gray) !important;
+  --secondary-foreground: var(--white) !important;
+  --muted:               var(--card-background) !important;
+  --muted-foreground:    var(--text-gray) !important;
+  --accent:              var(--action-blue) !important;
+  --accent-foreground:   var(--white) !important;
+  --destructive:         var(--primary-red) !important;
+  --destructive-foreground: var(--white) !important;
+  --border:              var(--text-gray) !important;
+  --input:               var(--card-background) !important;
+  --ring:                var(--primary-red) !important;
+  --radius:              10px !important;
+}
+
