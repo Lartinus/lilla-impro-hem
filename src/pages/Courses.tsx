@@ -143,6 +143,7 @@ const Courses = () => {
               </section>
             </div>
           </div>
+        </div>
       </div>
 
       <Footer />
