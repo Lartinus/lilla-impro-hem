@@ -94,9 +94,9 @@ const Courses = () => {
           <div className="w-full bg-[#D9D9D9]">
             <div className="px-4 md:px-8 md:mx-auto md:max-w-[936px] lg:px-8 py-8">
               <section className="space-y-6">
-                <h2 className="font-tanker text-[32px] underline mb-4">
+                <h1>
                   För dig som vill bli duktig på hantverket
-                </h2>
+                </h1>
                 <div className="space-y-4 text-[16px] font-satoshi">
                   <p>
                     Lilla Improteatern är platsen för dig som vill bli
@@ -143,10 +143,6 @@ const Courses = () => {
               </section>
             </div>
           </div>
-
-          {/* Luft innan footer */}
-          <div className="h-12 hidden lg:block" />
-        </div>
       </div>
 
       <Footer />
