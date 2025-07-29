@@ -8,19 +8,15 @@ import { InterestSignupSection } from '@/components/InterestSignupSection';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
 
 export default function Courses() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // Scrolla alltid upp vid navigering hit
+  useEffect(() => window.scrollTo(0, 0), []);
 
   const { data: adminCourses, isLoading: loading } = useAdminCourses();
   const courses = adminCourses || [];
 
-  // Praktisk info för CourseGrid
-  const practicalInfo = [
-    "Kommer inom kort."
-  ];
+  // practicalInfo måste skickas in
+  const practicalInfo = ['Kommer inom kort.'];
 
-  // --- Loading state med skeletons ---
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-[#FAFAFA]">
@@ -41,7 +37,7 @@ export default function Courses() {
                 ))}
               </div>
               <p className="text-center text-gray-600 text-sm mt-8">
-                Laddar kurser...
+                Laddar kurser…
               </p>
             </div>
           </div>
@@ -55,7 +51,7 @@ export default function Courses() {
     <div className="min-h-screen flex flex-col bg-[#FAFAFA] overflow-x-hidden">
       <Header />
 
-      {/* Hero-bild */}
+      {/* Hero‐bild */}
       <div className="h-[360px] overflow-hidden">
         <img
           src="/uploads/images/kurser_LIT_2024.jpg"
@@ -65,26 +61,23 @@ export default function Courses() {
         />
       </div>
 
-      {/* Vit överlappande kort med kurs-översikt */}
+      {/* Vitt kort: Om våra kurser + Aktuella kurser */}
       <div className="relative z-10 mx-0 md:mx-auto max-w-[1000px] -mt-16">
-        <div className="bg-[#F3F3F3] rounded-t-lg overflow-hidden">
-          <div className="p-6 md:p-8 space-y-8">
-            {/* Om våra kurser */}
+        <div className="bg-white rounded-t-lg overflow-hidden">
+          <div className="p-6 md:p-8 space-y-12">
             <section>
               <h1 className="font-tanker text-[32px] mb-4">Om våra kurser</h1>
               <p className="font-satoshi text-[16px] leading-relaxed">
                 Lilla Improteatern är platsen för dig som vill utvecklas som
                 improvisatör och bli skickligare på att spela roliga scener
                 tillsammans med andra. Improv Comedy är ett hantverk. Med flera
-                års erfarenhet som improvisatörer och pedagoger har vi skapat ett
-                kurssystem som tar dig från grundläggande scenarbete till
+                års erfarenhet som improvisatörer och pedagoger har vi skapat
+                ett kurssystem som tar dig från grundläggande scenarbete till
                 långform och ensemblearbete. Våra kurser bygger på Game of the
                 scene och ger dig konkreta verktyg, massor av träning, scentid
                 och återkoppling.
               </p>
             </section>
-
-            {/* Aktuella kurser */}
             <section>
               <h1 className="font-tanker text-[32px] mb-4">Aktuella kurser</h1>
               <CourseGrid
@@ -92,28 +85,26 @@ export default function Courses() {
                 practicalInfo={practicalInfo}
               />
             </section>
-
-            {/* Interest-signup (2-kolumners grid) */}
             <InterestSignupSection />
           </div>
         </div>
       </div>
 
-      {/* För dig som ...  */}
-      <div className="w-full mt-8 px-6">
+      {/* Grå info‐sektion */}
+      <div className="mt-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Spänt över båda kolumnerna på desktop */}
-          <div className="md:col-span-2 bg-[#D9D9D9] p-6 md:p-8">
+          {/* Spannar båda kolumner på desktop */}
+          <div className="md:col-span-2 bg-[#D9D9D9] p-6 md:px-12 md:py-8">
             <h2 className="font-tanker text-[40px] text-text-gray underline mb-6 leading-tight">
               För dig som vill bli duktig på hantverket
             </h2>
-            <div className="space-y-4 font-satoshi text-[16px] leading-relaxed">
+            <div className="font-satoshi text-[16px] leading-relaxed space-y-4">
               <p>
                 Lilla Improteatern är platsen för dig som vill bli skickligare
-                på att skapa roliga scener tillsammans med andra. Här lär du dig
-                inte bara hur man improviserar — du förstår varför det funkar,
-                vad som gör en scen rolig och hur du skapar det tillsammans med
-                andra.
+                på att skapa roliga scener tillsammans med andra. Här lär du
+                dig inte bara hur man improviserar — du förstår varför det
+                funkar, vad som gör en scen rolig och hur du skapar det
+                tillsammans med andra.
               </p>
               <p>
                 Improv comedy är ett hantverk. Genom ett tydligt pedagogiskt
@@ -144,7 +135,6 @@ export default function Courses() {
               komisk scenperson eller redan är rutinerad. För oss är det
               viktigaste att du vill utvecklas som scenimprovisatör.
             </p>
-
             <p className="font-satoshi text-[16px] mb-2 leading-relaxed">
               Hos oss får du:
             </p>
@@ -156,6 +146,9 @@ export default function Courses() {
           </div>
         </div>
       </div>
+
+      {/* Avstånd till footer */}
+      <div className="h-6"></div>
 
       <Footer />
     </div>
