@@ -129,7 +129,7 @@ const ShowDetails = () => {
               className="inline-flex items-center text-white hover:text-white/80 transition-colors"
               style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
             >
-              <ArrowLeft size={16} className="mr-2" />
+              <ArrowLeft size={24} className="mr-2" />
               Tillbaka till föreställningar
             </Link>
           </div>
@@ -137,12 +137,7 @@ const ShowDetails = () => {
 
         {/* Overlapping card */}
         <div className="relative -mt-4 max-w-4xl mx-auto px-0 md:px-6">
-          <MainCard className="relative">
-            {/* Dashed line at top of card */}
-            <div className="absolute -top-0 left-6 right-6">
-              <div className="border-t-2 border-dashed border-gray-800 w-full"></div>
-            </div>
-            
+          <MainCard className="relative">            
             {/* Floating tag on right side */}
             {show?.show_tag && (
               <div className="absolute -top-3 right-6 z-10">
@@ -174,6 +169,11 @@ const ShowDetails = () => {
             {/* Ticket prices */}
             <div className="mb-4">
               <h3>{formattedShow.ticketPrice} kr / {formattedShow.discountPrice} kr</h3>
+            </div>
+
+            {/* Dashed line after prices */}
+            <div className="mb-6">
+              <div className="border-t-2 border-dashed border-gray-800 w-full"></div>
             </div>
 
 
