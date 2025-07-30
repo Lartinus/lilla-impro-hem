@@ -15,7 +15,8 @@ import {
   UserCircle,
   Image,
   Archive,
-  FileText
+  FileText,
+  Settings
 } from 'lucide-react';
 import {
   Sidebar,
@@ -102,6 +103,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         { id: 'email-templates', title: 'Email-mallar', icon: FileText },
         { id: 'email-groups', title: 'Email-grupper', icon: Users },
         { id: 'email-contacts', title: 'Kontakter', icon: UserCircle },
+        { id: 'email-automatic', title: 'Automatiska mejl', icon: Settings },
       ]
     },
     {

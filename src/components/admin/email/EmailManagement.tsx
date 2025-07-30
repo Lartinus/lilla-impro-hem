@@ -5,6 +5,7 @@ import { SimpleEmailBuilder } from './SimpleEmailBuilder';
 import { EmailTemplatesManager } from './EmailTemplatesManager';
 import { EmailGroupsManager } from './EmailGroupsManager';
 import { EmailContactsManager } from './EmailContactsManager';
+import { AutomaticEmailsManager } from './AutomaticEmailsManager';
 import { ContactActivitiesDialog } from './ContactActivitiesDialog';
 import { CourseImportDialog } from './CourseImportDialog';
 import { GroupMembersDialog } from './GroupMembersDialog';
@@ -195,6 +196,9 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
           </div>
         );
       
+      case 'automatic':
+        return <AutomaticEmailsManager />;
+      
       default:
         return null;
     }
@@ -210,6 +214,8 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
         return 'Email-grupper';
       case 'contacts':
         return 'Kontakter';
+      case 'automatic':
+        return 'Automatiska mejl';
       default:
         return 'Email-hantering';
     }

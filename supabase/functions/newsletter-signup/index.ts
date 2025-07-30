@@ -104,184 +104,40 @@ const handler = async (req: Request): Promise<Response> => {
     // Send confirmation email
     const confirmationUrl = `https://improteatern.se/nyhetsbrev-bekraftelse?token=${confirmationToken}`;
     
-    // Create confirmation email using clean design
+    // Import the unified template
+    const { createUnifiedEmailTemplate } = await import("../_shared/unified-email-template.ts");
+    
+    // Create confirmation email using unified design
     function createConfirmationEmail(confirmationUrl: string, name: string, email: string) {
-      return `
-        <!DOCTYPE html>
-        <html lang="sv" style="margin: 0; padding: 0;">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Bekräfta din prenumeration</title>
-        </head>
-        <body style="
-          margin: 0;
-          padding: 0;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-          background-color: #f5f5f5;
-          line-height: 1.6;
-          color: #333333;
-          padding: 20px;
-        ">
-          <!-- Container -->
-          <div style="
-            max-width: 560px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            color: #333333;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          ">
-            <!-- Header -->
-            <div style="
-              background-color: #ffffff;
-              padding: 32px 24px 24px 24px;
-              text-align: center;
-              border-bottom: 1px solid #e5e7eb;
-            ">
-              <h1 style="
-                font-size: 24px;
-                font-weight: 600;
-                margin: 0 0 8px 0;
-                color: #333333;
-              ">Bekräfta din prenumeration</h1>
-              <p style="
-                margin: 0;
-                font-size: 16px;
-                color: #6b7280;
-              ">Tack för att du vill prenumerera på vårt nyhetsbrev!</p>
-            </div>
-            
-            <!-- Content -->
-            <div style="
-              background-color: #ffffff;
-              padding: 32px 24px;
-            ">
-              <div style="text-align: center; margin-bottom: 32px;">
-                <h2 style="
-                  font-size: 20px;
-                  font-weight: 500;
-                  margin: 0 0 16px 0;
-                  color: #333333;
-                ">Hej ${name}!</h2>
-                
-                <p style="
-                  font-size: 16px;
-                  color: #4b5563;
-                  margin: 0 0 32px 0;
-                  line-height: 1.5;
-                ">För att bekräfta din registrering, klicka på knappen nedan:</p>
-                
-                <div style="margin-bottom: 32px;">
-                  <a href="${confirmationUrl}" style="
-                    display: inline-block;
-                    background-color: #e74c3c;
-                    color: #ffffff;
-                    padding: 14px 28px;
-                    text-decoration: none;
-                    border-radius: 8px;
-                    font-weight: 500;
-                    font-size: 16px;
-                    transition: all 0.2s ease;
-                  ">Bekräfta prenumeration</a>
-                </div>
-              </div>
-              
-              <!-- Alternative Link -->
-              <div style="
-                background-color: #f3f4f6;
-                border-radius: 8px;
-                padding: 20px;
-                margin-bottom: 24px;
-                border: 1px solid #e5e7eb;
-              ">
-                <p style="
-                  font-size: 14px;
-                  color: #374151;
-                  margin: 0 0 8px 0;
-                  font-weight: 500;
-                ">Om knappen inte fungerar:</p>
-                <p style="
-                  font-size: 14px;
-                  color: #6b7280;
-                  margin: 0 0 8px 0;
-                ">Kopiera denna länk till din webbläsare:</p>
-                <p style="
-                  font-size: 12px;
-                  color: #333333;
-                  margin: 0;
-                  word-break: break-all;
-                  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-                  background-color: #ffffff;
-                  padding: 8px;
-                  border-radius: 4px;
-                  border: 1px solid #d1d5db;
-                ">${confirmationUrl}</p>
-              </div>
-              
-              <!-- Important Notice -->
-              <div style="
-                background-color: #fef3c7;
-                border-radius: 8px;
-                padding: 16px;
-                margin-bottom: 24px;
-                border: 1px solid #f59e0b;
-              ">
-                <p style="
-                  font-size: 14px;
-                  color: #92400e;
-                  margin: 0;
-                  display: flex;
-                  align-items: flex-start;
-                  gap: 8px;
-                ">
-                  <span style="font-size: 16px;">⚠️</span>
-                  <span><strong>Viktigt:</strong> Denna bekräftelselänk är giltig i 24 timmar. Om du inte bekräftar inom denna tid behöver du registrera dig igen.</span>
-                </p>
-              </div>
-              
-              <p style="
-                font-size: 14px;
-                color: #9ca3af;
-                margin: 0 0 24px 0;
-                text-align: center;
-              ">Om du inte begärde denna prenumeration kan du ignorera detta meddelande.</p>
-            </div>
+      const content = `H1: Bekräfta din prenumeration
 
-            <!-- Footer -->
-            <div style="
-              background-color: #f9fafb;
-              padding: 24px;
-              text-align: center;
-              border-top: 1px solid #e5e7eb;
-            ">
-              <p style="
-                font-size: 14px;
-                color: #6b7280;
-                margin: 0 0 8px 0;
-              ">Med vänliga hälsningar</p>
-              <p style="
-                font-size: 16px;
-                font-weight: 600;
-                color: #333333;
-                margin: 0 0 16px 0;
-              ">Lilla Improteatern</p>
-              <p style="
-                font-size: 12px;
-                color: #9ca3af;
-                margin: 0;
-              ">
-                <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(email)}" style="
-                  color: #6b7280;
-                  text-decoration: underline;
-                ">Avregistrera dig här</a>
-              </p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `;
+Hej ${name}!
+
+Tack för att du vill prenumerera på vårt nyhetsbrev! För att bekräfta din registrering, klicka på knappen nedan:
+
+<div style="text-align: center; margin: 24px 0;">
+  <a href="${confirmationUrl}" style="
+    display: inline-block;
+    background-color: #dc2626;
+    color: #ffffff;
+    padding: 14px 28px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 16px;
+  ">Bekräfta prenumeration</a>
+</div>
+
+H2: Om knappen inte fungerar
+
+Kopiera denna länk till din webbläsare:
+${confirmationUrl}
+
+**Viktigt:** Denna bekräftelselänk är giltig i 24 timmar. Om du inte bekräftar inom denna tid behöver du registrera dig igen.
+
+Om du inte begärde denna prenumeration kan du ignorera detta meddelande.`;
+
+      return createUnifiedEmailTemplate("Bekräfta din prenumeration", content);
     }
     
     const emailResponse = await resend.emails.send({
