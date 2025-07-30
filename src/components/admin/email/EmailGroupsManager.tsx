@@ -142,7 +142,7 @@ export function EmailGroupsManager({
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Tillgängliga grupper</CardTitle>
+          <CardTitle className="text-lg">Tillgängliga grupper</CardTitle>
         </CardHeader>
         <CardContent>
           {groupsLoading ? (

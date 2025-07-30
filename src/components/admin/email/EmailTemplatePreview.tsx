@@ -17,7 +17,7 @@ export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Live-förhandsvisning</CardTitle>
+        <CardTitle className="text-lg">Live-förhandsvisning</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="border rounded-lg bg-muted/30 max-h-[70vh] overflow-y-auto">

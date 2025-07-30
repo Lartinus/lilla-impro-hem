@@ -25,7 +25,7 @@ export function EmailTemplatesList({
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Tillgängliga mallar</CardTitle>
+          <CardTitle className="text-lg">Tillgängliga mallar</CardTitle>
         </CardHeader>
         <CardContent>
           {templatesLoading ? (

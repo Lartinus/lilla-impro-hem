@@ -120,8 +120,7 @@ export function CourseImportDialog({ emailGroups, groupMemberCounts }: CourseImp
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Download className="h-5 w-5" />
+        <CardTitle className="text-lg">
           Importera kontakter från kurser
         </CardTitle>
       </CardHeader>

@@ -233,7 +233,7 @@ export function EmailContactsManager({
 
       <Card>
         <CardHeader>
-          <CardTitle>Kontakter</CardTitle>
+          <CardTitle className="text-lg">Kontakter</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
