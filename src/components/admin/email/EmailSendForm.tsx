@@ -186,7 +186,7 @@ export function EmailSendForm({
   };
 
   const handleSendEmail = async () => {
-    if (!emailSubject || !emailContent) {
+    if (!emailSubject || !bulkEmailTemplateData.content.trim()) {
       toast({
         title: "Obligatoriska fält saknas",
         description: "Ämne och innehåll är obligatoriska.",
