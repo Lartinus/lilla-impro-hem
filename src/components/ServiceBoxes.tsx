@@ -36,7 +36,7 @@ const services: Service[] = [
 
 export default function ServiceBoxes() {
   return (
-    <div className="grid gap-[15px] justify-items-center max-w-[930px] mx-auto" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+    <div className="grid grid-cols-1 min-[690px]:grid-cols-3 gap-[15px] justify-items-center max-w-[930px] mx-auto">
       {services.map((svc, idx) => (
         <div
           key={idx}
