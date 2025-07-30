@@ -122,16 +122,18 @@ const ShowDetails = () => {
             className="w-full h-full object-cover"
             fallbackText="Ingen bild"
           />
-          {/* Back link overlay */}
-          <div className="absolute top-4 left-4">
-            <Link 
-              to="/shows" 
-              className="inline-flex items-center text-white hover:text-white/80 transition-colors bg-black/20 px-3 py-2 rounded-lg backdrop-blur-sm"
-            >
-              <ArrowLeft size={16} className="mr-2" />
-              Tillbaka till föreställningar
-            </Link>
-          </div>
+        </div>
+
+        {/* Back link positioned just above the card */}
+        <div className="relative -mt-8 max-w-4xl mx-auto px-6 md:px-6 z-20">
+          <Link 
+            to="/shows" 
+            className="inline-flex items-center text-white hover:text-white/80 transition-colors"
+            style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
+          >
+            <ArrowLeft size={16} className="mr-2" />
+            Tillbaka till föreställningar
+          </Link>
         </div>
 
         {/* Overlapping card */}
@@ -143,6 +145,11 @@ const ShowDetails = () => {
                 <ShowTag name={show.show_tag.name} color={show.show_tag.color} />
               </div>
             )}
+
+            {/* Dashed line - always show for debugging */}
+            <div className="mb-4">
+              <div className="border-t-2 border-dashed border-gray-800 w-full"></div>
+            </div>
 
             {/* Title and date */}
             <div className="mb-2">
@@ -170,12 +177,6 @@ const ShowDetails = () => {
               <h3>{formattedShow.ticketPrice} kr / {formattedShow.discountPrice} kr</h3>
             </div>
 
-            {/* Dashed line */}
-            {show?.show_tag && (
-              <div className="mb-4">
-                <div className="border-t-2 border-dashed border-gray-800"></div>
-              </div>
-            )}
 
             {/* Description */}
             {formattedShow.description && (
