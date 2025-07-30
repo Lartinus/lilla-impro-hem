@@ -143,13 +143,13 @@ const ShowDetails = () => {
               </div>
               
               {/* Title and date */}
-              <div className="mb-1">
+              <div className="mb-0">
                 <h2>{formattedShow.title}</h2>
                 <h3>{formatDateTime(formattedShow.date)}</h3>
               </div>
 
               {/* Location with map link */}
-              <div className="mb-1">
+              <div className="mb-0">
                 <h3 className="flex items-center">
                   <MapPin size={20} className="text-black mr-1" />
                   <a 
