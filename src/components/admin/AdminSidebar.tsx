@@ -50,7 +50,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   expandedSections,
   setExpandedSections
 }) => {
-  const { open } = useSidebar();
+  const { open, setOpen } = useSidebar();
 
   const menuItems = [
     {
@@ -133,6 +133,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                         e.preventDefault();
                         e.stopPropagation();
                         setActiveSection(item.id);
+                        // Close sidebar on mobile after selection
+                        if (window.innerWidth < 768) {
+                          const sidebarTrigger = document.querySelector('[data-sidebar="trigger"]') as HTMLElement;
+                          if (sidebarTrigger) sidebarTrigger.click();
+                        }
                       }}
                       isActive={activeSection === item.id}
                       className={`w-full font-satoshi text-sm ${
@@ -173,6 +178,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                                   e.preventDefault();
                                   e.stopPropagation();
                                   setActiveSection(child.id);
+                                  // Close sidebar on mobile after selection
+                                  if (window.innerWidth < 768) {
+                                    const sidebarTrigger = document.querySelector('[data-sidebar="trigger"]') as HTMLElement;
+                                    if (sidebarTrigger) sidebarTrigger.click();
+                                  }
                                 }}
                                 isActive={activeSection === child.id}
                                 size="sm"

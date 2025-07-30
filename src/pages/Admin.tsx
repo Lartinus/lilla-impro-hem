@@ -169,18 +169,18 @@ const AdminDashboard = () => {
           setExpandedSections={setExpandedSections}
         />
         
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           {/* Header */}
-          <header className="h-16 flex items-center justify-between border-b bg-white px-6">
-            <div className="flex items-center gap-4">
-              <SidebarTrigger className="lg:hidden" />
-              <div>
-                <h1 className="text-xl font-satoshi font-bold text-text-gray">Administratörspanel</h1>
-                <p className="text-sm text-text-gray/70 font-satoshi">Hantera kurser, biljetter och kommunikation</p>
+          <header className="sticky top-0 z-50 h-16 flex items-center justify-between border-b bg-white px-4 md:px-6 shrink-0">
+            <div className="flex items-center gap-4 min-w-0">
+              <SidebarTrigger className="md:hidden shrink-0" />
+              <div className="min-w-0">
+                <h1 className="text-lg md:text-xl font-satoshi font-bold text-text-gray truncate">Administratörspanel</h1>
+                <p className="text-xs md:text-sm text-text-gray/70 font-satoshi hidden sm:block">Hantera kurser, biljetter och kommunikation</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="text-xs flex items-center font-satoshi">
+            <div className="flex items-center gap-2 md:gap-3 shrink-0">
+              <Badge variant="secondary" className="text-xs flex items-center font-satoshi hidden sm:flex">
                 <Settings className="w-3 h-3 mr-1" />
                 Admin
               </Badge>
@@ -191,55 +191,59 @@ const AdminDashboard = () => {
                 className="text-xs flex items-center font-satoshi"
               >
                 <LogOut className="w-3 h-3 mr-1" />
-                Logga ut
+                <span className="hidden sm:inline">Logga ut</span>
               </Button>
             </div>
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 p-6 overflow-auto">
-            {activeSection === 'overview' ? (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-satoshi font-bold text-text-gray mb-6">Översikt</h2>
-                  <Card className="border-0 shadow-sm">
-                    <CardContent className="p-6">
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold mb-1 font-satoshi">
-                            {statsLoading ? '--' : stats?.avgCourseParticipants || 0}
+          <main className="flex-1 p-4 md:p-6 overflow-auto min-w-0">
+            <div className="max-w-full">
+              {activeSection === 'overview' ? (
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-xl md:text-2xl font-satoshi font-bold text-text-gray mb-6">Översikt</h2>
+                    <Card className="border-0 shadow-sm">
+                      <CardContent className="p-4 md:p-6">
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                          <div className="text-center">
+                            <div className="text-xl md:text-2xl font-bold mb-1 font-satoshi">
+                              {statsLoading ? '--' : stats?.avgCourseParticipants || 0}
+                            </div>
+                            <p className="text-xs md:text-sm font-medium font-satoshi">Genomsnitt antal kursdeltagare</p>
                           </div>
-                          <p className="text-sm font-medium font-satoshi">Genomsnitt antal kursdeltagare</p>
-                        </div>
 
-                        <div className="text-center">
-                          <div className="text-2xl font-bold mb-1 font-satoshi">
-                            {statsLoading ? '--' : stats?.avgSoldTicketsPerShow || 0}
+                          <div className="text-center">
+                            <div className="text-xl md:text-2xl font-bold mb-1 font-satoshi">
+                              {statsLoading ? '--' : stats?.avgSoldTicketsPerShow || 0}
+                            </div>
+                            <p className="text-xs md:text-sm font-medium font-satoshi">Genomsnitt antal sålda biljetter</p>
                           </div>
-                          <p className="text-sm font-medium font-satoshi">Genomsnitt antal sålda biljetter</p>
-                        </div>
 
-                        <div className="text-center">
-                          <div className="text-2xl font-bold mb-1 font-satoshi">
-                            {statsLoading ? '--' : stats?.activeCourses || 0}
+                          <div className="text-center">
+                            <div className="text-xl md:text-2xl font-bold mb-1 font-satoshi">
+                              {statsLoading ? '--' : stats?.activeCourses || 0}
+                            </div>
+                            <p className="text-xs md:text-sm font-medium font-satoshi">Aktiva kurser</p>
                           </div>
-                          <p className="text-sm font-medium font-satoshi">Aktiva kurser</p>
-                        </div>
 
-                        <div className="text-center">
-                          <div className="text-2xl font-bold mb-1 font-satoshi">
-                            {statsLoading ? '--' : (stats?.nextShowDate ? new Date(stats.nextShowDate).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' }) : '--')}
+                          <div className="text-center">
+                            <div className="text-xl md:text-2xl font-bold mb-1 font-satoshi">
+                              {statsLoading ? '--' : (stats?.nextShowDate ? new Date(stats.nextShowDate).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' }) : '--')}
+                            </div>
+                            <p className="text-xs md:text-sm font-medium font-satoshi">Nästa föreställning</p>
                           </div>
-                          <p className="text-sm font-medium font-satoshi">Nästa föreställning</p>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              renderContent()
-            )}
+              ) : (
+                <div className="w-full max-w-full overflow-hidden">
+                  {renderContent()}
+                </div>
+              )}
+            </div>
           </main>
         </div>
       </div>
