@@ -45,8 +45,8 @@ export function EmailTemplatesList({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {emailTemplates.map((template, index) => (
-                  <TableRow key={template.id} className={index > 0 ? "border-t" : ""}>
+                {emailTemplates.map((template) => (
+                  <TableRow key={template.id}>
                     <TableCell className="font-medium">{template.name}</TableCell>
                     <TableCell>{template.subject}</TableCell>
                     <TableCell>

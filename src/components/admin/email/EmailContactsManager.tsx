@@ -263,8 +263,8 @@ export function EmailContactsManager({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {currentContacts.map((contact, index) => (
-                      <TableRow key={contact.id} className={index > 0 ? "border-t" : ""}>
+                    {currentContacts.map((contact) => (
+                      <TableRow key={contact.id}>
                         <TableCell className="font-medium">{contact.email}</TableCell>
                         <TableCell>{contact.name || '-'}</TableCell>
                         <TableCell>{contact.phone || '-'}</TableCell>

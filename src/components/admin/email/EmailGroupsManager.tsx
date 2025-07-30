@@ -163,8 +163,8 @@ export function EmailGroupsManager({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {emailGroups.map((group, index) => (
-                  <TableRow key={group.id} className={index > 0 ? "border-t" : ""}>
+                {emailGroups.map((group) => (
+                  <TableRow key={group.id}>
                     <TableCell className="font-medium">{group.name}</TableCell>
                     <TableCell>{group.description || '-'}</TableCell>
                     <TableCell>
