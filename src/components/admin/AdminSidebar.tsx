@@ -135,9 +135,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             Administratörspanel
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1 px-3 list-none">
+            <SidebarMenu className="space-y-1 px-3" style={{ listStyleType: 'none' }}>
               {menuItems.map((item) => (
-                <SidebarMenuItem key={item.id}>
+                <SidebarMenuItem key={item.id} style={{ listStyleType: 'none' }}>
                   {item.type === 'single' ? (
                     <SidebarMenuButton
                       onClick={(e) => {
@@ -183,7 +183,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                       {open && (
                         <CollapsibleContent className="space-y-1">
                           {item.children?.map((child) => (
-                            <SidebarMenuItem key={child.id} className="ml-4">
+                            <SidebarMenuItem key={child.id} className="ml-4" style={{ listStyleType: 'none' }}>
                               <SidebarMenuButton
                                 onClick={(e) => {
                                   e.preventDefault();
