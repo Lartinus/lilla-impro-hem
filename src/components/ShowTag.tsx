@@ -39,7 +39,7 @@ export default function ShowTag({ name, color, size = 'small', clickable = false
       style={{ 
         color: 'rgb(var(--white))',
         backgroundColor: tagColor,
-        borderColor: tagColor,
+        borderColor: isSelected ? 'transparent' : tagColor,
         ...(isSelected && {
           boxShadow: '0 0 0 2px #2C2C2C'
         })
