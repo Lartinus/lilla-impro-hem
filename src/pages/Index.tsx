@@ -20,7 +20,7 @@ export default function Index() {
           className="
             w-full
             h-[50vh]
-            bg-[url('/uploads/images/Rosenqvist-6301.jpg')]
+            bg-[url('/uploads/images/Rosenqvist-6315.jpg')]
             bg-cover bg-center
           "
         >
