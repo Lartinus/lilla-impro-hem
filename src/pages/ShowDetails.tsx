@@ -113,7 +113,7 @@ const ShowDetails = () => {
       <Header />
       <div className="min-h-screen bg-gray-50">
       {/* Image with overlapping card */}
-      <div className="relative">
+      <div className="relative mt-20">
         {/* Large full-width image */}
         <div className="w-full h-[280px]">
           <OptimizedImage
