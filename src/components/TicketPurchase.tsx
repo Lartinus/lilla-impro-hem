@@ -32,7 +32,7 @@ const TicketPurchase = ({
 
   return (
     <div className="mb-6">
-      <h2 className="text-content-primary font-bold mb-4">Köp biljetter</h2>
+      <h2 className="text-content-primary mb-4">Köp biljetter</h2>
       
       <div className="mb-4">
         <div className="font-medium text-content-primary mb-3">Pris {ticketPrice}kr</div>
