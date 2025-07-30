@@ -32,7 +32,7 @@ export default function Header() {
           <img 
             src="/Favicon2.svg" 
             alt="LIT Logo Hover" 
-            className="w-[52px] h-[52px] absolute top-[-4px] left-[-5px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            className="w-[50px] h-[50px] absolute top-[-4px] left-[-6px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           />
         </Link>
 
