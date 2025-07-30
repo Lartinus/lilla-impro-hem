@@ -211,13 +211,28 @@ export const PerformerManagement = () => {
   return (
     <Card>
       <CardHeader>
-        <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-          <div className="flex-1">
-            <CardTitle>Kursledare</CardTitle>
-          </div>
+        <CardTitle>Kursledare</CardTitle>
+        <CardDescription>
+          Hantera kursledare som kan tilldelas kurser
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Sök kursledare..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+
+        {/* Add Button */}
+        <div className="flex justify-start">
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="w-full sm:w-auto">
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                 <Plus className="w-4 h-4 mr-2" />
                 Lägg till kursledare
               </Button>
@@ -276,24 +291,6 @@ export const PerformerManagement = () => {
               </div>
             </DialogContent>
           </Dialog>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="bg-muted/20 p-3 rounded-md border-0">
-          <p className="text-xs text-muted-foreground">
-            Hantera kursledare som kan tilldelas kurser
-          </p>
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Sök kursledare..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
         </div>
         
         {!performers || performers.length === 0 ? (
