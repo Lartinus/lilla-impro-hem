@@ -107,14 +107,13 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{showCompleted ? 'Genomförda föreställningar' : 'Aktiva föreställningar'}</CardTitle>
-        <CardDescription>
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight">{showCompleted ? 'Genomförda föreställningar' : 'Aktiva föreställningar'}</h2>
+        <p className="text-muted-foreground">
           {showCompleted ? 'Arkiv med föreställningar som redan genomförts' : 'Hantera kommande och pågående föreställningar'}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+        </p>
+      </div>
         {!showCompleted && (
           <div className="flex justify-start items-center">
             <Button 
@@ -175,43 +174,42 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
           </div>
         )}
 
-        {/* Show Dialog */}
-        <Dialog open={isShowDialogOpen} onOpenChange={handleDialogClose}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {isEditMode ? 'Redigera föreställning' : 'Lägg till föreställning'}
-              </DialogTitle>
-            </DialogHeader>
-            <ShowForm
-              newShow={newShow}
-              setNewShow={setNewShow}
-              isEditMode={isEditMode}
-              selectedTemplate={selectedTemplate}
-              setSelectedTemplate={setSelectedTemplate}
-              showTemplates={showTemplates}
-              venues={venues}
-              actors={actors}
-              showTags={showTags}
-            />
+      {/* Show Dialog */}
+      <Dialog open={isShowDialogOpen} onOpenChange={handleDialogClose}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {isEditMode ? 'Redigera föreställning' : 'Lägg till föreställning'}
+            </DialogTitle>
+          </DialogHeader>
+          <ShowForm
+            newShow={newShow}
+            setNewShow={setNewShow}
+            isEditMode={isEditMode}
+            selectedTemplate={selectedTemplate}
+            setSelectedTemplate={setSelectedTemplate}
+            showTemplates={showTemplates}
+            venues={venues}
+            actors={actors}
+            showTags={showTags}
+          />
 
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setIsShowDialogOpen(false)}
-              >
-                Avbryt
-              </Button>
-              <Button
-                onClick={isEditMode ? handleUpdateShow : handleCreateShow}
-                disabled={createShowMutation.isPending || updateFullShowMutation.isPending}
-              >
-                {isEditMode ? 'Uppdatera' : 'Skapa'} föreställning
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </CardContent>
-    </Card>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setIsShowDialogOpen(false)}
+            >
+              Avbryt
+            </Button>
+            <Button
+              onClick={isEditMode ? handleUpdateShow : handleCreateShow}
+              disabled={createShowMutation.isPending || updateFullShowMutation.isPending}
+            >
+              {isEditMode ? 'Uppdatera' : 'Skapa'} föreställning
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
