@@ -114,7 +114,7 @@ const ShowDetails = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-[#FAFAFA]">
+      <div className="bg-[#FAFAFA]">
         {/* Image with overlapping card */}
         <div className="relative mt-20">
           {/* Large full-width image */}
@@ -139,7 +139,7 @@ const ShowDetails = () => {
           </div>
 
           {/* Overlapping card */}
-          <div className="relative z-10 mx-0 md:mx-auto max-w-[1000px] -mt-16">
+          <div className="relative z-10 mx-0 md:mx-auto max-w-[800px] -mt-16">
             <MainCard className="relative">            
               {/* Title and date */}
               <div>
