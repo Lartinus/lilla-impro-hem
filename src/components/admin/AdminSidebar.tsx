@@ -135,7 +135,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             Administratörspanel
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1 px-3">
+            <SidebarMenu className="space-y-1 px-3 list-none">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   {item.type === 'single' ? (
