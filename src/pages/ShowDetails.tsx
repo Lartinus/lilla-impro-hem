@@ -226,6 +226,16 @@ const ShowDetails = () => {
                 </div>
               )}
 
+              {/* Back to shows link */}
+              <div className="mb-8">
+                <Link 
+                  to="/shows" 
+                  className="inline-flex items-center text-black hover:text-black/80 transition-colors"
+                >
+                  <MoveLeft size={24} className="mr-2" />
+                  Tillbaka till föreställningar
+                </Link>
+              </div>
 
               {/* Newsletter signup section */}
               <NewsletterSignupSection onSignupClick={() => setIsNewsletterModalOpen(true)} />
