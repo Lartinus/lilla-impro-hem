@@ -81,12 +81,12 @@ const ShowCardSimple = ({
         
         <div className="p-4 flex flex-col flex-1">
           <div className="flex-1">
-            <div className="mb-3">
+            <div className="mb-3 min-h-[80px] flex flex-col justify-start">
               <h2 className="mb-2">{show.title}</h2>
               <h3 className="mb-3">{formatDateTime(show.date, show.time)}</h3>
             </div>
             
-            <div className="pt-4 mb-4">
+            <div className="pt-1 mb-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex-1 border-t-2 border-dashed border-black"></div>
                 {show.tag && (
@@ -96,9 +96,11 @@ const ShowCardSimple = ({
                 )}
               </div>
               
-              {show.description && (
-                <p className="text-gray-700 text-base font-satoshi leading-relaxed">{show.description}</p>
-              )}
+              <div className="min-h-[24px]">
+                {show.description && (
+                  <p className="text-gray-700 text-base font-satoshi leading-relaxed">{show.description}</p>
+                )}
+              </div>
             </div>
           </div>
           
