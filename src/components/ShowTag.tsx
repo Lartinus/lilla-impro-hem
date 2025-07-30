@@ -28,8 +28,9 @@ export default function ShowTag({ name, color, size = 'small' }: ShowTagProps) {
 
   return (
     <div 
-      className={`${sizeClasses} rounded-full border-2 flex items-center justify-center font-rajdhani font-medium text-white`}
+      className={`${sizeClasses} rounded-full border-2 flex items-center justify-center font-rajdhani font-medium`}
       style={{ 
+        color: 'rgb(var(--white))',
         backgroundColor: tagColor,
         borderColor: tagColor
       }}

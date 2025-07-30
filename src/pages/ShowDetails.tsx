@@ -134,8 +134,8 @@ const ShowDetails = () => {
               <div className="absolute -top-8 left-6 md:left-8 z-20">
                 <Link 
                   to="/shows" 
-                  className="inline-flex items-center text-white hover:text-white/80 transition-colors"
-                  style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
+                  className="inline-flex items-center hover:opacity-80 transition-colors"
+                  style={{ color: 'rgb(var(--white))', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
                 >
                   <MoveLeft size={24} className="mr-2" />
                   Tillbaka till föreställningar
