@@ -114,7 +114,7 @@ const ShowDetails = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
       {/* Image with overlapping card */}
       <div className="relative mt-20">
         {/* Large full-width image */}
