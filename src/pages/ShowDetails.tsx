@@ -122,7 +122,7 @@ const ShowDetails = () => {
         </div>
 
         {/* Overlapping card */}
-        <div className="relative -mt-4 max-w-4xl mx-auto px-6">
+        <div className="relative -mt-4 max-w-4xl mx-auto px-0 md:px-6">
           <MainCard>
             {/* Title and date */}
             <div className="mb-3">
