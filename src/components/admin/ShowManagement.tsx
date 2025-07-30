@@ -109,7 +109,7 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">{showCompleted ? 'Genomförda föreställningar' : 'Aktiva föreställningar'}</h2>
+        <h2 className="text-2xl font-bold">Aktiva föreställningar</h2>
         <p className="text-muted-foreground">
           {showCompleted ? 'Arkiv med föreställningar som redan genomförts' : 'Hantera kommande och pågående föreställningar'}
         </p>

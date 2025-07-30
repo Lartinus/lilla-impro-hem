@@ -229,7 +229,7 @@ export const VenueManagement = () => {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Platshantering</h2>
+        <h2 className="text-2xl font-bold">Platshantering</h2>
         <p className="text-muted-foreground">
           Hantera återanvändbara platser för föreställningar
         </p>

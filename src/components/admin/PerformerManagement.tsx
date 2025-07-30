@@ -194,7 +194,7 @@ export const PerformerManagement = () => {
     return (
       <div className="space-y-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Kursledare</h2>
+        <h2 className="text-2xl font-bold">Kursledare</h2>
           <p className="text-muted-foreground">Läser in...</p>
         </div>
         <div className="animate-pulse space-y-4">

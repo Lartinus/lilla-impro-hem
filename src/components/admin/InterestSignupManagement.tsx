@@ -118,7 +118,7 @@ export const InterestSignupManagement = () => {
     return (
       <div className="space-y-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Intresseanmälningar</h2>
+          <h2 className="text-2xl font-bold">Intresseanmälningar</h2>
           <p className="text-muted-foreground">Läser in intresseanmälningar...</p>
         </div>
         <div className="animate-pulse space-y-4">
@@ -134,7 +134,7 @@ export const InterestSignupManagement = () => {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
         <div className="flex-1">
-          <h2 className="text-3xl font-bold tracking-tight">Intresseanmälningar</h2>
+          <h2 className="text-2xl font-bold">Intresseanmälningar</h2>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
           <DialogTrigger asChild>

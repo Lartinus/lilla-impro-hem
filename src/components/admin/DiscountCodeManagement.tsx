@@ -181,7 +181,7 @@ export const DiscountCodeManagement = () => {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Rabattkoder</h2>
+        <h2 className="text-2xl font-bold">Rabattkoder</h2>
         <p className="text-muted-foreground">
           Hantera rabattkoder för föreställningar
         </p>
