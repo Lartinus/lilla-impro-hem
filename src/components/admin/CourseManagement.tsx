@@ -44,6 +44,7 @@ import { useCourseParticipants } from '@/hooks/useCourseParticipants';
 // Import components
 import { MobileCourseCard } from './course/MobileCourseCard';
 import { CourseRow } from './course/CourseRow';
+import { CourseCard } from './course/CourseCard';
 
 export const CourseManagement = ({ showCompleted = false }: { showCompleted?: boolean }) => {
   const [sortField, setSortField] = useState<SortField>('sort_order');
@@ -323,20 +324,22 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-          <div className="flex-1">
-            <CardTitle>{showCompleted ? 'Genomförda kurser' : 'Aktiva kurser'}</CardTitle>
-          </div>
-          {!showCompleted && (
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="w-full sm:w-auto">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Lägg till ny kurs
-                </Button>
-              </DialogTrigger>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex-1">
+          <h2 className="text-2xl font-bold">{showCompleted ? 'Genomförda kurser' : 'Aktiva kurser'}</h2>
+          <p className="text-muted-foreground mt-1">
+            Hantera kursinstanser och deras deltagare
+          </p>
+        </div>
+        {!showCompleted && (
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                Lägg till ny kurs
+              </Button>
+            </DialogTrigger>
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{isEditMode ? 'Redigera kurs' : 'Skapa ny kurs'}</DialogTitle>
@@ -627,121 +630,77 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                       (isEditMode ? 'Uppdatera kurs' : 'Skapa kurs')
                     }
                   </Button>
-                 </div>
                 </div>
-              </DialogContent>
-            </Dialog>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="bg-muted/30 p-4 rounded-lg border border-border/40">
-          <p className="text-sm text-muted-foreground">
-            Använd upp/ner-pilarna för att ändra ordning - kurser sorteras efter ordningsnummer på hemsidan
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
+      
+      {/* Info box */}
+      <div className="bg-muted/30 p-3 rounded-lg">
+        <p className="text-sm text-muted-foreground">
+          Använd upp/ner-pilarna för att ändra ordning - kurser sorteras efter ordningsnummer på hemsidan
+        </p>
+      </div>
+        
+      {!courses || courses.length === 0 ? (
+        <div className="text-center py-8">
+          <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold mb-2">Inga kurser hittades</h3>
+          <p className="text-muted-foreground">
+            Det finns för närvarande inga kurser i systemet.
           </p>
         </div>
-        
-        {!courses || courses.length === 0 ? (
-          <div className="text-center py-8">
-            <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Inga kurser hittades</h3>
-            <p className="text-muted-foreground">
-              Det finns för närvarande inga kurser i systemet.
-            </p>
+      ) : (
+        <>
+          {/* Desktop Card View */}
+          <div className="hidden md:block grid gap-4">
+            {sortedCourses.map((course, index) => (
+              <CourseCard
+                key={course.id}
+                course={course}
+                index={index}
+                performers={performers}
+                showCompleted={showCompleted}
+                onEdit={handleEditCourse}
+                onToggleStatus={course => toggleStatusMutation.mutate(course)}
+                onDelete={course => deleteCourseMutation.mutate(course)}
+                onViewParticipants={handleViewParticipantsWrapper}
+                onMarkCompleted={course => markCompletedMutation.mutate(course)}
+                onRestore={course => restoreCourseMutation.mutate(course)}
+                onMoveUp={handleMoveUp}
+                onMoveDown={handleMoveDown}
+                canMoveUp={index > 0}
+                canMoveDown={index < sortedCourses.length - 1}
+                sortedCourses={sortedCourses}
+              />
+            ))}
           </div>
-        ) : (
-          <>
-            {/* Desktop Table View */}
-            <div className="hidden md:block">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-16">
-                      <Button 
-                        variant="ghost" 
-                        className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
-                        onClick={() => handleSort('sort_order')}
-                      >
-                        #
-                        <span className="ml-2">{getSortIcon('sort_order')}</span>
-                      </Button>
-                    </TableHead>
-                    <TableHead className="w-96">
-                      <Button 
-                        variant="ghost" 
-                        className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
-                        onClick={() => handleSort('course_title')}
-                      >
-                        Kurstitel
-                        <span className="ml-2">{getSortIcon('course_title')}</span>
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button 
-                        variant="ghost" 
-                        className="h-auto p-0 font-medium text-muted-foreground hover:text-foreground"
-                        onClick={() => handleSort('start_date')}
-                      >
-                        Startdatum
-                        <span className="ml-2">{getSortIcon('start_date')}</span>
-                      </Button>
-                    </TableHead>
-                    <TableHead className="w-[180px]">Kursledare</TableHead>
-                    <TableHead className="w-20">
-                      Anmälda
-                    </TableHead>
-                    <TableHead className="w-24">Max antal</TableHead>
-                    <TableHead className="w-20">Status</TableHead>
-                    <TableHead className="w-[320px]">Åtgärder</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sortedCourses.map((course, index) => (
-                    <CourseRow
-                      key={course.id}
-                      course={course}
-                      performers={performers}
-                      showCompleted={showCompleted}
-                      onEdit={handleEditCourse}
-                      onToggleStatus={course => toggleStatusMutation.mutate(course)}
-                      onDelete={course => deleteCourseMutation.mutate(course)}
-                      onViewParticipants={handleViewParticipantsWrapper}
-                      onMarkCompleted={course => markCompletedMutation.mutate(course)}
-                      onRestore={course => restoreCourseMutation.mutate(course)}
-                      onMoveUp={handleMoveUp}
-                      onMoveDown={handleMoveDown}
-                      canMoveUp={index > 0}
-                      canMoveDown={index < sortedCourses.length - 1}
-                    />
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
 
-            {/* Mobile Card View */}
-            <div className="md:hidden space-y-4">
-              {sortedCourses.map((course, index) => (
-                <MobileCourseCard
-                  key={course.id}
-                  course={course}
-                  performers={performers}
-                  showCompleted={showCompleted}
-                  onEdit={handleEditCourse}
-                  onToggleStatus={course => toggleStatusMutation.mutate(course)}
-                  onDelete={course => deleteCourseMutation.mutate(course)}
-                  onViewParticipants={handleViewParticipantsWrapper}
-                  onMarkCompleted={course => markCompletedMutation.mutate(course)}
-                  onRestore={course => restoreCourseMutation.mutate(course)}
-                  onMoveUp={handleMoveUp}
-                  onMoveDown={handleMoveDown}
-                  canMoveUp={index > 0}
-                  canMoveDown={index < sortedCourses.length - 1}
-                />
-              ))}
-            </div>
-          </>
-        )}
-      </CardContent>
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {sortedCourses.map((course, index) => (
+              <MobileCourseCard
+                key={course.id}
+                course={course}
+                performers={performers}
+                showCompleted={showCompleted}
+                onEdit={handleEditCourse}
+                onToggleStatus={course => toggleStatusMutation.mutate(course)}
+                onDelete={course => deleteCourseMutation.mutate(course)}
+                onViewParticipants={handleViewParticipantsWrapper}
+                onMarkCompleted={course => markCompletedMutation.mutate(course)}
+                onRestore={course => restoreCourseMutation.mutate(course)}
+                onMoveUp={handleMoveUp}
+                onMoveDown={handleMoveDown}
+                canMoveUp={index > 0}
+                canMoveDown={index < sortedCourses.length - 1}
+              />
+            ))}
+          </div>
+        </>
+      )}
 
       {/* Participants Dialog */}
       <Dialog open={isParticipantsDialogOpen} onOpenChange={setIsParticipantsDialogOpen}>
@@ -884,6 +843,6 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
           </div>
         </DialogContent>
       </Dialog>
-    </Card>
+    </div>
   );
 };
