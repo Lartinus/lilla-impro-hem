@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { supabase } from "../_shared/supabase.ts";
+import { createUnifiedEmailTemplate } from "../_shared/email-template.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -91,130 +92,45 @@ const handler = async (req: Request): Promise<Response> => {
     // Create styled HTML email (same style as bulk emails)
     const isPlainText = !template.content.includes('<') && !template.content.includes('>');
     
-    let htmlContent;
-    if (isPlainText) {
-      // Convert plain text to styled HTML
-      const textWithBreaks = personalizedContent.replace(/\n/g, '<br>');
-      htmlContent = createStyledEmailTemplate(personalizedSubject, textWithBreaks, template.title, template.background_image, template.title_size);
-    } else {
-      // Use HTML content but wrap in template
-      htmlContent = createStyledEmailTemplate(personalizedSubject, personalizedContent, template.title, template.background_image, template.title_size);
-    }
-
-    function createStyledEmailTemplate(subject: string, content: string, title?: string, backgroundImage?: string, titleSize?: string) {
-      const hasBackground = backgroundImage && backgroundImage.trim() !== '';
-      
-      return `
-        <!DOCTYPE html>
-        <html lang="sv" style="margin: 0; padding: 0;">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>${subject}</title>
-          <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
-          <link href="https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap" rel="stylesheet">
-        </head>
-        <body style="
-          margin: 0;
-          padding: 0;
-          font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-          background-color: #EBEBEB;
-          line-height: 1.6;
-          color: #333333;
+    // Create the content with headers for interest confirmation
+    const processedContent = isPlainText ? personalizedContent.replace(/\n/g, '<br>') : personalizedContent;
+    
+    const fullContent = `
+      <div style="margin-bottom: 32px; text-align: center;">
+        <h2 style="
+          font-size: 20px;
+          font-weight: 400;
+          margin: 0 0 12px 0;
+          color: #1a1a1a;
         ">
-          <div style="max-width: 600px; margin: 0 auto; background-color: #EBEBEB;">
-            ${hasBackground ? `
-              <div style="
-                text-align: center;
-                padding: 0;
-                margin: 0;
-              ">
-                <img src="${backgroundImage}" alt="" style="
-                  width: 600px;
-                  height: 400px;
-                  object-fit: cover;
-                  display: block;
-                  margin: 0 auto;
-                "/>
-              </div>
-            ` : ''}
-            
-            <div style="
-              max-width: 600px;
-              margin: ${hasBackground ? '-50px auto 0' : '0 auto'};
-              padding: 40px;
-              background-color: #F3F3F3;
-              border-radius: 10px;
-              position: relative;
-              z-index: 1;
-            ">
-              <div style="margin-bottom: 32px; text-align: center;">
-                <h2 style="
-                  font-size: 20px;
-                  font-weight: 400;
-                  margin: 0 0 12px 0;
-                  color: #1a1a1a;
-                ">
-                  Hej ${name.split(' ')[0]}!
-                </h2>
-                <p style="
-                  font-size: 16px;
-                  color: #666666;
-                  margin: 0;
-                  line-height: 1.5;
-                ">
-                  Tack för din intresseanmälan. Vi kontaktar dig så snart något aktuellt dyker upp!
-                </p>
-              </div>
+          Hej ${name.split(' ')[0]}!
+        </h2>
+        <p style="
+          font-size: 16px;
+          color: #666666;
+          margin: 0;
+          line-height: 1.5;
+        ">
+          Tack för din intresseanmälan. Vi kontaktar dig så snart något aktuellt dyker upp!
+        </p>
+      </div>
 
-              <div style="
-                font-size: 16px;
-                line-height: 1.6;
-                color: #333333;
-                font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-                margin-bottom: 32px;
-              ">
-                ${content}
-              </div>
-
-            </div>
-            
-            <!-- Red footer -->
-            <div style="
-              width: 600px;
-              height: 180px;
-              background-color: #DC2626;
-              margin: 0 auto;
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-              text-align: center;
-            ">
-              <div style="
-                font-family: 'Tanker', cursive;
-                font-size: 32px;
-                color: white;
-                margin: 0 0 16px 0;
-                line-height: 1;
-              ">
-                LILLA IMPROTEATERN
-              </div>
-              <div style="
-                font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-                font-size: 16px;
-                color: white;
-                margin: 0;
-                line-height: 1.2;
-              ">
-                Vill du inte längre få våra mejl? <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(email)}" style="color: white; text-decoration: underline;">Avprenumerera här</a>
-              </div>
-            </div>
-          </div>
-        </body>
-        </html>
-      `;
-    }
+      <div style="
+        font-size: 16px;
+        line-height: 1.6;
+        color: #333333;
+        font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        margin-bottom: 32px;
+      ">
+        ${processedContent}
+      </div>
+    `;
+    
+    const htmlContent = createUnifiedEmailTemplate(
+      personalizedSubject, 
+      fullContent, 
+      template.background_image
+    ).replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(email)}`);
 
     // Send the email
     console.log('Sending interest confirmation email using template:', template.name);

@@ -3,6 +3,7 @@ import { Resend } from "npm:resend@2.0.0";
 import { supabase } from "../_shared/supabase.ts";
 import { ConfirmationEmailRequest } from "./types.ts";
 import { createSimpleEmailTemplate } from "./email-template.ts";
+import { createUnifiedEmailTemplate } from "../_shared/email-template.ts";
 
 // Utility function to process markdown with variables
 function convertMarkdownToHtmlWithVariables(
@@ -136,102 +137,12 @@ const handler = async (req: Request): Promise<Response> => {
     const personalizedContent = convertMarkdownToHtmlWithVariables(template.content, variables);
     console.log('DEBUG: Personalized content after replacement:', personalizedContent);
 
-    // Create styled email template
-    const htmlContent = createStyledEmailTemplate(personalizedSubject, personalizedContent, template);
-
-    function createStyledEmailTemplate(subjectText: string, contentText: string, templateData: any = null) {
-      const hasBackground = templateData?.background_image && templateData.background_image.trim() !== '';
-      
-      return `
-        <!DOCTYPE html>
-        <html lang="sv" style="margin: 0; padding: 0;">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>${subjectText}</title>
-          <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
-          <link href="https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap" rel="stylesheet">
-        </head>
-        <body style="
-          margin: 0;
-          padding: 0;
-          font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-          background-color: #EBEBEB;
-          line-height: 1.6;
-          color: #333333;
-        ">
-          <div style="max-width: 600px; margin: 0 auto; background-color: #EBEBEB;">
-            ${hasBackground ? `
-              <div style="
-                text-align: center;
-                padding: 0;
-                margin: 0;
-              ">
-                <img src="${templateData.background_image}" alt="" style="
-                  width: 600px;
-                  height: 400px;
-                  object-fit: cover;
-                  display: block;
-                  margin: 0 auto;
-                "/>
-              </div>
-            ` : ''}
-            
-            <div style="
-              max-width: 600px;
-              margin: ${hasBackground ? '-50px auto 0' : '0 auto'};
-              padding: 40px;
-              background-color: #F3F3F3;
-              border-radius: 10px;
-              position: relative;
-              z-index: 1;
-            ">
-              <div style="
-                font-size: 16px;
-                line-height: 1.6;
-                color: #333333;
-                font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-              ">
-                ${contentText}
-              </div>
-            </div>
-            
-            <!-- Red footer -->
-            <div style="
-              width: 600px;
-              height: 180px;
-              background-color: #DC2626;
-              margin: 0 auto;
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-              text-align: center;
-            ">
-              <div style="
-                font-family: 'Tanker', cursive;
-                font-size: 32px;
-                color: white;
-                margin: 0 0 16px 0;
-                line-height: 1;
-              ">
-                LILLA IMPROTEATERN
-              </div>
-              <div style="
-                font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-                font-size: 16px;
-                color: white;
-                margin: 0;
-                line-height: 1.2;
-              ">
-                Vill du inte längre få våra mejl? <a href="#" style="color: white; text-decoration: underline;">Avprenumerera här</a>
-              </div>
-            </div>
-          </div>
-        </body>
-        </html>
-      `;
-    }
+    // Create styled email template using unified template
+    const htmlContent = createUnifiedEmailTemplate(
+      personalizedSubject, 
+      personalizedContent, 
+      template?.background_image
+    ).replace('{UNSUBSCRIBE_URL}', 'https://improteatern.se/avprenumerera');
 
     // Send the email
     console.log('Sending course confirmation email using template:', template.name);
