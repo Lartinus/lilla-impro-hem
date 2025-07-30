@@ -83,10 +83,10 @@ const ShowCardSimple = ({
           <div className="flex-1">
             <div className="mb-3 min-h-[80px] flex flex-col justify-start">
               <h2 className="mb-2">{show.title}</h2>
-              <h3 className="mb-3">{formatDateTime(show.date, show.time)}</h3>
+              <h3>{formatDateTime(show.date, show.time)}</h3>
             </div>
             
-            <div className="pt-1 mb-1">
+            <div className="pt-1 my-1">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex-1 border-t-2 border-dashed border-black"></div>
                 {show.tag && (
