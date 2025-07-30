@@ -13,6 +13,7 @@ const navItems = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const { pathname } = useLocation();
 
   return (
@@ -22,7 +23,11 @@ export default function Header() {
         {/* Vänster sida - Logo på desktop */}
         <Link
           to="/"
-          className="hidden md:block group relative w-14 h-14 overflow-visible transition-transform duration-200 ease-out hover:animate-spin-360"
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+          className={`hidden md:block group relative w-14 h-14 overflow-visible ${
+            isHovering ? 'animate-spin-360' : 'animate-spin-reverse'
+          }`}
         >
           <img 
             src="/Favicon1.svg" 
