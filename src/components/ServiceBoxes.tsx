@@ -56,9 +56,9 @@ export default function ServiceBoxes() {
           {/* Innehåll */}
           <div className="flex-1 p-6 flex flex-col justify-between text-center bg-[#E7E7E7]">
             <div className="space-y-2">
-              <h2 className="font-tanker text-[28px] sm:text-[32px] lg:text-[40px] text-text-gray leading-tight">
+              <h1>
                 {svc.title}
-              </h2>
+              </h1>
               <p className="font-satoshi text-[16px] text-text-black leading-relaxed">
                 {svc.subtitle}
               </p>
