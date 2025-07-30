@@ -22,7 +22,7 @@ export default function Header() {
         {/* Vänster sida - Logo på desktop */}
         <Link
           to="/"
-          className="hidden md:block group relative w-14 h-14 overflow-visible transition-transform duration-300 ease-out group-hover:rotate-360"
+          className="hidden md:block group relative w-14 h-14 overflow-visible group-hover:animate-spin-360"
         >
           <img 
             src="/Favicon1.svg" 

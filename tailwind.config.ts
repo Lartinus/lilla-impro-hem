@@ -102,6 +102,10 @@ export default {
           '0%':   { transform: 'translateX(100%)' },
           '100%': { transform: 'translateX(0)' },
         },
+        'spin-360': {
+          '0%':   { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -109,6 +113,7 @@ export default {
         'fade-in':       'fade-in 0.6s ease-out',
         float:           'float 3s ease-in-out infinite',
         'slide-in-right':'slide-in-right 0.3s ease-out',
+        'spin-360':      'spin-360 0.3s ease-out',
       },
     },
   },
