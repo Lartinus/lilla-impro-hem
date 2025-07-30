@@ -98,7 +98,7 @@ const ShowCardSimple = ({
               
               <div className="min-h-[24px]">
                 {show.description && (
-                  <p className="mt-2">{show.description}</p>
+                  <p className="mt-4">{show.description}</p>
                 )}
               </div>
             </div>
