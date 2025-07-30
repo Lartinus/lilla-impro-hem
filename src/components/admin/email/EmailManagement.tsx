@@ -194,10 +194,25 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     }
   };
 
+  const getTitle = () => {
+    switch (activeTab) {
+      case 'send':
+        return 'Skicka email';
+      case 'templates':
+        return 'Email-mallar';
+      case 'groups':
+        return 'Email-grupper';
+      case 'contacts':
+        return 'Kontakter';
+      default:
+        return 'Email-hantering';
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">Email-hantering</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{getTitle()}</h2>
       </div>
 
       <div className="space-y-4">
