@@ -67,13 +67,13 @@ export default function ServiceBoxes() {
               {svc.link.startsWith('/') ? (
                 <Button asChild variant="homepage" size="homepage">
                   <Link to={svc.link} className="flex justify-between items-center w-full">
-                    <span className="leading-[0.8]">{svc.cta}</span>
+                    <span className="leading-[1.0]">{svc.cta}</span>
                     <span className="text-2xl font-bold">→</span>
                   </Link>
                 </Button>
               ) : (
                 <Button variant="homepage" size="homepage" className="flex justify-between items-center w-full">
-                  <span className="leading-[0.8]">{svc.cta}</span>
+                  <span className="leading-[1.0]">{svc.cta}</span>
                   <span className="text-2xl font-bold">→</span>
                 </Button>
               )}
