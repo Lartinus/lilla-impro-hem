@@ -2,13 +2,14 @@
 import TicketPurchaseComplete from '@/components/TicketPurchaseComplete';
 import PerformersSection from '@/components/PerformersSection';
 import NewsletterSignupSection from '@/components/NewsletterSignupSection';
+import { NewsletterSignupModal } from '@/components/NewsletterSignupModal';
 import Footer from '@/components/Footer';
 import OptimizedImage from '@/components/OptimizedImage';
 import ShowTag from '@/components/ShowTag';
 import MainCard from '@/components/MainCard';
 import Header from '@/components/Header';
 import { useParams, Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAdminShows } from '@/hooks/useAdminShows';
 import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
 import { MapPin, ArrowLeft } from 'lucide-react';
@@ -16,6 +17,7 @@ import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 
 const ShowDetails = () => {
   const { slug } = useParams();
+  const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
 
   // Scroll to top when slug changes (navigating to another show)
   useEffect(() => {
@@ -240,9 +242,14 @@ const ShowDetails = () => {
       </div>
       
       {/* Newsletter signup section */}
-      <NewsletterSignupSection />
+      <NewsletterSignupSection onSignupClick={() => setIsNewsletterModalOpen(true)} />
       
       <Footer />
+      
+      <NewsletterSignupModal 
+        open={isNewsletterModalOpen} 
+        onOpenChange={setIsNewsletterModalOpen} 
+      />
     </>
   );
 };
