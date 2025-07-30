@@ -1,7 +1,7 @@
 
 import TicketPurchaseComplete from '@/components/TicketPurchaseComplete';
 import PerformersSection from '@/components/PerformersSection';
-import OtherShowsSection from '@/components/OtherShowsSection';
+import Footer from '@/components/Footer';
 import OptimizedImage from '@/components/OptimizedImage';
 import ShowTag from '@/components/ShowTag';
 import MainCard from '@/components/MainCard';
@@ -222,12 +222,11 @@ const ShowDetails = () => {
               </div>
             )}
 
-            {/* Other shows section */}
-            <OtherShowsSection shows={formattedOtherShows} />
           </MainCard>
         </div>
       </div>
       </div>
+      <Footer />
     </>
   );
 };
