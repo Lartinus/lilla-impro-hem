@@ -232,9 +232,6 @@ export function EmailContactsManager({
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Kontakter</CardTitle>
-        </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="flex gap-4">
