@@ -192,137 +192,133 @@ export const PerformerManagement = () => {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Kursledare</CardTitle>
-          <CardDescription>Läser in...</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="animate-pulse space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-12 bg-muted rounded" />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Kursledare</h2>
+          <p className="text-muted-foreground">Läser in...</p>
+        </div>
+        <div className="animate-pulse space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-12 bg-muted rounded" />
+          ))}
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Kursledare</CardTitle>
-        <CardDescription>
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight">Kursledare</h2>
+        <p className="text-muted-foreground">
           Hantera kursledare som kan tilldelas kurser
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Sök kursledare..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+        </p>
+      </div>
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+        <Input
+          placeholder="Sök kursledare..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10"
+        />
+      </div>
 
-        {/* Add Button */}
-        <div className="flex justify-start">
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-                <Plus className="w-4 h-4 mr-2" />
-                Lägg till kursledare
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>
-                  {isEditMode ? 'Redigera kursledare' : 'Lägg till kursledare'}
-                </DialogTitle>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Namn</Label>
-                  <Input
-                    id="name"
-                    value={performerForm.name}
-                    onChange={(e) => setPerformerForm({...performerForm, name: e.target.value})}
-                    placeholder="Kursledarens namn"
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="image">Bild</Label>
-                  <ImagePicker
-                    value={performerForm.image_url}
-                    onSelect={(url) => setPerformerForm({...performerForm, image_url: url})}
-                    triggerClassName="w-full"
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="bio">Bio</Label>
-                  <Textarea
-                    id="bio"
-                    value={performerForm.bio}
-                    onChange={(e) => setPerformerForm({...performerForm, bio: e.target.value})}
-                    placeholder="Kursledarens bakgrund och erfarenhet"
-                    rows={6}
-                  />
-                </div>
-
-                <div className="flex justify-end gap-2 pt-4">
-                  <Button variant="outline" onClick={resetForm}>
-                    Avbryt
-                  </Button>
-                  <Button 
-                    onClick={handleSubmit}
-                    disabled={createPerformerMutation.isPending || updatePerformerMutation.isPending || !performerForm.name}
-                  >
-                    {(createPerformerMutation.isPending || updatePerformerMutation.isPending) ? 
-                      (isEditMode ? 'Uppdaterar...' : 'Skapar...') : 
-                      (isEditMode ? 'Uppdatera' : 'Skapa')
-                    }
-                  </Button>
-                </div>
+      {/* Add Button */}
+      <div className="flex justify-start">
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Plus className="w-4 h-4 mr-2" />
+              Lägg till kursledare
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                {isEditMode ? 'Redigera kursledare' : 'Lägg till kursledare'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name">Namn</Label>
+                <Input
+                  id="name"
+                  value={performerForm.name}
+                  onChange={(e) => setPerformerForm({...performerForm, name: e.target.value})}
+                  placeholder="Kursledarens namn"
+                />
               </div>
-            </DialogContent>
-          </Dialog>
+
+              <div className="grid gap-2">
+                <Label htmlFor="image">Bild</Label>
+                <ImagePicker
+                  value={performerForm.image_url}
+                  onSelect={(url) => setPerformerForm({...performerForm, image_url: url})}
+                  triggerClassName="w-full"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="bio">Bio</Label>
+                <Textarea
+                  id="bio"
+                  value={performerForm.bio}
+                  onChange={(e) => setPerformerForm({...performerForm, bio: e.target.value})}
+                  placeholder="Kursledarens bakgrund och erfarenhet"
+                  rows={6}
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4">
+                <Button variant="outline" onClick={resetForm}>
+                  Avbryt
+                </Button>
+                <Button 
+                  onClick={handleSubmit}
+                  disabled={createPerformerMutation.isPending || updatePerformerMutation.isPending || !performerForm.name}
+                >
+                  {(createPerformerMutation.isPending || updatePerformerMutation.isPending) ? 
+                    (isEditMode ? 'Uppdaterar...' : 'Skapar...') : 
+                    (isEditMode ? 'Uppdatera' : 'Skapa')
+                  }
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+      
+      {!performers || performers.length === 0 ? (
+        <div className="text-center py-12">
+          <User className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
+          <h3 className="text-xl font-semibold mb-3">Inga kursledare hittades</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+           Lägg till kursledare för att kunna tilldela dem till kurser.
+          </p>
         </div>
-        
-        {!performers || performers.length === 0 ? (
-          <div className="text-center py-8">
-            <User className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Inga kursledare hittades</h3>
-            <p className="text-muted-foreground">
-             Lägg till kursledare för att kunna tilldela dem till kurser.
-            </p>
-          </div>
-        ) : filteredPerformers.length === 0 ? (
-          <div className="text-center py-8">
-            <Search className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Inga resultat</h3>
-            <p className="text-muted-foreground">
-              Inga kursledare matchade din sökning.
-            </p>
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            {filteredPerformers.map((performer) => (
-              <PerformerCard
-                key={performer.id}
-                performer={performer}
-                onEdit={handleEdit}
-                onToggleStatus={(performer) => toggleStatusMutation.mutate(performer)}
-                onDelete={(performer) => deletePerformerMutation.mutate(performer.id)}
-              />
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      ) : filteredPerformers.length === 0 ? (
+        <div className="text-center py-12">
+          <Search className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
+          <h3 className="text-xl font-semibold mb-3">Inga resultat</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Inga kursledare matchade din sökning.
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {filteredPerformers.map((performer) => (
+            <PerformerCard
+              key={performer.id}
+              performer={performer}
+              onEdit={handleEdit}
+              onToggleStatus={(performer) => toggleStatusMutation.mutate(performer)}
+              onDelete={(performer) => deletePerformerMutation.mutate(performer.id)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 };

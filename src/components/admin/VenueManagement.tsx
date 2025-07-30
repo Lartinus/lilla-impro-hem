@@ -227,201 +227,199 @@ export const VenueManagement = () => {
 
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Platshantering</CardTitle>
-        <CardDescription>
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight">Platshantering</h2>
+        <p className="text-muted-foreground">
           Hantera återanvändbara platser för föreställningar
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+        </p>
+      </div>
 
-        <div className="flex justify-start items-center mb-6">
-          <Button onClick={() => {
-            setIsEditMode(false);
-            setEditingVenue(null);
-            setNewVenue({
-              name: '',
-              address: '',
-              maps_url: '',
-              is_active: true
-            });
-            setIsDialogOpen(true);
-          }}>
-            <Plus className="w-4 h-4 mr-2" />
-            Lägg till plats
-          </Button>
-        </div>
-
-        {isLoading ? (
-          <div className="text-center py-8">Laddar platser...</div>
-        ) : venues && venues.length > 0 ? (
-          isMobile ? (
-            <div className="space-y-4">
-              {venues.map((venue) => (
-                <Card key={venue.id} className="p-4">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Badge variant={venue.is_active ? "default" : "secondary"}>
-                          {venue.is_active ? 'Aktiv' : 'Inaktiv'}
-                        </Badge>
-                      </div>
-                      <h4 className="font-medium">{venue.name}</h4>
-                      {venue.address && (
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                          <MapPin className="w-4 h-4" />
-                          {venue.address}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleEditVenue(venue)}
-                    >
-                      <Edit className="w-4 h-4 mr-1" />
-                      Redigera
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleToggleActive(venue)}
-                    >
-                      {venue.is_active ? (
-                        <PowerOff className="w-4 h-4 mr-1" />
-                      ) : (
-                        <Power className="w-4 h-4 mr-1" />
-                      )}
-                      {venue.is_active ? 'Inaktivera' : 'Aktivera'}
-                    </Button>
-                    <Button 
-                      variant="destructive" 
-                      size="sm"
-                      onClick={() => {
-                        if (confirm(`Är du säker på att du vill radera "${venue.name}"? Detta kan inte ångras.`)) {
-                          handleDeleteVenue(venue);
-                        }
-                      }}
-                    >
-                      <Trash2 className="w-4 h-4 mr-1" />
-                      Radera
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Namn</TableHead>
-                  <TableHead>Adress</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Åtgärder</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {venues.map((venue) => (
-                  <VenueRow
-                    key={venue.id}
-                    venue={venue}
-                    onEdit={handleEditVenue}
-                    onToggleActive={handleToggleActive}
-                    onDelete={handleDeleteVenue}
-                  />
-                ))}
-              </TableBody>
-            </Table>
-          )
-        ) : (
-          <div className="text-center py-8">
-            <MapPin className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Inga platser</h3>
-            <p className="text-muted-foreground">
-              Lägg till din första plats för att komma igång.
-            </p>
-          </div>
-        )}
-
-        {/* Venue Dialog */}
-        <Dialog open={isDialogOpen} onOpenChange={(open) => {
-          setIsDialogOpen(open);
-          if (!open) {
-            setIsEditMode(false);
-            setEditingVenue(null);
-          }
+      <div className="flex justify-start items-center">
+        <Button onClick={() => {
+          setIsEditMode(false);
+          setEditingVenue(null);
+          setNewVenue({
+            name: '',
+            address: '',
+            maps_url: '',
+            is_active: true
+          });
+          setIsDialogOpen(true);
         }}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {isEditMode ? 'Redigera plats' : 'Lägg till plats'}
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="name">Namn</Label>
-                <Input
-                  id="name"
-                  value={newVenue.name}
-                  onChange={(e) => setNewVenue(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="T.ex. Metropole"
-                />
-              </div>
+          <Plus className="w-4 h-4 mr-2" />
+          Lägg till plats
+        </Button>
+      </div>
 
-              <div>
-                <Label htmlFor="address">Adress</Label>
-                <Input
-                  id="address"
-                  value={newVenue.address}
-                  onChange={(e) => setNewVenue(prev => ({ ...prev, address: e.target.value }))}
-                  placeholder="Götgatan 15, Stockholm"
+      {isLoading ? (
+        <div className="text-center py-8">Laddar platser...</div>
+      ) : venues && venues.length > 0 ? (
+        isMobile ? (
+          <div className="space-y-4">
+            {venues.map((venue) => (
+              <Card key={venue.id} className="p-4">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge variant={venue.is_active ? "default" : "secondary"}>
+                        {venue.is_active ? 'Aktiv' : 'Inaktiv'}
+                      </Badge>
+                    </div>
+                    <h4 className="font-medium">{venue.name}</h4>
+                    {venue.address && (
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                        <MapPin className="w-4 h-4" />
+                        {venue.address}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleEditVenue(venue)}
+                  >
+                    <Edit className="w-4 h-4 mr-1" />
+                    Redigera
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleToggleActive(venue)}
+                  >
+                    {venue.is_active ? (
+                      <PowerOff className="w-4 h-4 mr-1" />
+                    ) : (
+                      <Power className="w-4 h-4 mr-1" />
+                    )}
+                    {venue.is_active ? 'Inaktivera' : 'Aktivera'}
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    size="sm"
+                    onClick={() => {
+                      if (confirm(`Är du säker på att du vill radera "${venue.name}"? Detta kan inte ångras.`)) {
+                        handleDeleteVenue(venue);
+                      }
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Radera
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Namn</TableHead>
+                <TableHead>Adress</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Åtgärder</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {venues.map((venue) => (
+                <VenueRow
+                  key={venue.id}
+                  venue={venue}
+                  onEdit={handleEditVenue}
+                  onToggleActive={handleToggleActive}
+                  onDelete={handleDeleteVenue}
                 />
-              </div>
+              ))}
+            </TableBody>
+          </Table>
+        )
+      ) : (
+        <div className="text-center py-12">
+          <MapPin className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
+          <h3 className="text-xl font-semibold mb-3">Inga platser</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Lägg till din första plats för att komma igång.
+          </p>
+        </div>
+      )}
 
-              <div>
-                <Label htmlFor="maps_url">Google Maps-länk</Label>
-                <Input
-                  id="maps_url"
-                  value={newVenue.maps_url}
-                  onChange={(e) => setNewVenue(prev => ({ ...prev, maps_url: e.target.value }))}
-                  placeholder="https://maps.google.com/..."
-                />
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="is_active"
-                  checked={newVenue.is_active}
-                  onCheckedChange={(checked) => setNewVenue(prev => ({ ...prev, is_active: checked }))}
-                />
-                <Label htmlFor="is_active">Aktiv plats</Label>
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsDialogOpen(false)}
-                >
-                  Avbryt
-                </Button>
-                <Button
-                  onClick={handleSubmit}
-                  disabled={createVenueMutation.isPending || updateVenueMutation.isPending}
-                >
-                  {createVenueMutation.isPending || updateVenueMutation.isPending 
-                    ? 'Sparar...' 
-                    : (isEditMode ? 'Uppdatera' : 'Skapa')
-                  }
-                </Button>
-              </div>
+      {/* Venue Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={(open) => {
+        setIsDialogOpen(open);
+        if (!open) {
+          setIsEditMode(false);
+          setEditingVenue(null);
+        }
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {isEditMode ? 'Redigera plats' : 'Lägg till plats'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="name">Namn</Label>
+              <Input
+                id="name"
+                value={newVenue.name}
+                onChange={(e) => setNewVenue(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="T.ex. Metropole"
+              />
             </div>
-          </DialogContent>
-        </Dialog>
-      </CardContent>
-    </Card>
+
+            <div>
+              <Label htmlFor="address">Adress</Label>
+              <Input
+                id="address"
+                value={newVenue.address}
+                onChange={(e) => setNewVenue(prev => ({ ...prev, address: e.target.value }))}
+                placeholder="Götgatan 15, Stockholm"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="maps_url">Google Maps-länk</Label>
+              <Input
+                id="maps_url"
+                value={newVenue.maps_url}
+                onChange={(e) => setNewVenue(prev => ({ ...prev, maps_url: e.target.value }))}
+                placeholder="https://maps.google.com/..."
+              />
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="is_active"
+                checked={newVenue.is_active}
+                onCheckedChange={(checked) => setNewVenue(prev => ({ ...prev, is_active: checked }))}
+              />
+              <Label htmlFor="is_active">Aktiv plats</Label>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setIsDialogOpen(false)}
+              >
+                Avbryt
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                disabled={createVenueMutation.isPending || updateVenueMutation.isPending}
+              >
+                {createVenueMutation.isPending || updateVenueMutation.isPending 
+                  ? 'Sparar...' 
+                  : (isEditMode ? 'Uppdatera' : 'Skapa')
+                }
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };

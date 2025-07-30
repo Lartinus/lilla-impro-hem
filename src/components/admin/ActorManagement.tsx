@@ -171,139 +171,137 @@ export const ActorManagement = () => {
   ) || [];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Skådespelare</CardTitle>
-        <CardDescription>
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight">Skådespelare</h2>
+        <p className="text-muted-foreground">
           Hantera skådespelare för föreställningar
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {/* Search Bar */}
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Sök skådespelare..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+        </p>
+      </div>
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+        <Input
+          placeholder="Sök skådespelare..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10"
+        />
+      </div>
 
-        <div className="flex justify-start items-center mb-6">
-          <Button onClick={() => {
-            setIsEditMode(false);
-            setEditingActor(null);
-            setNewActor({
-              name: '',
-              bio: '',
-              image_url: ''
-            });
-            setIsDialogOpen(true);
-          }}>
-            <Plus className="w-4 h-4 mr-2" />
-            Lägg till skådespelare
-          </Button>
-        </div>
-
-        {isLoading ? (
-          <div className="text-center py-8">Laddar skådespelare...</div>
-        ) : actors && actors.length === 0 ? (
-          <div className="text-center py-8">
-            <User className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Inga skådespelare</h3>
-            <p className="text-muted-foreground">
-              Lägg till din första skådespelare för att komma igång.
-            </p>
-          </div>
-        ) : filteredActors.length === 0 ? (
-          <div className="text-center py-8">
-            <Search className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Inga resultat</h3>
-            <p className="text-muted-foreground">
-              Inga skådespelare matchade din sökning.
-            </p>
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            {filteredActors.map((actor) => (
-              <ActorCard
-                key={actor.id}
-                actor={actor}
-                onEdit={handleEditActor}
-                onToggleActive={handleToggleActive}
-                onDelete={handleDeleteActor}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Actor Dialog */}
-        <Dialog open={isDialogOpen} onOpenChange={(open) => {
-          setIsDialogOpen(open);
-          if (!open) {
-            setIsEditMode(false);
-            setEditingActor(null);
-          }
+      <div className="flex justify-start items-center">
+        <Button onClick={() => {
+          setIsEditMode(false);
+          setEditingActor(null);
+          setNewActor({
+            name: '',
+            bio: '',
+            image_url: ''
+          });
+          setIsDialogOpen(true);
         }}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {isEditMode ? 'Redigera skådespelare' : 'Lägg till skådespelare'}
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="name">Namn</Label>
-                <Input
-                  id="name"
-                  value={newActor.name}
-                  onChange={(e) => setNewActor(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Skådespelarens namn"
-                />
-              </div>
+          <Plus className="w-4 h-4 mr-2" />
+          Lägg till skådespelare
+        </Button>
+      </div>
 
-              <div>
-                <Label htmlFor="bio">Bio</Label>
-                <Textarea
-                  id="bio"
-                  value={newActor.bio}
-                  onChange={(e) => setNewActor(prev => ({ ...prev, bio: e.target.value }))}
-                  placeholder="Kort beskrivning av skådespelaren..."
-                  rows={3}
-                />
-              </div>
+      {isLoading ? (
+        <div className="text-center py-8">Laddar skådespelare...</div>
+      ) : actors && actors.length === 0 ? (
+        <div className="text-center py-12">
+          <User className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
+          <h3 className="text-xl font-semibold mb-3">Inga skådespelare</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Lägg till din första skådespelare för att komma igång.
+          </p>
+        </div>
+      ) : filteredActors.length === 0 ? (
+        <div className="text-center py-12">
+          <Search className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
+          <h3 className="text-xl font-semibold mb-3">Inga resultat</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Inga skådespelare matchade din sökning.
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {filteredActors.map((actor) => (
+            <ActorCard
+              key={actor.id}
+              actor={actor}
+              onEdit={handleEditActor}
+              onToggleActive={handleToggleActive}
+              onDelete={handleDeleteActor}
+            />
+          ))}
+        </div>
+      )}
 
-              <div>
-                <Label htmlFor="image">Bild</Label>
-                <ImagePicker
-                  value={newActor.image_url}
-                  onSelect={(url) => setNewActor(prev => ({ ...prev, image_url: url }))}
-                  triggerClassName="w-full"
-                />
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsDialogOpen(false)}
-                >
-                  Avbryt
-                </Button>
-                <Button
-                  onClick={handleSubmit}
-                  disabled={createActorMutation.isPending || updateActorMutation.isPending}
-                >
-                  {createActorMutation.isPending || updateActorMutation.isPending 
-                    ? 'Sparar...' 
-                    : (isEditMode ? 'Uppdatera' : 'Skapa')
-                  }
-                </Button>
-              </div>
+      {/* Actor Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={(open) => {
+        setIsDialogOpen(open);
+        if (!open) {
+          setIsEditMode(false);
+          setEditingActor(null);
+        }
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {isEditMode ? 'Redigera skådespelare' : 'Lägg till skådespelare'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="name">Namn</Label>
+              <Input
+                id="name"
+                value={newActor.name}
+                onChange={(e) => setNewActor(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="Skådespelarens namn"
+              />
             </div>
-          </DialogContent>
-        </Dialog>
-      </CardContent>
-    </Card>
+
+            <div>
+              <Label htmlFor="bio">Bio</Label>
+              <Textarea
+                id="bio"
+                value={newActor.bio}
+                onChange={(e) => setNewActor(prev => ({ ...prev, bio: e.target.value }))}
+                placeholder="Kort beskrivning av skådespelaren..."
+                rows={3}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="image">Bild</Label>
+              <ImagePicker
+                value={newActor.image_url}
+                onSelect={(url) => setNewActor(prev => ({ ...prev, image_url: url }))}
+                triggerClassName="w-full"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setIsDialogOpen(false)}
+              >
+                Avbryt
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                disabled={createActorMutation.isPending || updateActorMutation.isPending}
+              >
+                {createActorMutation.isPending || updateActorMutation.isPending 
+                  ? 'Sparar...' 
+                  : (isEditMode ? 'Uppdatera' : 'Skapa')
+                }
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };

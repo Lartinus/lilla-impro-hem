@@ -42,19 +42,17 @@ export const TicketManagement = () => {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Biljetthantering</CardTitle>
-          <CardDescription>Läser in biljetter...</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="animate-pulse space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-12 bg-muted rounded" />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Biljetthantering</h2>
+          <p className="text-muted-foreground">Läser in biljetter...</p>
+        </div>
+        <div className="animate-pulse space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-12 bg-muted rounded" />
+          ))}
+        </div>
+      </div>
     );
   }
 
@@ -72,116 +70,115 @@ export const TicketManagement = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Biljetthantering</CardTitle>
-        <CardDescription>
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight">Biljetthantering</h2>
+        <p className="text-muted-foreground">
           Översikt över alla biljettköp och betalningar
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {!tickets || tickets.length === 0 ? (
-          <div className="text-center py-8">
-            <Ticket className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Inga biljetter hittades</h3>
-            <p className="text-muted-foreground">
-              Inga biljetter har köpts än.
-            </p>
-          </div>
-        ) : isMobile ? (
-          <div className="space-y-4">
-            {tickets.map((ticket) => (
-              <Card key={ticket.id} className="p-4">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h4 className="font-medium">{ticket.show_title}</h4>
-                    <div className="text-sm text-muted-foreground">
-                      {new Date(ticket.show_date).toLocaleDateString('sv-SE')}
-                    </div>
-                    <div className="mt-1">
-                      <div className="font-medium text-sm">{ticket.buyer_name}</div>
-                      <div className="text-xs text-muted-foreground">{ticket.buyer_email}</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-semibold">{ticket.total_amount} kr</div>
-                    <div className="mt-1">{getStatusBadge(ticket.payment_status)}</div>
-                  </div>
-                </div>
-                
-                <div className="space-y-2 mb-3">
-                  {ticket.regular_tickets > 0 && (
-                    <div className="text-sm">Ordinarie: {ticket.regular_tickets}</div>
-                  )}
-                  {ticket.discount_tickets > 0 && (
-                    <div className="text-sm">Rabatt: {ticket.discount_tickets}</div>
-                  )}
-                  <div className="text-sm">
-                    Kod: <code className="text-xs bg-muted px-2 py-1 rounded ml-1">
-                      {ticket.ticket_code}
-                    </code>
-                  </div>
-                </div>
-
-                <Button variant="outline" size="sm" className="w-full">
-                  <Eye className="w-4 h-4 mr-1" />
-                  Visa detaljer
-                </Button>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Föreställning</TableHead>
-                <TableHead>Datum</TableHead>
-                <TableHead>Köpare</TableHead>
-                <TableHead>Biljetter</TableHead>
-                <TableHead>Belopp</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Biljettkod</TableHead>
-                <TableHead>Åtgärder</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {tickets.map((ticket) => (
-                <TableRow key={ticket.id}>
-                  <TableCell className="font-medium">{ticket.show_title}</TableCell>
-                  <TableCell>
+        </p>
+      </div>
+      
+      {!tickets || tickets.length === 0 ? (
+        <div className="text-center py-12">
+          <Ticket className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
+          <h3 className="text-xl font-semibold mb-3">Inga biljetter hittades</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Inga biljetter har köpts än.
+          </p>
+        </div>
+      ) : isMobile ? (
+        <div className="space-y-4">
+          {tickets.map((ticket) => (
+            <Card key={ticket.id} className="p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <h4 className="font-medium">{ticket.show_title}</h4>
+                  <div className="text-sm text-muted-foreground">
                     {new Date(ticket.show_date).toLocaleDateString('sv-SE')}
-                  </TableCell>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">{ticket.buyer_name}</div>
-                      <div className="text-sm text-muted-foreground">{ticket.buyer_email}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      {ticket.regular_tickets > 0 && <div>Ordinarie: {ticket.regular_tickets}</div>}
-                      {ticket.discount_tickets > 0 && <div>Rabatt: {ticket.discount_tickets}</div>}
-                    </div>
-                  </TableCell>
-                  <TableCell>{ticket.total_amount} kr</TableCell>
-                  <TableCell>{getStatusBadge(ticket.payment_status)}</TableCell>
-                  <TableCell>
-                    <code className="text-xs bg-muted px-2 py-1 rounded">
-                      {ticket.ticket_code}
-                    </code>
-                  </TableCell>
-                  <TableCell>
-                    <Button variant="outline" size="sm">
-                      <Eye className="w-4 h-4 mr-1" />
-                      Detaljer
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </CardContent>
-    </Card>
+                  </div>
+                  <div className="mt-1">
+                    <div className="font-medium text-sm">{ticket.buyer_name}</div>
+                    <div className="text-xs text-muted-foreground">{ticket.buyer_email}</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-lg font-semibold">{ticket.total_amount} kr</div>
+                  <div className="mt-1">{getStatusBadge(ticket.payment_status)}</div>
+                </div>
+              </div>
+              
+              <div className="space-y-2 mb-3">
+                {ticket.regular_tickets > 0 && (
+                  <div className="text-sm">Ordinarie: {ticket.regular_tickets}</div>
+                )}
+                {ticket.discount_tickets > 0 && (
+                  <div className="text-sm">Rabatt: {ticket.discount_tickets}</div>
+                )}
+                <div className="text-sm">
+                  Kod: <code className="text-xs bg-muted px-2 py-1 rounded ml-1">
+                    {ticket.ticket_code}
+                  </code>
+                </div>
+              </div>
+
+              <Button variant="outline" size="sm" className="w-full">
+                <Eye className="w-4 h-4 mr-1" />
+                Visa detaljer
+              </Button>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Föreställning</TableHead>
+              <TableHead>Datum</TableHead>
+              <TableHead>Köpare</TableHead>
+              <TableHead>Biljetter</TableHead>
+              <TableHead>Belopp</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Biljettkod</TableHead>
+              <TableHead>Åtgärder</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {tickets.map((ticket) => (
+              <TableRow key={ticket.id}>
+                <TableCell className="font-medium">{ticket.show_title}</TableCell>
+                <TableCell>
+                  {new Date(ticket.show_date).toLocaleDateString('sv-SE')}
+                </TableCell>
+                <TableCell>
+                  <div>
+                    <div className="font-medium">{ticket.buyer_name}</div>
+                    <div className="text-sm text-muted-foreground">{ticket.buyer_email}</div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-sm">
+                    {ticket.regular_tickets > 0 && <div>Ordinarie: {ticket.regular_tickets}</div>}
+                    {ticket.discount_tickets > 0 && <div>Rabatt: {ticket.discount_tickets}</div>}
+                  </div>
+                </TableCell>
+                <TableCell>{ticket.total_amount} kr</TableCell>
+                <TableCell>{getStatusBadge(ticket.payment_status)}</TableCell>
+                <TableCell>
+                  <code className="text-xs bg-muted px-2 py-1 rounded">
+                    {ticket.ticket_code}
+                  </code>
+                </TableCell>
+                <TableCell>
+                  <Button variant="outline" size="sm">
+                    <Eye className="w-4 h-4 mr-1" />
+                    Detaljer
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+    </div>
   );
 };

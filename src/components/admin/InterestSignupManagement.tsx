@@ -116,36 +116,33 @@ export const InterestSignupManagement = () => {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Intresseanmälningar</CardTitle>
-          <CardDescription>Läser in intresseanmälningar...</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="animate-pulse space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-12 bg-muted rounded" />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Intresseanmälningar</h2>
+          <p className="text-muted-foreground">Läser in intresseanmälningar...</p>
+        </div>
+        <div className="animate-pulse space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-12 bg-muted rounded" />
+          ))}
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-          <div className="flex-1">
-            <CardTitle>Intresseanmälningar</CardTitle>
-          </div>
-          <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
-            <DialogTrigger asChild>
-              <Button className="w-full sm:w-auto">
-                <Plus className="w-4 h-4 mr-2" />
-                Lägg till intresseanmälan
-              </Button>
-            </DialogTrigger>
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+        <div className="flex-1">
+          <h2 className="text-3xl font-bold tracking-tight">Intresseanmälningar</h2>
+        </div>
+        <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
+          <DialogTrigger asChild>
+            <Button className="w-full sm:w-auto">
+              <Plus className="w-4 h-4 mr-2" />
+              Lägg till intresseanmälan
+            </Button>
+          </DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>
@@ -173,61 +170,53 @@ export const InterestSignupManagement = () => {
                   }
                 </Button>
               </div>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="bg-muted/20 p-3 rounded-md border-0">
-          <p className="text-xs text-muted-foreground">
-            Hantera intresseanmälningar för kommande kurser. Använd upp/ner-pilarna för att ändra ordning.
+          </DialogContent>
+        </Dialog>
+      </div>
+      
+      {!interestSignups || interestSignups.length === 0 ? (
+        <div className="text-center py-12">
+          <Users className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
+          <h3 className="text-xl font-semibold mb-3">Inga intresseanmälningar</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Det finns för närvarande inga intresseanmälningar i systemet.
           </p>
         </div>
-        
-        {!interestSignups || interestSignups.length === 0 ? (
-          <div className="text-center py-8">
-            <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Inga intresseanmälningar</h3>
-            <p className="text-muted-foreground">
-              Det finns för närvarande inga intresseanmälningar i systemet.
-            </p>
-          </div>
-        ) : isMobile ? (
-          <div className="space-y-4">
-            {interestSignups.map((item, index) => (
-              <MobileInterestCard
-                key={item.id}
-                item={item}
-                index={index}
-                totalItems={interestSignups.length}
-                onEdit={handleEdit}
-                onToggleVisibility={(item) => toggleVisibilityMutation.mutate(item)}
-                onDelete={(item) => deleteMutation.mutate(item)}
-                onViewSubmissions={handleViewSubmissions}
-                onMoveUp={handleMoveUp}
-                onMoveDown={handleMoveDown}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            {interestSignups.map((item, index) => (
-              <InterestCard
-                key={item.id}
-                item={item}
-                index={index}
-                totalItems={interestSignups.length}
-                onEdit={handleEdit}
-                onToggleVisibility={(item) => toggleVisibilityMutation.mutate(item)}
-                onDelete={(item) => deleteMutation.mutate(item)}
-                onViewSubmissions={handleViewSubmissions}
-                onMoveUp={handleMoveUp}
-                onMoveDown={handleMoveDown}
-              />
-            ))}
-          </div>
-        )}
-      </CardContent>
+      ) : isMobile ? (
+        <div className="space-y-4">
+          {interestSignups.map((item, index) => (
+            <MobileInterestCard
+              key={item.id}
+              item={item}
+              index={index}
+              totalItems={interestSignups.length}
+              onEdit={handleEdit}
+              onToggleVisibility={(item) => toggleVisibilityMutation.mutate(item)}
+              onDelete={(item) => deleteMutation.mutate(item)}
+              onViewSubmissions={handleViewSubmissions}
+              onMoveUp={handleMoveUp}
+              onMoveDown={handleMoveDown}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {interestSignups.map((item, index) => (
+            <InterestCard
+              key={item.id}
+              item={item}
+              index={index}
+              totalItems={interestSignups.length}
+              onEdit={handleEdit}
+              onToggleVisibility={(item) => toggleVisibilityMutation.mutate(item)}
+              onDelete={(item) => deleteMutation.mutate(item)}
+              onViewSubmissions={handleViewSubmissions}
+              onMoveUp={handleMoveUp}
+              onMoveDown={handleMoveDown}
+            />
+          ))}
+        </div>
+      )}
 
       <SubmissionsDialog
         isOpen={isSubmissionsDialogOpen}
@@ -237,6 +226,6 @@ export const InterestSignupManagement = () => {
         onDeleteSubmission={handleDeleteSubmission}
         isDeleting={deleteSubmissionMutation.isPending}
       />
-    </Card>
+    </div>
   );
 };
