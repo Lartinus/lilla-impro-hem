@@ -34,7 +34,7 @@ export default function ShowTag({ name, color, size = 'small', clickable = false
   return (
     <Component 
       className={`${sizeClasses} rounded-full border-2 flex items-center justify-center font-rajdhani font-medium ${
-        clickable ? 'cursor-pointer hover:brightness-110 transition-all' : ''
+        clickable ? 'cursor-pointer hover:brightness-110 transition-[filter]' : ''
       }`}
       style={{ 
         color: 'rgb(var(--white))',
