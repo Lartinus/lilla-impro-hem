@@ -204,43 +204,45 @@ const ShowDetails = () => {
                 </div>
               )}
 
-              {/* Ticket purchase section */}
-              <div className="mb-12">
-                <TicketPurchaseComplete
-                  onPurchase={() => {}}
-                  ticketPrice={formattedShow.ticketPrice}
-                  discountPrice={formattedShow.discountPrice}
-                  totalTickets={formattedShow.totalTickets}
-                  showSlug={formattedShow.slug}
-                  showTitle={formattedShow.title}
-                  showDate={formattedShow.date}
-                  showLocation={formattedShow.location}
-                />
-              </div>
-
-              {/* Performers section */}
-              {formattedShow.performers && formattedShow.performers.length > 0 && (
-                <div className="mb-8">
-                  <PerformersSection performers={formattedShow.performers} title="MEDVERKANDE" />
-                </div>
-              )}
-
-              {/* Newsletter signup section */}
-              <NewsletterSignupSection onSignupClick={() => setIsNewsletterModalOpen(true)} />
-
-              {/* Back to shows link */}
-              <div className="mb-8">
-                <Link 
-                  to="/shows" 
-                  className="inline-flex items-center text-black hover:text-gray-700 transition-colors"
-                >
-                  <ArrowLeft size={20} className="mr-2" />
-                  Tillbaka till föreställningar
-                </Link>
-              </div>
-
             </MainCard>
           </div>
+        </div>
+
+        {/* Ticket purchase section */}
+        <div className="mb-12 max-w-[800px] mx-auto px-6 md:px-8">
+          <TicketPurchaseComplete
+            onPurchase={() => {}}
+            ticketPrice={formattedShow.ticketPrice}
+            discountPrice={formattedShow.discountPrice}
+            totalTickets={formattedShow.totalTickets}
+            showSlug={formattedShow.slug}
+            showTitle={formattedShow.title}
+            showDate={formattedShow.date}
+            showLocation={formattedShow.location}
+          />
+        </div>
+
+        {/* Performers section */}
+        {formattedShow.performers && formattedShow.performers.length > 0 && (
+          <div className="mb-8 max-w-[800px] mx-auto px-6 md:px-8">
+            <PerformersSection performers={formattedShow.performers} title="MEDVERKANDE" />
+          </div>
+        )}
+
+        {/* Newsletter signup section */}
+        <div className="max-w-[800px] mx-auto px-6 md:px-8">
+          <NewsletterSignupSection onSignupClick={() => setIsNewsletterModalOpen(true)} />
+        </div>
+
+        {/* Back to shows link */}
+        <div className="mb-8 max-w-[800px] mx-auto px-6 md:px-8">
+          <Link 
+            to="/shows" 
+            className="inline-flex items-center text-black hover:text-gray-700 transition-colors"
+          >
+            <ArrowLeft size={20} className="mr-2" />
+            Tillbaka till föreställningar
+          </Link>
         </div>
       </div>
       
