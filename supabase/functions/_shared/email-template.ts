@@ -50,8 +50,20 @@ export function createUnifiedEmailTemplate(
   <meta name="color-scheme" content="light only">
   <title>${subject}</title>
   <style>
-    @import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap');
-    @import url('https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap');
+    /* Use @font-face for better email client compatibility */
+    @font-face {
+      font-family: 'Tanker';
+      src: url('https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+    }
+    
+    @font-face {
+      font-family: 'Satoshi';
+      src: url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap') format('woff2');
+      font-weight: 400 700;
+      font-display: swap;
+    }
     
     /* Force light mode for all email clients */
     * {
@@ -61,6 +73,12 @@ export function createUnifiedEmailTemplate(
     /* Fallbacks for email clients that don't support web fonts */
     .tanker-font { font-family: 'Tanker', 'Arial Black', Impact, sans-serif !important; }
     .satoshi-font { font-family: 'Satoshi', Arial, sans-serif !important; }
+    
+    /* Ensure headers use correct fonts with strong specificity */
+    h1, h2, h3, h4 { 
+      font-family: 'Tanker', 'Arial Black', Impact, sans-serif !important; 
+      font-weight: 400 !important;
+    }
   </style>
 </head>
 <body style="margin: 0; padding: 0; background-color: #ffffff !important; color-scheme: light only;">
