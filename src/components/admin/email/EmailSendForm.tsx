@@ -9,9 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Send } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { ImagePicker } from '../ImagePicker';
-import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 import { supabase } from '@/integrations/supabase/client';
 import { EmailTemplate, EmailGroup, EmailContact, GroupMember } from './types';
+import { FormattingButtons } from './FormattingButtons';
 
 interface EmailSendFormProps {
   emailTemplates: EmailTemplate[];
@@ -67,6 +67,17 @@ export function EmailSendForm({
     setBulkEmailTemplateData({
       background_image: template.background_image || '',
       content: template.content || ''
+    });
+  };
+
+  const insertHeader = (level: number) => {
+    const headerPrefix = level === 2 ? '## ' : '### ';
+    const currentContent = bulkEmailTemplateData.content;
+    const newContent = currentContent + (currentContent ? '\n\n' : '') + headerPrefix + 'Ny rubrik';
+    
+    setBulkEmailTemplateData({
+      ...bulkEmailTemplateData,
+      content: newContent
     });
   };
 
@@ -318,6 +329,7 @@ export function EmailSendForm({
           
           <div className="space-y-2">
             <Label htmlFor="text-content">Innehåll (enkel text)</Label>
+            <FormattingButtons onInsertHeader={insertHeader} />
             <Textarea
               id="text-content"
               value={bulkEmailTemplateData.content}
