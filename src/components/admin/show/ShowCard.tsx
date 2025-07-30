@@ -119,12 +119,8 @@ export function ShowCard({
           {show.performers && show.performers.length > 0 && (
             <div className="py-2 border-t border-border/50">
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Skådespelare</span>
-              <div className="flex flex-wrap gap-1 mt-1">
-                {show.performers.map((performer) => (
-                  <Badge key={performer.id} variant="outline" className="text-xs">
-                    {performer.name}
-                  </Badge>
-                ))}
+              <div className="text-sm font-medium mt-1">
+                {show.performers.map((performer) => performer.name).join(', ')}
               </div>
             </div>
           )}
