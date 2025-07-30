@@ -90,7 +90,7 @@ const ShowCardSimple = ({
               <div className="flex items-center justify-between mb-1">
                 <div className="flex-1 border-t-2 border-dashed border-black"></div>
                 {show.tag && (
-                  <div className="ml-2 -my-2">
+                  <div className="ml-2 -my-[10px]">
                     <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
                   </div>
                 )}
@@ -98,7 +98,7 @@ const ShowCardSimple = ({
               
               <div className="min-h-[24px]">
                 {show.description && (
-                  <p className="text-gray-700 text-base font-satoshi leading-relaxed">{show.description}</p>
+                  <p className="mt-2">{show.description}</p>
                 )}
               </div>
             </div>
