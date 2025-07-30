@@ -1,5 +1,5 @@
 function convertTextToHtml(text: string): string {
-  // Clean and convert text to HTML
+  // Simply convert text to paragraphs - no markdown, no headers
   return text
     .replace(/<br\s*\/?>/gi, '\n') // Convert <br> to newlines
     .replace(/<[^>]*>/g, '') // Remove all HTML tags
@@ -9,26 +9,8 @@ function convertTextToHtml(text: string): string {
       const trimmed = line.trim();
       if (!trimmed) return '';
       
-      // Handle headers (h1, h2, h3, h4)
-      if (trimmed.startsWith('####')) {
-        const headerText = trimmed.replace(/^####\s*/, '');
-        return `<h4 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 18px; font-weight: 400 !important; color: #1a1a1a !important; margin: 20px 0 12px 0; text-align: center;">${headerText}</h4>`;
-      }
-      if (trimmed.startsWith('###')) {
-        const headerText = trimmed.replace(/^###\s*/, '');
-        return `<h3 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 20px; font-weight: 400 !important; color: #1a1a1a !important; margin: 22px 0 14px 0; text-align: center;">${headerText}</h3>`;
-      }
-      if (trimmed.startsWith('##')) {
-        const headerText = trimmed.replace(/^##\s*/, '');
-        return `<h2 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 24px; font-weight: 400 !important; color: #1a1a1a !important; margin: 24px 0 16px 0; text-align: center;">${headerText}</h2>`;
-      }
-      if (trimmed.startsWith('#')) {
-        const headerText = trimmed.replace(/^#\s*/, '');
-        return `<h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 28px; font-weight: 400 !important; color: #1a1a1a !important; margin: 28px 0 18px 0; text-align: center;">${headerText}</h1>`;
-      }
-      
-      // Handle regular paragraphs - left aligned
-      return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 16px 0; text-align: left;">${trimmed}</p>`;
+      // All text becomes simple paragraphs with consistent styling
+      return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 16px 0; text-align: left; line-height: 1.6;">${trimmed}</p>`;
     })
     .filter(line => line) // Remove empty lines
     .join('');
@@ -55,21 +37,13 @@ export function createUnifiedEmailTemplate(
   <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
   
   <style>
-    
     /* Force light mode for all email clients */
     * {
       color-scheme: light only !important;
     }
     
     /* Fallbacks for email clients that don't support web fonts */
-    .tanker-font { font-family: 'Tanker', 'Arial Black', Impact, sans-serif !important; }
     .satoshi-font { font-family: 'Satoshi', Arial, sans-serif !important; }
-    
-    /* Ensure headers use correct fonts with strong specificity */
-    h1, h2, h3, h4 { 
-      font-family: 'Tanker', 'Arial Black', Impact, sans-serif !important; 
-      font-weight: 400 !important;
-    }
   </style>
 </head>
 <body style="margin: 0; padding: 0; background-color: #ffffff !important; color-scheme: light only;">

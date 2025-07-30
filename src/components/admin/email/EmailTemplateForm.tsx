@@ -80,15 +80,17 @@ export function EmailTemplateForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="template-content">Innehåll (Markdown)</Label>
+          <Label htmlFor="template-content">Innehåll (enkel text)</Label>
           <Textarea
             id="template-content"
             value={templateForm.content}
             onChange={(e) => updateForm({ content: e.target.value })}
-            placeholder="# Rubrik&#10;&#10;Här kommer brödtexten..."
+            placeholder="Skriv din text här...&#10;&#10;Ny rad blir automatiskt nytt stycke."
             rows={12}
-            className="font-mono text-sm"
           />
+          <div className="text-xs text-muted-foreground">
+            Skriv enkel text - varje rad blir ett eget stycke. Inga rubriker eller formatering behövs.
+          </div>
         </div>
 
         <div className="space-y-2">

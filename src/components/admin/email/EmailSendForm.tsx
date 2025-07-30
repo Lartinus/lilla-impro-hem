@@ -70,9 +70,18 @@ export function EmailSendForm({
     });
   };
 
-  const createSimpleEmailTemplate = (subject: string, markdownContent: string, backgroundImage?: string) => {
+  const createSimpleEmailTemplate = (subject: string, textContent: string, backgroundImage?: string) => {
     const hasBackground = backgroundImage && backgroundImage.trim() !== '';
-    const htmlContent = convertMarkdownToHtml(markdownContent);
+    // Convert simple text to HTML paragraphs - no markdown
+    const htmlContent = textContent
+      .split('\n')
+      .map(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return '';
+        return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 16px 0; text-align: left; line-height: 1.6;">${trimmed}</p>`;
+      })
+      .filter(line => line)
+      .join('');
     
     return `
       <!DOCTYPE html>
@@ -308,17 +317,16 @@ export function EmailSendForm({
           <h3 className="text-lg font-medium">Design</h3>
           
           <div className="space-y-2">
-            <Label htmlFor="markdown-content">Innehåll (Markdown)</Label>
+            <Label htmlFor="text-content">Innehåll (enkel text)</Label>
             <Textarea
-              id="markdown-content"
+              id="text-content"
               value={bulkEmailTemplateData.content}
               onChange={(e) => setBulkEmailTemplateData({...bulkEmailTemplateData, content: e.target.value})}
-              placeholder="# Rubrik&#10;&#10;Här kommer brödtexten...&#10;&#10;## Underrubrik&#10;&#10;Mer text här."
+              placeholder="Skriv din text här...&#10;&#10;Ny rad blir automatiskt nytt stycke."
               rows={10}
-              className="font-mono text-sm"
             />
             <p className="text-sm text-muted-foreground">
-              Använd Markdown för formatering: # för stora rubriker, ## för mellanrubriker, ### för smårubriker, **fet text**, *kursiv text*, [länktext](url), - för punktlistor, 1. för numrerade listor, &gt; för citat. För radbryt: &lt;br&gt; eller dubbla mellanslag följt av radbryt. För centrerade rubriker: &lt;h1 style="text-align: center"&gt;Din rubrik&lt;/h1&gt;.
+              Skriv enkel text - varje rad blir ett eget stycke. Inga rubriker eller formatering behövs.
             </p>
           </div>
 
@@ -354,7 +362,7 @@ export function EmailSendForm({
                 } as React.CSSProperties}
               />
             ) : (
-              <p className="text-muted-foreground text-sm">Skriv markdown-innehåll för att se förhandsvisningen...</p>
+              <p className="text-muted-foreground text-sm">Skriv textinnehåll för att se förhandsvisningen...</p>
             )}
           </div>
         </div>
