@@ -22,9 +22,18 @@ export default function Header() {
         {/* Vänster sida - Logo på desktop */}
         <Link
           to="/"
-          className="hidden md:block logo-symbol font-tanker text-[32px] text-primary-foreground"
+          className="hidden md:block group relative w-8 h-8"
         >
-          O|O
+          <img 
+            src="/Favicon1.svg" 
+            alt="LIT Logo" 
+            className="w-8 h-8 transition-opacity duration-300 group-hover:opacity-0"
+          />
+          <img 
+            src="/Favicon2.svg" 
+            alt="LIT Logo Hover" 
+            className="w-8 h-8 absolute top-0 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          />
         </Link>
 
         {/* Mitt - LILLA IMPROTEATERN text (centerad på desktop, vänsterjusterad på mobil) */}
