@@ -3,6 +3,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ServiceBoxes from '@/components/ServiceBoxes'
 import ContentOverlay from '@/components/ContentOverlay'
+import OptimizedImage from '@/components/OptimizedImage'
 import { ArrowDown } from 'lucide-react'
 
 export default function Index() {
@@ -16,14 +17,16 @@ export default function Index() {
       {/* Hero image with text overlay */}
       <div className="relative">
         {/* Hero image */}
-        <div
-          className="
-            w-full
-            h-[50vh]
-            bg-[url('/uploads/images/Rosenqvist-6315.jpg')]
-            bg-cover bg-center
-          "
-        >
+        <div className="relative w-full h-[50vh] overflow-hidden">
+          <OptimizedImage
+            src="/uploads/images/Rosenqvist-6315.jpg"
+            alt="Lilla Improteatern hero image"
+            className="w-full h-full object-cover"
+            priority={true}
+            responsive={true}
+            sizes="100vw"
+          />
+          
           {/* Dark overlay for better text readability */}
           <div className="absolute inset-0 bg-black/50" />
           
@@ -45,7 +48,6 @@ export default function Index() {
             </div>
           </div>
         </div>
-
       </div>
 
       {/* White section with ServiceBoxes */}

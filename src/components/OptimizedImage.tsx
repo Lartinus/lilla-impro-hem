@@ -8,6 +8,9 @@ interface OptimizedImageProps {
   fallbackText?: string
   preferredSize?: 'small' | 'medium' | 'large'
   onLoad?: (src: string) => void
+  priority?: boolean
+  responsive?: boolean
+  sizes?: string
 }
 
 export default function OptimizedImage({
@@ -17,16 +20,33 @@ export default function OptimizedImage({
   fallbackText = 'Ingen bild',
   preferredSize = 'small',
   onLoad,
+  priority = false,
+  responsive = false,
+  sizes,
 }: OptimizedImageProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
 
-  const { imageUrl, originalSrc } = useCallback(() => {
-    if (!src) return { imageUrl: null, originalSrc: null }
-    if (typeof src === 'string') return { imageUrl: src, originalSrc: src }
+  const { imageUrl, originalSrc, srcSet } = useCallback(() => {
+    if (!src) return { imageUrl: null, originalSrc: null, srcSet: '' }
+    if (typeof src === 'string') {
+      const basePath = src.replace(/\.[^/.]+$/, '')
+      const extension = src.split('.').pop()
+      
+      // Generate responsive srcset if enabled
+      let srcSet = ''
+      if (responsive) {
+        srcSet = [
+          `${src} 1x`,
+          `${basePath}@2x.${extension} 2x`
+        ].join(', ')
+      }
+      
+      return { imageUrl: src, originalSrc: src, srcSet }
+    }
     const url = (src as any)?.data?.attributes?.url || (src as any)?.url
-    return { imageUrl: url, originalSrc: url }
-  }, [src])()
+    return { imageUrl: url, originalSrc: url, srcSet: '' }
+  }, [src, responsive])()
 
   const handleLoad = useCallback(() => {
     console.log('OptimizedImage: Image loaded successfully:', originalSrc)
@@ -60,9 +80,11 @@ export default function OptimizedImage({
       {isLoading && <Skeleton className={`absolute inset-0 ${className}`} />}
       <img
         src={imageUrl}
+        srcSet={srcSet || undefined}
+        sizes={sizes}
         alt={alt}
         className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-        loading="lazy"
+        loading={priority ? "eager" : "lazy"}
         decoding="async"
         onLoad={handleLoad}
         onError={handleError}

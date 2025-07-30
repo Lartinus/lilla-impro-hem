@@ -49,6 +49,8 @@ export default function ServiceBoxes() {
               alt={svc.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               preferredSize="medium"
+              responsive={true}
+              sizes="(min-width: 690px) 33vw, 100vw"
             />
             <div className="absolute inset-0 bg-black/20" />
           </div>
