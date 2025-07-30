@@ -143,15 +143,15 @@ const ShowDetails = () => {
               </div>
               
               {/* Title and date */}
-              <div>
+              <div className="mb-3">
                 <h2>{formattedShow.title}</h2>
                 <h3>{formatDateTime(formattedShow.date)}</h3>
               </div>
 
               {/* Location with map link */}
-              <div>
+              <div className="mb-4">
                 <h3 className="flex items-center">
-                  <MapPin size={20} className="text-black mr-2" />
+                  <MapPin size={20} className="text-black mr-1" />
                   <a 
                     href={formattedShow.mapLink} 
                     target="_blank" 
@@ -164,7 +164,7 @@ const ShowDetails = () => {
               </div>
 
               {/* Ticket prices */}
-              <div className="mb-2">
+              <div className="mb-4">
                 <h3>
                   {formattedShow.ticketPrice === 0 && formattedShow.discountPrice === 0 
                     ? '0 kr' 
