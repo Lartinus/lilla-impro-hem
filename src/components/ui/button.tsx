@@ -20,7 +20,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground whitespace-nowrap",
         link: "text-primary underline-offset-4 hover:underline whitespace-nowrap",
         blue: "bg-action-blue text-white hover:bg-action-blue-hover whitespace-nowrap",
-        homepage: "bg-primary-red text-white hover:bg-primary-red-hover text-left leading-tight",
+        homepage: "bg-primary-red text-white hover:bg-primary-red-hover text-left leading-none",
       },
       size: {
         default: "h-12 px-6 py-3 text-base",
