@@ -4,6 +4,7 @@ import PerformersSection from '@/components/PerformersSection';
 import OtherShowsSection from '@/components/OtherShowsSection';
 import OptimizedImage from '@/components/OptimizedImage';
 import ShowTag from '@/components/ShowTag';
+import MainCard from '@/components/MainCard';
 import { useParams, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAdminShows } from '@/hooks/useAdminShows';
@@ -107,112 +108,116 @@ const ShowDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Large full-width image */}
-      <div className="w-full h-96">
-        <OptimizedImage
-          src={show?.image_url}
-          alt={formattedShow.title}
-          className="w-full h-full object-cover"
-          fallbackText="Ingen bild"
-        />
-      </div>
-
-      {/* Main content */}
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        {/* Title and date */}
-        <div className="mb-6">
-          <h2>{formattedShow.title}</h2>
-          <h3>{formatDateTime(formattedShow.date)}</h3>
-        </div>
-
-        {/* Location with map link */}
-        <div className="mb-6">
-          <h3 className="flex items-center">
-            <MapPin size={20} className="text-red-600 mr-2" />
-            <a 
-              href={formattedShow.mapLink} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              {formattedShow.location}
-            </a>
-          </h3>
-        </div>
-
-        {/* Ticket prices */}
-        <div className="mb-6">
-          <h3>Ordinarie pris: {formattedShow.ticketPrice} kr</h3>
-          <h3>Rabatterat pris: {formattedShow.discountPrice} kr</h3>
-        </div>
-
-        {/* Dashed line and tag */}
-        {show?.show_tag && (
-          <div className="mb-6">
-            <div className="border-t border-dashed border-gray-400 pt-4">
-              <ShowTag name={show.show_tag.name} color={show.show_tag.color} />
-            </div>
-          </div>
-        )}
-
-        {/* Description */}
-        {formattedShow.description && (
-          <div className="mb-8">
-            <p dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(formattedShow.description) }} />
-          </div>
-        )}
-
-        {/* Practical info */}
-        {formattedShow.practicalInfo && formattedShow.practicalInfo.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-xl font-bold mb-4">Praktisk information</h3>
-            <div className="space-y-2">
-              {formattedShow.practicalInfo.map((item, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-red-600 rounded-full flex-shrink-0 mt-2"></div>
-                  <p className="text-gray-700">{item}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Ticket purchase section */}
-        <div className="mb-12">
-          <h2>KÖP BILJETTER</h2>
-          <TicketPurchaseComplete
-            onPurchase={() => {}}
-            ticketPrice={formattedShow.ticketPrice}
-            discountPrice={formattedShow.discountPrice}
-            totalTickets={formattedShow.totalTickets}
-            showSlug={formattedShow.slug}
-            showTitle={formattedShow.title}
-            showDate={formattedShow.date}
-            showLocation={formattedShow.location}
+    <div className="min-h-screen bg-gray-50">
+      {/* Image with overlapping card */}
+      <div className="relative">
+        {/* Large full-width image */}
+        <div className="w-full h-[280px]">
+          <OptimizedImage
+            src={show?.image_url}
+            alt={formattedShow.title}
+            className="w-full h-full object-cover"
+            fallbackText="Ingen bild"
           />
         </div>
 
-        {/* Performers section */}
-        {formattedShow.performers && formattedShow.performers.length > 0 && (
-          <div className="mb-12">
-            <h2>MEDVERKANDE</h2>
-            <PerformersSection performers={formattedShow.performers} />
-          </div>
-        )}
+        {/* Overlapping card */}
+        <div className="relative -mt-4 max-w-4xl mx-auto px-6">
+          <MainCard>
+            {/* Title and date */}
+            <div className="mb-3">
+              <h2>{formattedShow.title}</h2>
+              <h3>{formatDateTime(formattedShow.date)}</h3>
+            </div>
 
-        {/* Other shows section */}
-        <OtherShowsSection shows={formattedOtherShows} />
+            {/* Location with map link */}
+            <div className="mb-3">
+              <h3 className="flex items-center">
+                <MapPin size={20} className="text-black mr-2" />
+                <a 
+                  href={formattedShow.mapLink} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  {formattedShow.location}
+                </a>
+              </h3>
+            </div>
 
-        {/* Back link */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
-          <Link 
-            to="/shows" 
-            className="inline-flex items-center text-black hover:text-gray-600 transition-colors"
-          >
-            <ArrowLeft size={16} className="mr-2" />
-            Tillbaka till föreställningar
-          </Link>
+            {/* Ticket prices */}
+            <div className="mb-3">
+              <h3>{formattedShow.ticketPrice} kr / {formattedShow.discountPrice} kr</h3>
+            </div>
+
+            {/* Dashed line and tag */}
+            {show?.show_tag && (
+              <div className="mb-4">
+                <div className="border-t-2 border-dashed border-gray-800 pt-3">
+                  <ShowTag name={show.show_tag.name} color={show.show_tag.color} />
+                </div>
+              </div>
+            )}
+
+            {/* Description */}
+            {formattedShow.description && (
+              <div className="mb-6">
+                <p dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(formattedShow.description) }} />
+              </div>
+            )}
+
+            {/* Practical info */}
+            {formattedShow.practicalInfo && formattedShow.practicalInfo.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-4">Praktisk information</h3>
+                <div className="space-y-2">
+                  {formattedShow.practicalInfo.map((item, index) => (
+                    <div key={index} className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-red-600 rounded-full flex-shrink-0 mt-2"></div>
+                      <p className="text-gray-700">{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Ticket purchase section */}
+            <div className="mb-12">
+              <h2>KÖP BILJETTER</h2>
+              <TicketPurchaseComplete
+                onPurchase={() => {}}
+                ticketPrice={formattedShow.ticketPrice}
+                discountPrice={formattedShow.discountPrice}
+                totalTickets={formattedShow.totalTickets}
+                showSlug={formattedShow.slug}
+                showTitle={formattedShow.title}
+                showDate={formattedShow.date}
+                showLocation={formattedShow.location}
+              />
+            </div>
+
+            {/* Performers section */}
+            {formattedShow.performers && formattedShow.performers.length > 0 && (
+              <div className="mb-12">
+                <h2>MEDVERKANDE</h2>
+                <PerformersSection performers={formattedShow.performers} />
+              </div>
+            )}
+
+            {/* Other shows section */}
+            <OtherShowsSection shows={formattedOtherShows} />
+
+            {/* Back link */}
+            <div className="mt-12 pt-8 border-t border-gray-200">
+              <Link 
+                to="/shows" 
+                className="inline-flex items-center text-black hover:text-gray-600 transition-colors"
+              >
+                <ArrowLeft size={16} className="mr-2" />
+                Tillbaka till föreställningar
+              </Link>
+            </div>
+          </MainCard>
         </div>
       </div>
     </div>
