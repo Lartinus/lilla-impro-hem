@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ImagePicker } from './ImagePicker';
+import { ActorCard } from './ActorCard';
 
 interface Actor {
   id: string;
@@ -190,144 +191,17 @@ export const ActorManagement = () => {
         {isLoading ? (
           <div className="text-center py-8">Laddar skådespelare...</div>
         ) : actors && actors.length > 0 ? (
-          isMobile ? (
-            <div className="space-y-4">
-              {actors.map((actor) => (
-                <Card key={actor.id} className="p-4">
-                  <div className="flex items-start gap-3 mb-3">
-                    {actor.image_url ? (
-                      <img 
-                        src={actor.image_url} 
-                        alt={actor.name}
-                        className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-                        <User className="w-6 h-6 text-muted-foreground" />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-medium">{actor.name}</h4>
-                        <Badge variant={actor.is_active ? "default" : "secondary"}>
-                          {actor.is_active ? 'Aktiv' : 'Inaktiv'}
-                        </Badge>
-                      </div>
-                      {actor.bio && (
-                        <p className="text-sm text-muted-foreground line-clamp-2">{actor.bio}</p>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleEditActor(actor)}
-                    >
-                      <Edit className="w-4 h-4 mr-1" />
-                      Redigera
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleToggleActive(actor)}
-                    >
-                      {actor.is_active ? (
-                        <PowerOff className="w-4 h-4 mr-1" />
-                      ) : (
-                        <Power className="w-4 h-4 mr-1" />
-                      )}
-                      {actor.is_active ? 'Inaktivera' : 'Aktivera'}
-                    </Button>
-                    <Button 
-                      variant="destructive" 
-                      size="sm"
-                      onClick={() => handleDeleteActor(actor)}
-                    >
-                      <Trash2 className="w-4 h-4 mr-1" />
-                      Radera
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Namn</TableHead>
-                  <TableHead>Bio</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Åtgärder</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {actors.map((actor) => (
-                  <TableRow key={actor.id}>
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-3">
-                        {actor.image_url ? (
-                          <img 
-                            src={actor.image_url} 
-                            alt={actor.name}
-                            className="w-8 h-8 rounded-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                            <User className="w-4 h-4 text-muted-foreground" />
-                          </div>
-                        )}
-                        {actor.name}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="max-w-xs truncate text-sm text-muted-foreground">
-                        {actor.bio || 'Ingen bio'}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={actor.is_active ? "default" : "secondary"}>
-                        {actor.is_active ? 'Aktiv' : 'Inaktiv'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => handleEditActor(actor)}
-                        >
-                          <Edit className="w-4 h-4 mr-1" />
-                          Redigera
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => handleToggleActive(actor)}
-                        >
-                          {actor.is_active ? (
-                            <PowerOff className="w-4 h-4 mr-1" />
-                          ) : (
-                            <Power className="w-4 h-4 mr-1" />
-                          )}
-                          {actor.is_active ? 'Inaktivera' : 'Aktivera'}
-                        </Button>
-                        <Button 
-                          variant="destructive" 
-                          size="sm"
-                          onClick={() => handleDeleteActor(actor)}
-                        >
-                          <Trash2 className="w-4 h-4 mr-1" />
-                          Radera
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )
+          <div className="grid gap-4">
+            {actors.map((actor) => (
+              <ActorCard
+                key={actor.id}
+                actor={actor}
+                onEdit={handleEditActor}
+                onToggleActive={handleToggleActive}
+                onDelete={handleDeleteActor}
+              />
+            ))}
+          </div>
         ) : (
           <div className="text-center py-8">
             <User className="mx-auto h-12 w-12 text-muted-foreground mb-4" />

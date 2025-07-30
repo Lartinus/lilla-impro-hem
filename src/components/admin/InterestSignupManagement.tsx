@@ -11,6 +11,7 @@ import { useInterestSignupMutations } from '@/hooks/useInterestSignupMutations';
 import { getDefaultInterestSignupForm } from '@/utils/interestSignupUtils';
 import { InterestRow } from './interest/InterestRow';
 import { MobileInterestCard } from './interest/MobileInterestCard';
+import { InterestCard } from './interest/InterestCard';
 import { InterestForm } from './interest/InterestForm';
 import { SubmissionsDialog } from './interest/SubmissionsDialog';
 import type { InterestSignupWithSubmissions, InterestSubmission, NewInterestSignupForm } from '@/types/interestSignupManagement';
@@ -177,8 +178,8 @@ export const InterestSignupManagement = () => {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="bg-muted/30 p-4 rounded-lg border border-border/40">
-          <p className="text-sm text-muted-foreground">
+        <div className="bg-muted/20 p-3 rounded-md border-0">
+          <p className="text-xs text-muted-foreground">
             Hantera intresseanmälningar för kommande kurser. Använd upp/ner-pilarna för att ändra ordning.
           </p>
         </div>
@@ -209,34 +210,22 @@ export const InterestSignupManagement = () => {
             ))}
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Ordning</TableHead>
-                <TableHead>Titel</TableHead>
-                <TableHead>Undertitel</TableHead>
-                <TableHead>Anmälda</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="w-[400px]">Åtgärder</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {interestSignups.map((item, index) => (
-                <InterestRow
-                  key={item.id}
-                  item={item}
-                  onEdit={handleEdit}
-                  onToggleVisibility={(item) => toggleVisibilityMutation.mutate(item)}
-                  onDelete={(item) => deleteMutation.mutate(item)}
-                  onViewSubmissions={handleViewSubmissions}
-                  onMoveUp={handleMoveUp}
-                  onMoveDown={handleMoveDown}
-                  canMoveUp={index > 0}
-                  canMoveDown={index < interestSignups.length - 1}
-                />
-              ))}
-            </TableBody>
-          </Table>
+          <div className="grid gap-4">
+            {interestSignups.map((item, index) => (
+              <InterestCard
+                key={item.id}
+                item={item}
+                index={index}
+                totalItems={interestSignups.length}
+                onEdit={handleEdit}
+                onToggleVisibility={(item) => toggleVisibilityMutation.mutate(item)}
+                onDelete={(item) => deleteMutation.mutate(item)}
+                onViewSubmissions={handleViewSubmissions}
+                onMoveUp={handleMoveUp}
+                onMoveDown={handleMoveDown}
+              />
+            ))}
+          </div>
         )}
       </CardContent>
 

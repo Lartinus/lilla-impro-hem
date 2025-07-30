@@ -10,6 +10,7 @@ import { useShowManagementMutations } from '@/hooks/useShowManagementMutations';
 import { getDefaultShowForm } from '@/utils/showUtils';
 import { ShowRow } from './show/ShowRow';
 import { MobileShowCard } from './show/MobileShowCard';
+import { ShowCard } from './show/ShowCard';
 import { ShowForm } from './show/ShowForm';
 import type { AdminShowWithPerformers, NewShowForm } from '@/types/showManagement';
 
@@ -114,8 +115,8 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="bg-muted/30 p-4 rounded-lg border border-border/40">
-          <p className="text-sm text-muted-foreground">
+        <div className="bg-muted/20 p-3 rounded-md border-0">
+          <p className="text-xs text-muted-foreground">
             Använd upp/ner-pilarna för att ändra ordning - föreställningar sorteras efter ordningsnummer på hemsidan
           </p>
         </div>
@@ -152,35 +153,21 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
               ))}
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-20">Ordning</TableHead>
-                  <TableHead>Titel</TableHead>
-                  <TableHead>Datum & Tid</TableHead>
-                  <TableHead>Plats</TableHead>
-                  <TableHead>Tag</TableHead>
-                  <TableHead>Pris</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Åtgärder</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {shows.map((show, index) => (
-                  <ShowRow
-                    key={show.id}
-                    show={show}
-                    onEdit={handleEditShow}
-                    onToggleVisibility={handleToggleShowVisibility}
-                    onDelete={handleDeleteShow}
-                    onMoveUp={handleMoveUp}
-                    onMoveDown={handleMoveDown}
-                    canMoveUp={index > 0}
-                    canMoveDown={index < shows.length - 1}
-                  />
-                ))}
-              </TableBody>
-            </Table>
+            <div className="grid gap-4">
+              {shows.map((show, index) => (
+                <ShowCard
+                  key={show.id}
+                  show={show}
+                  index={index}
+                  totalShows={shows.length}
+                  onEdit={handleEditShow}
+                  onToggleVisibility={handleToggleShowVisibility}
+                  onDelete={handleDeleteShow}
+                  onMoveUp={handleMoveUp}
+                  onMoveDown={handleMoveDown}
+                />
+              ))}
+            </div>
           )
         ) : (
           <div className="text-center py-12">
