@@ -137,7 +137,7 @@ const ShowDetails = () => {
                   className="inline-flex items-center text-white hover:text-white/80 transition-colors"
                   style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
                 >
-                  <MoveLeft size={24} className="mr-2" />
+                  <img src="/uploads/1753872836493-Arrow 6.svg" alt="Arrow" className="w-6 h-6 mr-2" />
                   Tillbaka till föreställningar
                 </Link>
               </div>
