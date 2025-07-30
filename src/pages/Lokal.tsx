@@ -22,7 +22,7 @@ const Lokal = () => {
       
       <div className="min-h-screen bg-[#FAFAFA]">
         <div className="relative z-10 mx-0 md:mx-auto max-w-[800px] -mt-16">
-          <div className="bg-[#F3F3F3] rounded-t-lg overflow-hidden">
+          <div className="bg-[#F3F3F3] rounded-t-lg">
             <div className="p-6 md:p-8 space-y-8">
               
               {/* Lokal-info */}
@@ -34,7 +34,7 @@ const Lokal = () => {
 
               {/* Kontakt för lokal */}
               <div className="space-y-4">
-                <h3>Har du nys om en lokal?</h3>
+                <h2>Har du nys om en lokal?</h2>
                 <p>Hör av dig till <a href="mailto:kontakt@improteatern.se" className="text-theatre-primary hover:text-theatre-secondary transition-colors">kontakt@improteatern.se</a></p>
               </div>
             </div>
