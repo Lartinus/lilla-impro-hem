@@ -52,12 +52,13 @@ const PerformersSection = ({
                 )}
 
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-content-primary">{perf.name}</p>
+                  <p className="font-bold text-content-primary mb-0">{perf.name}</p>
                   <div
-                    className="text-content-secondary break-words -mt-2 performer-bio"
+                    className="text-content-secondary break-words performer-bio"
                     style={{ 
                       lineHeight: 'var(--body-line-height)',
-                      fontSize: 'clamp(0.95rem, 2.5vw, 0.8rem)'
+                      fontSize: 'clamp(0.95rem, 2.5vw, 0.8rem)',
+                      marginTop: '-4px'
                     }}
                     dangerouslySetInnerHTML={{
                       __html: convertMarkdownToHtml(perf.bio)

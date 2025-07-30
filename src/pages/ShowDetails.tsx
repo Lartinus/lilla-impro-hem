@@ -1,6 +1,7 @@
 
 import TicketPurchaseComplete from '@/components/TicketPurchaseComplete';
 import PerformersSection from '@/components/PerformersSection';
+import NewsletterSignupSection from '@/components/NewsletterSignupSection';
 import Footer from '@/components/Footer';
 import OptimizedImage from '@/components/OptimizedImage';
 import ShowTag from '@/components/ShowTag';
@@ -217,15 +218,30 @@ const ShowDetails = () => {
 
             {/* Performers section */}
             {formattedShow.performers && formattedShow.performers.length > 0 && (
-              <div className="mb-12">
+              <div className="mb-8">
                 <PerformersSection performers={formattedShow.performers} title="MEDVERKANDE" />
               </div>
             )}
+
+            {/* Back to shows link */}
+            <div className="mb-8">
+              <Link 
+                to="/shows" 
+                className="inline-flex items-center text-black hover:text-gray-700 transition-colors"
+              >
+                <ArrowLeft size={20} className="mr-2" />
+                Tillbaka till föreställningar
+              </Link>
+            </div>
 
           </MainCard>
         </div>
       </div>
       </div>
+      
+      {/* Newsletter signup section */}
+      <NewsletterSignupSection />
+      
       <Footer />
     </>
   );
