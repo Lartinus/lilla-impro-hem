@@ -139,27 +139,29 @@ export default function Shows() {
                 
                 {showTags && showTags.length > 0 && (
                   <div className="space-y-4 mb-8">
-                    <div className="flex flex-wrap gap-4">
-                      {showTags.map((tag) => (
-                        <ShowTag 
-                          key={tag.id} 
-                          name={tag.name} 
-                          color={tag.color} 
-                          size="large"
-                          clickable
-                          isSelected={selectedTags.includes(tag.name)}
-                          onClick={() => handleTagClick(tag.name)}
-                        />
-                      ))}
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                      <div className="flex flex-wrap gap-4">
+                        {showTags.map((tag) => (
+                          <ShowTag 
+                            key={tag.id} 
+                            name={tag.name} 
+                            color={tag.color} 
+                            size="large"
+                            clickable
+                            isSelected={selectedTags.includes(tag.name)}
+                            onClick={() => handleTagClick(tag.name)}
+                          />
+                        ))}
+                      </div>
+                      {selectedTags.length > 0 && (
+                        <button
+                          onClick={handleClearTags}
+                          className="w-[115px] h-[28px] text-[16px] rounded-full border-2 border-gray-600 bg-transparent text-gray-600 hover:border-gray-800 hover:text-gray-800 transition-colors font-rajdhani font-medium flex items-center justify-center"
+                        >
+                          Rensa
+                        </button>
+                      )}
                     </div>
-                    {selectedTags.length > 0 && (
-                      <button
-                        onClick={handleClearTags}
-                        className="px-4 py-2 border-2 border-gray-600 text-gray-600 hover:border-gray-800 hover:text-gray-800 transition-colors font-satoshi font-medium"
-                      >
-                        Rensa
-                      </button>
-                    )}
                   </div>
                 )}
               </section>
@@ -179,7 +181,7 @@ export default function Shows() {
                     ))}
                   </div>
                 ) : selectedTags.length > 0 ? (
-                  <div className="text-center py-12">
+                  <div className="text-left py-12">
                     <h2>Inga föreställningar matchar de valda taggarna</h2>
                     <p className="text-gray-600 mb-6 font-satoshi">
                       Försök med andra taggar eller rensa filtret för att se alla föreställningar.

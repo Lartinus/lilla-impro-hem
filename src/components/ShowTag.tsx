@@ -36,14 +36,13 @@ export default function ShowTag({ name, color, size = 'small', clickable = false
       className={`${sizeClasses} rounded-full border-2 flex items-center justify-center font-rajdhani font-medium ${
         clickable ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''
       }`}
-      style={isSelected ? { 
-        color: tagColor,
-        backgroundColor: 'transparent',
-        borderColor: tagColor
-      } : { 
+      style={{ 
         color: 'rgb(var(--white))',
         backgroundColor: tagColor,
-        borderColor: tagColor
+        borderColor: tagColor,
+        ...(isSelected && {
+          boxShadow: `0 0 0 2px ${tagColor}`
+        })
       }}
       onClick={clickable ? onClick : undefined}
     >
