@@ -134,7 +134,7 @@ export default function Shows() {
                 <p className="text-[16px] font-satoshi mb-6">
                   Hos oss kan du se högkvalitativ impro från vår ensemble, avancerade kursare (house teams), 
                   kursuppspel från våra baskurser eller gästspel från grupper som vi bjudit in. 
-                  För tydlighetens skull markerar vi alltid våra föreställningar med någon av följande tags
+                  För tydlighetens skull markerar vi alltid våra föreställningar med någon av följande tags. Du kan sortera föreställningarna genom att klicka på taggarna.
                 </p>
                 
                 {showTags && showTags.length > 0 && (
