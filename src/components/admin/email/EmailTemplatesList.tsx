@@ -23,8 +23,7 @@ export function EmailTemplatesList({
 }: EmailTemplatesListProps) {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">Email-mallar</h3>
+      <div className="flex items-center justify-end">
         <Button onClick={onCreateNew} size="sm">
           <Plus className="w-4 h-4 mr-2" />
           Ny mall

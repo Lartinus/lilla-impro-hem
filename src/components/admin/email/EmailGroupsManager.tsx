@@ -136,8 +136,7 @@ export function EmailGroupsManager({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">Mottagargrupper</h3>
+      <div className="flex items-center justify-end">
         <div className="flex gap-2">
           <Button onClick={() => setShowAddContactsDialog(true)} size="sm" variant="outline">
             <UserPlus className="w-4 h-4 mr-2" />
