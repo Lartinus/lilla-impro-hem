@@ -81,7 +81,7 @@ const ShowCardSimple = ({
         
         <div className="p-4 flex flex-col flex-1">
           <div className="flex-1">
-            <div className="mb-3 min-h-[80px] flex flex-col justify-start">
+            <div className="mb-1 min-h-[80px] flex flex-col justify-start">
               <h2 className="mb-2">{show.title}</h2>
               <h3>{formatDateTime(show.date, show.time)}</h3>
             </div>
