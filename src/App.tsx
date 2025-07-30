@@ -11,7 +11,7 @@ import About from "./pages/About";
 import Lokal from "./pages/Lokal";
 import Shows from "./pages/Shows";
 import ShowDetails from "./pages/ShowDetails";
-import AnlitaOss from "./pages/AnlitaOss";
+import BokaOss from "./pages/BokaOss";
 import NotFound from "./pages/NotFound";
 import Unsubscribe from "./pages/Unsubscribe";
 import NewsletterConfirmation from "./pages/NewsletterConfirmation";
@@ -40,7 +40,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/kurser" element={<Courses />} />
-            <Route path="/boka-oss" element={<AnlitaOss />} />
+            <Route path="/boka-oss" element={<BokaOss />} />
             <Route path="/om-oss" element={<About />} />
             <Route path="/lokal" element={<Lokal />} />
             <Route path="/shows" element={<Shows />} />
