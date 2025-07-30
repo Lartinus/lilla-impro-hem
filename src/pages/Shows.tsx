@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 export default function Shows() {
   const [retryCount, setRetryCount] = useState(0);
   const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -48,6 +49,28 @@ export default function Shows() {
     if (!adminShows) return [];
     return adminShows.map(show => formatAdminShowForCard(show));
   }, [adminShows]);
+
+  // Filter shows based on selected tags
+  const filteredShows = useMemo(() => {
+    if (selectedTags.length === 0) return shows;
+    return shows.filter(show => 
+      show.tag && selectedTags.includes(show.tag.name)
+    );
+  }, [shows, selectedTags]);
+
+  // Handle tag click
+  const handleTagClick = (tagName: string) => {
+    setSelectedTags(prev => 
+      prev.includes(tagName) 
+        ? prev.filter(tag => tag !== tagName)
+        : [...prev, tagName]
+    );
+  };
+
+  // Handle clear all tags
+  const handleClearTags = () => {
+    setSelectedTags([]);
+  };
 
   // Extract image URLs for loading tracking
   const imageUrls = useMemo(() => {
@@ -115,10 +138,28 @@ export default function Shows() {
                 </p>
                 
                 {showTags && showTags.length > 0 && (
-                  <div className="flex flex-wrap gap-4 mb-8">
-                    {showTags.map((tag) => (
-                      <ShowTag key={tag.id} name={tag.name} color={tag.color} size="large" />
-                    ))}
+                  <div className="space-y-4 mb-8">
+                    <div className="flex flex-wrap gap-4">
+                      {showTags.map((tag) => (
+                        <ShowTag 
+                          key={tag.id} 
+                          name={tag.name} 
+                          color={tag.color} 
+                          size="large"
+                          clickable
+                          isSelected={selectedTags.includes(tag.name)}
+                          onClick={() => handleTagClick(tag.name)}
+                        />
+                      ))}
+                    </div>
+                    {selectedTags.length > 0 && (
+                      <button
+                        onClick={handleClearTags}
+                        className="px-4 py-2 border-2 border-gray-600 text-gray-600 hover:border-gray-800 hover:text-gray-800 transition-colors font-satoshi font-medium"
+                      >
+                        Rensa
+                      </button>
+                    )}
                   </div>
                 )}
               </section>
@@ -127,15 +168,22 @@ export default function Shows() {
               <section>
                 <h1>Aktuella Föreställningar</h1>
                 
-                {shows.length > 0 ? (
+                {filteredShows.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {shows.map((show, index) => (
+                    {filteredShows.map((show, index) => (
                       <ShowCardSimple 
                         key={show.id}
                         show={show}
                         onImageLoad={handleImageLoad}
                       />
                     ))}
+                  </div>
+                ) : selectedTags.length > 0 ? (
+                  <div className="text-center py-12">
+                    <h2>Inga föreställningar matchar de valda taggarna</h2>
+                    <p className="text-gray-600 mb-6 font-satoshi">
+                      Försök med andra taggar eller rensa filtret för att se alla föreställningar.
+                    </p>
                   </div>
                 ) : (
                   <div className="text-center py-12">
