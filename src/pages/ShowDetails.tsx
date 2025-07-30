@@ -122,34 +122,33 @@ const ShowDetails = () => {
             className="w-full h-full object-cover"
             fallbackText="Ingen bild"
           />
-        </div>
-
-        {/* Back link positioned just above the card */}
-        <div className="relative -mt-8 max-w-4xl mx-auto px-6 md:px-6 z-20">
-          <Link 
-            to="/shows" 
-            className="inline-flex items-center text-white hover:text-white/80 transition-colors"
-            style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
-          >
-            <ArrowLeft size={16} className="mr-2" />
-            Tillbaka till föreställningar
-          </Link>
+          {/* Back link positioned in bottom left of image */}
+          <div className="absolute bottom-4 left-4">
+            <Link 
+              to="/shows" 
+              className="inline-flex items-center text-white hover:text-white/80 transition-colors"
+              style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
+            >
+              <ArrowLeft size={16} className="mr-2" />
+              Tillbaka till föreställningar
+            </Link>
+          </div>
         </div>
 
         {/* Overlapping card */}
         <div className="relative -mt-4 max-w-4xl mx-auto px-0 md:px-6">
           <MainCard className="relative">
+            {/* Dashed line at top of card */}
+            <div className="absolute -top-0 left-6 right-6">
+              <div className="border-t-2 border-dashed border-gray-800 w-full"></div>
+            </div>
+            
             {/* Floating tag on right side */}
             {show?.show_tag && (
               <div className="absolute -top-3 right-6 z-10">
                 <ShowTag name={show.show_tag.name} color={show.show_tag.color} />
               </div>
             )}
-
-            {/* Dashed line - always show for debugging */}
-            <div className="mb-4">
-              <div className="border-t-2 border-dashed border-gray-800 w-full"></div>
-            </div>
 
             {/* Title and date */}
             <div className="mb-2">
