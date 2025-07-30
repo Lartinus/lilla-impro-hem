@@ -86,8 +86,8 @@ const ShowCardSimple = ({
               <h3 className="mb-3">{formatDateTime(show.date, show.time)}</h3>
             </div>
             
-            <div className="pt-1 mb-4">
-              <div className="flex items-center justify-between mb-2">
+            <div className="pt-1 mb-1">
+              <div className="flex items-center justify-between mb-1">
                 <div className="flex-1 border-t-2 border-dashed border-black"></div>
                 {show.tag && (
                   <div className="ml-2">
