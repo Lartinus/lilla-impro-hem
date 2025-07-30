@@ -125,22 +125,23 @@ const ShowDetails = () => {
               className="w-full h-full object-cover"
               fallbackText="Ingen bild"
             />
-            {/* Back link positioned in bottom left of image */}
-            <div className="absolute bottom-4 left-4">
-              <Link 
-                to="/shows" 
-                className="inline-flex items-center text-white hover:text-white/80 transition-colors"
-                style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
-              >
-                <ArrowLeft size={24} className="mr-2" />
-                Tillbaka till föreställningar
-              </Link>
-            </div>
           </div>
 
           {/* Overlapping card */}
           <div className="relative z-10 mx-0 md:mx-auto max-w-[800px] -mt-16">
             <MainCard className="relative">            
+              {/* Back link positioned above content, aligned with text */}
+              <div className="absolute -top-12 left-6 md:left-8 z-20">
+                <Link 
+                  to="/shows" 
+                  className="inline-flex items-center text-white hover:text-white/80 transition-colors"
+                  style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
+                >
+                  <ArrowLeft size={20} className="mr-2" />
+                  Tillbaka till föreställningar
+                </Link>
+              </div>
+              
               {/* Title and date */}
               <div>
                 <h2>{formattedShow.title}</h2>
@@ -225,16 +226,6 @@ const ShowDetails = () => {
                 </div>
               )}
 
-              {/* Back to shows link */}
-              <div className="mb-8 bg-transparent">
-                <Link 
-                  to="/shows" 
-                  className="inline-flex items-center text-black hover:text-gray-700 transition-colors"
-                >
-                  <ArrowLeft size={20} className="mr-2" />
-                  Tillbaka till föreställningar
-                </Link>
-              </div>
 
               {/* Newsletter signup section */}
               <NewsletterSignupSection onSignupClick={() => setIsNewsletterModalOpen(true)} />
