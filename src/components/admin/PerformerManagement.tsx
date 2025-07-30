@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Edit, Trash2, User, Power, PowerOff } from 'lucide-react';
+import { Plus, Edit, Trash2, User, Power, PowerOff, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ImagePicker } from './ImagePicker';
+import { PerformerCard } from './PerformerCard';
 
 interface Performer {
   id: string;
@@ -31,6 +32,7 @@ interface PerformerForm {
 }
 
 export const PerformerManagement = () => {
+  const [searchTerm, setSearchTerm] = useState('');
   const isMobile = useIsMobile();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -182,6 +184,12 @@ export const PerformerManagement = () => {
     }
   };
 
+  // Filter performers based on search term
+  const filteredPerformers = performers?.filter(performer =>
+    performer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (performer.bio && performer.bio.toLowerCase().includes(searchTerm.toLowerCase()))
+  ) || [];
+
   if (isLoading) {
     return (
       <Card>
@@ -271,10 +279,21 @@ export const PerformerManagement = () => {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="bg-muted/30 p-4 rounded-lg border border-border/40">
-          <p className="text-sm text-muted-foreground">
+        <div className="bg-muted/20 p-3 rounded-md border-0">
+          <p className="text-xs text-muted-foreground">
             Hantera kursledare som kan tilldelas kurser
           </p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Sök kursledare..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
         </div>
         
         {!performers || performers.length === 0 ? (
@@ -285,151 +304,26 @@ export const PerformerManagement = () => {
              Lägg till kursledare för att kunna tilldela dem till kurser.
             </p>
           </div>
-        ) : isMobile ? (
-          <div className="space-y-4">
-            {performers.map((performer) => (
-              <Card key={performer.id} className="p-4">
-                <div className="flex items-start gap-3 mb-3">
-                  {performer.image_url ? (
-                    <img 
-                      src={performer.image_url} 
-                      alt={performer.name}
-                      className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-                      <User className="w-6 h-6 text-muted-foreground" />
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium">{performer.name}</h4>
-                      <Badge variant={performer.is_active ? "default" : "secondary"}>
-                        {performer.is_active ? 'Aktiv' : 'Inaktiv'}
-                      </Badge>
-                    </div>
-                    {performer.bio && (
-                      <p className="text-sm text-muted-foreground line-clamp-2">{performer.bio}</p>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="flex flex-wrap gap-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleEdit(performer)}
-                  >
-                    <Edit className="w-4 h-4 mr-1" />
-                    Redigera
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => toggleStatusMutation.mutate(performer)}
-                    disabled={toggleStatusMutation.isPending}
-                  >
-                    {performer.is_active ? (
-                      <PowerOff className="w-4 h-4 mr-1" />
-                    ) : (
-                      <Power className="w-4 h-4 mr-1" />
-                    )}
-                    {performer.is_active ? 'Inaktivera' : 'Aktivera'}
-                  </Button>
-                  <Button 
-                    variant="destructive" 
-                    size="sm"
-                    onClick={() => {
-                      if (confirm(`Är du säker på att du vill radera "${performer.name}"?`)) {
-                        deletePerformerMutation.mutate(performer.id);
-                      }
-                    }}
-                    disabled={deletePerformerMutation.isPending}
-                  >
-                    <Trash2 className="w-4 h-4 mr-1" />
-                    Radera
-                  </Button>
-                </div>
-              </Card>
-            ))}
+        ) : filteredPerformers.length === 0 ? (
+          <div className="text-center py-8">
+            <Search className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Inga resultat</h3>
+            <p className="text-muted-foreground">
+              Inga kursledare matchade din sökning.
+            </p>
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Namn</TableHead>
-                <TableHead>Bio</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="w-[300px]">Åtgärder</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {performers.map((performer) => (
-                <TableRow key={performer.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      {performer.image_url && (
-                        <img 
-                          src={performer.image_url} 
-                          alt={performer.name}
-                          className="w-8 h-8 rounded-full object-cover"
-                        />
-                      )}
-                      <span className="font-medium">{performer.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="max-w-xs truncate" title={performer.bio || ''}>
-                      {performer.bio || '-'}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={performer.is_active ? "default" : "secondary"}>
-                      {performer.is_active ? 'Aktiv' : 'Inaktiv'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleEdit(performer)}
-                      >
-                        <Edit className="w-4 h-4 mr-1" />
-                        Redigera
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => toggleStatusMutation.mutate(performer)}
-                        disabled={toggleStatusMutation.isPending}
-                      >
-                        {performer.is_active ? (
-                          <PowerOff className="w-4 h-4 mr-1" />
-                        ) : (
-                          <Power className="w-4 h-4 mr-1" />
-                        )}
-                        {performer.is_active ? 'Inaktivera' : 'Aktivera'}
-                      </Button>
-                      <Button 
-                        variant="destructive" 
-                        size="sm"
-                        onClick={() => {
-                          if (confirm(`Är du säker på att du vill radera "${performer.name}"?`)) {
-                            deletePerformerMutation.mutate(performer.id);
-                          }
-                        }}
-                        disabled={deletePerformerMutation.isPending}
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        Radera
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <div className="grid gap-4">
+            {filteredPerformers.map((performer) => (
+              <PerformerCard
+                key={performer.id}
+                performer={performer}
+                onEdit={handleEdit}
+                onToggleStatus={(performer) => toggleStatusMutation.mutate(performer)}
+                onDelete={(performer) => deletePerformerMutation.mutate(performer.id)}
+              />
+            ))}
+          </div>
         )}
       </CardContent>
     </Card>

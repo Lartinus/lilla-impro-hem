@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Edit, Trash2, User, Power, PowerOff } from 'lucide-react';
+import { Plus, Edit, Trash2, User, Power, PowerOff, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -32,6 +32,7 @@ interface ActorForm {
 }
 
 export const ActorManagement = () => {
+  const [searchTerm, setSearchTerm] = useState('');
   const isMobile = useIsMobile();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -163,6 +164,12 @@ export const ActorManagement = () => {
     }
   };
 
+  // Filter actors based on search term
+  const filteredActors = actors?.filter(actor =>
+    actor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (actor.bio && actor.bio.toLowerCase().includes(searchTerm.toLowerCase()))
+  ) || [];
+
   return (
     <Card>
       <CardHeader>
@@ -172,6 +179,17 @@ export const ActorManagement = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        {/* Search Bar */}
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Sök skådespelare..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+
         <div className="flex justify-start items-center mb-6">
           <Button onClick={() => {
             setIsEditMode(false);
@@ -190,9 +208,25 @@ export const ActorManagement = () => {
 
         {isLoading ? (
           <div className="text-center py-8">Laddar skådespelare...</div>
-        ) : actors && actors.length > 0 ? (
+        ) : actors && actors.length === 0 ? (
+          <div className="text-center py-8">
+            <User className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Inga skådespelare</h3>
+            <p className="text-muted-foreground">
+              Lägg till din första skådespelare för att komma igång.
+            </p>
+          </div>
+        ) : filteredActors.length === 0 ? (
+          <div className="text-center py-8">
+            <Search className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Inga resultat</h3>
+            <p className="text-muted-foreground">
+              Inga skådespelare matchade din sökning.
+            </p>
+          </div>
+        ) : (
           <div className="grid gap-4">
-            {actors.map((actor) => (
+            {filteredActors.map((actor) => (
               <ActorCard
                 key={actor.id}
                 actor={actor}
@@ -201,14 +235,6 @@ export const ActorManagement = () => {
                 onDelete={handleDeleteActor}
               />
             ))}
-          </div>
-        ) : (
-          <div className="text-center py-8">
-            <User className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Inga skådespelare</h3>
-            <p className="text-muted-foreground">
-              Lägg till din första skådespelare för att komma igång.
-            </p>
           </div>
         )}
 
