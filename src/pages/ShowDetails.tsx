@@ -125,13 +125,13 @@ const ShowDetails = () => {
         <div className="relative -mt-4 max-w-4xl mx-auto px-0 md:px-6">
           <MainCard>
             {/* Title and date */}
-            <div className="mb-3">
+            <div className="mb-2">
               <h2>{formattedShow.title}</h2>
               <h3>{formatDateTime(formattedShow.date)}</h3>
             </div>
 
             {/* Location with map link */}
-            <div className="mb-3">
+            <div className="mb-2">
               <h3 className="flex items-center">
                 <MapPin size={20} className="text-black mr-2" />
                 <a 
@@ -146,7 +146,7 @@ const ShowDetails = () => {
             </div>
 
             {/* Ticket prices */}
-            <div className="mb-3">
+            <div className="mb-4">
               <h3>{formattedShow.ticketPrice} kr / {formattedShow.discountPrice} kr</h3>
             </div>
 
@@ -183,7 +183,6 @@ const ShowDetails = () => {
 
             {/* Ticket purchase section */}
             <div className="mb-12">
-              <h2>KÖP BILJETTER</h2>
               <TicketPurchaseComplete
                 onPurchase={() => {}}
                 ticketPrice={formattedShow.ticketPrice}
