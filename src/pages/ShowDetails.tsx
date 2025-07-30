@@ -138,21 +138,23 @@ const ShowDetails = () => {
         {/* Overlapping card */}
         <div className="relative -mt-4 max-w-4xl mx-auto px-0 md:px-6">
           <MainCard className="relative">            
-            {/* Floating tag on right side */}
-            {show?.show_tag && (
-              <div className="absolute -top-3 right-6 z-10">
+            {/* Floating tag on right side - always show for Improjam */}
+            <div className="absolute -top-3 right-6 z-10">
+              {show?.show_tag ? (
                 <ShowTag name={show.show_tag.name} color={show.show_tag.color} />
-              </div>
-            )}
+              ) : (
+                <ShowTag name="Improjam" />
+              )}
+            </div>
 
             {/* Title and date */}
-            <div className="mb-1">
+            <div className="mb-0">
               <h2>{formattedShow.title}</h2>
               <h3>{formatDateTime(formattedShow.date)}</h3>
             </div>
 
             {/* Location with map link */}
-            <div className="mb-1">
+            <div className="mb-0">
               <h3 className="flex items-center">
                 <MapPin size={20} className="text-black mr-2" />
                 <a 
