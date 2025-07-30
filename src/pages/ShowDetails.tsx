@@ -137,7 +137,7 @@ const ShowDetails = () => {
                   className="inline-flex items-center text-white hover:text-white/80 transition-colors"
                   style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
                 >
-                  <ArrowLeft size={24} className="mr-2" />
+                  <ArrowLeft size={24} strokeWidth={2.5} className="mr-2" />
                   Tillbaka till föreställningar
                 </Link>
               </div>
