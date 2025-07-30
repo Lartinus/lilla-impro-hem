@@ -146,13 +146,13 @@ const ShowDetails = () => {
             )}
 
             {/* Title and date */}
-            <div className="mb-2">
+            <div className="mb-1">
               <h2>{formattedShow.title}</h2>
               <h3>{formatDateTime(formattedShow.date)}</h3>
             </div>
 
             {/* Location with map link */}
-            <div className="mb-2">
+            <div className="mb-1">
               <h3 className="flex items-center">
                 <MapPin size={20} className="text-black mr-2" />
                 <a 
@@ -167,7 +167,7 @@ const ShowDetails = () => {
             </div>
 
             {/* Ticket prices */}
-            <div className="mb-4">
+            <div className="mb-2">
               <h3>{formattedShow.ticketPrice} kr / {formattedShow.discountPrice} kr</h3>
             </div>
 
