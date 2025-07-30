@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { EmailSendForm } from './EmailSendForm';
+import { SimpleEmailBuilder } from './SimpleEmailBuilder';
 import { EmailTemplatesManager } from './EmailTemplatesManager';
 import { EmailGroupsManager } from './EmailGroupsManager';
 import { EmailContactsManager } from './EmailContactsManager';
@@ -155,11 +155,9 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     switch (activeTab) {
       case 'send':
         return (
-          <EmailSendForm
-            emailTemplates={emailTemplates}
+          <SimpleEmailBuilder
             emailGroups={emailGroups}
             emailContacts={emailContacts}
-            templatesLoading={templatesLoading}
           />
         );
       
