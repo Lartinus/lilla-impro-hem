@@ -12,19 +12,19 @@ function convertTextToHtml(text: string): string {
       // Handle headers (h1, h2, h3, h4)
       if (trimmed.startsWith('####')) {
         const headerText = trimmed.replace(/^####\s*/, '');
-        return `<h4 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 18px; color: #1a1a1a !important; margin: 20px 0 12px 0; text-align: center;">${headerText}</h4>`;
+        return `<h4 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 18px; font-weight: 400 !important; color: #1a1a1a !important; margin: 20px 0 12px 0; text-align: center;">${headerText}</h4>`;
       }
       if (trimmed.startsWith('###')) {
         const headerText = trimmed.replace(/^###\s*/, '');
-        return `<h3 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 20px; color: #1a1a1a !important; margin: 22px 0 14px 0; text-align: center;">${headerText}</h3>`;
+        return `<h3 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 20px; font-weight: 400 !important; color: #1a1a1a !important; margin: 22px 0 14px 0; text-align: center;">${headerText}</h3>`;
       }
       if (trimmed.startsWith('##')) {
         const headerText = trimmed.replace(/^##\s*/, '');
-        return `<h2 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 24px; color: #1a1a1a !important; margin: 24px 0 16px 0; text-align: center;">${headerText}</h2>`;
+        return `<h2 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 24px; font-weight: 400 !important; color: #1a1a1a !important; margin: 24px 0 16px 0; text-align: center;">${headerText}</h2>`;
       }
       if (trimmed.startsWith('#')) {
         const headerText = trimmed.replace(/^#\s*/, '');
-        return `<h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 28px; color: #1a1a1a !important; margin: 28px 0 18px 0; text-align: center;">${headerText}</h1>`;
+        return `<h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 28px; font-weight: 400 !important; color: #1a1a1a !important; margin: 28px 0 18px 0; text-align: center;">${headerText}</h1>`;
       }
       
       // Handle regular paragraphs - left aligned
