@@ -5,7 +5,8 @@ import { useAdminStats } from '@/hooks/useAdminStats';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { BarChart3, Users, Ticket, Mail, Settings, LogIn, LogOut } from 'lucide-react';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { Settings, LogIn, LogOut, Menu } from 'lucide-react';
 import Header from '@/components/Header';
 import LoginForm from '@/components/auth/LoginForm';
 import SignUpForm from '@/components/auth/SignUpForm';
@@ -18,7 +19,7 @@ import { InterestSignupManagement } from '@/components/admin/InterestSignupManag
 import { ShowManagement } from '@/components/admin/ShowManagement';
 import { VenueManagement } from '@/components/admin/VenueManagement';
 import { ActorManagement } from '@/components/admin/ActorManagement';
-import { AdminNavigation } from '@/components/admin/AdminNavigation';
+import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { DiscountCodeManagement } from '@/components/admin/DiscountCodeManagement';
 import { ImageManagement } from '@/components/admin/ImageManagement';
 import EmailManagement from '@/components/admin/EmailManagement';
@@ -33,11 +34,10 @@ const AdminDashboard = () => {
   }, []);
   const { data: stats, isLoading: statsLoading } = useAdminStats();
   const [showSignUp, setShowSignUp] = React.useState(false);
-  const [activeSection, setActiveSection] = React.useState('courses');
+  const [activeSection, setActiveSection] = React.useState('overview');
   const [expandedSections, setExpandedSections] = React.useState({
     courses: true,
-    shows: false,
-    email: false
+    shows: false
   });
 
   const handleSignOut = async () => {
@@ -152,99 +152,98 @@ const AdminDashboard = () => {
         return <UserManagement />;
       case 'images':
         return <ImageManagement />;
-      case 'send':
-      case 'groups':
-      case 'contacts':
-      case 'templates':
-        return <EmailManagement activeTab={activeSection} />;
+      case 'email':
+        return <EmailManagement activeTab="send" />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="min-h-screen bg-background-gray font-satoshi">
-      <Header />
-      
-      <main className="container mx-auto px-4 py-8 pt-20">
-        <div className="mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-            <div className="flex-1 min-w-0">
-              <h1 className="text-2xl lg:text-3xl font-tanker text-text-gray">Administratörspanel</h1>
-              <p className="text-text-gray mt-2 font-satoshi">Hantera kurser, biljetter och kommunikation</p>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background-gray font-satoshi">
+        <AdminSidebar
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+          expandedSections={expandedSections}
+          setExpandedSections={setExpandedSections}
+        />
+        
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <header className="h-16 flex items-center justify-between border-b bg-white px-6">
+            <div className="flex items-center gap-4">
+              <SidebarTrigger className="lg:hidden" />
+              <div>
+                <h1 className="text-xl font-satoshi font-bold text-text-gray">Administratörspanel</h1>
+                <p className="text-sm text-text-gray/70 font-satoshi">Hantera kurser, biljetter och kommunikation</p>
+              </div>
             </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <Badge variant="secondary" className="text-xs lg:text-sm flex items-center">
-                <Settings className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
+            <div className="flex items-center gap-3">
+              <Badge variant="secondary" className="text-xs flex items-center font-satoshi">
+                <Settings className="w-3 h-3 mr-1" />
                 Admin
               </Badge>
               <Button 
                 variant="outline" 
                 size="sm" 
                 onClick={handleSignOut}
-                className="text-xs lg:text-sm flex items-center whitespace-nowrap"
+                className="text-xs flex items-center font-satoshi"
               >
-                <LogOut className="w-3 h-3 lg:w-4 lg:h-4 mr-1" />
+                <LogOut className="w-3 h-3 mr-1" />
                 Logga ut
               </Button>
             </div>
-          </div>
-        </div>
+          </header>
 
-        {/* Dashboard Overview */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-tanker text-text-gray mb-6">Översikt</h2>
-          <Card>
-            <CardContent className="p-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold mb-1">
-                    {statsLoading ? '--' : stats?.avgCourseParticipants || 0}
-                  </div>
-                  <p className="text-sm font-medium">Genomsnitt antal kursdeltagare</p>
-                </div>
+          {/* Main Content */}
+          <main className="flex-1 p-6 overflow-auto">
+            {activeSection === 'overview' ? (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-satoshi font-bold text-text-gray mb-6">Översikt</h2>
+                  <Card className="border-0 shadow-sm">
+                    <CardContent className="p-6">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold mb-1 font-satoshi">
+                            {statsLoading ? '--' : stats?.avgCourseParticipants || 0}
+                          </div>
+                          <p className="text-sm font-medium font-satoshi">Genomsnitt antal kursdeltagare</p>
+                        </div>
 
-                <div className="text-center">
-                  <div className="text-2xl font-bold mb-1">
-                    {statsLoading ? '--' : stats?.avgSoldTicketsPerShow || 0}
-                  </div>
-                  <p className="text-sm font-medium">Genomsnitt antal sålda biljetter</p>
-                </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold mb-1 font-satoshi">
+                            {statsLoading ? '--' : stats?.avgSoldTicketsPerShow || 0}
+                          </div>
+                          <p className="text-sm font-medium font-satoshi">Genomsnitt antal sålda biljetter</p>
+                        </div>
 
-                <div className="text-center">
-                  <div className="text-2xl font-bold mb-1">
-                    {statsLoading ? '--' : stats?.activeCourses || 0}
-                  </div>
-                  <p className="text-sm font-medium">Aktiva kurser</p>
-                </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold mb-1 font-satoshi">
+                            {statsLoading ? '--' : stats?.activeCourses || 0}
+                          </div>
+                          <p className="text-sm font-medium font-satoshi">Aktiva kurser</p>
+                        </div>
 
-                <div className="text-center">
-                  <div className="text-2xl font-bold mb-1">
-                    {statsLoading ? '--' : (stats?.nextShowDate ? new Date(stats.nextShowDate).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' }) : '--')}
-                  </div>
-                  <p className="text-sm font-medium">Nästa föreställning</p>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold mb-1 font-satoshi">
+                            {statsLoading ? '--' : (stats?.nextShowDate ? new Date(stats.nextShowDate).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' }) : '--')}
+                          </div>
+                          <p className="text-sm font-medium font-satoshi">Nästa föreställning</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            ) : (
+              renderContent()
+            )}
+          </main>
         </div>
-
-        {/* Navigation */}
-        <div className="mb-8">
-          <AdminNavigation
-            activeSection={activeSection}
-            setActiveSection={setActiveSection}
-            expandedSections={expandedSections}
-            setExpandedSections={setExpandedSections}
-          />
-        </div>
-
-        {/* Main Content */}
-        <div>
-          {renderContent()}
-        </div>
-      </main>
-    </div>
+      </div>
+    </SidebarProvider>
   );
 };
 

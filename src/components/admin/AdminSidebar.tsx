@@ -12,7 +12,10 @@ import {
   Calendar,
   MapPin,
   CreditCard,
-  UserCircle
+  UserCircle,
+  Image,
+  Archive,
+  FileText
 } from 'lucide-react';
 import {
   Sidebar,
@@ -59,11 +62,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     {
       id: 'courses',
       title: 'Kurser',
-      icon: Users,
+      icon: BookOpen,
       type: 'group' as const,
       expanded: expandedSections.courses,
       children: [
-        { id: 'courses', title: 'Kurshantering', icon: BookOpen },
+        { id: 'courses', title: 'Aktiva kurser', icon: BookOpen },
+        { id: 'courses-completed', title: 'Genomförda kurser', icon: Archive },
+        { id: 'course-templates', title: 'Kursmallar', icon: FileText },
         { id: 'interest', title: 'Intresse', icon: Heart },
         { id: 'performers', title: 'Kursledare', icon: UserCheck },
       ]
@@ -71,11 +76,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     {
       id: 'shows',
       title: 'Föreställningar',
-      icon: Ticket,
+      icon: Calendar,
       type: 'group' as const,
       expanded: expandedSections.shows,
       children: [
-        { id: 'shows', title: 'Föreställningar', icon: Calendar },
+        { id: 'shows', title: 'Aktiva föreställningar', icon: Calendar },
+        { id: 'shows-completed', title: 'Genomförda föreställningar', icon: Archive },
+        { id: 'show-templates', title: 'Föreställningsmallar', icon: FileText },
         { id: 'actors', title: 'Skådespelare', icon: UserCircle },
         { id: 'discount-codes', title: 'Rabattkoder', icon: CreditCard },
         { id: 'venues', title: 'Platser', icon: MapPin },
@@ -86,6 +93,18 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       id: 'email',
       title: 'Email',
       icon: Mail,
+      type: 'single' as const
+    },
+    {
+      id: 'images',
+      title: 'Bilder',
+      icon: Image,
+      type: 'single' as const
+    },
+    {
+      id: 'users',
+      title: 'Användare',
+      icon: Users,
       type: 'single' as const
     }
   ];
@@ -98,12 +117,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   };
 
   return (
-    <Sidebar>
-      <SidebarContent>
+    <Sidebar className="bg-gray-900 border-r border-gray-800">
+      <SidebarContent className="bg-gray-900">
         <SidebarGroup>
-          <SidebarGroupLabel>Administratörspanel</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-gray-300 font-satoshi font-semibold px-6 py-4 text-sm">
+            Administratörspanel
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1 px-3">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   {item.type === 'single' ? (
@@ -114,7 +135,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                         setActiveSection(item.id);
                       }}
                       isActive={activeSection === item.id}
-                      className="w-full"
+                      className={`w-full font-satoshi text-sm ${
+                        activeSection === item.id
+                          ? 'bg-primary-red text-white'
+                          : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                      }`}
                     >
                       <item.icon className="w-4 h-4" />
                       {open && <span>{item.title}</span>}
@@ -125,7 +150,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                       onOpenChange={() => handleToggleGroup(item.id as 'courses' | 'shows')}
                     >
                       <CollapsibleTrigger asChild>
-                        <SidebarMenuButton className="w-full">
+                        <SidebarMenuButton className="w-full font-satoshi text-sm text-gray-300 hover:bg-gray-800 hover:text-white">
                           <item.icon className="w-4 h-4" />
                           {open && (
                             <>
@@ -151,7 +176,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                                 }}
                                 isActive={activeSection === child.id}
                                 size="sm"
-                                className="w-full"
+                                className={`w-full font-satoshi text-xs ${
+                                  activeSection === child.id
+                                    ? 'bg-primary-red text-white'
+                                    : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                                }`}
                               >
                                 <child.icon className="w-4 h-4" />
                                 <span>{child.title}</span>
