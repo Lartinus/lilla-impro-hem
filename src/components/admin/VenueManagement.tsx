@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
-import { Plus, Edit, Trash2, MapPin, Power, PowerOff, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, Edit, Trash2, MapPin, Power, PowerOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -32,43 +32,14 @@ interface VenueForm {
 }
 
 // Venue Row Component
-function VenueRow({ venue, onEdit, onToggleActive, onDelete, onMoveUp, onMoveDown, canMoveUp, canMoveDown }: {
+function VenueRow({ venue, onEdit, onToggleActive, onDelete }: {
   venue: Venue;
   onEdit: (venue: Venue) => void;
   onToggleActive: (venue: Venue) => void;
   onDelete: (venue: Venue) => void;
-  onMoveUp: (venue: Venue) => void;
-  onMoveDown: (venue: Venue) => void;
-  canMoveUp: boolean;
-  canMoveDown: boolean;
 }) {
   return (
     <TableRow>
-      <TableCell>
-        <div className="flex items-center gap-2">
-          <div className="flex flex-col">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onMoveUp(venue)}
-              disabled={!canMoveUp}
-              className="w-6 h-6 p-0"
-            >
-              <ChevronUp className="w-3 h-3" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onMoveDown(venue)}
-              disabled={!canMoveDown}
-              className="w-6 h-6 p-0"
-            >
-              <ChevronDown className="w-3 h-3" />
-            </Button>
-          </div>
-          <span className="text-xs text-muted-foreground">#{venue.sort_order || 0}</span>
-        </div>
-      </TableCell>
       <TableCell className="font-medium">{venue.name}</TableCell>
       <TableCell>
         <div className="flex items-center gap-1">
@@ -137,72 +108,17 @@ export const VenueManagement = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch venues
+  // Fetch venues (automatically sorted by name)
   const { data: venues, isLoading } = useQuery({
     queryKey: ['admin-venues'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('venues')
         .select('*')
-        .order('sort_order', { ascending: true });
+        .order('name', { ascending: true });
       
       if (error) throw error;
       return data || [];
-    }
-  });
-
-  // Move venue up/down mutations
-  const moveVenueUpMutation = useMutation({
-    mutationFn: async (venue: Venue) => {
-      const currentIndex = venues!.findIndex(v => v.id === venue.id);
-      if (currentIndex > 0) {
-        const prevVenue = venues![currentIndex - 1];
-        const currentSortOrder = venue.sort_order || 0;
-        const prevSortOrder = prevVenue.sort_order || 0;
-        
-        await Promise.all([
-          supabase.from('venues').update({ sort_order: prevSortOrder }).eq('id', venue.id),
-          supabase.from('venues').update({ sort_order: currentSortOrder }).eq('id', prevVenue.id)
-        ]);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-venues'] });
-      queryClient.invalidateQueries({ queryKey: ['venues'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte flytta platsen: ${error.message}`,
-        variant: "destructive"
-      });
-    }
-  });
-
-  const moveVenueDownMutation = useMutation({
-    mutationFn: async (venue: Venue) => {
-      const currentIndex = venues!.findIndex(v => v.id === venue.id);
-      if (currentIndex < venues!.length - 1) {
-        const nextVenue = venues![currentIndex + 1];
-        const currentSortOrder = venue.sort_order || 0;
-        const nextSortOrder = nextVenue.sort_order || 0;
-        
-        await Promise.all([
-          supabase.from('venues').update({ sort_order: nextSortOrder }).eq('id', venue.id),
-          supabase.from('venues').update({ sort_order: currentSortOrder }).eq('id', nextVenue.id)
-        ]);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-venues'] });
-      queryClient.invalidateQueries({ queryKey: ['venues'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: `Kunde inte flytta platsen: ${error.message}`,
-        variant: "destructive"
-      });
     }
   });
 
@@ -211,10 +127,7 @@ export const VenueManagement = () => {
     mutationFn: async (venueData: VenueForm) => {
       const { data, error } = await supabase
         .from('venues')
-        .insert([{
-          ...venueData,
-          sort_order: (venues?.length || 0) + 1
-        }])
+        .insert([venueData])
         .select()
         .single();
 
@@ -312,13 +225,6 @@ export const VenueManagement = () => {
     }
   };
 
-  const handleMoveUp = (venue: Venue) => {
-    moveVenueUpMutation.mutate(venue);
-  };
-
-  const handleMoveDown = (venue: Venue) => {
-    moveVenueDownMutation.mutate(venue);
-  };
 
   return (
     <Card>
@@ -329,11 +235,6 @@ export const VenueManagement = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="bg-muted/30 p-4 rounded-lg border border-border/40 mb-6">
-          <p className="text-sm text-muted-foreground">
-            Använd upp/ner-pilarna för att ändra ordning - platser sorteras efter ordningsnummer
-          </p>
-        </div>
 
         <div className="flex justify-start items-center mb-6">
           <Button onClick={() => {
@@ -357,45 +258,22 @@ export const VenueManagement = () => {
         ) : venues && venues.length > 0 ? (
           isMobile ? (
             <div className="space-y-4">
-              {venues.map((venue, index) => (
+              {venues.map((venue) => (
                 <Card key={venue.id} className="p-4">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className="flex flex-col">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleMoveUp(venue)}
-                          disabled={index === 0}
-                          className="w-6 h-6 p-0"
-                        >
-                          <ChevronUp className="w-3 h-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleMoveDown(venue)}
-                          disabled={index === venues.length - 1}
-                          className="w-6 h-6 p-0"
-                        >
-                          <ChevronDown className="w-3 h-3" />
-                        </Button>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Badge variant={venue.is_active ? "default" : "secondary"}>
+                          {venue.is_active ? 'Aktiv' : 'Inaktiv'}
+                        </Badge>
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs text-muted-foreground">#{venue.sort_order || 0}</span>
-                          <Badge variant={venue.is_active ? "default" : "secondary"}>
-                            {venue.is_active ? 'Aktiv' : 'Inaktiv'}
-                          </Badge>
+                      <h4 className="font-medium">{venue.name}</h4>
+                      {venue.address && (
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                          <MapPin className="w-4 h-4" />
+                          {venue.address}
                         </div>
-                        <h4 className="font-medium">{venue.name}</h4>
-                        {venue.address && (
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                            <MapPin className="w-4 h-4" />
-                            {venue.address}
-                          </div>
-                        )}
-                      </div>
+                      )}
                     </div>
                   </div>
                   
@@ -440,7 +318,6 @@ export const VenueManagement = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-20">Ordning</TableHead>
                   <TableHead>Namn</TableHead>
                   <TableHead>Adress</TableHead>
                   <TableHead>Status</TableHead>
@@ -448,17 +325,13 @@ export const VenueManagement = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {venues.map((venue, index) => (
+                {venues.map((venue) => (
                   <VenueRow
                     key={venue.id}
                     venue={venue}
                     onEdit={handleEditVenue}
                     onToggleActive={handleToggleActive}
                     onDelete={handleDeleteVenue}
-                    onMoveUp={handleMoveUp}
-                    onMoveDown={handleMoveDown}
-                    canMoveUp={index > 0}
-                    canMoveDown={index < venues.length - 1}
                   />
                 ))}
               </TableBody>

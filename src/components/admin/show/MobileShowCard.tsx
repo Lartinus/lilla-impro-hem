@@ -10,6 +10,7 @@ interface MobileShowCardProps {
   show: AdminShowWithPerformers;
   index: number;
   totalShows: number;
+  showCompleted?: boolean;
   onEdit: (show: AdminShowWithPerformers) => void;
   onToggleVisibility: (show: AdminShowWithPerformers) => void;
   onDelete: (show: AdminShowWithPerformers) => void;
@@ -21,6 +22,7 @@ export function MobileShowCard({
   show,
   index,
   totalShows,
+  showCompleted = false,
   onEdit,
   onToggleVisibility,
   onDelete,
@@ -34,31 +36,35 @@ export function MobileShowCard({
     <Card className="p-4 sm:p-6 border-2 border-border/50 hover:border-border transition-colors">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="flex flex-col">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onMoveUp(show)}
-              disabled={!canMoveUp}
-              className="w-6 h-6 p-0"
-            >
-              <ChevronUp className="w-3 h-3" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onMoveDown(show)}
-              disabled={!canMoveDown}
-              className="w-6 h-6 p-0"
-            >
-              <ChevronDown className="w-3 h-3" />
-            </Button>
-          </div>
+          {!showCompleted && (
+            <div className="flex flex-col">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onMoveUp(show)}
+                disabled={!canMoveUp}
+                className="w-6 h-6 p-0"
+              >
+                <ChevronUp className="w-3 h-3" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onMoveDown(show)}
+                disabled={!canMoveDown}
+                className="w-6 h-6 p-0"
+              >
+                <ChevronDown className="w-3 h-3" />
+              </Button>
+            </div>
+          )}
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-medium text-muted-foreground bg-muted/50 px-2 py-1 rounded">
-                #{show.sort_order || 0}
-              </span>
+              {!showCompleted && (
+                <span className="text-xs font-medium text-muted-foreground bg-muted/50 px-2 py-1 rounded">
+                  #{show.sort_order || 0}
+                </span>
+              )}
               <Badge 
                 variant={show.is_active ? "default" : "secondary"}
                 className="text-xs"

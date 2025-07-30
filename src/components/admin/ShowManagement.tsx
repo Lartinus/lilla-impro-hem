@@ -115,11 +115,13 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="bg-muted/20 p-3 rounded-md border-0">
-          <p className="text-xs text-muted-foreground">
-            Använd upp/ner-pilarna för att ändra ordning - föreställningar sorteras efter ordningsnummer på hemsidan
-          </p>
-        </div>
+        {!showCompleted && (
+          <div className="bg-muted/20 p-3 rounded-md border-0">
+            <p className="text-xs text-muted-foreground">
+              Använd upp/ner-pilarna för att ändra ordning - föreställningar sorteras efter ordningsnummer på hemsidan
+            </p>
+          </div>
+        )}
 
         {!showCompleted && (
           <div className="flex justify-start items-center mb-6">
@@ -144,6 +146,7 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
                   show={show}
                   index={index}
                   totalShows={shows.length}
+                  showCompleted={showCompleted}
                   onEdit={handleEditShow}
                   onToggleVisibility={handleToggleShowVisibility}
                   onDelete={handleDeleteShow}
@@ -160,6 +163,7 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
                   show={show}
                   index={index}
                   totalShows={shows.length}
+                  showCompleted={showCompleted}
                   onEdit={handleEditShow}
                   onToggleVisibility={handleToggleShowVisibility}
                   onDelete={handleDeleteShow}

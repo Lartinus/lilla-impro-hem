@@ -113,9 +113,13 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         .order('sort_order', { ascending: true });
 
       if (showCompleted) {
-        query = query.not('completed_at', 'is', null);
+        // For completed courses, sort by end_date DESC (newest first)
+        query = query.not('completed_at', 'is', null)
+                    .order('end_date', { ascending: false });
       } else {
-        query = query.is('completed_at', null);
+        // For active courses, use manual sort_order
+        query = query.is('completed_at', null)
+                    .order('sort_order', { ascending: true });
       }
 
       const { data: courseInstances, error } = await query;
@@ -175,8 +179,8 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
-  // Sort courses
-  const sortedCourses = courses ? sortCourses(courses, sortField, sortDirection) : [];
+  // Sort courses (only apply manual sorting for active courses)
+  const sortedCourses = courses ? (showCompleted ? courses : sortCourses(courses, sortField, sortDirection)) : [];
 
   // Get mutations
   const {
@@ -637,10 +641,12 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         )}
       </div>
       
-      {/* Info box - compact */}
-      <div className="px-3 py-2 bg-muted/50 rounded text-xs text-muted-foreground">
-        💡 Använd upp/ner-pilarna för att ändra ordning på hemsidan
-      </div>
+      {/* Info box - compact (only for active courses) */}
+      {!showCompleted && (
+        <div className="px-3 py-2 bg-muted/50 rounded text-xs text-muted-foreground">
+          💡 Använd upp/ner-pilarna för att ändra ordning på hemsidan
+        </div>
+      )}
         
       {!courses || courses.length === 0 ? (
         <div className="text-center py-8">

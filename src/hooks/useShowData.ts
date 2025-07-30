@@ -29,14 +29,14 @@ export const useShowData = (showCompleted: boolean = false) => {
         `);
 
       if (showCompleted) {
-        // Show past shows
-        query = query.lt('show_date', new Date().toISOString().split('T')[0]);
+        // Show past shows, sorted by date DESC (newest first)
+        query = query.lt('show_date', new Date().toISOString().split('T')[0])
+                    .order('show_date', { ascending: false });
       } else {
-        // Show current and future shows
-        query = query.gte('show_date', new Date().toISOString().split('T')[0]);
+        // Show current and future shows, sorted by manual sort order
+        query = query.gte('show_date', new Date().toISOString().split('T')[0])
+                    .order('sort_order', { ascending: true });
       }
-
-      query = query.order('sort_order', { ascending: true });
       
       const { data, error } = await query;
       if (error) throw error;

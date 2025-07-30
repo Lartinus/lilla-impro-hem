@@ -12,6 +12,7 @@ interface ShowCardProps {
   show: AdminShowWithPerformers;
   index: number;
   totalShows: number;
+  showCompleted?: boolean;
   onEdit: (show: AdminShowWithPerformers) => void;
   onToggleVisibility: (show: AdminShowWithPerformers) => void;
   onDelete: (show: AdminShowWithPerformers) => void;
@@ -23,6 +24,7 @@ export function ShowCard({
   show,
   index,
   totalShows,
+  showCompleted = false,
   onEdit,
   onToggleVisibility,
   onDelete,
@@ -51,30 +53,32 @@ export function ShowCard({
             </div>
           </div>
 
-          {/* Order Controls */}
-          <div className="flex items-center gap-1 flex-shrink-0">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onMoveUp(show)}
-              disabled={!canMoveUp}
-              className="h-8 w-8 p-0"
-            >
-              <ChevronUp className="h-4 w-4" />
-            </Button>
-            <span className="text-xs font-medium text-muted-foreground min-w-[2rem] text-center">
-              {index + 1}
-            </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onMoveDown(show)}
-              disabled={!canMoveDown}
-              className="h-8 w-8 p-0"
-            >
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-          </div>
+          {/* Order Controls - only show for active shows */}
+          {!showCompleted && (
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onMoveUp(show)}
+                disabled={!canMoveUp}
+                className="h-8 w-8 p-0"
+              >
+                <ChevronUp className="h-4 w-4" />
+              </Button>
+              <span className="text-xs font-medium text-muted-foreground min-w-[2rem] text-center">
+                {index + 1}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onMoveDown(show)}
+                disabled={!canMoveDown}
+                className="h-8 w-8 p-0"
+              >
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Show Details */}

@@ -76,9 +76,11 @@ export const CourseCard: React.FC<CourseCardProps> = ({
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <Badge variant="outline" className="text-xs px-2 py-0.5 font-mono shrink-0">
-                  #{course.sort_order || index + 1}
-                </Badge>
+                {!showCompleted && (
+                  <Badge variant="outline" className="text-xs px-2 py-0.5 font-mono shrink-0">
+                    #{course.sort_order || index + 1}
+                  </Badge>
+                )}
                 <Badge variant={course.is_active ? "default" : "secondary"} className="shrink-0">
                   {course.is_active ? 'Aktiv' : 'Inaktiv'}
                 </Badge>
@@ -89,29 +91,31 @@ export const CourseCard: React.FC<CourseCardProps> = ({
               )}
             </div>
             
-            {/* Move buttons - compact */}
-            <div className="flex gap-1 shrink-0">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onMoveUp(course)}
-                disabled={!canMoveUp}
-                className="w-7 h-7 p-0 hover:bg-muted"
-                title="Flytta upp"
-              >
-                <ArrowUp className="w-3 h-3" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onMoveDown(course)}
-                disabled={!canMoveDown}
-                className="w-7 h-7 p-0 hover:bg-muted"
-                title="Flytta ner"
-              >
-                <ArrowDown className="w-3 h-3" />
-              </Button>
-            </div>
+            {/* Move buttons - compact (only for active courses) */}
+            {!showCompleted && (
+              <div className="flex gap-1 shrink-0">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onMoveUp(course)}
+                  disabled={!canMoveUp}
+                  className="w-7 h-7 p-0 hover:bg-muted"
+                  title="Flytta upp"
+                >
+                  <ArrowUp className="w-3 h-3" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onMoveDown(course)}
+                  disabled={!canMoveDown}
+                  className="w-7 h-7 p-0 hover:bg-muted"
+                  title="Flytta ner"
+                >
+                  <ArrowDown className="w-3 h-3" />
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Course details grid */}
