@@ -19,6 +19,8 @@ interface EmailGroupsManagerProps {
   groupMemberCounts: {[key: string]: number};
   emailContacts: EmailContact[];
   onViewGroupMembers: (group: EmailGroup) => void;
+  onAddContacts?: () => void;
+  onCreateGroup?: () => void;
 }
 
 export function EmailGroupsManager({ 
@@ -26,7 +28,9 @@ export function EmailGroupsManager({
   groupsLoading, 
   groupMemberCounts,
   emailContacts,
-  onViewGroupMembers 
+  onViewGroupMembers,
+  onAddContacts,
+  onCreateGroup
 }: EmailGroupsManagerProps) {
   const [showCreateGroupDialog, setShowCreateGroupDialog] = useState(false);
   const [showAddContactsDialog, setShowAddContactsDialog] = useState(false);
@@ -136,19 +140,6 @@ export function EmailGroupsManager({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-end">
-        <div className="flex gap-2">
-          <Button onClick={() => setShowAddContactsDialog(true)} size="sm" variant="outline">
-            <UserPlus className="w-4 h-4 mr-2" />
-            Lägg till kontakter
-          </Button>
-          <Button onClick={() => handleEditGroup()} size="sm">
-            <Plus className="w-4 h-4 mr-2" />
-            Ny grupp
-          </Button>
-        </div>
-      </div>
-
       <Card>
         <CardHeader>
           <CardTitle>Tillgängliga grupper</CardTitle>

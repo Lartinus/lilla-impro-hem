@@ -9,6 +9,9 @@ import { ContactActivitiesDialog } from './ContactActivitiesDialog';
 import { CourseImportDialog } from './CourseImportDialog';
 import { GroupMembersDialog } from './GroupMembersDialog';
 import { EmailTemplate, EmailGroup, EmailContact, GroupMember, EmailManagementProps } from './types';
+import { useEmailTemplateManagement } from '@/hooks/useEmailTemplateManagement';
+import { Button } from '@/components/ui/button';
+import { Plus, UserPlus } from 'lucide-react';
 
 export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
   const [selectedRecipients, setSelectedRecipients] = useState('');
@@ -17,6 +20,11 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
   const [showActivitiesDialog, setShowActivitiesDialog] = useState(false);
   const [selectedContactEmail, setSelectedContactEmail] = useState('');
   const [groupMemberCounts, setGroupMemberCounts] = useState<{[key: string]: number}>({});
+
+  // Template management
+  const {
+    handleEditTemplate,
+  } = useEmailTemplateManagement();
 
   // Fetch email templates
   const { data: emailTemplates = [], isLoading: templatesLoading } = useQuery({
@@ -209,10 +217,38 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
     }
   };
 
+  const renderActionButtons = () => {
+    switch (activeTab) {
+      case 'templates':
+        return (
+          <Button onClick={() => handleEditTemplate()} size="sm">
+            <Plus className="w-4 h-4 mr-2" />
+            Ny mall
+          </Button>
+        );
+      case 'groups':
+        return (
+          <div className="flex gap-2">
+            <Button onClick={() => console.log('Add contacts')} size="sm" variant="outline">
+              <UserPlus className="w-4 h-4 mr-2" />
+              Lägg till kontakter
+            </Button>
+            <Button onClick={() => console.log('Create group')} size="sm">
+              <Plus className="w-4 h-4 mr-2" />
+              Ny grupp
+            </Button>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold tracking-tight">{getTitle()}</h2>
+        {renderActionButtons()}
       </div>
 
       <div className="space-y-4">
