@@ -218,8 +218,7 @@ const ShowDetails = () => {
             {/* Performers section */}
             {formattedShow.performers && formattedShow.performers.length > 0 && (
               <div className="mb-12">
-                <h2>MEDVERKANDE</h2>
-                <PerformersSection performers={formattedShow.performers} />
+                <PerformersSection performers={formattedShow.performers} title="MEDVERKANDE" />
               </div>
             )}
 

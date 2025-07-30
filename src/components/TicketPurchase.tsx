@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface TicketPurchaseProps {
   onPurchase: (data: { regularTickets: number; discountTickets: number; discountCode: string }) => void;
@@ -42,7 +42,7 @@ const TicketPurchase = ({
               onClick={() => setTicketCount(Math.max(0, ticketCount - 1))}
               className="h-8 w-6 flex items-center justify-center hover:bg-gray-100"
             >
-              <ChevronDown size={12} className="text-form-text-muted" />
+              <ChevronLeft size={12} className="text-form-text-muted" />
             </button>
             <div className="flex-1 h-8 flex items-center justify-center text-center text-form-text">
               {ticketCount}
@@ -52,7 +52,7 @@ const TicketPurchase = ({
               className="h-8 w-6 flex items-center justify-center hover:bg-gray-100"
               disabled={ticketCount + discountTickets >= availableTickets}
             >
-              <ChevronUp size={12} className="text-form-text-muted" />
+              <ChevronRight size={12} className="text-form-text-muted" />
             </button>
           </div>
           <div className="w-32 border border-black bg-transparent">
@@ -73,7 +73,7 @@ const TicketPurchase = ({
             onClick={() => setDiscountTickets(Math.max(0, discountTickets - 1))}
             className="h-8 w-6 flex items-center justify-center hover:bg-gray-100"
           >
-            <ChevronDown size={12} className="text-form-text-muted" />
+            <ChevronLeft size={12} className="text-form-text-muted" />
           </button>
           <div className="flex-1 h-8 flex items-center justify-center text-center text-form-text">
             {discountTickets}
@@ -83,7 +83,7 @@ const TicketPurchase = ({
             className="h-8 w-6 flex items-center justify-center hover:bg-gray-100"
             disabled={ticketCount + discountTickets >= availableTickets}
           >
-            <ChevronUp size={12} className="text-form-text-muted" />
+            <ChevronRight size={12} className="text-form-text-muted" />
           </button>
         </div>
       </div>
