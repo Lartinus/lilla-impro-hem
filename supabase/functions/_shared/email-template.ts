@@ -49,21 +49,12 @@ export function createUnifiedEmailTemplate(
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light only">
   <title>${subject}</title>
+  
+  <!-- Font loading via link tags for better email client compatibility -->
+  <link href="https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+  
   <style>
-    /* Use @font-face for better email client compatibility */
-    @font-face {
-      font-family: 'Tanker';
-      src: url('https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap') format('woff2');
-      font-weight: 400;
-      font-display: swap;
-    }
-    
-    @font-face {
-      font-family: 'Satoshi';
-      src: url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap') format('woff2');
-      font-weight: 400 700;
-      font-display: swap;
-    }
     
     /* Force light mode for all email clients */
     * {
