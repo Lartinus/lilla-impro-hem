@@ -52,7 +52,7 @@ const PerformersSection = ({
                 )}
 
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-content-primary mb-2">{perf.name}</p>
+                  <p className="font-bold text-content-primary mb-1">{perf.name}</p>
                   <div
                     className="text-content-secondary break-words performer-bio"
                     style={{ 
