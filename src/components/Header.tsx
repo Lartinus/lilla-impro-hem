@@ -22,7 +22,7 @@ export default function Header() {
         {/* Vänster sida - Logo på desktop */}
         <Link
           to="/"
-          className="hidden md:block group relative w-12 h-12 overflow-visable"
+          className="hidden md:block group relative w-12 h-12 overflow-visible"
         >
           <img 
             src="/Favicon1.svg" 
