@@ -54,16 +54,16 @@ export default function ServiceBoxes() {
           </div>
 
           {/* Innehåll */}
-          <div className="flex-1 p-6 flex flex-col justify-between text-center bg-[#E7E7E7]">
+          <div className="flex-1 px-4 py-6 flex flex-col justify-between text-center bg-[#E7E7E7]">
             <div className="space-y-2">
-              <h1>
+              <h1 className="text-center whitespace-nowrap">
                 {svc.title}
               </h1>
               <p className="font-satoshi text-[16px] text-text-black leading-relaxed">
                 {svc.subtitle}
               </p>
             </div>
-            <div className="mt-4 flex justify-center">
+            <div className="mt-4 mx-[10px]">
               {svc.link.startsWith('/') ? (
                 <Button asChild variant="homepage" size="homepage">
                   <Link to={svc.link} className="flex justify-between items-center w-full">

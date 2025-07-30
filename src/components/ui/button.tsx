@@ -6,28 +6,28 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-between whitespace-nowrap text-sm font-bold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 font-satoshi",
+  "inline-flex items-center justify-between text-sm font-bold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 font-satoshi",
   {
     variants: {
       variant: {
-        default: "bg-primary-red text-white hover:bg-primary-red-hover",
+        default: "bg-primary-red text-white hover:bg-primary-red-hover whitespace-nowrap",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 whitespace-nowrap",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground whitespace-nowrap",
         secondary:
-          "bg-action-blue text-white hover:bg-action-blue-hover",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        blue: "bg-action-blue text-white hover:bg-action-blue-hover",
-        homepage: "bg-primary-red text-white hover:bg-primary-red-hover",
+          "bg-action-blue text-white hover:bg-action-blue-hover whitespace-nowrap",
+        ghost: "hover:bg-accent hover:text-accent-foreground whitespace-nowrap",
+        link: "text-primary underline-offset-4 hover:underline whitespace-nowrap",
+        blue: "bg-action-blue text-white hover:bg-action-blue-hover whitespace-nowrap",
+        homepage: "bg-primary-red text-white hover:bg-primary-red-hover text-left",
       },
       size: {
         default: "h-12 px-6 py-3 text-base",
         sm: "h-9 px-3",
         lg: "h-14 px-8 text-lg",
         icon: "h-10 w-10",
-        homepage: "h-10 px-4 text-base w-[280px]",
+        homepage: "min-h-10 px-4 text-base w-full",
       },
     },
     defaultVariants: {
