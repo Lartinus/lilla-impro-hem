@@ -37,10 +37,12 @@ interface AdminSidebarProps {
   expandedSections: {
     courses: boolean;
     shows: boolean;
+    email: boolean;
   };
   setExpandedSections: React.Dispatch<React.SetStateAction<{
     courses: boolean;
     shows: boolean;
+    email: boolean;
   }>>;
 }
 
@@ -93,7 +95,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       id: 'email',
       title: 'Email',
       icon: Mail,
-      type: 'single' as const
+      type: 'group' as const,
+      expanded: expandedSections.email,
+      children: [
+        { id: 'email-send', title: 'Skicka email', icon: Mail },
+        { id: 'email-templates', title: 'Email-mallar', icon: FileText },
+        { id: 'email-groups', title: 'Email-grupper', icon: Users },
+        { id: 'email-contacts', title: 'Kontakter', icon: UserCircle },
+      ]
     },
     {
       id: 'images',
@@ -109,7 +118,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     }
   ];
 
-  const handleToggleGroup = (groupId: 'courses' | 'shows') => {
+  const handleToggleGroup = (groupId: 'courses' | 'shows' | 'email') => {
     setExpandedSections(prev => ({
       ...prev,
       [groupId]: !prev[groupId]
@@ -152,7 +161,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   ) : (
                     <Collapsible
                       open={item.expanded}
-                      onOpenChange={() => handleToggleGroup(item.id as 'courses' | 'shows')}
+                      onOpenChange={() => handleToggleGroup(item.id as 'courses' | 'shows' | 'email')}
                     >
                       <CollapsibleTrigger asChild>
                         <SidebarMenuButton className="w-full font-satoshi text-sm text-gray-300 hover:bg-gray-800 hover:text-white">

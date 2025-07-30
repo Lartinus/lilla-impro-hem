@@ -37,7 +37,8 @@ const AdminDashboard = () => {
   const [activeSection, setActiveSection] = React.useState('overview');
   const [expandedSections, setExpandedSections] = React.useState({
     courses: true,
-    shows: false
+    shows: false,
+    email: false
   });
 
   const handleSignOut = async () => {
@@ -152,8 +153,14 @@ const AdminDashboard = () => {
         return <UserManagement />;
       case 'images':
         return <ImageManagement />;
-      case 'email':
+      case 'email-send':
         return <EmailManagement activeTab="send" />;
+      case 'email-templates':
+        return <EmailManagement activeTab="templates" />;
+      case 'email-groups':
+        return <EmailManagement activeTab="groups" />;
+      case 'email-contacts':
+        return <EmailManagement activeTab="contacts" />;
       default:
         return null;
     }
