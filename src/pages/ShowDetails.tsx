@@ -5,6 +5,7 @@ import OtherShowsSection from '@/components/OtherShowsSection';
 import OptimizedImage from '@/components/OptimizedImage';
 import ShowTag from '@/components/ShowTag';
 import MainCard from '@/components/MainCard';
+import Header from '@/components/Header';
 import { useParams, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAdminShows } from '@/hooks/useAdminShows';
@@ -108,7 +109,9 @@ const ShowDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <>
+      <Header />
+      <div className="min-h-screen bg-gray-50">
       {/* Image with overlapping card */}
       <div className="relative">
         {/* Large full-width image */}
@@ -219,7 +222,8 @@ const ShowDetails = () => {
           </MainCard>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
