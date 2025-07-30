@@ -40,7 +40,7 @@ const TicketPurchase = ({
           <div className="relative w-24 border border-black bg-transparent flex items-center">
             <button
               onClick={() => setTicketCount(Math.max(0, ticketCount - 1))}
-              className="h-8 w-6 flex items-center justify-center hover:bg-gray-100"
+              className="h-8 w-6 flex items-center justify-center hover:bg-gray-100 focus:outline-none"
             >
               <ChevronLeft size={12} className="text-form-text-muted" />
             </button>
@@ -49,7 +49,7 @@ const TicketPurchase = ({
             </div>
             <button
               onClick={() => setTicketCount(ticketCount + 1)}
-              className="h-8 w-6 flex items-center justify-center hover:bg-gray-100"
+              className="h-8 w-6 flex items-center justify-center hover:bg-gray-100 focus:outline-none"
               disabled={ticketCount + discountTickets >= availableTickets}
             >
               <ChevronRight size={12} className="text-form-text-muted" />
@@ -71,7 +71,7 @@ const TicketPurchase = ({
         <div className="relative w-24 border border-black bg-transparent flex items-center">
           <button
             onClick={() => setDiscountTickets(Math.max(0, discountTickets - 1))}
-            className="h-8 w-6 flex items-center justify-center hover:bg-gray-100"
+            className="h-8 w-6 flex items-center justify-center hover:bg-gray-100 focus:outline-none"
           >
             <ChevronLeft size={12} className="text-form-text-muted" />
           </button>
@@ -80,7 +80,7 @@ const TicketPurchase = ({
           </div>
           <button
             onClick={() => setDiscountTickets(discountTickets + 1)}
-            className="h-8 w-6 flex items-center justify-center hover:bg-gray-100"
+            className="h-8 w-6 flex items-center justify-center hover:bg-gray-100 focus:outline-none"
             disabled={ticketCount + discountTickets >= availableTickets}
           >
             <ChevronRight size={12} className="text-form-text-muted" />
