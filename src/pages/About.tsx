@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PerformersSection from '@/components/PerformersSection';
-import SimpleParallaxHero from "@/components/SimpleParallaxHero";
 
 const performers = [{
   id: 1,
@@ -27,31 +26,49 @@ const About = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  return <div className="min-h-screen flex flex-col bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary relative overflow-x-hidden overflow-y-visible">
+  return (
+    <>
       <Header />
-      <SimpleParallaxHero imageSrc="/uploads/images/sommar_LIT_2024.jpg" />
-      <section className="py-8 px-0.5 md:px-4 mt-0 flex-1 relative z-10" style={{ paddingTop: "220px" }}>
-        <div className="space-y-8 border-4 border-white p-6 md:p-6 lg:p-12 bg-white rounded-none mx-3 md:mx-0 md:max-w-4xl md:mx-auto">
-          
-          {/* Om oss-info */}
-          <div className="space-y-4 bg-white">
-            <h2>Om Lilla Improteatern</h2>
-            <p>Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy – och en stark vilja att skapa en plats där både skratten, hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron och i viljan att bygga något nytt tillsammans.</p>
-          </div>
+      
+      {/* Hero Image */}
+      <div className="h-[360px] relative overflow-hidden">
+        <img 
+          src="/uploads/images/sommar_LIT_2024.jpg" 
+          alt="" 
+          className="w-full h-full object-cover object-center filter brightness-50"
+        />
+      </div>
+      
+      <div className="min-h-screen bg-[#FAFAFA]">
+        <div className="relative z-10 mx-0 md:mx-auto max-w-[1000px] -mt-16">
+          <div className="bg-[#F3F3F3] rounded-t-lg overflow-hidden">
+            <div className="p-6 md:p-8 space-y-8">
+              
+              {/* Om oss-info */}
+              <section>
+                <h1>Om Lilla Improteatern</h1>
+                <p>Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy – och en stark vilja att skapa en plats där både skratten, hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron och i viljan att bygga något nytt tillsammans.</p>
+              </section>
 
-          {/* Kontaktuppgifter */}
-          <div className="space-y-4 bg-white">
-            <h3>Mejla oss på</h3>
-            <p><a href="mailto:kontakt@improteatern.se" className="text-theatre-primary hover:text-theatre-secondary transition-colors">kontakt@improteatern.se</a></p>
-          </div>
+              {/* Kontaktuppgifter */}
+              <section className="space-y-4 pt-6 border-t border-gray-200">
+                <h3>Mejla oss på</h3>
+                <p><a href="mailto:kontakt@improteatern.se" className="text-theatre-primary hover:text-theatre-secondary transition-colors">kontakt@improteatern.se</a></p>
+              </section>
 
-          {/* Personerna bakom */}
-          <PerformersSection performers={performers} title="Produktionsteam" />
+              {/* Personerna bakom */}
+              <section className="pt-6 border-t border-gray-200">
+                <PerformersSection performers={performers} title="Produktionsteam" />
+              </section>
+
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
       
       <Footer />
-    </div>;
+    </>
+  );
 };
 
 export default About;
