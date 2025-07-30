@@ -54,7 +54,7 @@ const PerformersSection = ({
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-content-primary">{perf.name}</p>
                   <div
-                    className="text-content-secondary break-words mt-1 performer-bio"
+                    className="text-content-secondary break-words -mt-1 performer-bio"
                     style={{ 
                       lineHeight: 'var(--body-line-height)',
                       fontSize: 'clamp(0.95rem, 2.5vw, 0.8rem)'
