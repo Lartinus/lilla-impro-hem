@@ -23,7 +23,7 @@ const PerformersSection = ({
   return (
     <div className="mb-6">
       <h2 className="mb-3">{title}</h2>
-      <div className="bg-theatre-light/10 rounded-none border-red-800 border-3 p-4">
+      <div className="bg-theatre-light/10 rounded-none border-[rgb(var(--course-outline-red))] border-3 p-4">
         <div className="space-y-2">
           {performers.map((perf) => {
             const hasImage =
@@ -52,13 +52,12 @@ const PerformersSection = ({
                 )}
 
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-content-primary mb-0">{perf.name}</p>
+                  <p className="font-bold text-content-primary mb-2">{perf.name}</p>
                   <div
                     className="text-content-secondary break-words performer-bio"
                     style={{ 
                       lineHeight: 'var(--body-line-height)',
-                      fontSize: 'clamp(0.95rem, 2.5vw, 0.8rem)',
-                      marginTop: '-4px'
+                      fontSize: 'clamp(0.95rem, 2.5vw, 0.8rem)'
                     }}
                     dangerouslySetInnerHTML={{
                       __html: convertMarkdownToHtml(perf.bio)
