@@ -22,7 +22,7 @@ export default function Header() {
         {/* Vänster sida - Logo på desktop */}
         <Link
           to="/"
-          className="hidden md:block group relative w-12 h-12"
+          className="hidden md:block group relative w-12 h-12 overflow-visable"
         >
           <img 
             src="/Favicon1.svg" 
@@ -32,7 +32,7 @@ export default function Header() {
           <img 
             src="/Favicon2.svg" 
             alt="LIT Logo Hover" 
-            className="w-12 h-12 absolute top-[-4px] left-[-5px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            className="w-[50px] h-[50px] absolute top-[-4px] left-[-5px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           />
         </Link>
 
