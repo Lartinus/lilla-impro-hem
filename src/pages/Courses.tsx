@@ -18,7 +18,7 @@ const Courses = () => {
 
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFAFA] overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-[#FAFAFA]">
       <Header />
 
       {/* Header-bild */}
