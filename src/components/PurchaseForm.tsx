@@ -134,7 +134,7 @@ const PurchaseForm = ({
 
   return (
     <div className="mb-6">
-      <h4 className="text-gray-800 font-bold mb-4">Sammanfattning</h4>
+      <h2 className="text-gray-800 font-bold mb-4">Sammanfattning</h2>
       
       {/* Order Summary */}
       <div className="mb-6">
