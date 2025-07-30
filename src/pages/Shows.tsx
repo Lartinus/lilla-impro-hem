@@ -55,23 +55,6 @@ export default function Shows() {
   // Check if we should show loading overlay - don't wait forever for images
   const shouldShowLoading = showsLoading || tagsLoading;
 
-  if (shouldShowLoading) {
-    return (
-      <>
-        <Header />
-        {/* Hero Image */}
-        <div className="h-[360px] relative overflow-hidden">
-          <img 
-            src="/uploads/images/shows_2024.jpg" 
-            alt="" 
-            className="w-full h-full object-cover object-center filter brightness-50"
-          />
-        </div>
-        <SubtleLoadingOverlay isVisible={true} />
-        <Footer />
-      </>
-    );
-  }
 
   if (showsError) {
     return (
@@ -112,7 +95,7 @@ export default function Shows() {
         />
       </div>
       
-      <SubtleLoadingOverlay isVisible={shouldShowLoading} />
+      
 
       <div className="min-h-screen bg-[#FAFAFA]">
         <div className="relative z-10 mx-0 md:mx-auto max-w-[1000px] -mt-16">

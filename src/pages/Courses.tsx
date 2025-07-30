@@ -16,40 +16,6 @@ const Courses = () => {
   const courses = adminCourses || [];
   const practicalInfo = ['Kommer inom kort.'];
 
-  // Laddnings-skelett - simplified version
-  if (adminLoading) {
-    return (
-      <div className="min-h-screen flex flex-col bg-white">
-        <Header />
-        <div className="h-[360px] overflow-hidden">
-          <img
-            src="/uploads/images/kurser_LIT_2024.jpg"
-            alt="Kurser på Lilla Improteatern"
-            className="w-full h-[360px] object-cover object-center"
-          />
-        </div>
-        <div className="relative z-10 mx-4 md:mx-auto max-w-[1000px] -mt-8">
-          <div className="bg-white pb-0 shadow-md">
-            <div className="p-6 md:p-8 space-y-8">
-              <div className="text-center text-gray-600 text-lg">
-                Laddar kurser...
-              </div>
-              <div className="grid md:grid-cols-2 gap-6">
-                {[...Array(4)].map((_, index) => (
-                  <div key={index} className="bg-gray-100 p-6 min-h-[300px] animate-pulse">
-                    <div className="h-6 bg-gray-200 rounded mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAFAFA] overflow-x-hidden">
