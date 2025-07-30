@@ -87,7 +87,7 @@ export default function Header() {
                     font-tanker uppercase text-2xl lg:text-3xl transition-colors
                     ${isActive
                       ? 'text-primary-foreground'
-                      : 'text-primary-foreground hover:text-primary-red'
+                      : 'text-primary-foreground hover:text-white'
                     }
                   `}
                 >
