@@ -161,7 +161,7 @@ const AdminDashboard = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background-gray font-satoshi">
+      <div className="min-h-screen flex w-full bg-background-gray font-satoshi [&_*]:!font-satoshi">
         <AdminSidebar
           activeSection={activeSection}
           setActiveSection={setActiveSection}
