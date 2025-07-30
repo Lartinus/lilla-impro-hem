@@ -637,11 +637,9 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         )}
       </div>
       
-      {/* Info box */}
-      <div className="bg-muted/30 p-3 rounded-lg">
-        <p className="text-sm text-muted-foreground">
-          Använd upp/ner-pilarna för att ändra ordning - kurser sorteras efter ordningsnummer på hemsidan
-        </p>
+      {/* Info box - compact */}
+      <div className="px-3 py-2 bg-muted/50 rounded text-xs text-muted-foreground">
+        💡 Använd upp/ner-pilarna för att ändra ordning på hemsidan
       </div>
         
       {!courses || courses.length === 0 ? (
@@ -655,7 +653,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       ) : (
         <>
           {/* Desktop Card View */}
-          <div className="hidden md:block grid gap-4">
+          <div className="hidden md:block space-y-3">
             {sortedCourses.map((course, index) => (
               <CourseCard
                 key={course.id}

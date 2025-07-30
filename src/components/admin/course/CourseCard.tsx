@@ -14,6 +14,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { CourseWithBookings, Performer } from '@/types/courseManagement';
 
@@ -65,93 +66,96 @@ export const CourseCard: React.FC<CourseCardProps> = ({
     .join(', ') || 'Ej tilldelad';
 
   return (
-    <Card className={course.is_active ? '' : 'opacity-60'}>
-      <CardContent className="p-6">
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-          {/* Move buttons */}
-          <div className="flex flex-col gap-1 order-first lg:order-none">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onMoveUp(course)}
-              disabled={!canMoveUp}
-              className="w-8 h-8 p-0"
-              title="Flytta upp"
-            >
-              <ArrowUp className="w-3 h-3" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onMoveDown(course)}
-              disabled={!canMoveDown}
-              className="w-8 h-8 p-0"
-              title="Flytta ner"
-            >
-              <ArrowDown className="w-3 h-3" />
-            </Button>
+    <Card className={cn(
+      "shadow-sm hover:shadow-md transition-shadow duration-200 border-l-4",
+      course.is_active ? "border-l-primary bg-card" : "border-l-muted bg-muted/30 opacity-75",
+    )}>
+      <CardContent className="p-5">
+        <div className="space-y-4">
+          {/* Header with title and status */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <Badge variant="outline" className="text-xs px-2 py-0.5 font-mono shrink-0">
+                  #{course.sort_order || index + 1}
+                </Badge>
+                <Badge variant={course.is_active ? "default" : "secondary"} className="shrink-0">
+                  {course.is_active ? 'Aktiv' : 'Inaktiv'}
+                </Badge>
+              </div>
+              <h3 className="text-lg font-semibold leading-tight text-foreground">{course.course_title}</h3>
+              {course.subtitle && (
+                <p className="text-sm text-muted-foreground mt-1">{course.subtitle}</p>
+              )}
+            </div>
+            
+            {/* Move buttons - compact */}
+            <div className="flex gap-1 shrink-0">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onMoveUp(course)}
+                disabled={!canMoveUp}
+                className="w-7 h-7 p-0 hover:bg-muted"
+                title="Flytta upp"
+              >
+                <ArrowUp className="w-3 h-3" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onMoveDown(course)}
+                disabled={!canMoveDown}
+                className="w-7 h-7 p-0 hover:bg-muted"
+                title="Flytta ner"
+              >
+                <ArrowDown className="w-3 h-3" />
+              </Button>
+            </div>
           </div>
 
-          {/* Course content */}
-          <div className="flex-1 space-y-3">
-            {/* Header with sort order and title */}
-            <div className="flex items-start gap-3">
-              <Badge variant="outline" className="text-xs px-2 py-1 font-mono">
-                #{course.sort_order || index + 1}
-              </Badge>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold">{course.course_title}</h3>
-                {course.subtitle && (
-                  <p className="text-sm text-muted-foreground mt-1">{course.subtitle}</p>
-                )}
+          {/* Course details grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 py-3 border-t border-border/50">
+            <div className="space-y-1">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Startdatum</span>
+              <div className="text-sm font-medium">
+                {course.start_date 
+                  ? format(new Date(course.start_date), 'yyyy-MM-dd')
+                  : 'Ej satt'
+                }
+              </div>
+            </div>
+            
+            <div className="space-y-1">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Kursledare</span>
+              <div className="text-sm font-medium">{instructorNames}</div>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Anmälda</span>
+              <div className="text-sm font-medium">
+                <span className={course.bookingCount >= (course.max_participants || 0) ? 'font-bold text-destructive' : ''}>
+                  {course.bookingCount}
+                </span>
+                <span className="text-muted-foreground"> / {course.max_participants || '∞'}</span>
               </div>
             </div>
 
-            {/* Course details */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
-              <div>
-                <span className="font-medium text-muted-foreground">Startdatum:</span>
-                <div>
-                  {course.start_date 
-                    ? format(new Date(course.start_date), 'yyyy-MM-dd')
-                    : 'Ej satt'
-                  }
-                </div>
-              </div>
-              
-              <div>
-                <span className="font-medium text-muted-foreground">Kursledare:</span>
-                <div>{instructorNames}</div>
-              </div>
-
-              <div>
-                <span className="font-medium text-muted-foreground">Anmälda:</span>
-                <div>
-                  <span className={course.bookingCount >= (course.max_participants || 0) ? 'font-bold text-destructive' : ''}>
-                    {course.bookingCount}
-                  </span>
-                  <span className="text-muted-foreground"> / {course.max_participants || 'Obegränsat'}</span>
-                </div>
-              </div>
-
-              <div>
-                <span className="font-medium text-muted-foreground">Status:</span>
-                <div>
-                  <Badge variant={course.is_active ? "default" : "secondary"}>
-                    {course.is_active ? 'Aktiv' : 'Inaktiv'}
-                  </Badge>
-                </div>
+            <div className="space-y-1">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Session</span>
+              <div className="text-sm font-medium">
+                {course.sessions || 1} × {course.hours_per_session || 2}h
               </div>
             </div>
           </div>
 
           {/* Action buttons */}
-          <div className="flex flex-wrap items-center gap-2 lg:flex-col lg:items-end">
+          <div className="flex flex-wrap gap-2 pt-2 border-t border-border/50">
             <Button
               variant="outline"
               size="sm"
               onClick={() => onViewParticipants(course)}
-              className="flex items-center gap-1"
+              className="flex items-center gap-1.5 text-xs"
             >
               <Users className="w-3 h-3" />
               Deltagare
@@ -161,7 +165,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
               variant="outline"
               size="sm"
               onClick={() => onEdit(course)}
-              className="flex items-center gap-1"
+              className="flex items-center gap-1.5 text-xs"
             >
               <Edit className="w-3 h-3" />
               Redigera
@@ -172,7 +176,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={() => onRestore(course)}
-                className="flex items-center gap-1"
+                className="flex items-center gap-1.5 text-xs"
               >
                 <RotateCcw className="w-3 h-3" />
                 Återställ
@@ -183,7 +187,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={() => onToggleStatus(course)}
-                  className="flex items-center gap-1"
+                  className="flex items-center gap-1.5 text-xs"
                 >
                   {course.is_active ? (
                     <>
@@ -203,7 +207,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
                     variant="outline"
                     size="sm"
                     onClick={() => onMarkCompleted(course)}
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-1.5 text-xs"
                   >
                     <CheckCircle className="w-3 h-3" />
                     Genomförd
@@ -217,7 +221,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
                 <Button
                   variant="destructive"
                   size="sm"
-                  className="flex items-center gap-1"
+                  className="flex items-center gap-1.5 text-xs ml-auto"
                 >
                   <Trash2 className="w-3 h-3" />
                   Ta bort
