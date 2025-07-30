@@ -232,7 +232,7 @@ export function EmailContactsManager({
       </div>
 
       <Card>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="space-y-4">
             <div className="flex gap-4">
               <Input
@@ -263,8 +263,8 @@ export function EmailContactsManager({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {currentContacts.map((contact) => (
-                      <TableRow key={contact.id}>
+                    {currentContacts.map((contact, index) => (
+                      <TableRow key={contact.id} className={index > 0 ? "border-t" : ""}>
                         <TableCell className="font-medium">{contact.email}</TableCell>
                         <TableCell>{contact.name || '-'}</TableCell>
                         <TableCell>{contact.phone || '-'}</TableCell>
