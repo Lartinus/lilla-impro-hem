@@ -641,12 +641,6 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         )}
       </div>
       
-      {/* Info box - compact (only for active courses) */}
-      {!showCompleted && (
-        <div className="px-3 py-2 bg-muted/50 rounded text-xs text-muted-foreground">
-          💡 Använd upp/ner-pilarna för att ändra ordning på hemsidan
-        </div>
-      )}
         
       {!courses || courses.length === 0 ? (
         <div className="text-center py-8">

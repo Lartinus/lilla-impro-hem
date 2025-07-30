@@ -99,7 +99,7 @@ export function ShowCard({
             
             <div className="space-y-1">
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Tid</span>
-              <div className="text-sm font-medium">{show.show_time}</div>
+              <div className="text-sm font-medium">{show.show_time.substring(0, 5)}</div>
             </div>
 
             <div className="space-y-1">

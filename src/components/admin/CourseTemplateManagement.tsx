@@ -409,7 +409,7 @@ export const CourseTemplateManagement = () => {
                     <span>Max {template.max_participants} deltagare</span>
                     <span>{template.sessions} tillfällen</span>
                     <span>{template.hours_per_session}h per tillfälle</span>
-                    {template.start_time && <span>Starttid: {template.start_time}</span>}
+                    {template.start_time && <span>Starttid: {template.start_time.substring(0, 5)}</span>}
                   </div>
                 </div>
                 
