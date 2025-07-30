@@ -90,7 +90,7 @@ const ShowCardSimple = ({
               <div className="flex items-center justify-between mb-4">
                 <div className="flex-1 border-t-2 border-dashed border-black"></div>
                 {show.tag && (
-                  <div className="ml-2">
+                  <div className="ml-1">
                     <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
                   </div>
                 )}
