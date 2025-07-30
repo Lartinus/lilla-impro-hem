@@ -64,50 +64,55 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts }: SimpleEmailBu
   };
 
   const insertHeader = (level: 1 | 2) => {
-    const headerText = level === 1 ? 'Stor rubrik' : 'Liten rubrik';
+    const textarea = document.getElementById('email-content') as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
     const prefix = level === 1 ? 'H1: ' : 'H2: ';
-    insertAtCursor(prefix + headerText);
+    
+    // If text is selected, insert prefix at the beginning of selection
+    if (start !== end) {
+      const selectedText = content.substring(start, end);
+      const newContent = content.substring(0, start) + prefix + selectedText + content.substring(end);
+      setContent(newContent);
+      
+      // Set cursor position after the inserted prefix
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + prefix.length, end + prefix.length);
+      }, 0);
+    } else {
+      // No text selected, just insert the prefix
+      insertAtCursor(prefix);
+    }
   };
 
   const createEmailHtml = (emailSubject: string, emailContent: string, bgImage?: string) => {
-    console.log('DEBUG createEmailHtml - Original content:', emailContent);
-    
     // Process content to handle headers and paragraphs
-    const lines = emailContent.split('\n');
-    console.log('DEBUG - Split lines:', lines);
-    
-    const processedContent = lines
-      .map((line, index) => {
+    const processedContent = emailContent
+      .split('\n')
+      .map(line => {
         const trimmed = line.trim();
-        console.log(`DEBUG - Line ${index}: "${line}" -> trimmed: "${trimmed}"`);
-        
-        if (!trimmed) {
-          console.log(`DEBUG - Empty line ${index}, skipping`);
-          return '';
-        }
+        if (!trimmed) return '';
         
         // Handle H1 headers
         if (trimmed.startsWith('H1: ')) {
           const headerText = trimmed.substring(4);
-          console.log(`DEBUG - Found H1 at line ${index}: "${headerText}"`);
           return `<h1 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 32px; color: #333333; margin: 24px 0 16px 0; font-weight: 400; line-height: 1.2;">${headerText}</h1>`;
         }
         
         // Handle H2 headers
         if (trimmed.startsWith('H2: ')) {
           const headerText = trimmed.substring(4);
-          console.log(`DEBUG - Found H2 at line ${index}: "${headerText}"`);
           return `<h2 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 24px; color: #333333; margin: 20px 0 12px 0; font-weight: 400; line-height: 1.2;">${headerText}</h2>`;
         }
         
         // Regular paragraphs
-        console.log(`DEBUG - Regular paragraph at line ${index}: "${trimmed}"`);
         return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333; margin: 0 0 16px 0; line-height: 1.6;">${trimmed}</p>`;
       })
       .filter(line => line)
       .join('');
-      
-    console.log('DEBUG - Final processed content:', processedContent);
 
     return `<!DOCTYPE html>
 <html lang="sv">
@@ -126,7 +131,7 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts }: SimpleEmailBu
       </div>
     ` : ''}
     
-    <div style="padding: 40px; background-color: #ffffff;">
+    <div style="padding: 20px; background-color: #ffffff;">
       ${processedContent}
     </div>
     
