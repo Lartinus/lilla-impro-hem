@@ -269,17 +269,22 @@ const handler = async (req: Request): Promise<Response> => {
           }
           let personalizedSubject = finalSubject.replace(/\[NAMN\]/g, firstName);
           
-          // Check if content is plain text or HTML
-          const isPlainText = !finalContent.includes('<') && !finalContent.includes('>');
+          // Check if content is already HTML (from SimpleEmailBuilder)
+          const isHtml = finalContent.includes('<!DOCTYPE html>') || finalContent.includes('<html');
           
-          // Create unified email template
-          const processedContent = isPlainText ? personalizedContent.replace(/\n/g, '<br>') : personalizedContent;
-
-          const htmlContent = createUnifiedEmailTemplate(
-            finalSubject, 
-            personalizedContent, 
-            template?.background_image
-          ).replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(recipient.email)}`);
+          let htmlContent;
+          if (isHtml) {
+            // Content is already formatted HTML, just replace unsubscribe URL
+            htmlContent = personalizedContent.replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(recipient.email)}`);
+          } else {
+            // Plain text content, use old template system
+            const processedContent = personalizedContent.replace(/\n/g, '<br>');
+            htmlContent = createUnifiedEmailTemplate(
+              finalSubject, 
+              personalizedContent, 
+              template?.background_image
+            ).replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(recipient.email)}`);
+          }
           
           // Prepare attachments for Resend by downloading from URLs
           const resendAttachments = [];
