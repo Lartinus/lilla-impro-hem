@@ -115,18 +115,35 @@ const ShowDetails = () => {
       {/* Image with overlapping card */}
       <div className="relative mt-20">
         {/* Large full-width image */}
-        <div className="w-full h-[280px]">
+        <div className="w-full h-[280px] relative">
           <OptimizedImage
             src={show?.image_url}
             alt={formattedShow.title}
             className="w-full h-full object-cover"
             fallbackText="Ingen bild"
           />
+          {/* Back link overlay */}
+          <div className="absolute top-4 left-4">
+            <Link 
+              to="/shows" 
+              className="inline-flex items-center text-white hover:text-white/80 transition-colors bg-black/20 px-3 py-2 rounded-lg backdrop-blur-sm"
+            >
+              <ArrowLeft size={16} className="mr-2" />
+              Tillbaka till föreställningar
+            </Link>
+          </div>
         </div>
 
         {/* Overlapping card */}
         <div className="relative -mt-4 max-w-4xl mx-auto px-0 md:px-6">
-          <MainCard>
+          <MainCard className="relative">
+            {/* Floating tag on right side */}
+            {show?.show_tag && (
+              <div className="absolute -top-3 right-6 z-10">
+                <ShowTag name={show.show_tag.name} color={show.show_tag.color} />
+              </div>
+            )}
+
             {/* Title and date */}
             <div className="mb-2">
               <h2>{formattedShow.title}</h2>
@@ -153,12 +170,10 @@ const ShowDetails = () => {
               <h3>{formattedShow.ticketPrice} kr / {formattedShow.discountPrice} kr</h3>
             </div>
 
-            {/* Dashed line and tag */}
+            {/* Dashed line */}
             {show?.show_tag && (
               <div className="mb-4">
-                <div className="border-t-2 border-dashed border-gray-800 pt-3">
-                  <ShowTag name={show.show_tag.name} color={show.show_tag.color} />
-                </div>
+                <div className="border-t-2 border-dashed border-gray-800"></div>
               </div>
             )}
 
@@ -208,17 +223,6 @@ const ShowDetails = () => {
 
             {/* Other shows section */}
             <OtherShowsSection shows={formattedOtherShows} />
-
-            {/* Back link */}
-            <div className="mt-12 pt-8 border-t border-gray-200">
-              <Link 
-                to="/shows" 
-                className="inline-flex items-center text-black hover:text-gray-600 transition-colors"
-              >
-                <ArrowLeft size={16} className="mr-2" />
-                Tillbaka till föreställningar
-              </Link>
-            </div>
           </MainCard>
         </div>
       </div>
