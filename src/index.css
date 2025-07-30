@@ -181,13 +181,14 @@ input, textarea, select, button {
   font-size:   inherit;
 }
 
-/* Focus states */
+/* Focus states - removed outline */
 button:focus,
 input:focus,
 textarea:focus,
-select:focus {
-  outline:        2px solid rgb(var(--primary-red));
-  outline-offset: 2px;
+select:focus,
+a:focus,
+*:focus {
+  outline: none;
 }
 
 /* Course page specific styles */
