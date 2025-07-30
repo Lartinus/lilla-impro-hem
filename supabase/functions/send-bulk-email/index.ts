@@ -292,7 +292,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>${subjectText}</title>
                 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
-                <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet">
+                <link href="https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap" rel="stylesheet">
               </head>
               <body style="
                 margin: 0;
@@ -351,7 +351,7 @@ const handler = async (req: Request): Promise<Response> => {
                     text-align: center;
                   ">
                     <div style="
-                      font-family: 'Titan One', cursive;
+                      font-family: 'Tanker', cursive;
                       font-size: 32px;
                       color: white;
                       margin: 0 0 16px 0;

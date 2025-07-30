@@ -112,7 +112,7 @@ const handler = async (req: Request): Promise<Response> => {
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>${subject}</title>
           <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
-          <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet">
+          <link href="https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap" rel="stylesheet">
         </head>
         <body style="
           margin: 0;
@@ -177,27 +177,6 @@ const handler = async (req: Request): Promise<Response> => {
                 ${content}
               </div>
 
-              <div style="
-                text-align: center;
-                padding-top: 24px;
-                border-top: 1px solid #e8e8e8;
-              ">
-                <p style="
-                  font-size: 14px;
-                  color: #999999;
-                  margin: 0 0 4px 0;
-                ">
-                  Med vänliga hälsningar
-                </p>
-                <p style="
-                  font-size: 16px;
-                  font-weight: 500;
-                  color: #1a1a1a;
-                  margin: 0;
-                ">
-                  Lilla Improteatern
-                </p>
-              </div>
             </div>
             
             <!-- Red footer -->
@@ -213,7 +192,7 @@ const handler = async (req: Request): Promise<Response> => {
               text-align: center;
             ">
               <div style="
-                font-family: 'Titan One', cursive;
+                font-family: 'Tanker', cursive;
                 font-size: 32px;
                 color: white;
                 margin: 0 0 16px 0;
