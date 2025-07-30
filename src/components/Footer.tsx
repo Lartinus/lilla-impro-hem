@@ -5,7 +5,7 @@ const footerNavItems = [
   { to: '/', label: 'HEM' },
   { to: '/kurser', label: 'KURSER' },
   { to: '/shows', label: 'FÖRESTÄLLNINGAR' },
-  { to: '/anlita-oss', label: 'BOKA OSS' },
+  { to: '/boka-oss', label: 'BOKA OSS' },
   { to: '/om-oss', label: 'OM OSS' },
   { to: '/om-oss', label: 'KONTAKT' },
 ];

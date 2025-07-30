@@ -29,7 +29,7 @@ const services: Service[] = [
     title: 'Underhållning',
     subtitle: 'För företag och privata tillställningar',
     cta: 'Läs mer',
-    link: '/anlita-oss',
+    link: '/boka-oss',
     image: '/uploads/images/corporate_LIT_2024.jpg',
   },
 ]

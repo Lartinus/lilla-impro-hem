@@ -6,7 +6,7 @@ const navItems = [
   { to: '/',           label: 'Hem' },
   { to: '/kurser',     label: 'Kurser' },
   { to: '/shows',      label: 'Föreställningar' },
-  { to: '/anlita-oss', label: 'Boka oss' },
+  { to: '/boka-oss', label: 'Boka oss' },
   { to: '/lokal',      label: 'Lokal' },
   { to: '/om-oss',     label: 'Om oss & kontakt' },
 ];

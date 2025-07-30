@@ -7,12 +7,10 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 
 import Index from "./pages/Index";
 import Courses from "./pages/Courses";
-import Corporate from "./pages/Corporate";
 import About from "./pages/About";
 import Lokal from "./pages/Lokal";
 import Shows from "./pages/Shows";
 import ShowDetails from "./pages/ShowDetails";
-import Mohippa from "./pages/Mohippa";
 import AnlitaOss from "./pages/AnlitaOss";
 import NotFound from "./pages/NotFound";
 import Unsubscribe from "./pages/Unsubscribe";
@@ -42,9 +40,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/kurser" element={<Courses />} />
-            <Route path="/foretag" element={<Corporate />} />
-            <Route path="/mohippa" element={<Mohippa />} />
-            <Route path="/anlita-oss" element={<AnlitaOss />} />
+            <Route path="/boka-oss" element={<AnlitaOss />} />
             <Route path="/om-oss" element={<About />} />
             <Route path="/lokal" element={<Lokal />} />
             <Route path="/shows" element={<Shows />} />
