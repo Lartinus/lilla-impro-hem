@@ -35,7 +35,7 @@ const PerformersSection = ({
             return (
               <div
                 key={perf.id}
-                className="flex flex-col md:flex-row items-start space-y-2"
+                className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-4"
               >
                 {hasImage ? (
                   <OptimizedImage
