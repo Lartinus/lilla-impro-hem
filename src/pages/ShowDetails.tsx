@@ -225,11 +225,8 @@ const ShowDetails = () => {
                 </div>
               )}
 
-              {/* Newsletter signup section */}
-              <NewsletterSignupSection onSignupClick={() => setIsNewsletterModalOpen(true)} />
-
               {/* Back to shows link */}
-              <div className="mb-8">
+              <div className="mb-8 bg-transparent">
                 <Link 
                   to="/shows" 
                   className="inline-flex items-center text-black hover:text-gray-700 transition-colors"
@@ -238,6 +235,9 @@ const ShowDetails = () => {
                   Tillbaka till föreställningar
                 </Link>
               </div>
+
+              {/* Newsletter signup section */}
+              <NewsletterSignupSection onSignupClick={() => setIsNewsletterModalOpen(true)} />
 
             </MainCard>
           </div>
