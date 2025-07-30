@@ -22,7 +22,7 @@ const PerformersSection = ({
 
   return (
     <div className="mb-6">
-      <h2 className="mb-3">{title}</h4>
+      <h2 className="mb-3">{title}</h2>
       <div className="bg-theatre-light/10 rounded-none border-red-800 border-3 p-4">
         <div className="space-y-6">
           {performers.map((perf) => {
