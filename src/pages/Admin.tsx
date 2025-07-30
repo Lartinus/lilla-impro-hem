@@ -27,6 +27,10 @@ import { UserManagement } from '@/components/admin/UserManagement';
 const AdminDashboard = () => {
   const { user, loading: authLoading, signOut } = useAuth();
   const { data: userRole, isLoading: roleLoading } = useUserRole();
+
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const { data: stats, isLoading: statsLoading } = useAdminStats();
   const [showSignUp, setShowSignUp] = React.useState(false);
   const [activeSection, setActiveSection] = React.useState('courses');

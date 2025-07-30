@@ -14,6 +14,8 @@ const NewsletterConfirmation = () => {
   const error = searchParams.get('error');
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    
     const handleConfirmation = async () => {
       // Check for URL error parameters first
       if (error === 'invalid-token') {

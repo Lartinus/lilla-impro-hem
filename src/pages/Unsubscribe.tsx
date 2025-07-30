@@ -14,6 +14,8 @@ const Unsubscribe = () => {
   const error = searchParams.get('error');
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    
     const handleUnsubscribe = async () => {
       // Check for URL error parameters first
       if (error === 'missing-email') {

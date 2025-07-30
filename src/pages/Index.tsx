@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ServiceBoxes from '@/components/ServiceBoxes'
@@ -5,6 +6,9 @@ import ContentOverlay from '@/components/ContentOverlay'
 import { ArrowDown } from 'lucide-react'
 
 export default function Index() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="relative min-h-screen">
       <Header />

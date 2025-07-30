@@ -1,5 +1,5 @@
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAdminShows, formatAdminShowForCard } from '@/hooks/useAdminShows';
@@ -17,6 +17,10 @@ import { toast } from 'sonner';
 export default function Shows() {
   const [retryCount, setRetryCount] = useState(0);
   const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const {
     data: adminShows,
