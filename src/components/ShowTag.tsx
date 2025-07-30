@@ -41,7 +41,7 @@ export default function ShowTag({ name, color, size = 'small', clickable = false
         backgroundColor: tagColor,
         borderColor: tagColor,
         ...(isSelected && {
-          boxShadow: `0 0 0 2px ${tagColor}`
+          boxShadow: '0 0 0 2px #2C2C2C'
         })
       }}
       onClick={clickable ? onClick : undefined}
