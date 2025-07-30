@@ -174,19 +174,17 @@ const ShowDetails = () => {
               <div className="border-t-2 border-dashed border-gray-800 w-full"></div>
             </div>
 
-            {/* Description with tag on the right */}
+            {/* Description with tag on the right (only if tag exists) */}
             {formattedShow.description && (
               <div className="mb-6 flex justify-between items-start">
                 <div className="flex-1">
                   <p dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(formattedShow.description) }} />
                 </div>
-                <div className="ml-4">
-                  {show?.show_tag ? (
+                {show?.show_tag && (
+                  <div className="ml-4">
                     <ShowTag name={show.show_tag.name} color={show.show_tag.color} />
-                  ) : (
-                    <ShowTag name="Improjam" />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             )}
 
