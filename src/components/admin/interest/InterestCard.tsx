@@ -32,7 +32,7 @@ export function InterestCard({
   const canMoveDown = index < totalItems - 1;
 
   return (
-    <Card className="group hover:shadow-md transition-all duration-200 border-border/50 bg-card-background">
+    <Card className="group hover:shadow-md transition-all duration-200">
       <div className="p-6">
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">

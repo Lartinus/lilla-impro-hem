@@ -23,7 +23,7 @@ interface PerformerCardProps {
 
 export function PerformerCard({ performer, onEdit, onToggleStatus, onDelete }: PerformerCardProps) {
   return (
-    <Card className="group hover:shadow-md transition-all duration-200 border-border/50 bg-card-background">
+    <Card className="group hover:shadow-md transition-all duration-200">
       <div className="p-6">
         {/* Header Section with Avatar and Name */}
         <div className="flex items-start gap-4 mb-4">
