@@ -40,7 +40,7 @@ export default function ServiceBoxes() {
       {services.map((svc, idx) => (
         <div
           key={idx}
-          className="group flex flex-col bg-[#E7E7E7] overflow-hidden transition-transform duration-300 w-full max-w-[300px]"
+          className="group flex flex-col bg-[#E7E7E7] overflow-hidden transition-transform duration-300 w-full max-w-[400px] lg:max-w-[300px]"
         >
           {/* Bild‐sektion = halva höjden */}
           <div className="relative h-[200px] lg:h-[250px] overflow-hidden">
