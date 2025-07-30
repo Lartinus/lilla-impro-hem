@@ -51,21 +51,6 @@ export function createSimpleEmailTemplate(subject: string, content: string): str
           ${content}
         </div>
         
-        <div style="
-          text-align: center;
-          margin-top: 40px;
-          padding-top: 20px;
-          border-top: 1px solid #e0e0e0;
-        ">
-          <img 
-            src="https://gcimnsbeexkkqragmdzo.supabase.co/storage/v1/object/public/images/1752141748739-LIT_red_large.png" 
-            alt="Lilla Improteatern"
-            style="
-              max-width: 120px;
-              height: auto;
-            "
-          />
-        </div>
       </div>
     </body>
     </html>

@@ -116,14 +116,6 @@ const NewsletterConfirmation = () => {
       
       <main className="container mx-auto px-4 py-8 pt-20">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-8">
-            <img 
-              src="/uploads/LIT_red_large.png" 
-              alt="Lilla Improteatern" 
-              className="mx-auto w-32 h-auto mb-6"
-            />
-          </div>
-
           <Card>
             <CardHeader className="text-center">
               <div className="flex justify-center mb-4">
