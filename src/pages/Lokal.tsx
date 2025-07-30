@@ -22,7 +22,7 @@ const Lokal = () => {
       
       <div className="bg-[#FAFAFA] min-h-screen py-16">
         <div className="relative z-10 mx-0 md:mx-auto max-w-[800px] -mt-16">
-          <div className="bg-[#F3F3F3] rounded-t-lg min-h-[calc(100vh-200px)]">
+          <div className="bg-[#F3F3F3] rounded-t-lg">
             <div className="p-6 md:p-8 space-y-8">
               
               {/* Lokal-info */}
