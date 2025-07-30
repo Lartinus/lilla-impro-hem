@@ -8,7 +8,7 @@ interface NewsletterSignupSectionProps {
 const NewsletterSignupSection = ({ onSignupClick }: NewsletterSignupSectionProps) => {
   return (
     <div className="bg-[#D9D9D9] -mx-6 md:mx-0 mb-0">
-      <div className="px-6 md:px-8 pt-8 pb-0 md:py-8">
+      <div className="px-6 md:px-8 pt-8 pb-4 md:py-8">
         <div className="text-left">
           <h1>Få informationen direkt i din inkorg</h1>
           <p className="text-[16px] font-satoshi mb-6">
