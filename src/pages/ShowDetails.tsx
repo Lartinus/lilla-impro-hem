@@ -225,6 +225,9 @@ const ShowDetails = () => {
               </div>
             )}
 
+            {/* Newsletter signup section */}
+            <NewsletterSignupSection onSignupClick={() => setIsNewsletterModalOpen(true)} />
+
             {/* Back to shows link */}
             <div className="mb-8">
               <Link 
@@ -239,15 +242,6 @@ const ShowDetails = () => {
           </MainCard>
         </div>
       </div>
-      </div>
-      
-      {/* Newsletter signup section */}
-      <div className="min-h-screen bg-[#FAFAFA]">
-        <div className="relative z-10 mx-0 md:mx-auto max-w-[1000px]">
-          <div className="bg-[#F3F3F3] rounded-t-lg overflow-hidden">
-            <NewsletterSignupSection onSignupClick={() => setIsNewsletterModalOpen(true)} />
-          </div>
-        </div>
       </div>
       
       <Footer />
