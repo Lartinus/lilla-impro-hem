@@ -36,11 +36,11 @@ const services: Service[] = [
 
 export default function ServiceBoxes() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-[15px] justify-items-center max-w-[930px] mx-auto">
+    <div className="grid gap-[15px] justify-items-center max-w-[930px] mx-auto" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
       {services.map((svc, idx) => (
         <div
           key={idx}
-          className="group flex flex-col bg-[#E7E7E7] overflow-hidden transition-transform duration-300 w-full max-w-[400px] md:max-w-[240px] lg:max-w-[300px]"
+          className="group flex flex-col bg-[#E7E7E7] overflow-hidden transition-transform duration-300 w-full"
         >
           {/* Bild‐sektion = halva höjden */}
           <div className="relative h-[200px] lg:h-[250px] overflow-hidden">
