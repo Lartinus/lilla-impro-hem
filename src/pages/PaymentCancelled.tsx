@@ -7,7 +7,7 @@ import Footer from '@/components/Footer';
 
 const PaymentCancelled = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
+    <div className="min-h-screen" style={{ backgroundColor: '#EBEBEB' }}>
       <Header />
       
       <main className="container mx-auto px-4 py-16">
@@ -16,7 +16,7 @@ const PaymentCancelled = () => {
             <CardContent className="p-8 text-center">
               <div className="mb-6">
                 <XCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
-                <h1 className="text-3xl font-bold text-foreground mb-2">
+                <h1 className="text-3xl text-foreground mb-2">
                   Betalning avbruten
                 </h1>
                 <p className="text-muted-foreground">
@@ -25,14 +25,14 @@ const PaymentCancelled = () => {
               </div>
 
               <div className="bg-destructive/5 rounded-lg p-6 mb-6 text-left">
-                <h2 className="font-semibold text-foreground mb-4">
+                <h2 className="text-foreground mb-4">
                   Vad händer nu?
                 </h2>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Din plats/biljett är inte reserverad</li>
-                  <li>• Inga pengar har dragits från ditt kort</li>
-                  <li>• Du kan försöka igen när som helst</li>
-                  <li>• Kontakta oss om du har tekniska problem</li>
+                  <li>•• Din plats/biljett är inte reserverad</li>
+                  <li>•• Inga pengar har dragits från ditt kort</li>
+                  <li>•• Du kan försöka igen när som helst</li>
+                  <li>•• Kontakta oss om du har tekniska problem</li>
                 </ul>
               </div>
 
@@ -63,8 +63,8 @@ const PaymentCancelled = () => {
               <div className="mt-8 pt-6 border-t border-border">
                 <p className="text-xs text-muted-foreground">
                   Behöver du hjälp? Kontakta oss på{' '}
-                  <a href="mailto:info@lillaimpro.se" className="text-primary hover:underline">
-                    info@lillaimpro.se
+                  <a href="mailto:kontakt@improteatern.se" className="text-primary hover:underline">
+                    kontakt@improteatern.se
                   </a>
                 </p>
               </div>

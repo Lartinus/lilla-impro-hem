@@ -43,7 +43,7 @@ const TicketPaymentSuccess = () => {
   }, [sessionId]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
+    <div className="min-h-screen" style={{ backgroundColor: '#EBEBEB' }}>
       <Header />
       
       <main className="container mx-auto px-4 py-16">
@@ -52,7 +52,7 @@ const TicketPaymentSuccess = () => {
             <CardContent className="p-8 text-center">
               <div className="mb-6">
                 <CheckCircle2 className="w-16 h-16 text-success mx-auto mb-4" />
-                <h1 className="text-3xl font-bold text-foreground mb-2">
+                <h1 className="text-3xl text-foreground mb-2">
                   Tack för ditt biljettköp!
                 </h1>
                 <p className="text-muted-foreground">
@@ -61,15 +61,14 @@ const TicketPaymentSuccess = () => {
               </div>
 
               <div className="bg-success/5 rounded-lg p-6 mb-6 text-left">
-                <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
+                <h2 className="font-semibold text-foreground mb-4">
                   Nästa steg
                 </h2>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Du kommer att få dina biljetter via email inom kort</li>
-                  <li>• Ta med dig giltigt ID till föreställningen</li>
-                  <li>• Kom gärna 15 minuter innan föreställningen börjar</li>
-                  <li>• Hör av dig till oss om du har några frågor</li>
+                  <li>•• Du kommer att få dina biljetter via email inom kort</li>
+                  <li>•• Ta med dig giltigt ID till föreställningen</li>
+                  <li>•• Kom gärna 15 minuter innan föreställningen börjar</li>
+                  <li>•• Hör av dig till oss om du har några frågor</li>
                 </ul>
               </div>
 
@@ -108,8 +107,8 @@ const TicketPaymentSuccess = () => {
               <div className="mt-8 pt-6 border-t border-border">
                 <p className="text-xs text-muted-foreground">
                   Har du frågor? Kontakta oss på{' '}
-                  <a href="mailto:info@lillaimpro.se" className="text-primary hover:underline">
-                    info@lillaimpro.se
+                  <a href="mailto:kontakt@improteatern.se" className="text-primary hover:underline">
+                    kontakt@improteatern.se
                   </a>
                 </p>
               </div>
