@@ -79,7 +79,7 @@ export default function AnlitaOss() {
 
                   <div className="space-y-4">
                     <p className="font-bold">Exempel på tillfällen vi passar extra bra för:</p>
-                    <ul className="space-y-2">
+                    <ul className="space-y-2 text-black">
                       {[
                         "Konferenser, kickoff och personaldagar",
                         "APT och after work",
