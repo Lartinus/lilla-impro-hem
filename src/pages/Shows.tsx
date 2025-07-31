@@ -211,7 +211,7 @@ export default function Shows() {
                     variant="default"
                   >
                     <span>Skriv upp dig</span>
-                    <span className="text-2xl font-bold">→</span>
+                    <span className="text-2xl pl-[10px] font-bold">→</span>
                   </Button>
                 </div>
               </div>
