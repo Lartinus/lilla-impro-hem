@@ -249,7 +249,7 @@ const CourseBookingForm = ({
           <span className="text-2xl font-bold">→</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] max-h-[90vh] rounded-none overflow-hidden flex flex-col">
+      <DialogContent className="sm:max-w-[600px] lg:max-w-[700px] max-h-[90vh] rounded-none overflow-y-auto flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle className="rounded-none font-normal">
             {isPaidCourse ? `Köp kursplats - ${courseTitle}` : 
@@ -257,7 +257,7 @@ const CourseBookingForm = ({
              `Anmäl dig till ${courseTitle}`}
           </DialogTitle>
         </DialogHeader>
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 min-h-0 overflow-y-auto">
           {desktopFormContent()}
         </div>
       </DialogContent>
