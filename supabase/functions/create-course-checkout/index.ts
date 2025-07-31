@@ -31,15 +31,26 @@ serve(async (req) => {
     } = await req.json();
 
     console.log('Creating course checkout for:', courseTitle);
+    
+    // Check if Stripe secret key exists
+    const stripeSecretKey = Deno.env.get("STRIPE_SECRETKEY_TEST");
+    if (!stripeSecretKey) {
+      console.error('STRIPE_SECRETKEY_TEST environment variable is not set');
+      throw new Error('Stripe configuration missing');
+    }
+    
+    console.log('Stripe key found, length:', stripeSecretKey.length);
 
     // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRETKEY_TEST") || "", {
+    const stripe = new Stripe(stripeSecretKey, {
       apiVersion: "2023-10-16",
     });
 
     // Calculate total amount based on price type
     const totalAmount = useDiscountPrice ? discountPrice : price;
     const priceType = useDiscountPrice ? "Studentpris" : "Ordinarie pris";
+
+    console.log('Creating session with amount:', totalAmount, 'type:', priceType);
 
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
