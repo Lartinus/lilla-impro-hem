@@ -55,7 +55,7 @@ export default function AnlitaOss() {
 
                   <div className="space-y-4">
                     <p className="font-bold">Vi erbjuder bland annat:</p>
-                    <ul className="space-y-2 text-black">
+                    <ul className="space-y-2">
                       {[
                         ["Teambuilding-workshops", "Stärk samspel och gruppdynamik"],
                         ["Scenarioträning", "Vi gestaltar utmaningar, ni utforskar lösningarna."],
@@ -64,8 +64,8 @@ export default function AnlitaOss() {
                         <li key={i} className="flex items-start space-x-3">
                           <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>
                           <div>
-                            <span className="font-medium">{title}</span>
-                            <span className="text-gray-600"> – {description}</span>
+                            <span className="font-bold">{title}</span>
+                            <span> – {description}</span>
                           </div>
                         </li>
                       ))}
