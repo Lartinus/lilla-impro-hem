@@ -53,16 +53,16 @@ export default function Header() {
         <button
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Stäng meny' : 'Öppna meny'}
-          className="w-12 h-12 relative flex flex-col items-center justify-center p-0 ml-auto"
+          className="w-10 h-10 relative flex flex-col items-center justify-center p-0 ml-auto"
         >
           {open ? (
-            // CSS-baserat kryss (28px högt, 4px brett)
+            // CSS-baserat kryss (28px högt, 4px brett) - större än hamburgermenyn
             <>
               <span className="absolute w-[4px] h-[28px] bg-primary-foreground rotate-45" />
               <span className="absolute w-[4px] h-[28px] bg-primary-foreground -rotate-45" />
             </>
           ) : (
-            // Tre streck, full knappbredd (48px), 4px höjd, 11px mellanrum
+            // Tre streck, full knappbredd (40px), 4px höjd, 11px mellanrum
             <>
               <span className="block w-full h-[4px] bg-primary-foreground mb-[6px]" />
               <span className="block w-full h-[4px] bg-primary-foreground mb-[6px]" />
