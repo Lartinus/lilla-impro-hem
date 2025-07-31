@@ -83,8 +83,7 @@ export const NewsletterSignupModal: React.FC<NewsletterSignupModalProps> = ({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Mail className="w-5 h-5 text-primary" />
+          <DialogTitle className="font-normal">
             Prenumerera på vårt nyhetsbrev
           </DialogTitle>
           <DialogDescription>
@@ -149,7 +148,7 @@ export const NewsletterSignupModal: React.FC<NewsletterSignupModalProps> = ({
           </div>
         )}
 
-        <div className="text-xs text-muted-foreground mt-4 pt-4 border-t">
+        <div className="text-sm text-muted-foreground mt-4 pt-4 border-t">
           <p>
             Genom att prenumerera godkänner du att vi skickar dig information om våra föreställningar och kurser. 
             Du kan när som helst avregistrera dig via länken i våra mejl.
