@@ -69,10 +69,10 @@ const CoursePurchaseFlow = ({ courseInstance, onClose }: CoursePurchaseFlowProps
   }
 
   return (
-    <div className="space-y-4">
-      <ScrollArea className="max-h-[60vh] lg:max-h-[65vh] px-1">
+    <div className="flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 pr-3">
+          <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 p-1">
             <BookingFormFields form={form} />
             
             <BookingInformation maxParticipants={courseInstance.max_participants} />
@@ -110,7 +110,7 @@ const CoursePurchaseFlow = ({ courseInstance, onClose }: CoursePurchaseFlowProps
               </div>
             </div>
 
-            <div className="flex space-x-2 pt-4">
+            <div className="flex space-x-2 pt-4 pb-4">
               <Button type="button" variant="outline" onClick={onClose} className="flex-1 rounded-none">
                 Avbryt
               </Button>
@@ -120,7 +120,7 @@ const CoursePurchaseFlow = ({ courseInstance, onClose }: CoursePurchaseFlowProps
             </div>
           </form>
         </Form>
-      </ScrollArea>
+      </div>
     </div>
   );
 };

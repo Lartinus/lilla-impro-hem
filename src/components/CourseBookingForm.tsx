@@ -249,15 +249,17 @@ const CourseBookingForm = ({
           <span className="text-2xl font-bold">→</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] max-h-[80vh] rounded-none overflow-hidden">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] rounded-none overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle className="rounded-none font-normal">
             {isPaidCourse ? `Köp kursplats - ${courseTitle}` : 
              isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : 
              `Anmäl dig till ${courseTitle}`}
           </DialogTitle>
         </DialogHeader>
-        {desktopFormContent()}
+        <div className="flex-1 overflow-hidden">
+          {desktopFormContent()}
+        </div>
       </DialogContent>
     </Dialog>
   );
