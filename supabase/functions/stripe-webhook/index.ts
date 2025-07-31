@@ -9,6 +9,8 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  console.log('Webhook called with method:', req.method);
+  
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -27,8 +29,9 @@ serve(async (req) => {
       throw new Error('No signature provided');
     }
 
-    // Verify webhook signature (simplified - in production use proper crypto verification)
+    // Parse the webhook event
     const event = JSON.parse(body);
+    console.log('Received webhook event:', event.type, 'Session ID:', event.data?.object?.id);
     
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
@@ -51,6 +54,7 @@ serve(async (req) => {
         .single();
 
       if (ticketPurchase) {
+        console.log('Found ticket purchase, sending confirmation email');
         // Send ticket confirmation email
         await fetch(`${supabaseUrl}/functions/v1/send-ticket-confirmation`, {
           method: 'POST',
@@ -83,8 +87,10 @@ serve(async (req) => {
           .single();
 
         if (coursePurchase) {
+          console.log('Found course purchase, adding to course table:', coursePurchase.course_table_name);
+          
           // Add to course table after successful payment
-          await supabase.rpc('insert_course_booking', {
+          const { error: insertError } = await supabase.rpc('insert_course_booking', {
             table_name: coursePurchase.course_table_name,
             booking_name: coursePurchase.buyer_name,
             booking_phone: coursePurchase.buyer_phone,
@@ -95,7 +101,14 @@ serve(async (req) => {
             booking_message: coursePurchase.buyer_message || ''
           });
 
+          if (insertError) {
+            console.error('Error inserting course booking:', insertError);
+          } else {
+            console.log('Successfully added participant to course table');
+          }
+
           // Send course confirmation email
+          console.log('Sending course confirmation email to:', coursePurchase.buyer_email);
           await fetch(`${supabaseUrl}/functions/v1/send-course-confirmation`, {
             method: 'POST',
             headers: {
@@ -110,10 +123,15 @@ serve(async (req) => {
               isAvailable: true
             }),
           });
+        } else {
+          console.log('No course purchase found for session:', sessionId);
         }
       }
+    } else {
+      console.log('Received non-checkout event:', event.type);
     }
 
+    console.log('Webhook processed successfully');
     return new Response(JSON.stringify({ received: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
