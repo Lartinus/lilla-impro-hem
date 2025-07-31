@@ -18,13 +18,11 @@ export default function Index() {
       <div className="relative">
         {/* Hero image */}
         <div className="relative w-full h-[50vh] overflow-hidden">
-          <OptimizedImage
+          <img
             src="/uploads/images/Rosenqvist-6301.jpg"
             alt="Lilla Improteatern hero image"
             className="w-full h-full object-cover"
-            priority={true}
-            responsive={true}
-            sizes="100vw"
+            loading="eager"
           />
           
           {/* Dark overlay for better text readability */}

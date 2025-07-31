@@ -30,23 +30,12 @@ export default function OptimizedImage({
   const { imageUrl, originalSrc, srcSet } = useCallback(() => {
     if (!src) return { imageUrl: null, originalSrc: null, srcSet: '' }
     if (typeof src === 'string') {
-      const basePath = src.replace(/\.[^/.]+$/, '')
-      const extension = src.split('.').pop()
-      
-      // Generate responsive srcset if enabled
-      let srcSet = ''
-      if (responsive) {
-        srcSet = [
-          `${src} 1x`,
-          `${basePath}@2x.${extension} 2x`
-        ].join(', ')
-      }
-      
-      return { imageUrl: src, originalSrc: src, srcSet }
+      // For now, disable responsive srcset to debug
+      return { imageUrl: src, originalSrc: src, srcSet: '' }
     }
     const url = (src as any)?.data?.attributes?.url || (src as any)?.url
     return { imageUrl: url, originalSrc: url, srcSet: '' }
-  }, [src, responsive])()
+  }, [src])()
 
   const handleLoad = useCallback(() => {
     console.log('OptimizedImage: Image loaded successfully:', originalSrc)
