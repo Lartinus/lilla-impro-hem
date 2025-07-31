@@ -140,34 +140,12 @@ const handler = async (req: Request): Promise<Response> => {
       processedContent = processedContent.replace(regex, value);
     });
 
-    // Format content like AutomaticEmailsManager
-    const formattedContent = processedContent
-      .split('\n')
-      .map(line => {
-        const trimmed = line.trim();
-        if (!trimmed) return '';
-        
-        if (trimmed.startsWith('H1: ')) {
-          const headerText = trimmed.substring(4);
-          return `<h1 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 32px; color: #333333; margin: 24px 0 16px 0; font-weight: 400; line-height: 1.2;">${headerText}</h1>`;
-        }
-        
-        if (trimmed.startsWith('H2: ')) {
-          const headerText = trimmed.substring(4);
-          return `<h2 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 24px; color: #333333; margin: 20px 0 12px 0; font-weight: 400; line-height: 1.2;">${headerText}</h2>`;
-        }
-        
-        return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333; margin: 0 0 16px 0; line-height: 1.6;">${trimmed}</p>`;
-      })
-      .filter(line => line)
-      .join('');
+    console.log('DEBUG: Processed content after variable replacement:', processedContent);
 
-    console.log('DEBUG: Processed content after formatting:', formattedContent);
-
-    // Create styled email template using unified template
+    // Send raw content to createUnifiedEmailTemplate - it will handle all formatting
     const htmlContent = createUnifiedEmailTemplate(
       personalizedSubject, 
-      formattedContent, 
+      processedContent, 
       template?.background_image
     ).replace('{UNSUBSCRIBE_URL}', 'https://improteatern.se/avprenumerera');
 
