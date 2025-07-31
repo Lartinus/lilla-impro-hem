@@ -53,16 +53,16 @@ export default function Header() {
         <button
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Stäng meny' : 'Öppna meny'}
-          className="w-10 h-10 relative flex flex-col items-center justify-center p-0 ml-auto"
+          className="w-12 h-12 relative flex flex-col items-center justify-center p-0 ml-auto"
         >
           {open ? (
-            // CSS-baserat kryss (24px högt, 4px brett)
+            // CSS-baserat kryss (28px högt, 4px brett)
             <>
-              <span className="absolute w-[4px] h-[24px] bg-primary-foreground rotate-45" />
-              <span className="absolute w-[4px] h-[24px] bg-primary-foreground -rotate-45" />
+              <span className="absolute w-[4px] h-[28px] bg-primary-foreground rotate-45" />
+              <span className="absolute w-[4px] h-[28px] bg-primary-foreground -rotate-45" />
             </>
           ) : (
-            // Tre streck, full knappbredd (40px), 4px höjd, 11px mellanrum
+            // Tre streck, full knappbredd (48px), 4px höjd, 11px mellanrum
             <>
               <span className="block w-full h-[4px] bg-primary-foreground mb-[6px]" />
               <span className="block w-full h-[4px] bg-primary-foreground mb-[6px]" />
@@ -75,7 +75,7 @@ export default function Header() {
       {/* Öppen meny (börjar direkt under headern) */}
       {open && (
         <div className="fixed inset-x-0 top-[85px] z-40 bg-primary-red text-primary-foreground">
-          <nav className="flex flex-col items-end pr-6 lg:pr-16 space-y-2 pb-6 pt-4">
+          <nav className="flex flex-col items-end pr-6 lg:pr-8 space-y-2 pb-6 pt-4">
             {navItems.map(({ to, label }) => {
               const isActive = pathname === to;
               return (
