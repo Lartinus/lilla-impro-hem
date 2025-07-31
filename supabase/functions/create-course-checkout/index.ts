@@ -33,7 +33,7 @@ serve(async (req) => {
     console.log('Creating course checkout for:', courseTitle);
 
     // Initialize Stripe
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_TEST") || "", {
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRETKEY_TEST") || "", {
       apiVersion: "2023-10-16",
     });
 
@@ -57,8 +57,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/courses?payment=success`,
-      cancel_url: `${req.headers.get("origin")}/courses?payment=cancelled`,
+      success_url: `${req.headers.get("origin")}/kurser?payment=success`,
+      cancel_url: `${req.headers.get("origin")}/kurser?payment=cancelled`,
     });
 
     console.log('Stripe session created:', session.id);
