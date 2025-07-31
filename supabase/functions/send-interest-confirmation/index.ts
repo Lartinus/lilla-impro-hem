@@ -27,11 +27,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Processing interest confirmation for ${email} - interest: ${interestTitle}`);
 
-    // Get the email template from database
+    // Get the email template from database (using AUTO: prefix)
     const { data: template, error: templateError } = await supabase
       .from('email_templates')
       .select('*')
-      .eq('name', 'Intresseanmälan bekräftelse - AUTO')
+      .eq('name', 'AUTO: Intresseanmälan bekräftelse')
       .eq('is_active', true)
       .single();
 
@@ -80,55 +80,49 @@ const handler = async (req: Request): Promise<Response> => {
       // This could happen if contact already exists or other API issues
     }
 
-    // Personalize the template content
-    let personalizedContent = template.content
-      .replace(/\[NAMN\]/g, name)
-      .replace(/\[KURSNAMN\]/g, interestTitle);
-    
-    let personalizedSubject = template.subject
-      .replace(/\[NAMN\]/g, name)
-      .replace(/\[KURSNAMN\]/g, interestTitle);
+    // Personalize the template content (using same variable format as AutomaticEmailsManager)
+    const variables = {
+      NAMN: name,
+      INTRESSETITEL: interestTitle
+    };
 
-    // Create styled HTML email (same style as bulk emails)
-    const isPlainText = !template.content.includes('<') && !template.content.includes('>');
+    let processedContent = template.content;
+    Object.entries(variables).forEach(([key, value]) => {
+      const regex = new RegExp(`\\{${key}\\}`, 'gi');
+      processedContent = processedContent.replace(regex, value);
+    });
     
-    // Create the content with headers for interest confirmation
-    const processedContent = isPlainText ? personalizedContent.replace(/\n/g, '<br>') : personalizedContent;
-    
-    const fullContent = `
-      <div style="margin-bottom: 32px; text-align: center;">
-        <h2 style="
-          font-size: 20px;
-          font-weight: 400;
-          margin: 0 0 12px 0;
-          color: #1a1a1a;
-        ">
-          Hej ${name.split(' ')[0]}!
-        </h2>
-        <p style="
-          font-size: 16px;
-          color: #666666;
-          margin: 0;
-          line-height: 1.5;
-        ">
-          Tack för din intresseanmälan. Vi kontaktar dig så snart något aktuellt dyker upp!
-        </p>
-      </div>
+    let personalizedSubject = template.subject;
+    Object.entries(variables).forEach(([key, value]) => {
+      const regex = new RegExp(`\\{${key}\\}`, 'gi');
+      personalizedSubject = personalizedSubject.replace(regex, value);
+    });
 
-      <div style="
-        font-size: 16px;
-        line-height: 1.6;
-        color: #333333;
-        font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-        margin-bottom: 32px;
-      ">
-        ${processedContent}
-      </div>
-    `;
+    // Format content like AutomaticEmailsManager
+    const formattedContent = processedContent
+      .split('\n')
+      .map(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return '';
+        
+        if (trimmed.startsWith('H1: ')) {
+          const headerText = trimmed.substring(4);
+          return `<h1 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 32px; color: #333333; margin: 24px 0 16px 0; font-weight: 400; line-height: 1.2;">${headerText}</h1>`;
+        }
+        
+        if (trimmed.startsWith('H2: ')) {
+          const headerText = trimmed.substring(4);
+          return `<h2 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 24px; color: #333333; margin: 20px 0 12px 0; font-weight: 400; line-height: 1.2;">${headerText}</h2>`;
+        }
+        
+        return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333; margin: 0 0 16px 0; line-height: 1.6;">${trimmed}</p>`;
+      })
+      .filter(line => line)
+      .join('');
     
     const htmlContent = createUnifiedEmailTemplate(
       personalizedSubject, 
-      fullContent, 
+      formattedContent, 
       template.background_image
     ).replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(email)}`);
 
@@ -139,7 +133,7 @@ const handler = async (req: Request): Promise<Response> => {
       to: [email],
       subject: personalizedSubject,
       html: htmlContent,
-      text: personalizedContent, // Keep plain text version for fallback
+      text: processedContent, // Keep plain text version for fallback
       tags: [
         { name: 'type', value: 'interest-confirmation' },
         { name: 'interest', value: interestTitle.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() },

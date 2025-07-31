@@ -59,12 +59,12 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Get email template from database
+    // Get email template from database (using AUTO: prefix from AutomaticEmailsManager)
     console.log('Fetching course confirmation email template...');
     const { data: template, error: templateError } = await supabase
       .from('email_templates')
       .select('*')
-      .eq('name', 'Välkomstmejl')
+      .eq('name', 'AUTO: Kursbekräftelse')
       .eq('is_active', true)
       .single();
 
@@ -115,10 +115,10 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('DEBUG: Extracted first name:', firstName);
     console.log('DEBUG: Name is undefined/empty?', !name || name.trim() === '');
 
-    // Prepare variables for template
+    // Prepare variables for template (matching AutomaticEmailsManager format)
     const variables = {
       NAMN: firstName,
-      KURS: courseTitle,
+      KURSTITEL: courseTitle,
       STARTDATUM: finalStartDate ? new Date(finalStartDate).toLocaleDateString('sv-SE') : '',
       STARTTID: finalStartTime ? finalStartTime.substring(0, 5) : ''
     };
@@ -126,21 +126,48 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('DEBUG: Variables for template replacement:', variables);
     console.log('DEBUG: Template content before replacement:', template.content);
 
-    // Process subject with variables
+    // Process subject with variables (using same format as AutomaticEmailsManager)
     let personalizedSubject = template.subject;
     Object.entries(variables).forEach(([key, value]) => {
-      const regex = new RegExp(`\\[${key}\\]`, 'gi');
+      const regex = new RegExp(`\\{${key}\\}`, 'gi');
       personalizedSubject = personalizedSubject.replace(regex, value);
     });
 
-    // Process content with variables
-    const personalizedContent = convertMarkdownToHtmlWithVariables(template.content, variables);
-    console.log('DEBUG: Personalized content after replacement:', personalizedContent);
+    // Process content with variables (same as AutomaticEmailsManager)
+    let processedContent = template.content;
+    Object.entries(variables).forEach(([key, value]) => {
+      const regex = new RegExp(`\\{${key}\\}`, 'gi');
+      processedContent = processedContent.replace(regex, value);
+    });
+
+    // Format content like AutomaticEmailsManager
+    const formattedContent = processedContent
+      .split('\n')
+      .map(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return '';
+        
+        if (trimmed.startsWith('H1: ')) {
+          const headerText = trimmed.substring(4);
+          return `<h1 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 32px; color: #333333; margin: 24px 0 16px 0; font-weight: 400; line-height: 1.2;">${headerText}</h1>`;
+        }
+        
+        if (trimmed.startsWith('H2: ')) {
+          const headerText = trimmed.substring(4);
+          return `<h2 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 24px; color: #333333; margin: 20px 0 12px 0; font-weight: 400; line-height: 1.2;">${headerText}</h2>`;
+        }
+        
+        return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333; margin: 0 0 16px 0; line-height: 1.6;">${trimmed}</p>`;
+      })
+      .filter(line => line)
+      .join('');
+
+    console.log('DEBUG: Processed content after formatting:', formattedContent);
 
     // Create styled email template using unified template
     const htmlContent = createUnifiedEmailTemplate(
       personalizedSubject, 
-      personalizedContent, 
+      formattedContent, 
       template?.background_image
     ).replace('{UNSUBSCRIBE_URL}', 'https://improteatern.se/avprenumerera');
 
