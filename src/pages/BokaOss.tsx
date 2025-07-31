@@ -55,7 +55,7 @@ export default function AnlitaOss() {
 
                   <div className="space-y-4">
                     <p className="font-bold">Vi erbjuder bland annat:</p>
-                    <ul className="space-y-2">
+                    <ul className="space-y-2 text-black">
                       {[
                         ["Teambuilding-workshops", "Stärk samspel och gruppdynamik"],
                         ["Scenarioträning", "Vi gestaltar utmaningar, ni utforskar lösningarna."],
