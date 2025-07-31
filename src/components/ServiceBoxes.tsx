@@ -12,18 +12,18 @@ interface Service {
 
 const services: Service[] = [
   {
-    title: 'Kurser',
-    subtitle: 'För dig som vill utvecklas på scen',
-    cta: 'Utforska våra kurser',
-    link: '/kurser',
-    image: '/uploads/images/kurser_LIT_2024.jpg',
-  },
-  {
     title: 'Föreställningar',
     subtitle: 'Med stor bredd och mycket skratt',
     cta: 'Kommande föreställningar',
     link: '/shows',
     image: '/uploads/images/Improvision2024.jpg',
+  },
+  {
+    title: 'Kurser',
+    subtitle: 'För dig som vill utvecklas på scen',
+    cta: 'Utforska våra kurser',
+    link: '/kurser',
+    image: '/uploads/images/kurser_LIT_2024.jpg',
   },
   {
     title: 'Underhållning',
