@@ -164,7 +164,7 @@ export const InterestSignupSection = () => {
       }}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Anmäl intresse</DialogTitle>
+            <DialogTitle className="font-normal">Anmäl intresse</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-2">
