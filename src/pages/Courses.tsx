@@ -40,13 +40,12 @@ const Courses = () => {
               <h1>Om våra kurser</h1>
               <p>
                 Lilla Improteatern är platsen för dig som vill utvecklas som
-                improvisatör och bli skickligare på att spela roliga scener
-                tillsammans med andra. Improv Comedy är ett hantverk. Med flera
-                års erfarenhet som improvisatörer och pedagoger har vi skapat
-                ett kurssystem som tar dig från grundläggande scenarbete till
-                långform och ensemblearbete. Våra kurser bygger på Game of the
-                scene och ger dig konkreta verktyg, massor av träning, scentid
-                och återkoppling.
+                improvisatör och bli skickligare på att spela roliga scener. 
+                Improv Comedy är ett hantverk. Med flera års erfarenhet som 
+                improvisatörer och pedagoger har vi skapat ett kurssystem som 
+                tar dig från grundläggande scenarbete till långform och ensemblearbete. 
+                Våra kurser bygger på game of the scene och ger dig konkreta verktyg, 
+                massor av träning, scentid och återkoppling.
               </p>
             </section>
 
