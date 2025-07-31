@@ -42,42 +42,57 @@ const CourseStripeCheckout = ({
 
   const handlePayment = async () => {
     setIsLoading(true);
+    console.log('=== FRONTEND PAYMENT START ===');
+    
+    const requestBody = {
+      courseInstanceId,
+      courseTitle,
+      courseTableName,
+      price,
+      discountPrice,
+      buyerName,
+      buyerEmail,
+      buyerPhone,
+      buyerAddress,
+      buyerPostalCode,
+      buyerCity,
+      buyerMessage,
+      useDiscountPrice
+    };
+    
+    console.log('Sending request body:', requestBody);
+    
     try {
       const { data, error } = await supabase.functions.invoke('create-course-checkout', {
-        body: {
-          courseInstanceId,
-          courseTitle,
-          courseTableName,
-          price,
-          discountPrice,
-          buyerName,
-          buyerEmail,
-          buyerPhone,
-          buyerAddress,
-          buyerPostalCode,
-          buyerCity,
-          buyerMessage,
-          useDiscountPrice
-        }
+        body: requestBody
       });
 
+      console.log('Response from edge function:', { data, error });
+      
       if (error) {
-        console.error('Error creating checkout session:', error);
-        alert('Ett fel uppstod vid betalning. Försök igen.');
+        console.error('=== EDGE FUNCTION ERROR ===');
+        console.error('Error object:', error);
+        console.error('Error message:', error.message);
+        alert(`Fel vid betalning: ${error.message || 'Okänt fel'}`);
         return;
       }
 
-      // Redirect to Stripe checkout
-      if (data.url) {
+      if (data?.url) {
+        console.log('Redirecting to Stripe URL:', data.url);
         window.location.href = data.url;
       } else {
-        console.error('No checkout URL received from server');
-        alert('Ett fel uppstod vid betalning. Försök igen.');
+        console.error('=== NO URL IN RESPONSE ===');
+        console.error('Full response data:', data);
+        alert('Ingen betalnings-URL mottogs från servern. Försök igen.');
       }
 
     } catch (error) {
-      console.error('Payment error:', error);
-      alert('Ett fel uppstod vid betalning. Försök igen.');
+      console.error('=== FRONTEND PAYMENT ERROR ===');
+      console.error('Error type:', typeof error);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      console.error('Full error object:', error);
+      alert(`Fel vid betalning: ${error.message || 'Okänt fel'}`);
     } finally {
       setIsLoading(false);
     }

@@ -14,6 +14,11 @@ serve(async (req) => {
   }
 
   try {
+    console.log('=== COURSE CHECKOUT START ===');
+    console.log('Request method:', req.method);
+    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
+
+    const body = await req.json();
     const {
       courseInstanceId,
       courseTitle,
@@ -28,8 +33,9 @@ serve(async (req) => {
       buyerCity,
       buyerMessage,
       useDiscountPrice
-    } = await req.json();
+    } = body;
 
+    console.log('Request body received:', body);
     console.log('Creating course checkout for:', courseTitle);
     
     // Check if Stripe secret key exists
@@ -72,7 +78,10 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/kurser?payment=cancelled`,
     });
 
-    console.log('Stripe session created:', session.id);
+    console.log('Stripe session created successfully!');
+    console.log('Session ID:', session.id);
+    console.log('Session URL:', session.url);
+    console.log('Full session object:', JSON.stringify(session, null, 2));
 
     // Store course purchase in database
     const { error: insertError } = await supabase
@@ -99,15 +108,27 @@ serve(async (req) => {
     }
 
     console.log('Course purchase stored successfully');
+    console.log('Returning URL to frontend:', session.url);
 
-    return new Response(JSON.stringify({ url: session.url }), {
+    const response = { url: session.url };
+    console.log('Final response object:', response);
+
+    return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
 
   } catch (error) {
-    console.error('Error creating course checkout:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error('=== ERROR IN COURSE CHECKOUT ===');
+    console.error('Error type:', typeof error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    console.error('Full error object:', error);
+    
+    return new Response(JSON.stringify({ 
+      error: error.message,
+      details: 'Check edge function logs for more information' 
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
