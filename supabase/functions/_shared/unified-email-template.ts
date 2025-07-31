@@ -19,17 +19,17 @@ export function createUnifiedEmailTemplate(
       // Handle H1 headers
       if (trimmed.startsWith('H1: ')) {
         const headerText = trimmed.substring(4);
-        return `<h1 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 32px; color: #333333; margin: 24px 0 16px 0; font-weight: 400; line-height: 1.2;">${headerText}</h1>`;
+        return `<h1 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 32px; color: #333333 !important; margin: 24px 0 16px 0; font-weight: 400; line-height: 1.2;">${headerText}</h1>`;
       }
       
       // Handle H2 headers
       if (trimmed.startsWith('H2: ')) {
         const headerText = trimmed.substring(4);
-        return `<h2 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 24px; color: #333333; margin: 20px 0 12px 0; font-weight: 400; line-height: 1.2;">${headerText}</h2>`;
+        return `<h2 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 24px; color: #333333 !important; margin: 20px 0 12px 0; font-weight: 400; line-height: 1.2;">${headerText}</h2>`;
       }
       
       // Regular paragraphs
-      return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333; margin: 0 0 16px 0; line-height: 1.6;">${trimmed}</p>`;
+      return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 16px 0; line-height: 1.6;">${trimmed}</p>`;
     })
     .filter(line => line)
     .join('');
@@ -39,19 +39,33 @@ export function createUnifiedEmailTemplate(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light">
   <title>${subject}</title>
   <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Tanker&display=swap" rel="stylesheet">
+  <style>
+    /* Force light mode */
+    * {
+      color-scheme: light !important;
+    }
+    @media (prefers-color-scheme: dark) {
+      * {
+        background-color: white !important;
+        color: #333333 !important;
+      }
+    }
+  </style>
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Satoshi', Arial, sans-serif; background-color: #f5f5f5; line-height: 1.6;">
-  <div style="max-width: 600px; margin: 40px auto; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+<body style="margin: 0; padding: 0; font-family: 'Satoshi', Arial, sans-serif; background-color: #f5f5f5 !important; line-height: 1.6; color-scheme: light !important;">
+  <div style="max-width: 600px; margin: 40px auto; background-color: white !important; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
     
     ${backgroundImage ? `
       <div style="width: 100%; height: 200px; background-image: url('${backgroundImage}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
       </div>
     ` : ''}
     
-    <div style="padding: 20px; background-color: #ffffff;">
+    <div style="padding: 20px; background-color: #ffffff !important; color: #333333 !important;">
       ${processedContent}
     </div>
     

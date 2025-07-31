@@ -124,7 +124,7 @@ const CourseBookingForm = ({
       <div className="flex-1 overflow-y-auto px-6 py-4">
         {isHouseTeamsOrContinuation ? (
           <Form {...houseTeamsForm}>
-            <form onSubmit={houseTeamsForm.handleSubmit(handleFormSubmit)} className="space-y-4 pb-40 md:pb-32">
+            <form id="house-teams-form" onSubmit={houseTeamsForm.handleSubmit(handleFormSubmit)} className="space-y-4 pb-40 md:pb-32">
               <div onFocus={handleFieldFocus}>
                 <HouseTeamsFormFields form={houseTeamsForm} />
               </div>
@@ -132,7 +132,7 @@ const CourseBookingForm = ({
           </Form>
         ) : (
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 pb-40 md:pb-32">
+            <form id="booking-form" onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 pb-40 md:pb-32">
               <div onFocus={handleFieldFocus}>
                 <BookingFormFields form={form} />
                 <BookingInformation maxParticipants={maxParticipants} />
@@ -154,14 +154,8 @@ const CourseBookingForm = ({
             Avbryt
           </Button>
           <Button 
-            type="button" 
-            onClick={() => {
-              if (isHouseTeamsOrContinuation) {
-                houseTeamsForm.handleSubmit(handleFormSubmit)();
-              } else {
-                form.handleSubmit(handleFormSubmit)();
-              }
-            }}
+            type="submit"
+            form={isHouseTeamsOrContinuation ? "house-teams-form" : "booking-form"}
             disabled={isSubmitting} 
             variant={isHouseTeamsOrContinuation ? "blue" : "default"} 
             className="flex-1 rounded-none"

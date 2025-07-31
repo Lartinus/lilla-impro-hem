@@ -8,10 +8,19 @@ import type { CourseBookingData } from '@/schemas/courseBookingSchemas';
 
 export const useCourseBooking = (courseTitle: string) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedEmails, setSubmittedEmails] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const handleSubmit = async (values: CourseBookingData): Promise<BookingResult> => {
+    // Prevent duplicate submissions for the same email
+    const emailKey = `${values.email}-${courseTitle}`;
+    if (submittedEmails.has(emailKey)) {
+      console.log('🛑 Duplicate submission prevented for:', emailKey);
+      return { success: false, error: 'duplicate_submission' };
+    }
+
     setIsSubmitting(true);
+    setSubmittedEmails(prev => new Set(prev.add(emailKey)));
     
     try {
       console.log('🎯 Starting course booking process for:', courseTitle);
@@ -90,6 +99,14 @@ export const useCourseBooking = (courseTitle: string) => {
       return { success: false, error };
     } finally {
       setIsSubmitting(false);
+      // Remove email from submitted set after a short delay to allow for proper completion
+      setTimeout(() => {
+        setSubmittedEmails(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(`${values.email}-${courseTitle}`);
+          return newSet;
+        });
+      }, 5000);
     }
   };
 
