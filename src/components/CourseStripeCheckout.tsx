@@ -71,7 +71,8 @@ const CourseStripeCheckout = ({
       if (data.url) {
         window.location.href = data.url;
       } else {
-        window.open(`https://checkout.stripe.com/c/pay/${data.sessionId}`, '_blank');
+        console.error('No checkout URL received from server');
+        alert('Ett fel uppstod vid betalning. Försök igen.');
       }
 
     } catch (error) {

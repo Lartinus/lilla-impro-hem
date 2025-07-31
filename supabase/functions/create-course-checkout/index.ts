@@ -100,7 +100,7 @@ serve(async (req) => {
 
     console.log('Course purchase stored successfully');
 
-    return new Response(JSON.stringify({ sessionId: session.id }), {
+    return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
