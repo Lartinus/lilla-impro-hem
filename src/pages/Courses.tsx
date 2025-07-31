@@ -5,12 +5,24 @@ import CourseGrid from '@/components/CourseGrid';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 import { InterestSignupSection } from '@/components/InterestSignupSection';
 import { useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
 
 const Courses = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    
+    // Redirect old success/cancelled URLs to new thank you pages
+    const payment = searchParams.get('payment');
+    if (payment === 'success') {
+      navigate('/kurser/tack', { replace: true });
+    } else if (payment === 'cancelled') {
+      navigate('/payment-cancelled', { replace: true });
+    }
+  }, [searchParams, navigate]);
 
   const { data: adminCourses, isLoading: adminLoading } = useAdminCourses();
   const courses = adminCourses || [];

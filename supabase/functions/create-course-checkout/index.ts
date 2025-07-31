@@ -74,8 +74,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/kurser?payment=success`,
-      cancel_url: `${req.headers.get("origin")}/kurser?payment=cancelled`,
+      success_url: `${req.headers.get("origin")}/kurser/tack?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}/payment-cancelled`,
     });
 
     console.log('Stripe session created successfully!');

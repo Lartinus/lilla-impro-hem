@@ -16,6 +16,9 @@ import NotFound from "./pages/NotFound";
 import Unsubscribe from "./pages/Unsubscribe";
 import NewsletterConfirmation from "./pages/NewsletterConfirmation";
 import AdminDashboard from "./pages/Admin";
+import CoursePaymentSuccess from "./pages/CoursePaymentSuccess";
+import TicketPaymentSuccess from "./pages/TicketPaymentSuccess";
+import PaymentCancelled from "./pages/PaymentCancelled";
 
 // Create query client with optimized settings
 const queryClient = new QueryClient({
@@ -45,6 +48,9 @@ const App = () => (
             <Route path="/lokal" element={<Lokal />} />
             <Route path="/shows" element={<Shows />} />
             <Route path="/shows/:slug" element={<ShowDetails />} />
+            <Route path="/kurser/tack" element={<CoursePaymentSuccess />} />
+            <Route path="/shows/tack" element={<TicketPaymentSuccess />} />
+            <Route path="/payment-cancelled" element={<PaymentCancelled />} />
             <Route path="/avprenumerera" element={<Unsubscribe />} />
             <Route path="/nyhetsbrev-bekraftelse" element={<NewsletterConfirmation />} />
             <Route path="/admin" element={<AdminDashboard />} />

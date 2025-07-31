@@ -1,5 +1,6 @@
 
 import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAdminShows, formatAdminShowForCard } from '@/hooks/useAdminShows';
@@ -18,10 +19,22 @@ export default function Shows() {
   const [retryCount, setRetryCount] = useState(0);
   const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    
+    // Redirect old success/cancelled URLs to new thank you pages
+    const success = searchParams.get('success');
+    const canceled = searchParams.get('canceled');
+    
+    if (success === 'true') {
+      navigate('/shows/tack', { replace: true });
+    } else if (canceled === 'true') {
+      navigate('/payment-cancelled', { replace: true });
+    }
+  }, [searchParams, navigate]);
 
   const {
     data: adminShows,
