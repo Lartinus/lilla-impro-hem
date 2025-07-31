@@ -33,7 +33,7 @@ export default function AnlitaOss() {
                 <p>
                   Lilla Improteatern erbjuder improviserad underhållning och workshops för både privata 
                   tillställningar och företag. Oavsett om det handlar om en födelsedag, möhippa, kick-off 
-                  eller konferens skapar vi upplevelser i stunden – med hög grad av igenkänningshumor, 
+                  eller konferens skapar vi upplevelser i stunden. Med hög grad av igenkänningshumor, 
                   överraskningar och gemenskap i fokus.
                 </p>
               </section>
@@ -49,7 +49,7 @@ export default function AnlitaOss() {
                   <p>
                     Lilla Improteatern erbjuder skräddarsydda workshops och föreställningar för företag, 
                     organisationer och myndigheter. Vi använder verktyg från Improv Comedy för att träna 
-                    kommunikation, lyssnande, kreativitet och samspel – på ett sätt som är både roligt 
+                    kommunikation, lyssnande, kreativitet och samspel på ett sätt som är både roligt 
                     och effektfullt.
                   </p>
 
@@ -81,11 +81,9 @@ export default function AnlitaOss() {
                     <p className="font-bold">Exempel på tillfällen vi passar extra bra för:</p>
                     <ul className="space-y-2">
                       {[
-                        "APT och personaldagar",
-                        "Konferenser och temadagar",
-                        "Kickoff och After Work",
+                        "Konferenser, kickoff och personaldagar",
+                        "APT och after work",
                         "Företagsfester, t.ex. jul- och sommarfest",
-                        "Samarbetsträffar & nätverksdagar"
                       ].map((item, i) => (
                         <li key={i} className="flex items-start space-x-3">
                           <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>
@@ -108,9 +106,9 @@ export default function AnlitaOss() {
                     Ordnar du en privat tillställning och vill ge någon en upplevelse de aldrig glömmer?
                   </p>
                   <p>
-                    Boka en improworkshop eller en skräddarsydd show till din fest, möhippa, svensexa, 
-                    födelsedag eller annan tillställning. Improv Comedy är en perfekt aktivitet för att 
-                    skapa skratt, gemenskap och minnen. Vi tar med oss det vi älskar med Improv Comedy – 
+                    Boka en improworkshop eller en skräddarsydd show till din fest, möhippa, svensexa eller födelsedag. 
+                    Många vi träffar säger att de inte kan tänka sig något värre än att ställa sig på en scen och inte veta vad de ska säga. 
+                    Det är läskigt - men med våra verktyg blir det mycket lättare! Vi tar med oss det vi älskar med Improv Comedy – 
                     värme, överraskning och lekfullhet – och skapar något som passar just er.
                   </p>
 
