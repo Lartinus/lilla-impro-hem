@@ -129,7 +129,7 @@ export const InterestSignupSection = () => {
                   </h2>
                    {signup.subtitle && (
                      <div className="course-dashed-line">
-                       <h3 className="mt-1 font-bold text-xs">
+                       <h3 className="mt-1">
                          {signup.subtitle}
                        </h3>
                      </div>
