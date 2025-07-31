@@ -71,7 +71,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   return (
     <Card className="bg-[#E7E7E7] transition-all duration-300 flex flex-col course-card border-none shadow-none rounded-none">
       <CardContent className="p-6 md:p-6 lg:p-8 flex flex-col flex-1">
-        <div className="mb-2">
+        <div className="mb-0">
           <h2>
             {course.course_title}
           </h2>
