@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { imageCache } from '@/services/imageCache'
 
 interface OptimizedImageProps {
   src: string | null
@@ -30,28 +31,51 @@ export default function OptimizedImage({
   const { imageUrl, originalSrc, srcSet } = useCallback(() => {
     if (!src) return { imageUrl: null, originalSrc: null, srcSet: '' }
     if (typeof src === 'string') {
-      // For now, disable responsive srcset to debug
       return { imageUrl: src, originalSrc: src, srcSet: '' }
     }
     const url = (src as any)?.data?.attributes?.url || (src as any)?.url
     return { imageUrl: url, originalSrc: url, srcSet: '' }
   }, [src])()
 
+  // Check cache and preload if needed
+  useEffect(() => {
+    if (!originalSrc) return
+    
+    // If image is already cached, set loading to false immediately
+    if (imageCache.isImageLoaded(originalSrc)) {
+      setIsLoading(false)
+      setHasError(false)
+      if (onLoad) {
+        onLoad(originalSrc)
+      }
+      return
+    }
+
+    // Preload image if it's priority or in viewport soon
+    if (priority) {
+      imageCache.preloadImage(originalSrc).then(success => {
+        if (!success) {
+          setHasError(true)
+        }
+        setIsLoading(false)
+        if (onLoad) {
+          onLoad(originalSrc)
+        }
+      })
+    }
+  }, [originalSrc, priority, onLoad])
+
   const handleLoad = useCallback(() => {
-    console.log('OptimizedImage: Image loaded successfully:', originalSrc)
     setIsLoading(false)
     if (onLoad && originalSrc) {
-      console.log('OptimizedImage: Calling onLoad callback for:', originalSrc)
       onLoad(originalSrc)
     }
   }, [onLoad, originalSrc])
 
   const handleError = useCallback(() => {
-    console.log('OptimizedImage: Image failed to load:', originalSrc)
     setHasError(true)
     setIsLoading(false)
     if (onLoad && originalSrc) {
-      console.log('OptimizedImage: Calling onLoad callback after error for:', originalSrc)
       onLoad(originalSrc)
     }
   }, [onLoad, originalSrc])

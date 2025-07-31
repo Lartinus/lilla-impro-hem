@@ -1,5 +1,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
+import { imageCache } from '@/services/imageCache';
 
 export const useImageLoader = (imageUrls: string[]) => {
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
@@ -7,42 +8,45 @@ export const useImageLoader = (imageUrls: string[]) => {
   const [timeoutReached, setTimeoutReached] = useState(false);
 
   const handleImageLoad = useCallback((url: string) => {
-    console.log('useImageLoader: Image loaded:', url);
     setLoadedImages(prev => {
       const newSet = new Set(prev);
       newSet.add(url);
-      console.log('useImageLoader: Updated loaded images:', Array.from(newSet));
       return newSet;
     });
   }, []);
 
   useEffect(() => {
-    console.log('useImageLoader: Image URLs changed:', imageUrls);
-    console.log('useImageLoader: Currently loaded images:', Array.from(loadedImages));
-    
-    // Reset state when URLs change
     if (imageUrls.length === 0) {
-      console.log('useImageLoader: No images to load, setting allImagesLoaded to true');
       setAllImagesLoaded(true);
       return;
     }
 
-    const allLoaded = imageUrls.every(url => {
-      const isLoaded = loadedImages.has(url);
-      console.log('useImageLoader: Checking image', url, 'loaded:', isLoaded);
-      return isLoaded;
-    });
+    // Check cache first
+    const cachedImages = imageUrls.filter(url => imageCache.isImageLoaded(url));
+    setLoadedImages(new Set(cachedImages));
+
+    const allLoaded = imageUrls.every(url => 
+      loadedImages.has(url) || imageCache.isImageLoaded(url)
+    );
     
-    console.log('useImageLoader: All images loaded status:', allLoaded, `(${loadedImages.size}/${imageUrls.length})`);
     setAllImagesLoaded(allLoaded);
+
+    // Preload remaining images
+    const uncachedUrls = imageUrls.filter(url => !imageCache.isImageLoaded(url));
+    if (uncachedUrls.length > 0) {
+      imageCache.preloadImages(uncachedUrls).then(() => {
+        setLoadedImages(new Set(imageUrls));
+        setAllImagesLoaded(true);
+      });
+    }
   }, [loadedImages, imageUrls]);
 
   // Reset loaded images when imageUrls change significantly
   useEffect(() => {
     const urlsString = [...imageUrls].sort().join(',');
-    console.log('useImageLoader: URL change detected, resetting loaded images. New URLs:', urlsString);
-    setLoadedImages(new Set());
-    setAllImagesLoaded(imageUrls.length === 0);
+    const cachedImages = imageUrls.filter(url => imageCache.isImageLoaded(url));
+    setLoadedImages(new Set(cachedImages));
+    setAllImagesLoaded(imageUrls.length === 0 || cachedImages.length === imageUrls.length);
     setTimeoutReached(false);
   }, [[...imageUrls].sort().join(',')]);
 
@@ -51,7 +55,6 @@ export const useImageLoader = (imageUrls: string[]) => {
     if (imageUrls.length === 0) return;
     
     const timeout = setTimeout(() => {
-      console.log('useImageLoader: Timeout reached, marking all images as loaded');
       setTimeoutReached(true);
       setAllImagesLoaded(true);
     }, 5000); // 5 second timeout
