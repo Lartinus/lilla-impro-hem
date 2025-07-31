@@ -34,8 +34,8 @@ serve(async (req) => {
       const session = event.data.object;
       const sessionId = session.id;
       
-      // Update purchase status to paid
-      const { error: updateError } = await supabase
+      // Try to update ticket purchase first
+      const { error: ticketUpdateError } = await supabase
         .from('ticket_purchases')
         .update({ 
           payment_status: 'paid',
@@ -43,28 +43,74 @@ serve(async (req) => {
         })
         .eq('stripe_session_id', sessionId);
 
-      if (updateError) {
-        console.error('Error updating purchase:', updateError);
-        throw updateError;
-      }
-
-      // Get purchase details for email
-      const { data: purchase } = await supabase
+      // Get ticket purchase details for email
+      const { data: ticketPurchase } = await supabase
         .from('ticket_purchases')
         .select('*')
         .eq('stripe_session_id', sessionId)
         .single();
 
-      if (purchase) {
-        // Send confirmation email
+      if (ticketPurchase) {
+        // Send ticket confirmation email
         await fetch(`${supabaseUrl}/functions/v1/send-ticket-confirmation`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${supabaseKey}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(purchase),
+          body: JSON.stringify(ticketPurchase),
         });
+      } else {
+        // Try to update course purchase
+        const { error: courseUpdateError } = await supabase
+          .from('course_purchases')
+          .update({ 
+            payment_status: 'paid',
+            updated_at: new Date().toISOString()
+          })
+          .eq('stripe_session_id', sessionId);
+
+        if (courseUpdateError) {
+          console.error('Error updating course purchase:', courseUpdateError);
+          throw courseUpdateError;
+        }
+
+        // Get course purchase details
+        const { data: coursePurchase } = await supabase
+          .from('course_purchases')
+          .select('*')
+          .eq('stripe_session_id', sessionId)
+          .single();
+
+        if (coursePurchase) {
+          // Add to course table after successful payment
+          await supabase.rpc('insert_course_booking', {
+            table_name: coursePurchase.course_table_name,
+            booking_name: coursePurchase.buyer_name,
+            booking_phone: coursePurchase.buyer_phone,
+            booking_email: coursePurchase.buyer_email,
+            booking_address: coursePurchase.buyer_address || '',
+            booking_postal_code: coursePurchase.buyer_postal_code || '',
+            booking_city: coursePurchase.buyer_city || '',
+            booking_message: coursePurchase.buyer_message || ''
+          });
+
+          // Send course confirmation email
+          await fetch(`${supabaseUrl}/functions/v1/send-course-confirmation`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${supabaseKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: coursePurchase.buyer_email,
+              name: coursePurchase.buyer_name,
+              phone: coursePurchase.buyer_phone,
+              courseTitle: coursePurchase.course_title,
+              isAvailable: true
+            }),
+          });
+        }
       }
     }
 

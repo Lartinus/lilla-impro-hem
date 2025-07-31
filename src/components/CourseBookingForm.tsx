@@ -23,6 +23,7 @@ import { BookingFormFields, HouseTeamsFormFields, formSchema, houseTeamsSchema }
 import { BookingInformation } from '@/components/forms/BookingInformation';
 import { useCourseBooking } from '@/hooks/useCourseBooking';
 import { useIsMobile } from '@/hooks/use-mobile';
+import CoursePurchaseFlow from './CoursePurchaseFlow';
 
 interface CourseBookingFormProps {
   courseTitle: string;
@@ -32,6 +33,15 @@ interface CourseBookingFormProps {
   buttonText?: string;
   buttonVariant?: 'default' | 'blue';
   maxParticipants?: number | null;
+  courseInstance?: {
+    id: string;
+    course_title: string;
+    table_name: string;
+    price: number;
+    discount_price: number;
+    max_participants: number | null;
+  };
+  isPaidCourse?: boolean;
 }
 
 const CourseBookingForm = ({ 
@@ -41,7 +51,9 @@ const CourseBookingForm = ({
   showButton, 
   buttonText = 'Anmäl dig',
   buttonVariant = 'default',
-  maxParticipants 
+  maxParticipants,
+  courseInstance,
+  isPaidCourse = false
 }: CourseBookingFormProps) => {
   const [open, setOpen] = useState(false);
   const { handleSubmit: submitBooking, isSubmitting } = useCourseBooking(tableName || courseTitle);
@@ -162,43 +174,51 @@ const CourseBookingForm = ({
   );
 
   // Desktop form content with ScrollArea
-  const desktopFormContent = (
-    <ScrollArea className="max-h-[60vh] lg:max-h-[65vh] px-1">
-      {isHouseTeamsOrContinuation ? (
-        <Form {...houseTeamsForm}>
-          <form onSubmit={houseTeamsForm.handleSubmit(handleFormSubmit)} className="space-y-4 pr-3">
-            <HouseTeamsFormFields form={houseTeamsForm} />
+  const desktopFormContent = () => {
+    // Show payment flow for paid courses
+    if (isPaidCourse && courseInstance) {
+      return <CoursePurchaseFlow courseInstance={courseInstance} onClose={() => setOpen(false)} />;
+    }
 
-            <div className="flex space-x-2 pt-4">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1 rounded-none">
-                Avbryt
-              </Button>
-              <Button type="submit" disabled={isSubmitting} variant="blue" className="flex-1 rounded-none">
-                {isSubmitting ? 'Skickar...' : 'Skicka intresseanmälan'}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      ) : (
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 pr-3">
-            <BookingFormFields form={form} />
-            
-            <BookingInformation maxParticipants={maxParticipants} />
+    // Regular free course form
+    return (
+      <ScrollArea className="max-h-[60vh] lg:max-h-[65vh] px-1">
+        {isHouseTeamsOrContinuation ? (
+          <Form {...houseTeamsForm}>
+            <form onSubmit={houseTeamsForm.handleSubmit(handleFormSubmit)} className="space-y-4 pr-3">
+              <HouseTeamsFormFields form={houseTeamsForm} />
 
-            <div className="flex space-x-2 pt-4">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1 rounded-none">
-                Avbryt
-              </Button>
-              <Button type="submit" disabled={isSubmitting} className="flex-1 rounded-none">
-                {isSubmitting ? 'Skickar...' : 'Boka din plats'}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      )}
-    </ScrollArea>
-  );
+              <div className="flex space-x-2 pt-4">
+                <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1 rounded-none">
+                  Avbryt
+                </Button>
+                <Button type="submit" disabled={isSubmitting} variant="blue" className="flex-1 rounded-none">
+                  {isSubmitting ? 'Skickar...' : 'Skicka intresseanmälan'}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        ) : (
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 pr-3">
+              <BookingFormFields form={form} />
+              
+              <BookingInformation maxParticipants={maxParticipants} />
+
+              <div className="flex space-x-2 pt-4">
+                <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1 rounded-none">
+                  Avbryt
+                </Button>
+                <Button type="submit" disabled={isSubmitting} className="flex-1 rounded-none">
+                  {isSubmitting ? 'Skickar...' : 'Boka din plats'}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        )}
+      </ScrollArea>
+    );
+  };
 
   if (isMobile) {
     return (
@@ -232,10 +252,12 @@ const CourseBookingForm = ({
       <DialogContent className="sm:max-w-[425px] max-h-[80vh] rounded-none overflow-hidden">
         <DialogHeader>
           <DialogTitle className="rounded-none font-normal">
-            {isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : `Anmäl dig till ${courseTitle}`}
+            {isPaidCourse ? `Köp kursplats - ${courseTitle}` : 
+             isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : 
+             `Anmäl dig till ${courseTitle}`}
           </DialogTitle>
         </DialogHeader>
-        {desktopFormContent}
+        {desktopFormContent()}
       </DialogContent>
     </Dialog>
   );

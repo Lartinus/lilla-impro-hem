@@ -352,6 +352,71 @@ export type Database = {
         }
         Relationships: []
       }
+      course_purchases: {
+        Row: {
+          buyer_address: string | null
+          buyer_city: string | null
+          buyer_email: string
+          buyer_message: string | null
+          buyer_name: string
+          buyer_phone: string
+          buyer_postal_code: string | null
+          course_instance_id: string
+          course_table_name: string
+          course_title: string
+          created_at: string
+          id: string
+          payment_status: string
+          stripe_session_id: string | null
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          buyer_address?: string | null
+          buyer_city?: string | null
+          buyer_email: string
+          buyer_message?: string | null
+          buyer_name: string
+          buyer_phone: string
+          buyer_postal_code?: string | null
+          course_instance_id: string
+          course_table_name: string
+          course_title: string
+          created_at?: string
+          id?: string
+          payment_status?: string
+          stripe_session_id?: string | null
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          buyer_address?: string | null
+          buyer_city?: string | null
+          buyer_email?: string
+          buyer_message?: string | null
+          buyer_name?: string
+          buyer_phone?: string
+          buyer_postal_code?: string | null
+          course_instance_id?: string
+          course_table_name?: string
+          course_title?: string
+          created_at?: string
+          id?: string
+          payment_status?: string
+          stripe_session_id?: string | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_course_purchases_course_instance"
+            columns: ["course_instance_id"]
+            isOneToOne: false
+            referencedRelation: "course_instances"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_templates: {
         Row: {
           course_info: string | null
