@@ -149,7 +149,7 @@ export const NewsletterSignupModal: React.FC<NewsletterSignupModalProps> = ({
         )}
 
         <div className="text-muted-foreground mt-4 pt-4 border-t">
-          <p className="text-xs">
+          <p className="text-sm">
             Genom att prenumerera godkänner du att vi skickar dig information om våra föreställningar och kurser. 
             Du kan när som helst avregistrera dig via länken i våra mejl.
           </p>
