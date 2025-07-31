@@ -3,7 +3,7 @@ import { Resend } from "npm:resend@2.0.0";
 import { supabase } from "../_shared/supabase.ts";
 import { ConfirmationEmailRequest } from "./types.ts";
 import { createSimpleEmailTemplate } from "./email-template.ts";
-import { createUnifiedEmailTemplate } from "../_shared/email-template.ts";
+import { createUnifiedEmailTemplate } from "../_shared/unified-email-template.ts";
 
 // Utility function to process markdown with variables
 function convertMarkdownToHtmlWithVariables(
@@ -141,6 +141,7 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     console.log('DEBUG: Processed content after variable replacement:', processedContent);
+    console.log('DEBUG: Content lines:', processedContent.split('\n'));
 
     // Send raw content to createUnifiedEmailTemplate - it will handle all formatting
     const htmlContent = createUnifiedEmailTemplate(
@@ -148,6 +149,8 @@ const handler = async (req: Request): Promise<Response> => {
       processedContent, 
       template?.background_image
     ).replace('{UNSUBSCRIBE_URL}', 'https://improteatern.se/avprenumerera');
+
+    console.log('DEBUG: Generated HTML content preview:', htmlContent.substring(0, 500));
 
     // Send the email
     console.log('Sending course confirmation email using template:', template.name);
