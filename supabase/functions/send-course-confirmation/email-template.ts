@@ -7,17 +7,9 @@ export function createSimpleEmailTemplate(subject: string, content: string): str
   <meta name="color-scheme" content="light only">
   <meta name="supported-color-schemes" content="light">
   <title>${subject}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tanker&display=swap" rel="stylesheet">
   <style>
-    @font-face {
-      font-family: 'Tanker';
-      src: url('https://fonts.gstatic.com/s/tanker/v14/RWmMoKWR9v4ksMfaWd_JN-XCg6UKDXlq.woff2') format('woff2');
-      font-display: fallback;
-    }
-    @font-face {
-      font-family: 'Satoshi';
-      src: url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700') format('woff2');
-      font-display: fallback;
-    }
     * {
       color-scheme: light !important;
       background-color: inherit !important;
