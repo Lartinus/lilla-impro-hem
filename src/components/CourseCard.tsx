@@ -127,9 +127,18 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             tableName={course.table_name}
             isAvailable={courseAvailability}
             showButton={shouldShowButton}
-            buttonText={buttonText}
+            buttonText={isHouseTeams ? buttonText : "Betala med Stripe"}
             buttonVariant={buttonVariant}
             maxParticipants={course.maxParticipants}
+            courseInstance={course.price && course.price > 0 ? {
+              id: course.id.toString(),
+              course_title: course.course_title,
+              table_name: course.table_name || '',
+              price: course.price,
+              discount_price: course.discount_price || course.price,
+              max_participants: course.max_participants || course.maxParticipants
+            } : undefined}
+            isPaidCourse={course.price && course.price > 0}
           />
         )}
       </CardContent>

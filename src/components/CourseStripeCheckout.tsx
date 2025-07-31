@@ -67,8 +67,12 @@ const CourseStripeCheckout = ({
         return;
       }
 
-      // Open Stripe checkout in a new tab
-      window.open(`https://checkout.stripe.com/c/pay/${data.sessionId}`, '_blank');
+      // Redirect to Stripe checkout
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        window.open(`https://checkout.stripe.com/c/pay/${data.sessionId}`, '_blank');
+      }
 
     } catch (error) {
       console.error('Payment error:', error);

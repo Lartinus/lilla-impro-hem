@@ -115,7 +115,7 @@ const CoursePurchaseFlow = ({ courseInstance, onClose }: CoursePurchaseFlowProps
                 Avbryt
               </Button>
               <Button type="submit" className="flex-1 rounded-none bg-blue-600 hover:bg-blue-700 text-white">
-                Fortsätt till betalning →
+                Betala med Stripe →
               </Button>
             </div>
           </form>
