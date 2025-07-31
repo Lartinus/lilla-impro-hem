@@ -12,7 +12,7 @@ const PaymentCancelled = () => {
       
       <main className="container mx-auto px-4 py-16">
         <div className="max-w-2xl mx-auto">
-          <Card className="border-destructive/20 bg-card/80 backdrop-blur-sm">
+          <Card className="border-destructive/20 backdrop-blur-sm" style={{ backgroundColor: '#F3F3F3' }}>
             <CardContent className="p-8 text-center">
               <div className="mb-6">
                 <XCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
@@ -29,10 +29,10 @@ const PaymentCancelled = () => {
                   Vad händer nu?
                 </h2>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>•• Din plats/biljett är inte reserverad</li>
-                  <li>•• Inga pengar har dragits från ditt kort</li>
-                  <li>•• Du kan försöka igen när som helst</li>
-                  <li>•• Kontakta oss om du har tekniska problem</li>
+                  <li>• Din plats/biljett är inte reserverad</li>
+                  <li>• Inga pengar har dragits från ditt kort</li>
+                  <li>• Du kan försöka igen när som helst</li>
+                  <li>• Kontakta oss om du har tekniska problem</li>
                 </ul>
               </div>
 

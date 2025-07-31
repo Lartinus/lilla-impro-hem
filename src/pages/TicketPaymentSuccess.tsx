@@ -48,7 +48,7 @@ const TicketPaymentSuccess = () => {
       
       <main className="container mx-auto px-4 py-16">
         <div className="max-w-2xl mx-auto">
-          <Card className="border-success/20 bg-card/80 backdrop-blur-sm">
+          <Card className="border-success/20 backdrop-blur-sm" style={{ backgroundColor: '#F3F3F3' }}>
             <CardContent className="p-8 text-center">
               <div className="mb-6">
                 <CheckCircle2 className="w-16 h-16 text-success mx-auto mb-4" />
@@ -61,14 +61,13 @@ const TicketPaymentSuccess = () => {
               </div>
 
               <div className="bg-success/5 rounded-lg p-6 mb-6 text-left">
-                <h2 className="font-semibold text-foreground mb-4">
+                <h2 className="text-foreground mb-4">
                   Nästa steg
                 </h2>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>•• Du kommer att få dina biljetter via email inom kort</li>
-                  <li>•• Ta med dig giltigt ID till föreställningen</li>
-                  <li>•• Kom gärna 15 minuter innan föreställningen börjar</li>
-                  <li>•• Hör av dig till oss om du har några frågor</li>
+                  <li>• Du kommer att få dina biljetter via email inom kort</li>
+                  <li>• Kom gärna 15 minuter innan föreställningen börjar</li>
+                  <li>• Hör av dig till oss om du har några frågor</li>
                 </ul>
               </div>
 
