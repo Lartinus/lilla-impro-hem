@@ -123,8 +123,8 @@ export default function AnlitaOss() {
                         <li key={i} className="flex items-start space-x-3">
                           <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>
                           <div>
-                            <span className="font-medium">{title}</span>
-                            <span className="text-gray-600"> – {description}</span>
+                            <span className="font-bold">{title}</span>
+                            <span> – {description}</span>
                           </div>
                         </li>
                       ))}
@@ -132,7 +132,7 @@ export default function AnlitaOss() {
                   </div>
 
                   <p>
-                    Vi kommer gärna till er – eller hjälper till att ordna plats i samarbete med 
+                    Vi kommer gärna till er eller hjälper till att ordna plats i samarbete med 
                     lokaler i Stockholm.
                   </p>
 
