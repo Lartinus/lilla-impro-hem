@@ -19,7 +19,7 @@ export default function Index() {
         {/* Hero image */}
         <div className="relative w-full h-[50vh] overflow-hidden">
           <OptimizedImage
-            src="/uploads/images/Rosenqvist-6315.jpg"
+            src="/uploads/images/Rosenqvist-6301.jpg"
             alt="Lilla Improteatern hero image"
             className="w-full h-full object-cover"
             priority={true}
