@@ -211,7 +211,7 @@ const CourseBookingForm = ({
         </SheetTrigger>
         <SheetContent side="bottom" className="h-[100vh] w-full p-0 flex flex-col overflow-hidden">
           <SheetHeader className="p-6 pb-4 flex-shrink-0 border-b border-gray-200">
-            <SheetTitle className="text-left">
+            <SheetTitle className="text-left font-normal">
               {isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : `Anmäl dig till ${courseTitle}`}
             </SheetTitle>
           </SheetHeader>
@@ -231,7 +231,7 @@ const CourseBookingForm = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] max-h-[80vh] rounded-none overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="rounded-none">
+          <DialogTitle className="rounded-none font-normal">
             {isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : `Anmäl dig till ${courseTitle}`}
           </DialogTitle>
         </DialogHeader>
