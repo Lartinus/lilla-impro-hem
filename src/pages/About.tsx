@@ -48,7 +48,7 @@ const About = () => {
               {/* Om oss-info */}
               <div className="space-y-4">
                 <h1>Om Lilla Improteatern</h1>
-                <p>Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy – och en stark vilja att skapa en plats där både skratten, hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron och i viljan att bygga något nytt tillsammans.</p>
+                <p>Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy. Vi vill skapa en plats där både hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron och i viljan att bygga något nytt tillsammans.</p>
               </div>
 
               {/* Kontaktuppgifter */}
