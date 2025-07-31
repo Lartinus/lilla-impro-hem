@@ -77,7 +77,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           </h2>
           {course.subtitle && (
             <div className="course-dashed-line">
-              <h3 className="mt-1 font-bold">
+              <h3 className="mt-1">
                 {course.subtitle}
               </h3>
             </div>
