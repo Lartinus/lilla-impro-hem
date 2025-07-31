@@ -205,7 +205,7 @@ export const InterestSignupSection = () => {
                 value={formData.message}
                 onChange={(e) => setFormData({...formData, message: e.target.value})}
                 rows={3}
-                placeholder="Har du några frågor eller vill du berätta något mer?"
+                placeholder="Här kan du skriva lite om dig som improvisatör eller om det är något speciellt du är ute efter"
               />
             </div>
 
