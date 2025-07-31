@@ -86,7 +86,7 @@ export const NewsletterSignupModal: React.FC<NewsletterSignupModalProps> = ({
           <DialogTitle className="font-normal">
             Prenumerera på vårt nyhetsbrev
           </DialogTitle>
-          <DialogDescription className="!text-xs">
+          <DialogDescription>
             Få de senaste nyheterna om våra föreställningar och kurser direkt i din inkorg.
           </DialogDescription>
         </DialogHeader>
