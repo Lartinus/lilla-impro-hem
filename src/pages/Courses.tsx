@@ -70,8 +70,7 @@ const Courses = () => {
                 <div className="space-y-4 text-[16px] font-satoshi">
                   <p>
                     Lilla Improteatern är platsen för dig som vill bli
-                    skickligare på att skapa roliga scener tillsammans med
-                    andra. Här lär du dig inte bara hur man improviserar — du
+                    skickligare på att skapa roliga scener. Här lär du dig inte bara hur man improviserar — du
                     förstår varför det funkar, vad som gör en scen rolig och
                     hur du skapar det tillsammans med andra.
                   </p>
@@ -101,7 +100,7 @@ const Courses = () => {
                 </h3>
                 <p className="text-[16px] font-satoshi mb-2">
                   Du är välkommen oavsett om du är nybörjare, vill utvecklas som
-                  komisk scenperson eller redan är rutinerad. För oss är det
+                  improvisatör eller redan är rutinerad och slipar på detaljer. För oss är det
                   viktigaste att du vill utvecklas som scenimprovisatör.
                 </p>
                 <p className="text-[16px] font-satoshi">Hos oss får du:</p>
