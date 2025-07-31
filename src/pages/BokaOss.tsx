@@ -117,8 +117,8 @@ export default function AnlitaOss() {
                     <ul className="space-y-3">
                       {[
                         ["Impropass", "En skrattig, spontan och oförglömlig aktivitet – inga förkunskaper krävs."],
-                        ["Föreställning", "En improviserad show skräddarsydd för just ert firande – där vi väver in detaljer om huvudpersonen. Roligt, personligt och helt unikt."],
-                        ["Impropass + Föreställning", "Testa först avsluta med att luta er tillbaka och njuta av en föreställning vi skapar bara för er."]
+                        ["Föreställning", "En improviserad show skräddarsydd för just ert firande, där vi väver in detaljer om huvudpersonen. Roligt, personligt och helt unikt."],
+                        ["Impropass + Föreställning", "En kortare workshop tillsammans där vi testar att spela ihop – avsluta med att luta er tillbaka och njuta av en föreställning vi skapar bara för er."]
                       ].map(([title, description], i) => (
                         <li key={i} className="flex items-start space-x-3">
                           <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>
