@@ -59,9 +59,9 @@ const CoursePaymentSuccess = () => {
                   Nästa steg
                 </h2>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Du kommer att få ett bekräftelsemail inom kort</li>
-                  <li>• Kursinformation och praktiska detaljer skickas senast en vecka före kursstart</li>
-                  <li>• Hör av dig till oss om du har några frågor</li>
+                  <li>Du kommer att få ett bekräftelsemail inom kort</li>
+                  <li>Kursinformation och praktiska detaljer skickas senast en vecka före kursstart</li>
+                  <li>Hör av dig till oss om du har några frågor</li>
                 </ul>
               </div>
 

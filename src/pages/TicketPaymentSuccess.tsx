@@ -65,9 +65,9 @@ const TicketPaymentSuccess = () => {
                   Nästa steg
                 </h2>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Du kommer att få dina biljetter via email inom kort</li>
-                  <li>• Kom gärna 15 minuter innan föreställningen börjar</li>
-                  <li>• Hör av dig till oss om du har några frågor</li>
+                  <li>Du kommer att få dina biljetter via email inom kort</li>
+                  <li>Kom gärna 15 minuter innan föreställningen börjar</li>
+                  <li>Hör av dig till oss om du har några frågor</li>
                 </ul>
               </div>
 

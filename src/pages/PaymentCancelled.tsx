@@ -29,10 +29,10 @@ const PaymentCancelled = () => {
                   Vad händer nu?
                 </h2>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Din plats/biljett är inte reserverad</li>
-                  <li>• Inga pengar har dragits från ditt kort</li>
-                  <li>• Du kan försöka igen när som helst</li>
-                  <li>• Kontakta oss om du har tekniska problem</li>
+                  <li>Din plats/biljett är inte reserverad</li>
+                  <li>Inga pengar har dragits från ditt kort</li>
+                  <li>Du kan försöka igen när som helst</li>
+                  <li>Kontakta oss om du har tekniska problem</li>
                 </ul>
               </div>
 
