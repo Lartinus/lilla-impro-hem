@@ -119,15 +119,38 @@ serve(async (req) => {
     // Generate QR code URL
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(purchase.qr_data)}`;
     
+    // Format date and time properly
+    let formattedDate = purchase.show_date;
+    let formattedTime = '';
+    
+    try {
+      const showDateTime = new Date(purchase.show_date);
+      formattedDate = showDateTime.toLocaleDateString('sv-SE', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      formattedTime = showDateTime.toLocaleTimeString('sv-SE', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+    }
+
     // Add QR code and ticket details to the formatted content
     const finalContent = formattedContent + `
       <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px dashed #d32f2f;">
         <div style="margin-bottom: 20px;">
-          <div style="font-size: 16px; color: #333; margin-bottom: 10px;"><strong>Datum & Tid:</strong> ${purchase.show_date}</div>
+          <div style="font-size: 16px; color: #333; margin-bottom: 10px;"><strong>Datum:</strong> ${formattedDate}</div>
+          <div style="font-size: 16px; color: #333; margin-bottom: 10px;"><strong>Tid:</strong> ${formattedTime}</div>
           <div style="font-size: 16px; color: #333; margin-bottom: 10px;"><strong>Plats:</strong> ${purchase.show_location}</div>
           <div style="font-size: 16px; color: #333; margin-bottom: 10px;"><strong>Biljetter:</strong> ${purchase.regular_tickets + purchase.discount_tickets} st</div>
+          <div style="font-size: 16px; color: #333; margin-bottom: 20px;"><strong>Biljettkod:</strong> ${purchase.ticket_code}</div>
         </div>
-        <img src="${qrCodeUrl}" alt="QR Code" style="max-width: 200px; margin-bottom: 15px;">
+        <div style="margin-bottom: 15px;">
+          <img src="${qrCodeUrl}" alt="QR Code" style="max-width: 200px; display: block; margin: 0 auto;">
+        </div>
         <p style="font-size: 14px; color: #666; margin: 0;"><small>Visa denna QR-kod vid entrén</small></p>
       </div>
     `;

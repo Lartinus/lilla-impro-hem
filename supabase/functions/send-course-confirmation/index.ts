@@ -2,7 +2,6 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { supabase } from "../_shared/supabase.ts";
 import { ConfirmationEmailRequest } from "./types.ts";
-import { createSimpleEmailTemplate } from "./email-template.ts";
 import { createUnifiedEmailTemplate } from "../_shared/unified-email-template.ts";
 
 // Utility function to process markdown with variables
@@ -160,8 +159,8 @@ const handler = async (req: Request): Promise<Response> => {
       subject: personalizedSubject,
       html: htmlContent,
       tags: [
-        { name: 'type', value: 'course-confirmation' },
-        { name: 'course', value: courseTitle.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase().slice(0, 50) },
+        { name: 'type', value: 'course_confirmation' },
+        { name: 'course', value: courseTitle.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase().slice(0, 50) },
         { name: 'available', value: isAvailable ? 'yes' : 'no' }
       ]
     });
@@ -228,16 +227,15 @@ Har du frågor? Svara på detta mejl så hör vi av oss.
 Med vänliga hälsningar
 Lilla Improteatern`;
 
-  const { createSimpleEmailTemplate } = await import("./email-template.ts");
   const textWithBreaks = emailContent.replace(/\n/g, '<br>');
-  const htmlContent = createSimpleEmailTemplate(subject, textWithBreaks);
+  const htmlContent = createUnifiedEmailTemplate(subject, textWithBreaks);
 
   return await resend.emails.send({
     from: "Lilla Improteatern <noreply@improteatern.se>",
     to: [email],
     subject: subject,
     html: htmlContent,
-    tags: [{ name: 'type', value: 'course-confirmation-fallback' }]
+    tags: [{ name: 'type', value: 'course_confirmation_fallback' }]
   });
 }
 
