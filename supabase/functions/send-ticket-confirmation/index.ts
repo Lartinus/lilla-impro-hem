@@ -94,28 +94,6 @@ serve(async (req) => {
       personalizedSubject = personalizedSubject.replace(regex, value);
     });
 
-    // Format content like AutomaticEmailsManager
-    const formattedContent = processedContent
-      .split('\n')
-      .map(line => {
-        const trimmed = line.trim();
-        if (!trimmed) return '';
-        
-        if (trimmed.startsWith('H1: ')) {
-          const headerText = trimmed.substring(4);
-          return `<h1 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 32px; color: #333333; margin: 24px 0 16px 0; font-weight: 400; line-height: 1.2;">${headerText}</h1>`;
-        }
-        
-        if (trimmed.startsWith('H2: ')) {
-          const headerText = trimmed.substring(4);
-          return `<h2 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 24px; color: #333333; margin: 20px 0 12px 0; font-weight: 400; line-height: 1.2;">${headerText}</h2>`;
-        }
-        
-        return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333; margin: 0 0 16px 0; line-height: 1.6;">${trimmed}</p>`;
-      })
-      .filter(line => line)
-      .join('');
-
     // Generate QR code URL
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(purchase.qr_data)}`;
     
@@ -138,29 +116,29 @@ serve(async (req) => {
       console.error('Error formatting date:', error);
     }
 
-    // Add QR code and ticket details to the formatted content
-    const finalContent = formattedContent + `
-      <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px dashed #d32f2f;">
-        <div style="margin-bottom: 20px;">
-          <div style="font-size: 16px; color: #333; margin-bottom: 10px;"><strong>Datum:</strong> ${formattedDate}</div>
-          <div style="font-size: 16px; color: #333; margin-bottom: 10px;"><strong>Tid:</strong> ${formattedTime}</div>
-          <div style="font-size: 16px; color: #333; margin-bottom: 10px;"><strong>Plats:</strong> ${purchase.show_location}</div>
-          <div style="font-size: 16px; color: #333; margin-bottom: 10px;"><strong>Biljetter:</strong> ${purchase.regular_tickets + purchase.discount_tickets} st</div>
-          <div style="font-size: 16px; color: #333; margin-bottom: 20px;"><strong>Biljettkod:</strong> ${purchase.ticket_code}</div>
-        </div>
-        <div style="margin-bottom: 15px;">
-          <img src="${qrCodeUrl}" alt="QR Code" style="max-width: 200px; display: block; margin: 0 auto;">
-        </div>
-        <p style="font-size: 14px; color: #666; margin: 0;"><small>Visa denna QR-kod vid entrén</small></p>
-      </div>
-    `;
+    // Add QR code and ticket details to the content before template processing
+    const contentWithTicketInfo = processedContent + `
 
-    // Create styled email using unified template
+H2: Dina biljettdetaljer
+
+Datum: ${formattedDate}
+Tid: ${formattedTime}
+Plats: ${purchase.show_location}
+Biljetter: ${purchase.regular_tickets + purchase.discount_tickets} st
+Biljettkod: ${purchase.ticket_code}
+
+[QR_CODE_PLACEHOLDER]
+
+Visa denna QR-kod vid entrén`;
+
+    // Create styled email using unified template (let it handle all formatting)
     const htmlContent = createUnifiedEmailTemplate(
       personalizedSubject, 
-      finalContent, 
+      contentWithTicketInfo, 
       template.background_image
-    ).replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(purchase.buyer_email)}`);
+    )
+    .replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(purchase.buyer_email)}`)
+    .replace('[QR_CODE_PLACEHOLDER]', `<div style="text-align: center; margin: 20px 0;"><img src="${qrCodeUrl}" alt="QR Code" style="max-width: 200px; display: block; margin: 0 auto;"></div>`);
 
     // Send the email with tags for better tracking
     const emailResponse = await fetch('https://api.resend.com/emails', {
