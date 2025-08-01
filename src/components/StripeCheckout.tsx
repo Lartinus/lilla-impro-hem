@@ -63,7 +63,10 @@ const StripeCheckout = ({
       }
 
       // Redirect to Stripe Checkout
-      const stripe = (window as any).Stripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+      const stripe = (window as any).Stripe('pk_test_51RqtrcH7tQohrnzpqLDJ7ZJC2a6OPKZwUHGzNNqBrTJkPuSbF6CjYGCkOsC97IVG7NzIuMhb4vq9OpIIADdwgLzE00bsWQDUF3');
+      if (!stripe) {
+        throw new Error('Stripe kunde inte laddas');
+      }
       await stripe.redirectToCheckout({ sessionId: data.sessionId });
 
     } catch (error) {
