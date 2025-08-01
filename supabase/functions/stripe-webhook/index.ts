@@ -56,7 +56,7 @@ serve(async (req) => {
       if (ticketPurchase) {
         console.log('Found ticket purchase, sending confirmation email');
         // Send ticket confirmation email
-        await fetch(`${supabaseUrl}/functions/v1/send-ticket-confirmation`, {
+        const emailResponse = await fetch(`${supabaseUrl}/functions/v1/send-ticket-confirmation`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${supabaseKey}`,
@@ -64,6 +64,12 @@ serve(async (req) => {
           },
           body: JSON.stringify(ticketPurchase),
         });
+        
+        if (!emailResponse.ok) {
+          console.error('Failed to send ticket confirmation email:', await emailResponse.text());
+        } else {
+          console.log('Ticket confirmation email sent successfully');
+        }
       } else {
         // Try to update course purchase
         const { error: courseUpdateError } = await supabase

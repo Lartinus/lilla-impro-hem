@@ -1,45 +1,64 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { CheckCircle2, ArrowLeft, Mail, Calendar, Ticket, MapPin } from 'lucide-react';
+import { CheckCircle2, ArrowLeft, Calendar, Ticket } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { supabase } from '@/integrations/supabase/client';
 
 interface TicketDetails {
   showTitle: string;
   showDate: string;
   showLocation: string;
   buyerName: string;
-  buyerEmail: string;
   totalTickets: number;
-  totalAmount: number;
   ticketCode: string;
-  paymentStatus: string;
 }
 
 const TicketPaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const [ticketDetails, setTicketDetails] = useState<TicketDetails | null>(null);
+  const [loading, setLoading] = useState(true);
   const sessionId = searchParams.get('session_id');
 
   useEffect(() => {
-    // In a real implementation, you would fetch ticket details using the session_id
-    // For now, we'll show a generic success message
-    if (sessionId) {
-      // Simulate fetching data
-      setTicketDetails({
-        showTitle: "Biljettköp genomfört",
-        showDate: "",
-        showLocation: "",
-        buyerName: "Köpare",
-        buyerEmail: "",
-        totalTickets: 0,
-        totalAmount: 0,
-        ticketCode: "",
-        paymentStatus: "paid"
-      });
-    }
+    const fetchTicketDetails = async () => {
+      if (!sessionId) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data: purchase, error } = await supabase
+          .from('ticket_purchases')
+          .select('*')
+          .eq('stripe_session_id', sessionId)
+          .eq('payment_status', 'paid')
+          .single();
+
+        if (error || !purchase) {
+          console.error('Error fetching ticket details:', error);
+          setLoading(false);
+          return;
+        }
+
+        setTicketDetails({
+          showTitle: purchase.show_title,
+          showDate: purchase.show_date,
+          showLocation: purchase.show_location,
+          buyerName: purchase.buyer_name,
+          totalTickets: purchase.regular_tickets + purchase.discount_tickets,
+          ticketCode: purchase.ticket_code,
+        });
+      } catch (error) {
+        console.error('Error fetching ticket details:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTicketDetails();
   }, [sessionId]);
 
   return (
@@ -71,7 +90,29 @@ const TicketPaymentSuccess = () => {
                 </ul>
               </div>
 
-              {ticketDetails && (
+              {loading ? (
+                <div className="bg-background/50 rounded-lg p-4 mb-6 text-center">
+                  <p className="text-muted-foreground">Laddar biljettinformation...</p>
+                </div>
+              ) : ticketDetails ? (
+                <div className="bg-background/50 rounded-lg p-4 mb-6 text-left">
+                  <h3 className="font-medium text-foreground mb-3">Biljettdetaljer</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Ticket className="w-3 h-3" />
+                      <span>{ticketDetails.totalTickets} biljetter till {ticketDetails.showTitle}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Calendar className="w-3 h-3" />
+                      <span>Föreställning: {ticketDetails.showDate}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Calendar className="w-3 h-3" />
+                      <span>Beställningsdatum: {new Date().toLocaleDateString('sv-SE')}</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
                 <div className="bg-background/50 rounded-lg p-4 mb-6 text-left">
                   <h3 className="font-medium text-foreground mb-3">Biljettdetaljer</h3>
                   <div className="space-y-2 text-sm">
@@ -82,10 +123,6 @@ const TicketPaymentSuccess = () => {
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Calendar className="w-3 h-3" />
                       <span>Beställningsdatum: {new Date().toLocaleDateString('sv-SE')}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <CheckCircle2 className="w-3 h-3" />
-                      <span>Status: Bekräftad</span>
                     </div>
                   </div>
                 </div>
