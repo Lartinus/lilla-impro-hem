@@ -1,0 +1,33 @@
+{
+  "name": "Lilla Improteatern",
+  "short_name": "LIT",
+  "description": "Lilla Improteatern är en teater i Stockholm som fokuserar på Improv Comedy",
+  "icons": [
+    {
+      "src": "/Favicon2.svg",
+      "sizes": "16x16",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/Favicon1.svg", 
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/FaviconRed.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/FaviconRed.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "theme_color": "#d32f2f",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/"
+}
