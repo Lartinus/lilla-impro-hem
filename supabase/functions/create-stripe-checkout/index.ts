@@ -107,7 +107,7 @@ serve(async (req) => {
       throw new Error('Failed to store purchase');
     }
 
-    return new Response(JSON.stringify({ sessionId: session.id }), {
+    return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
