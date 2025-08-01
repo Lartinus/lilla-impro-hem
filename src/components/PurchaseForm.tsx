@@ -155,11 +155,10 @@ const PurchaseForm = ({
       }
 
       // Redirect to Stripe Checkout
-      const stripe = (window as any).Stripe('pk_test_51RqtrcH7tQohrnzpqLDJ7ZJC2a6OPKZwUHGzNNqBrTJkPuSbF6CjYGCkOsC97IVG7NzIuMhb4vq9OpIIADdwgLzE00bsWQDUF3');
-      if (!stripe) {
-        throw new Error('Stripe kunde inte laddas');
+      if (!data?.url) {
+        throw new Error('Ingen checkout-URL mottogs');
       }
-      await stripe.redirectToCheckout({ sessionId: data.sessionId });
+      window.location.href = data.url;
 
     } catch (error) {
       console.error('Payment error:', error);
