@@ -70,7 +70,7 @@ const CoursePurchaseFlow = ({ courseInstance, onClose }: CoursePurchaseFlowProps
 
   return (
     <div className="space-y-4">
-      <div className="max-h-[60vh] overflow-y-auto">
+      <div className="overflow-y-auto">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 p-1">
             <BookingFormFields form={form} />
