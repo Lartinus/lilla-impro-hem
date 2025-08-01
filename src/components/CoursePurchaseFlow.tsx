@@ -74,7 +74,7 @@ const CoursePurchaseFlow = ({ courseInstance, onClose }: CoursePurchaseFlowProps
   if (isMobile) {
     return (
       <div className="flex flex-col h-full">
-        <div className="flex-1 overflow-y-auto px-4 pb-32">
+        <div className="flex-1 overflow-y-auto px-4 pb-40">
           <Form {...form}>
             <form id="purchase-form" onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
               <BookingFormFields form={form} />
