@@ -16,7 +16,7 @@ function convertTextToHtml(text: string): string {
       
       if (trimmed.match(/^<h2[^>]*>.*<\/h2>$/i)) {
         const content = trimmed.replace(/<\/?h2[^>]*>/gi, '');
-        return `<h2 style="font-family: 'Satoshi', Arial, sans-serif; font-size: 22px; color: #333333 !important; margin: 0 0 20px 0; text-align: left; font-weight: 700; line-height: 1.3;">${content}</h2>`;
+        return `<h2 style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 20px 0; text-align: left; font-weight: 700; line-height: 1.3;">${content}</h2>`;
       }
       
       // Handle markdown-style headings
@@ -27,7 +27,7 @@ function convertTextToHtml(text: string): string {
       
       if (trimmed.startsWith('H2:')) {
         const content = trimmed.substring(3).trim();
-        return `<h2 style="font-family: 'Satoshi', Arial, sans-serif; font-size: 22px; color: #333333 !important; margin: 0 0 20px 0; text-align: left; font-weight: 700; line-height: 1.3;">${content}</h2>`;
+        return `<h2 style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 20px 0; text-align: left; font-weight: 700; line-height: 1.3;">${content}</h2>`;
       }
       
       // Remove remaining HTML tags for regular paragraphs
