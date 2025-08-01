@@ -19,17 +19,17 @@ export function createUnifiedEmailTemplate(
       // Handle H1 headers
       if (trimmed.startsWith('H1: ')) {
         const headerText = trimmed.substring(4);
-        return `<h1 style="font-family: 'Tanker', 'Impact', 'Arial Black', 'Helvetica Neue', sans-serif !important; font-size: 32px; color: #333333 !important; margin: 24px 0 16px 0; font-weight: 400 !important; line-height: 1.2; font-display: swap;">${headerText}</h1>`;
+        return `<h1 style="font-family: 'Tanker', Arial, sans-serif !important; font-size: 32px; color: #333333 !important; margin: 24px 0 16px 0; font-weight: 400 !important; line-height: 1.2;">${headerText}</h1>`;
       }
       
       // Handle H2 headers
       if (trimmed.startsWith('H2: ')) {
         const headerText = trimmed.substring(4);
-        return `<h2 style="font-family: 'Tanker', 'Impact', 'Arial Black', 'Helvetica Neue', sans-serif !important; font-size: 24px; color: #333333 !important; margin: 20px 0 12px 0; font-weight: 400 !important; line-height: 1.2; font-display: swap;">${headerText}</h2>`;
+        return `<h2 style="font-family: 'Tanker', Arial, sans-serif !important; font-size: 24px; color: #333333 !important; margin: 20px 0 12px 0; font-weight: 400 !important; line-height: 1.2;">${headerText}</h2>`;
       }
       
       // Regular paragraphs
-      return `<p style="font-family: 'Satoshi', 'Helvetica Neue', Arial, sans-serif !important; font-size: 16px; color: #333333 !important; margin: 0 0 16px 0; line-height: 1.6; font-display: swap;">${trimmed}</p>`;
+      return `<p style="font-family: 'Satoshi', Arial, sans-serif !important; font-size: 16px; color: #333333 !important; margin: 0 0 16px 0; line-height: 1.6;">${trimmed}</p>`;
     })
     .filter(line => line)
     .join('');
@@ -45,19 +45,8 @@ export function createUnifiedEmailTemplate(
   <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Tanker:wght@400&display=swap" rel="stylesheet">
   <style>
-    /* Force light mode and improve font rendering */
     * {
       color-scheme: light !important;
-    }
-    /* Improved Tanker font fallbacks */
-    .tanker-font {
-      font-family: 'Tanker', 'Impact', 'Arial Black', 'Helvetica Neue', sans-serif !important;
-      font-weight: 400 !important;
-      font-display: swap !important;
-    }
-    .satoshi-font {
-      font-family: 'Satoshi', 'Helvetica Neue', Arial, sans-serif !important;
-      font-display: swap !important;
     }
   </style>
 </head>
@@ -74,13 +63,13 @@ export function createUnifiedEmailTemplate(
     </div>
     
     <div style="background: linear-gradient(135deg, #dc2626, #b91c1c); padding: 32px; color: white !important; text-align: center;">
-      <div style="font-family: 'Tanker', 'Impact', 'Arial Black', 'Helvetica Neue', sans-serif !important; font-size: 24px; font-weight: 400 !important; margin-bottom: 8px; color: white !important; font-display: swap;">
+      <div style="font-family: 'Tanker', Arial, sans-serif !important; font-size: 24px; font-weight: 400 !important; margin-bottom: 8px; color: white !important;">
         LILLA IMPROTEATERN
       </div>
-      <div style="font-family: 'Satoshi', 'Helvetica Neue', Arial, sans-serif !important; font-size: 14px; opacity: 0.9; margin-bottom: 16px; color: white !important; font-display: swap;">
+      <div style="font-family: 'Satoshi', Arial, sans-serif !important; font-size: 14px; opacity: 0.9; margin-bottom: 16px; color: white !important;">
         ${customFooter || 'Improvisationsteater • Kurser • Föreställningar'}
       </div>
-      <div style="font-family: 'Satoshi', 'Helvetica Neue', Arial, sans-serif !important; font-size: 12px; opacity: 0.8; color: white !important; font-display: swap;">
+      <div style="font-family: 'Satoshi', Arial, sans-serif !important; font-size: 12px; opacity: 0.8; color: white !important;">
         <a href="https://improteatern.se" style="color: white !important; text-decoration: none;">improteatern.se</a>
       </div>
     </div>
