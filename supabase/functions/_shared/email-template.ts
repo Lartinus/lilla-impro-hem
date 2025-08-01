@@ -1,16 +1,40 @@
 function convertTextToHtml(text: string): string {
-  // Simply convert text to paragraphs - no markdown, no headers
+  // Convert text to HTML with proper heading support
   return text
     .replace(/<br\s*\/?>/gi, '\n') // Convert <br> to newlines
-    .replace(/<[^>]*>/g, '') // Remove all HTML tags
     .replace(/LILLA IMPROTEATERN.*?Avprenumerera här/s, '') // Remove extra footer text
     .split('\n')
     .map(line => {
       const trimmed = line.trim();
       if (!trimmed) return '';
       
-      // All text becomes simple paragraphs with consistent styling
-      return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 16px 0; text-align: left; line-height: 1.6;">${trimmed}</p>`;
+      // Handle HTML-style headings (case insensitive)
+      if (trimmed.match(/^<h1[^>]*>.*<\/h1>$/i)) {
+        const content = trimmed.replace(/<\/?h1[^>]*>/gi, '');
+        return `<h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 28px; color: #333333 !important; margin: 0 0 24px 0; text-align: left; font-weight: 400; line-height: 1.2;">${content}</h1>`;
+      }
+      
+      if (trimmed.match(/^<h2[^>]*>.*<\/h2>$/i)) {
+        const content = trimmed.replace(/<\/?h2[^>]*>/gi, '');
+        return `<h2 style="font-family: 'Satoshi', Arial, sans-serif; font-size: 22px; color: #333333 !important; margin: 0 0 20px 0; text-align: left; font-weight: 700; line-height: 1.3;">${content}</h2>`;
+      }
+      
+      // Handle markdown-style headings
+      if (trimmed.startsWith('H1:')) {
+        const content = trimmed.substring(3).trim();
+        return `<h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 28px; color: #333333 !important; margin: 0 0 24px 0; text-align: left; font-weight: 400; line-height: 1.2;">${content}</h1>`;
+      }
+      
+      if (trimmed.startsWith('H2:')) {
+        const content = trimmed.substring(3).trim();
+        return `<h2 style="font-family: 'Satoshi', Arial, sans-serif; font-size: 22px; color: #333333 !important; margin: 0 0 20px 0; text-align: left; font-weight: 700; line-height: 1.3;">${content}</h2>`;
+      }
+      
+      // Remove remaining HTML tags for regular paragraphs
+      const cleanText = trimmed.replace(/<[^>]*>/g, '');
+      
+      // All other text becomes paragraphs with consistent styling
+      return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 16px 0; text-align: left; line-height: 1.6;">${cleanText}</p>`;
     })
     .filter(line => line) // Remove empty lines
     .join('');
