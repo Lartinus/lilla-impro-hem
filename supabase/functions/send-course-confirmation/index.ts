@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { supabase } from "../_shared/supabase.ts";
 import { ConfirmationEmailRequest } from "./types.ts";
-import { createUnifiedEmailTemplate } from "../_shared/unified-email-template.ts";
+import { createUnifiedEmailTemplate } from "../_shared/email-template.ts";
 
 // Utility function to process markdown with variables
 function convertMarkdownToHtmlWithVariables(
