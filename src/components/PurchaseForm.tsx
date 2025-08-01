@@ -128,7 +128,6 @@ const PurchaseForm = ({
       discountCode: discountCode,
       show: showTitle
     });
-    alert('Köp genomfört! (Stripe-integration kommer här)');
     onComplete(purchaseData);
   };
 
