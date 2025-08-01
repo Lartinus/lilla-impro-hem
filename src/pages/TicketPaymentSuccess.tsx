@@ -98,16 +98,29 @@ const TicketPaymentSuccess = () => {
                 <div className="bg-background/50 rounded-lg p-4 mb-6 text-left">
                   <h3 className="font-medium text-foreground mb-3">Biljettdetaljer</h3>
                   <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Ticket className="w-3 h-3" />
+                    <div className="text-muted-foreground">
                       <span>{ticketDetails.totalTickets} biljetter till {ticketDetails.showTitle}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Calendar className="w-3 h-3" />
-                      <span>Föreställning: {ticketDetails.showDate}</span>
+                    <div className="text-muted-foreground">
+                      <span>Föreställning: {(() => {
+                        try {
+                          const showDateTime = new Date(ticketDetails.showDate);
+                          const date = showDateTime.toLocaleDateString('sv-SE', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                          });
+                          const time = showDateTime.toLocaleTimeString('sv-SE', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          });
+                          return `${date} kl. ${time}`;
+                        } catch {
+                          return ticketDetails.showDate;
+                        }
+                      })()}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Calendar className="w-3 h-3" />
+                    <div className="text-muted-foreground">
                       <span>Beställningsdatum: {new Date().toLocaleDateString('sv-SE')}</span>
                     </div>
                   </div>
@@ -116,12 +129,10 @@ const TicketPaymentSuccess = () => {
                 <div className="bg-background/50 rounded-lg p-4 mb-6 text-left">
                   <h3 className="font-medium text-foreground mb-3">Biljettdetaljer</h3>
                   <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Ticket className="w-3 h-3" />
+                    <div className="text-muted-foreground">
                       <span>Biljetter bokade</span>
                     </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Calendar className="w-3 h-3" />
+                    <div className="text-muted-foreground">
                       <span>Beställningsdatum: {new Date().toLocaleDateString('sv-SE')}</span>
                     </div>
                   </div>

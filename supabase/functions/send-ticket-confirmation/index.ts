@@ -152,10 +152,10 @@ serve(async (req) => {
         subject: personalizedSubject,
         html: htmlContent,
         tags: [
-          { name: 'type', value: 'ticket-confirmation' },
-          { name: 'show', value: purchase.show_slug },
+          { name: 'type', value: 'ticket_confirmation' },
+          { name: 'show', value: purchase.show_slug.replace(/[^a-zA-Z0-9_-]/g, '_') },
           { name: 'tickets', value: (purchase.regular_tickets + purchase.discount_tickets).toString() },
-          { name: 'template', value: template.name }
+          { name: 'template', value: 'auto_ticket_confirmation' }
         ]
       }),
     });
@@ -292,8 +292,8 @@ async function sendFallbackTicketEmail(purchase: any, resendApiKey: string) {
       subject: `Din biljett - ${purchase.show_title}`,
       html: emailHtml,
       tags: [
-        { name: 'type', value: 'ticket-confirmation-fallback' },
-        { name: 'show', value: purchase.show_slug },
+        { name: 'type', value: 'ticket_confirmation_fallback' },
+        { name: 'show', value: purchase.show_slug.replace(/[^a-zA-Z0-9_-]/g, '_') },
         { name: 'tickets', value: (purchase.regular_tickets + purchase.discount_tickets).toString() }
       ]
     }),
