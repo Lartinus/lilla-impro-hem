@@ -5,7 +5,7 @@ import { useAvailableTickets } from '@/hooks/useTicketSync';
 import { useTicketBooking } from '@/hooks/useTicketBooking';
 import TicketPurchase from './TicketPurchase';
 import PurchaseForm from './PurchaseForm';
-import StripeCheckout from './StripeCheckout';
+// Removed StripeCheckout import as payment is now handled directly in PurchaseForm
 import TicketCountdown from './TicketCountdown';
 import SoldOut from './SoldOut';
 
@@ -30,7 +30,7 @@ const TicketPurchaseComplete = ({
   showDate,
   showLocation
 }: TicketPurchaseCompleteProps) => {
-  const [currentStep, setCurrentStep] = useState<'purchase' | 'form' | 'checkout'>('purchase');
+  const [currentStep, setCurrentStep] = useState<'purchase' | 'form'>('purchase');
   const [ticketData, setTicketData] = useState({
     regularTickets: 0,
     discountTickets: 0,
@@ -98,7 +98,7 @@ const TicketPurchaseComplete = ({
 
   const handleFormComplete = (formData: { name: string; email: string; phone: string }) => {
     setPurchaseData(formData);
-    setCurrentStep('checkout');
+    // Form completion now handles payment directly, no need to set checkout step
   };
 
   const handleBackToTickets = async () => {
@@ -114,9 +114,7 @@ const TicketPurchaseComplete = ({
     });
   };
 
-  const handleBackToForm = () => {
-    setCurrentStep('form');
-  };
+  // Removed handleBackToForm as we no longer have a checkout step
 
   const handleBookingExpired = async () => {
     console.log('Booking expired, clearing and resetting...');
@@ -131,33 +129,7 @@ const TicketPurchaseComplete = ({
     });
   };
 
-  if (currentStep === 'checkout') {
-    return (
-      <div className={`space-y-4 ${hasActiveBooking ? 'mb-8' : ''}`}>
-        <StripeCheckout
-          showSlug={showSlug}
-          showTitle={showTitle}
-          showDate={showDate}
-          showLocation={showLocation}
-          regularTickets={ticketData.regularTickets}
-          discountTickets={ticketData.discountTickets}
-          discountCode={ticketData.discountCode}
-          ticketPrice={ticketPrice}
-          discountPrice={discountPrice}
-          buyerName={purchaseData.name}
-          buyerEmail={purchaseData.email}
-          buyerPhone={purchaseData.phone}
-          onBack={handleBackToForm}
-        />
-        {hasActiveBooking && (
-          <TicketCountdown 
-            timeLeft={timeLeft} 
-            onExpired={handleBookingExpired}
-          />
-        )}
-      </div>
-    );
-  }
+  // Removed checkout step - payment now handled directly in PurchaseForm
 
   if (currentStep === 'form') {
     return (
@@ -167,6 +139,9 @@ const TicketPurchaseComplete = ({
           discountTickets={ticketData.discountTickets}
           discountCode={ticketData.discountCode}
           showTitle={showTitle}
+          showSlug={showSlug}
+          showDate={showDate}
+          showLocation={showLocation}
           ticketPrice={ticketPrice}
           discountPrice={discountPrice}
           onBack={handleBackToTickets}

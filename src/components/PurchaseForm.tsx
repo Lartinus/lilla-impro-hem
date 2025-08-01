@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PurchaseFormProps {
   ticketCount: number;
   discountTickets: number;
   discountCode: string;
   showTitle: string;
-  ticketPrice: number;  // Add this prop
-  discountPrice: number;  // Add this prop
+  showSlug: string;
+  showDate: string;
+  showLocation: string;
+  ticketPrice: number;
+  discountPrice: number;
   onBack: () => void;
   onComplete: (data: { name: string; email: string; phone: string }) => void;
 }
@@ -17,7 +21,10 @@ const PurchaseForm = ({
   ticketCount, 
   discountTickets, 
   discountCode, 
-  showTitle, 
+  showTitle,
+  showSlug,
+  showDate,
+  showLocation,
   ticketPrice,
   discountPrice,
   onBack, 
@@ -28,6 +35,7 @@ const PurchaseForm = ({
     email: '',
     phone: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const [errors, setErrors] = useState({
     phone: '',
@@ -104,7 +112,7 @@ const PurchaseForm = ({
            !emailError;
   };
 
-  const handleCompletePurchase = () => {
+  const handleCompletePurchase = async () => {
     // Final validation before submission
     const phoneError = validatePhone(purchaseData.phone);
     const emailError = validateEmail(purchaseData.email);
@@ -121,14 +129,44 @@ const PurchaseForm = ({
       return;
     }
 
-    console.log('Purchase data:', {
-      ...purchaseData,
-      regularTickets: ticketCount,
-      discountTickets: discountTickets,
-      discountCode: discountCode,
-      show: showTitle
-    });
-    onComplete(purchaseData);
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
+        body: {
+          showSlug,
+          showTitle,
+          showDate,
+          showLocation,
+          regularTickets: ticketCount,
+          discountTickets: discountTickets,
+          discountCode,
+          ticketPrice,
+          discountPrice,
+          buyerName: purchaseData.name,
+          buyerEmail: purchaseData.email,
+          buyerPhone: purchaseData.phone
+        }
+      });
+
+      if (error) {
+        console.error('Error creating checkout session:', error);
+        alert('Ett fel uppstod vid betalning. Försök igen.');
+        return;
+      }
+
+      // Redirect to Stripe Checkout
+      const stripe = (window as any).Stripe('pk_test_51RqtrcH7tQohrnzpqLDJ7ZJC2a6OPKZwUHGzNNqBrTJkPuSbF6CjYGCkOsC97IVG7NzIuMhb4vq9OpIIADdwgLzE00bsWQDUF3');
+      if (!stripe) {
+        throw new Error('Stripe kunde inte laddas');
+      }
+      await stripe.redirectToCheckout({ sessionId: data.sessionId });
+
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Ett fel uppstod vid betalning. Försök igen.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -211,9 +249,9 @@ const PurchaseForm = ({
         <Button 
           onClick={handleCompletePurchase}
           className="bg-blue-600 hover:bg-blue-700 text-white rounded-none"
-          disabled={!isFormValid()}
+          disabled={!isFormValid() || isLoading}
         >
-          Betala med Stripe →
+          {isLoading ? 'Bearbetar...' : 'Betala med Stripe →'}
         </Button>
       </div>
     </div>
