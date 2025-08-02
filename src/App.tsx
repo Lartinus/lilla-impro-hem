@@ -1,110 +1,188 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/components/auth/AuthProvider";
-import { lazy, Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 
-// Lazy load heavy components
-const LazyAdminDashboard = lazy(() => import("./components/LazyAdminDashboard"));
-const Shows = lazy(() => import("./pages/Shows"));
-const ShowDetails = lazy(() => import("./pages/ShowDetails"));
-const Courses = lazy(() => import("./pages/Courses"));
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from '@/components/ui/sonner';
+import { AuthProvider } from '@/components/auth/AuthProvider';
+import { usePerformanceMonitor, logBundleInfo } from '@/hooks/usePerformanceMonitor';
 
-// Keep critical pages as regular imports for faster initial load
-import Index from "./pages/Index";
-import About from "./pages/About";
-import Lokal from "./pages/Lokal";
-import BokaOss from "./pages/BokaOss";
-import NotFound from "./pages/NotFound";
-import Unsubscribe from "./pages/Unsubscribe";
-import NewsletterConfirmation from "./pages/NewsletterConfirmation";
-import CoursePaymentSuccess from "./pages/CoursePaymentSuccess";
-import TicketPaymentSuccess from "./pages/TicketPaymentSuccess";
-import PaymentCancelled from "./pages/PaymentCancelled";
+// Static imports for critical path
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import Index from '@/pages/Index';
+import About from '@/pages/About';
+import NotFound from '@/pages/NotFound';
 
-// Create query client with optimized settings for better performance
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes - increased from 30 minutes for fresher data
-      gcTime: 10 * 60 * 1000, // 10 minutes - reduced from 2 hours
-      retry: 1,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false, // Reduce unnecessary refetches
-    },
-  },
-});
+// Lazy imports for better code splitting
+const LazyShows = React.lazy(() => import('@/pages/Shows'));
+const LazyCourses = React.lazy(() => import('@/pages/Courses'));
+const LazyLokal = React.lazy(() => import('@/pages/Lokal'));
+const LazyBokaOss = React.lazy(() => import('@/pages/BokaOss'));
+const LazyShowDetails = React.lazy(() => import('@/pages/ShowDetails'));
+const LazyAdmin = React.lazy(() => 
+  import('@/components/LazyAdminDashboard').then(module => ({ 
+    default: module.LazyAdminDashboard 
+  }))
+);
+const LazyStripeCheckout = React.lazy(() => 
+  import('@/components/LazyStripeCheckout').then(module => ({ 
+    default: module.LazyStripeCheckout 
+  }))
+);
+const LazyPaymentPages = React.lazy(() => 
+  Promise.all([
+    import('@/pages/TicketPaymentSuccess'),
+    import('@/pages/CoursePaymentSuccess'),
+    import('@/pages/PaymentCancelled'),
+  ]).then(([ticketSuccess, courseSuccess, cancelled]) => ({
+    default: () => (
+      <Routes>
+        <Route path="/ticket-success" element={<ticketSuccess.default />} />
+        <Route path="/course-success" element={<courseSuccess.default />} />
+        <Route path="/payment-cancelled" element={<cancelled.default />} />
+      </Routes>
+    )
+  }))
+);
+const LazyNewsletterPages = React.lazy(() =>
+  Promise.all([
+    import('@/pages/NewsletterConfirmation'),
+    import('@/pages/Unsubscribe'),
+  ]).then(([confirmation, unsubscribe]) => ({
+    default: () => (
+      <Routes>
+        <Route path="/newsletter-confirmation" element={<confirmation.default />} />
+        <Route path="/unsubscribe" element={<unsubscribe.default />} />
+      </Routes>
+    )
+  }))
+);
 
-const PageSkeleton = () => (
-  <div className="min-h-screen bg-background">
-    <div className="container mx-auto px-4 py-8">
-      <Skeleton className="h-12 w-64 mb-6" />
-      <div className="space-y-4">
-        <Skeleton className="h-32 w-full" />
-        <Skeleton className="h-48 w-full" />
-      </div>
+// Optimized loading component
+const LoadingFallback = ({ message = "Laddar..." }: { message?: string }) => (
+  <div className="flex items-center justify-center min-h-[200px] text-muted-foreground">
+    <div className="flex flex-col items-center gap-2">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <span className="text-sm">{message}</span>
     </div>
   </div>
 );
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+function App() {
+  // Monitor performance improvements
+  usePerformanceMonitor();
+  
+  // Log bundle info in development
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      logBundleInfo();
+    }
+  }, []);
+
+  return (
     <AuthProvider>
-      <TooltipProvider>
+      <Router>
+        <div className="min-h-screen flex flex-col bg-background">
+          <Header />
+          <main className="flex-1">
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+                {/* Critical routes - loaded immediately */}
+                <Route path="/" element={<Index />} />
+                <Route path="/om-oss" element={<About />} />
+                
+                {/* Lazy loaded routes */}
+                <Route 
+                  path="/forestallningar" 
+                  element={
+                    <Suspense fallback={<LoadingFallback message="Laddar föreställningar..." />}>
+                      <LazyShows />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="/kurser" 
+                  element={
+                    <Suspense fallback={<LoadingFallback message="Laddar kurser..." />}>
+                      <LazyCourses />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="/lokal" 
+                  element={
+                    <Suspense fallback={<LoadingFallback message="Laddar lokalinfo..." />}>
+                      <LazyLokal />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="/boka-oss" 
+                  element={
+                    <Suspense fallback={<LoadingFallback message="Laddar bokningsformulär..." />}>
+                      <LazyBokaOss />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="/forestallningar/:slug" 
+                  element={
+                    <Suspense fallback={<LoadingFallback message="Laddar föreställning..." />}>
+                      <LazyShowDetails />
+                    </Suspense>
+                  } 
+                />
+                
+                {/* Admin routes - heavily optimized */}
+                <Route 
+                  path="/admin/*" 
+                  element={
+                    <Suspense fallback={<LoadingFallback message="Laddar administratörspanel..." />}>
+                      <LazyAdmin />
+                    </Suspense>
+                  } 
+                />
+                
+                {/* Payment routes - grouped */}
+                <Route 
+                  path="/payment/*" 
+                  element={
+                    <Suspense fallback={<LoadingFallback message="Laddar betalning..." />}>
+                      <LazyPaymentPages />
+                    </Suspense>
+                  } 
+                />
+                
+                {/* Newsletter routes - grouped */}
+                <Route 
+                  path="/newsletter/*" 
+                  element={
+                    <Suspense fallback={<LoadingFallback message="Laddar nyhetsbrev..." />}>
+                      <LazyNewsletterPages />
+                    </Suspense>
+                  } 
+                />
+                
+                {/* Stripe checkout */}
+                <Route 
+                  path="/stripe-checkout" 
+                  element={
+                    <Suspense fallback={<LoadingFallback message="Förbereder betalning..." />}>
+                      <LazyStripeCheckout />
+                    </Suspense>
+                  } 
+                />
+                
+                {/* Fallback */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </main>
+          <Footer />
+        </div>
         <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/boka-oss" element={<BokaOss />} />
-            <Route path="/om-oss" element={<About />} />
-            <Route path="/lokal" element={<Lokal />} />
-            <Route 
-              path="/kurser" 
-              element={
-                <Suspense fallback={<PageSkeleton />}>
-                  <Courses />
-                </Suspense>
-              } 
-            />
-            <Route 
-              path="/shows" 
-              element={
-                <Suspense fallback={<PageSkeleton />}>
-                  <Shows />
-                </Suspense>
-              } 
-            />
-            <Route 
-              path="/shows/:slug" 
-              element={
-                <Suspense fallback={<PageSkeleton />}>
-                  <ShowDetails />
-                </Suspense>
-              } 
-            />
-            <Route path="/kurser/tack" element={<CoursePaymentSuccess />} />
-            <Route path="/shows/tack" element={<TicketPaymentSuccess />} />
-            <Route path="/payment-cancelled" element={<PaymentCancelled />} />
-            <Route path="/avprenumerera" element={<Unsubscribe />} />
-            <Route path="/nyhetsbrev-bekraftelse" element={<NewsletterConfirmation />} />
-            <Route 
-              path="/admin" 
-              element={
-                <Suspense fallback={<PageSkeleton />}>
-                  <LazyAdminDashboard />
-                </Suspense>
-              } 
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      </Router>
     </AuthProvider>
-  </QueryClientProvider>
-);
+  );
+}
 
 export default App;

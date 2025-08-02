@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -5,15 +6,16 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Plus, Calendar } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useShowData } from '@/hooks/useShowData';
+import { useAdminShowCards, useAdminShowDetails } from '@/hooks/useAdminShowsOptimized';
+import { useShowManagementData } from '@/hooks/useOptimizedShowData';
 import { useShowManagementMutations } from '@/hooks/useShowManagementMutations';
+import { useBackgroundSync } from '@/hooks/useBackgroundSync';
 import { getDefaultShowForm } from '@/utils/showUtils';
 import { ShowRow } from './show/ShowRow';
 import { MobileShowCard } from './show/MobileShowCard';
 import { ShowCard } from './show/ShowCard';
 import { ShowForm } from './show/ShowForm';
 import type { AdminShowWithPerformers, NewShowForm } from '@/types/showManagement';
-
 
 export const ShowManagement = ({ showCompleted = false }: { showCompleted?: boolean }) => {
   const isMobile = useIsMobile();
@@ -23,7 +25,21 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const [newShow, setNewShow] = useState<NewShowForm>(getDefaultShowForm());
 
-  const { shows, showsLoading, venues, actors, showTemplates, showTags } = useShowData(showCompleted);
+  // Use optimized data fetching
+  const { data: shows, isLoading: showsLoading } = useAdminShowCards(showCompleted);
+  const { data: showDetails } = useAdminShowDetails(editingShow?.id);
+  
+  // Only load form data when dialog is opened
+  const { venues, actors, showTemplates, showTags } = useShowManagementData({
+    loadVenues: isShowDialogOpen,
+    loadActors: isShowDialogOpen,
+    loadTemplates: isShowDialogOpen,
+    loadTags: isShowDialogOpen,
+  });
+
+  // Enable background sync
+  useBackgroundSync();
+
   const {
     createShowMutation,
     updateShowMutation,
@@ -33,7 +49,6 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
     moveShowDownMutation
   } = useShowManagementMutations();
 
-
   const resetForm = () => {
     setNewShow(getDefaultShowForm());
     setSelectedTemplate('');
@@ -41,47 +56,54 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
     setEditingShow(null);
   };
 
-  const handleEditShow = (show: AdminShowWithPerformers) => {
+  const handleEditShow = (show: any) => {
     setEditingShow(show);
-    setNewShow({
-      title: show.title,
-      slug: show.slug,
-      image_url: show.image_url || '',
-      show_date: show.show_date,
-      show_time: show.show_time,
-      venue: show.venue,
-      venue_address: show.venue_address || '',
-      venue_maps_url: show.venue_maps_url || '',
-      description: show.description || '',
-      regular_price: show.regular_price,
-      discount_price: show.discount_price,
-      max_tickets: show.max_tickets || 100,
-      is_active: show.is_active,
-      performer_ids: show.performers.map(p => p.id),
-      tag_id: show.tag_id || null
-    });
+    // Form will be populated when showDetails loads
     setIsEditMode(true);
     setIsShowDialogOpen(true);
   };
 
-  const handleToggleShowVisibility = (show: AdminShowWithPerformers) => {
+  // Update form when show details are loaded
+  React.useEffect(() => {
+    if (showDetails && isEditMode) {
+      setNewShow({
+        title: showDetails.title,
+        slug: showDetails.slug,
+        image_url: showDetails.image_url || '',
+        show_date: showDetails.show_date,
+        show_time: showDetails.show_time,
+        venue: showDetails.venue,
+        venue_address: showDetails.venue_address || '',
+        venue_maps_url: showDetails.venue_maps_url || '',
+        description: showDetails.description || '',
+        regular_price: showDetails.regular_price,
+        discount_price: showDetails.discount_price,
+        max_tickets: showDetails.max_tickets || 100,
+        is_active: showDetails.is_active,
+        performer_ids: showDetails.performers.map(p => p.id),
+        tag_id: showDetails.tag_id || null
+      });
+    }
+  }, [showDetails, isEditMode]);
+
+  const handleToggleShowVisibility = (show: any) => {
     updateShowMutation.mutate({
       id: show.id,
       data: { is_active: !show.is_active }
     });
   };
 
-  const handleDeleteShow = (show: AdminShowWithPerformers) => {
+  const handleDeleteShow = (show: any) => {
     deleteShowMutation.mutate(show.id);
   };
 
-  const handleMoveUp = (show: AdminShowWithPerformers) => {
+  const handleMoveUp = (show: any) => {
     if (shows) {
       moveShowUpMutation.mutate({ show, shows });
     }
   };
 
-  const handleMoveDown = (show: AdminShowWithPerformers) => {
+  const handleMoveDown = (show: any) => {
     if (shows) {
       moveShowDownMutation.mutate({ show, shows });
     }
@@ -134,7 +156,7 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
               {shows.map((show, index) => (
                 <MobileShowCard
                   key={show.id}
-                  show={show}
+                  show={show as any}
                   index={index}
                   totalShows={shows.length}
                   showCompleted={showCompleted}
@@ -151,7 +173,7 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
               {shows.map((show, index) => (
                 <ShowCard
                   key={show.id}
-                  show={show}
+                  show={show as any}
                   index={index}
                   totalShows={shows.length}
                   showCompleted={showCompleted}
@@ -174,7 +196,7 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
           </div>
         )}
 
-      {/* Show Dialog */}
+      {/* Show Dialog - only loads heavy data when opened */}
       <Dialog open={isShowDialogOpen} onOpenChange={handleDialogClose}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -182,17 +204,20 @@ export const ShowManagement = ({ showCompleted = false }: { showCompleted?: bool
               {isEditMode ? 'Redigera föreställning' : 'Lägg till föreställning'}
             </DialogTitle>
           </DialogHeader>
-          <ShowForm
-            newShow={newShow}
-            setNewShow={setNewShow}
-            isEditMode={isEditMode}
-            selectedTemplate={selectedTemplate}
-            setSelectedTemplate={setSelectedTemplate}
-            showTemplates={showTemplates}
-            venues={venues}
-            actors={actors}
-            showTags={showTags}
-          />
+          
+          {isShowDialogOpen && (
+            <ShowForm
+              newShow={newShow}
+              setNewShow={setNewShow}
+              isEditMode={isEditMode}
+              selectedTemplate={selectedTemplate}
+              setSelectedTemplate={setSelectedTemplate}
+              showTemplates={showTemplates}
+              venues={venues}
+              actors={actors}
+              showTags={showTags}
+            />
+          )}
 
           <div className="flex justify-end gap-2">
             <Button
