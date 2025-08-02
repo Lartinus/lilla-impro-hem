@@ -154,7 +154,7 @@ const PurchaseForm = ({
         return;
       }
 
-      // Redirect to Stripe Checkout
+      // For free tickets, redirect directly to success page, otherwise to Stripe
       if (!data?.url) {
         throw new Error('Ingen checkout-URL mottogs');
       }
@@ -167,6 +167,9 @@ const PurchaseForm = ({
       setIsLoading(false);
     }
   };
+
+  // Check if this is a free show
+  const isFreeShow = finalTotal === 0;
 
   return (
     <div className="mb-6">
@@ -250,7 +253,7 @@ const PurchaseForm = ({
           className="bg-blue-600 hover:bg-blue-700 text-white rounded-none"
           disabled={!isFormValid() || isLoading}
         >
-          {isLoading ? 'Bearbetar...' : 'Betala med Stripe →'}
+          {isLoading ? 'Bearbetar...' : (isFreeShow ? 'Boka biljetterna' : 'Betala med Stripe →')}
         </Button>
       </div>
     </div>

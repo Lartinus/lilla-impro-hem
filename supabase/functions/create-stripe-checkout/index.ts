@@ -54,7 +54,71 @@ serve(async (req) => {
       buyer: buyerName
     });
 
-    // Create Stripe checkout session
+    // Check if this is a free show
+    if (totalAmount === 0) {
+      // For free shows, create ticket directly without Stripe
+      const freeTicketId = crypto.randomUUID();
+      
+      // Store paid purchase in database (free tickets are marked as paid immediately)
+      const { error: dbError } = await supabase
+        .from('ticket_purchases')
+        .insert({
+          show_slug: showSlug,
+          show_title: showTitle,
+          show_date: showDate,
+          show_location: showLocation,
+          buyer_name: buyerName,
+          buyer_email: buyerEmail,
+          buyer_phone: buyerPhone,
+          regular_tickets: regularTickets,
+          discount_tickets: discountTickets,
+          total_amount: totalAmount,
+          discount_code: discountCode || null,
+          ticket_code: ticketCode,
+          qr_data: qrData,
+          stripe_session_id: freeTicketId,
+          payment_status: 'paid'
+        });
+
+      if (dbError) {
+        console.error('Database error:', dbError);
+        throw new Error('Failed to store free ticket');
+      }
+
+      // Send confirmation email for free tickets
+      try {
+        await supabase.functions.invoke('send-ticket-confirmation', {
+          body: {
+            show_slug: showSlug,
+            show_title: showTitle,
+            show_date: showDate,
+            show_location: showLocation,
+            buyer_name: buyerName,
+            buyer_email: buyerEmail,
+            buyer_phone: buyerPhone,
+            regular_tickets: regularTickets,
+            discount_tickets: discountTickets,
+            total_amount: totalAmount,
+            discount_code: discountCode || null,
+            ticket_code: ticketCode,
+            qr_data: qrData,
+            payment_status: 'paid'
+          }
+        });
+      } catch (emailError) {
+        console.error('Error sending confirmation email:', emailError);
+        // Don't fail the ticket creation if email fails
+      }
+
+      // Return success URL for free tickets
+      return new Response(JSON.stringify({ 
+        url: `${req.headers.get('origin')}/shows/tack?session_id=${freeTicketId}` 
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // For paid shows, proceed with Stripe checkout
     const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
