@@ -75,6 +75,15 @@ export function createUnifiedEmailTemplate(
     <tr>
       <td style="padding: 0; background-color: #ffffff !important;">
         <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff !important;">
+          ${backgroundImage ? `
+          <!-- Header Image -->
+          <tr>
+            <td style="padding: 0;">
+              <img src="${backgroundImage}" alt="Header image" style="width: 100%; height: 400px; object-fit: cover; display: block;">
+            </td>
+          </tr>
+          ` : ''}
+          
           <!-- Content Area -->
           <tr>
             <td style="padding: 40px; background-color: #ffffff !important; font-family: 'Satoshi', Arial, sans-serif; line-height: 1.6; color: #333333 !important;">
@@ -91,13 +100,10 @@ export function createUnifiedEmailTemplate(
           <!-- Footer -->
           <tr>
             <td style="background-color: #dc2626 !important; padding: 40px; text-align: center;">
-              ${backgroundImage ? `<img src="${backgroundImage}" alt="Background" style="position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: 0;">` : ''}
-              <div style="position: relative; z-index: 1;">
-                <h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 32px; color: white !important; margin: 0 0 16px 0; font-weight: 400;">LILLA IMPROTEATERN</h1>
-                <p style="font-size: 14px; color: rgba(255, 255, 255, 0.9) !important; margin: 0; font-family: 'Satoshi', Arial, sans-serif;">
-                  <a href="{UNSUBSCRIBE_URL}" style="color: rgba(255, 255, 255, 0.9) !important; text-decoration: underline;">Avprenumerera</a>
-                </p>
-              </div>
+              <h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 32px; color: white !important; margin: 0 0 16px 0; font-weight: 400;">LILLA IMPROTEATERN</h1>
+              <p style="font-size: 14px; color: rgba(255, 255, 255, 0.9) !important; margin: 0; font-family: 'Satoshi', Arial, sans-serif;">
+                <a href="{UNSUBSCRIBE_URL}" style="color: rgba(255, 255, 255, 0.9) !important; text-decoration: underline;">Avprenumerera</a>
+              </p>
             </td>
           </tr>
         </table>

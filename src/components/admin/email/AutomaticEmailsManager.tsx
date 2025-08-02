@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { Edit, Eye, Save, X } from 'lucide-react';
-import { createUnifiedEmailTemplate } from '../../../../supabase/functions/_shared/unified-email-template';
+import { createUnifiedEmailTemplate } from '../../../../supabase/functions/_shared/email-template';
 
 interface AutomaticEmailTemplate {
   id: string;

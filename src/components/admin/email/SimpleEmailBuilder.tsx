@@ -11,7 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import { ImagePicker } from '../ImagePicker';
 import { supabase } from '@/integrations/supabase/client';
 import { EmailGroup, EmailContact, GroupMember, EmailTemplate } from './types';
-import { createUnifiedEmailTemplate } from '../../../../supabase/functions/_shared/unified-email-template';
+import { createUnifiedEmailTemplate } from '../../../../supabase/functions/_shared/email-template';
 
 interface SimpleEmailBuilderProps {
   emailGroups: EmailGroup[];
