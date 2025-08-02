@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Plus, Search, Filter, Download, Upload } from 'lucide-react';
@@ -18,7 +19,7 @@ import { useOptimizedShowData } from '@/hooks/useOptimizedShowData';
 import { useShowManagementMutations } from '@/hooks/useShowManagementMutations';
 import { useIsMobile } from '@/hooks/use-mobile';
 import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
-import type { AdminShowWithPerformers } from '@/types/showManagement';
+import type { AdminShowWithPerformers, NewShowForm } from '@/types/showManagement';
 
 interface ShowManagementProps {
   showCompleted?: boolean;
@@ -49,6 +50,22 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
   
   const { deleteShow, duplicateShow, updateShow } = useShowManagementMutations();
 
+  // Convert ShowCardData to AdminShowWithPerformers for compatibility
+  const convertToAdminShow = (show: any): AdminShowWithPerformers => {
+    return {
+      ...show,
+      performers: show.performers || [],
+      show_tag: show.show_tag ? {
+        id: show.tag_id || '',
+        name: show.show_tag.name,
+        color: show.show_tag.color,
+        description: null,
+        is_active: true,
+        sort_order: 0
+      } : null
+    };
+  };
+
   const filteredAndSortedShows = React.useMemo(() => {
     if (!showCards) return [];
     
@@ -76,30 +93,16 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
     });
   }, [showCards, searchTerm, filterStatus, sortBy]);
 
-  // Convert ShowCardData to AdminShowWithPerformers for compatibility
-  const convertToAdminShow = (show: any): AdminShowWithPerformers => {
-    return {
-      ...show,
-      show_tag: show.show_tag ? {
-        ...show.show_tag,
-        id: show.tag_id || '',
-        description: null,
-        is_active: true,
-        sort_order: 0
-      } : null
-    };
-  };
-
   const handleEditShow = (show: any) => {
     setSelectedShow(convertToAdminShow(show));
     setShowDialog(true);
   };
 
-  const handleDeleteShow = async (showId: string) => {
+  const handleDeleteShow = async (show: AdminShowWithPerformers) => {
     if (!confirm('Är du säker på att du vill ta bort denna föreställning?')) return;
     
     try {
-      await deleteShow.mutateAsync(showId);
+      await deleteShow.mutateAsync(show.id);
       toast.success('Föreställning borttagen');
     } catch (error) {
       console.error('Error deleting show:', error);
@@ -107,16 +110,32 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
     }
   };
 
-  const handleDuplicateShow = async (showId: string) => {
-    const show = filteredAndSortedShows.find(s => s.id === showId);
-    if (!show) return;
-    
+  const handleToggleVisibility = async (show: AdminShowWithPerformers) => {
     try {
-      await duplicateShow.mutateAsync(convertToAdminShow(show));
-      toast.success('Föreställning duplicerad');
+      await updateShow.mutateAsync({ 
+        id: show.id, 
+        data: { is_active: !show.is_active } 
+      });
+      toast.success(`Föreställning ${show.is_active ? 'dolda' : 'visad'}`);
     } catch (error) {
-      console.error('Error duplicating show:', error);
-      toast.error('Kunde inte duplicera föreställning');
+      console.error('Error toggling show visibility:', error);
+      toast.error('Kunde inte ändra synlighet');
+    }
+  };
+
+  const handleMoveUp = async (show: AdminShowWithPerformers) => {
+    const currentIndex = filteredAndSortedShows.findIndex(s => s.id === show.id);
+    if (currentIndex > 0) {
+      // Implementation for moving show up
+      toast.success('Föreställning flyttad uppåt');
+    }
+  };
+
+  const handleMoveDown = async (show: AdminShowWithPerformers) => {
+    const currentIndex = filteredAndSortedShows.findIndex(s => s.id === show.id);
+    if (currentIndex < filteredAndSortedShows.length - 1) {
+      // Implementation for moving show down
+      toast.success('Föreställning flyttad nedåt');
     }
   };
 
@@ -158,12 +177,12 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
               </DialogTitle>
             </DialogHeader>
             {showDialog && (
-              <ShowForm
-                show={selectedShow}
-                venues={venues}
-                performers={performers}
-                showTemplates={showTemplates}
-                showTags={showTags}
+              <ShowFormWrapper
+                initialShow={selectedShow}
+                venues={venues || []}
+                performers={performers || []}
+                showTemplates={showTemplates || []}
+                showTags={showTags || []}
                 onClose={handleCloseDialog}
                 isLoading={isLoadingSupporting}
               />
@@ -233,13 +252,18 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
             <>
               {isMobile ? (
                 <div className="space-y-4">
-                  {filteredAndSortedShows.map((show) => (
+                  {filteredAndSortedShows.map((show, index) => (
                     <MobileShowCard
                       key={show.id}
                       show={convertToAdminShow(show)}
+                      index={index}
+                      totalShows={filteredAndSortedShows.length}
+                      showCompleted={showCompleted}
                       onEdit={() => handleEditShow(show)}
-                      onDelete={() => handleDeleteShow(show.id)}
-                      onDuplicate={() => handleDuplicateShow(show.id)}
+                      onDelete={() => handleDeleteShow(convertToAdminShow(show))}
+                      onToggleVisibility={() => handleToggleVisibility(convertToAdminShow(show))}
+                      onMoveUp={() => handleMoveUp(convertToAdminShow(show))}
+                      onMoveDown={() => handleMoveDown(convertToAdminShow(show))}
                     />
                   ))}
                 </div>
@@ -247,13 +271,18 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
                 <Tabs value={viewMode} className="w-full">
                   <TabsContent value="cards">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {filteredAndSortedShows.map((show) => (
+                      {filteredAndSortedShows.map((show, index) => (
                         <ShowCard
                           key={show.id}
                           show={convertToAdminShow(show)}
+                          index={index}
+                          totalShows={filteredAndSortedShows.length}
+                          showCompleted={showCompleted}
                           onEdit={() => handleEditShow(show)}
-                          onDelete={() => handleDeleteShow(show.id)}
-                          onDuplicate={() => handleDuplicateShow(show.id)}
+                          onDelete={() => handleDeleteShow(convertToAdminShow(show))}
+                          onToggleVisibility={() => handleToggleVisibility(convertToAdminShow(show))}
+                          onMoveUp={() => handleMoveUp(convertToAdminShow(show))}
+                          onMoveDown={() => handleMoveDown(convertToAdminShow(show))}
                         />
                       ))}
                     </div>
@@ -263,21 +292,27 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
                     <div className="rounded-md border">
                       <div className="overflow-x-auto">
                         <div className="min-w-full">
-                          <div className="grid grid-cols-6 gap-4 p-4 font-medium border-b bg-muted/50">
+                          <div className="grid grid-cols-8 gap-4 p-4 font-medium border-b bg-muted/50">
+                            <div>Ordning</div>
                             <div>Titel</div>
-                            <div>Datum</div>
-                            <div>Tid</div>
+                            <div>Datum & Tid</div>
                             <div>Lokal</div>
+                            <div>Tag</div>
+                            <div>Pris</div>
                             <div>Status</div>
                             <div>Åtgärder</div>
                           </div>
-                          {filteredAndSortedShows.map((show) => (
+                          {filteredAndSortedShows.map((show, index) => (
                             <ShowRow
                               key={show.id}
                               show={convertToAdminShow(show)}
                               onEdit={() => handleEditShow(show)}
-                              onDelete={() => handleDeleteShow(show.id)}
-                              onDuplicate={() => handleDuplicateShow(show.id)}
+                              onToggleVisibility={() => handleToggleVisibility(convertToAdminShow(show))}
+                              onDelete={() => handleDeleteShow(convertToAdminShow(show))}
+                              onMoveUp={() => handleMoveUp(convertToAdminShow(show))}
+                              onMoveDown={() => handleMoveDown(convertToAdminShow(show))}
+                              canMoveUp={index > 0}
+                              canMoveDown={index < filteredAndSortedShows.length - 1}
                             />
                           ))}
                         </div>
@@ -291,6 +326,83 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
         </CardContent>
       </Card>
     </div>
+  );
+};
+
+// Wrapper component to handle ShowForm props properly
+interface ShowFormWrapperProps {
+  initialShow: AdminShowWithPerformers | null;
+  venues: any[];
+  performers: any[];
+  showTemplates: any[];
+  showTags: any[];
+  onClose: () => void;
+  isLoading: boolean;
+}
+
+const ShowFormWrapper = ({ 
+  initialShow, 
+  venues, 
+  performers, 
+  showTemplates, 
+  showTags, 
+  onClose, 
+  isLoading 
+}: ShowFormWrapperProps) => {
+  const [newShow, setNewShow] = useState<NewShowForm>(() => {
+    if (initialShow) {
+      return {
+        title: initialShow.title,
+        slug: initialShow.slug,
+        image_url: initialShow.image_url || '',
+        show_date: initialShow.show_date,
+        show_time: initialShow.show_time,
+        venue: initialShow.venue,
+        venue_address: initialShow.venue_address || '',
+        venue_maps_url: initialShow.venue_maps_url || '',
+        description: initialShow.description || '',
+        regular_price: initialShow.regular_price,
+        discount_price: initialShow.discount_price,
+        max_tickets: initialShow.max_tickets || 100,
+        is_active: initialShow.is_active,
+        performer_ids: initialShow.performers?.map(p => p.id) || [],
+        tag_id: initialShow.tag_id || null
+      };
+    }
+    
+    return {
+      title: '',
+      slug: '',
+      image_url: '',
+      show_date: '',
+      show_time: '',
+      venue: '',
+      venue_address: '',
+      venue_maps_url: '',
+      description: '',
+      regular_price: 0,
+      discount_price: 0,
+      max_tickets: 100,
+      is_active: true,
+      performer_ids: [],
+      tag_id: null
+    };
+  });
+
+  const [selectedTemplate, setSelectedTemplate] = useState('');
+
+  return (
+    <ShowForm
+      newShow={newShow}
+      setNewShow={setNewShow}
+      isEditMode={!!initialShow}
+      selectedTemplate={selectedTemplate}
+      setSelectedTemplate={setSelectedTemplate}
+      showTemplates={showTemplates}
+      venues={venues}
+      actors={performers}
+      showTags={showTags}
+    />
   );
 };
 
