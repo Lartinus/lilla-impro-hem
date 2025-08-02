@@ -14,6 +14,26 @@ interface EmailTemplatePreviewProps {
 }
 
 export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps) {
+  // Check if this is a ticket confirmation template
+  const isTicketTemplate = templateForm.name?.includes('Biljettbekräftelse') || 
+                           templateForm.subject?.includes('biljett') ||
+                           templateForm.content?.includes('biljett');
+
+  const mockVariables = isTicketTemplate ? {
+    NAMN: 'Anna Andersson',
+    FÖRESTÄLLNING: 'Improvisation & Comedy - Julshow',
+    DATUM: '15 december 2024',
+    TID: '19:30',
+    PLATS: 'Lilla Improteatern, Teatergatan 3, Stockholm',
+    ANTAL: '2',
+    BILJETTKOD: 'LIT-2024-1215-001'
+  } : {
+    NAMN: 'Anna Andersson', 
+    KURS: 'Nivå 1 - Scenarbete & Improv Comedy',
+    STARTDATUM: '15 januari 2025',
+    STARTTID: '18:00'
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -28,7 +48,8 @@ export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps
                   templateForm.subject || 'Ämne saknas', 
                   templateForm.content || 'Inget innehåll ännu...', 
                   templateForm.background_image || undefined,
-                  { NAMN: 'Anna', KURS: 'Nivå 1 - Scenarbete & Improv Comedy' } // Exempel-variabler för förhandsvisning
+                  mockVariables,
+                  isTicketTemplate
                 )
               }}
               className="[&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-3 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-2 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2 [&_p]:mb-2 [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1"
@@ -43,7 +64,11 @@ export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps
             <div className="flex flex-col items-center justify-center h-40 text-muted-foreground space-y-2">
               <div>Börja skriv för att se förhandsvisning</div>
               <div className="text-xs text-center">
-                Tillgängliga variabler: [NAMN], [KURS], [STARTDATUM], [STARTTID]
+                {isTicketTemplate ? (
+                  <>Tillgängliga variabler: [NAMN], [FÖRESTÄLLNING], [DATUM], [TID], [PLATS], [ANTAL], [BILJETTKOD]</>
+                ) : (
+                  <>Tillgängliga variabler: [NAMN], [KURS], [STARTDATUM], [STARTTID]</>
+                )}
               </div>
             </div>
           )}
