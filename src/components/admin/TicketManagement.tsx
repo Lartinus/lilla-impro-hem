@@ -141,20 +141,22 @@ export const TicketManagement = () => {
         
         {/* Export dropdown */}
         {uniqueShows.length > 0 && (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             <Label className="text-sm font-medium">Exportera per föreställning:</Label>
-            {uniqueShows.map((show) => (
-              <Button
-                key={show.title}
-                variant="outline"
-                size="sm"
-                onClick={() => exportTickets(show.title)}
-                className="flex items-center gap-1"
-              >
-                <Download className="w-4 h-4" />
-                {show.title} ({show.count})
-              </Button>
-            ))}
+            <div className="flex flex-wrap gap-2">
+              {uniqueShows.map((show) => (
+                <Button
+                  key={show.title}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => exportTickets(show.title)}
+                  className="flex items-center gap-1"
+                >
+                  <Download className="w-4 h-4" />
+                  {show.title} ({show.count})
+                </Button>
+              ))}
+            </div>
           </div>
         )}
       </div>
