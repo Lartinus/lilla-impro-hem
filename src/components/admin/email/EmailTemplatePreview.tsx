@@ -79,23 +79,39 @@ export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps
       <CardContent>
         <div className="border rounded-lg bg-white max-h-[70vh] overflow-y-auto">
           {effectiveTemplate.subject || effectiveTemplate.content ? (
-            <div 
-              dangerouslySetInnerHTML={{ 
-                __html: createEmailTemplatePreview(
-                  effectiveTemplate.subject || 'Ämne saknas', 
-                  effectiveTemplate.content || 'Inget innehåll ännu...', 
-                  effectiveTemplate.background_image || undefined,
-                  mockVariables,
-                  isTicketTemplate
-                )
-              }}
-              style={{ 
-                transform: 'scale(0.8)',
-                transformOrigin: 'top left',
-                width: '125%',
-                minHeight: '500px'
-              } as React.CSSProperties}
-            />
+            <>
+              <style>
+                {`
+                  @import url('https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap');
+                  @import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap');
+                  
+                  .tanker-font { 
+                    font-family: 'Tanker', 'Impact', 'Arial Black', 'Franklin Gothic Bold', 'Helvetica Bold', sans-serif !important; 
+                    font-weight: 400 !important;
+                  }
+                  .satoshi-font { 
+                    font-family: 'Satoshi', 'Helvetica Neue', 'Arial', sans-serif !important; 
+                  }
+                `}
+              </style>
+              <div 
+                dangerouslySetInnerHTML={{ 
+                  __html: createEmailTemplatePreview(
+                    effectiveTemplate.subject || 'Ämne saknas', 
+                    effectiveTemplate.content || 'Inget innehåll ännu...', 
+                    effectiveTemplate.background_image || undefined,
+                    mockVariables,
+                    isTicketTemplate
+                  )
+                }}
+                style={{ 
+                  transform: 'scale(0.8)',
+                  transformOrigin: 'top left',
+                  width: '125%',
+                  minHeight: '500px'
+                } as React.CSSProperties}
+              />
+            </>
           ) : (
             <div className="flex flex-col items-center justify-center h-40 text-muted-foreground space-y-2">
               <div>Börja skriv för att se förhandsvisning</div>

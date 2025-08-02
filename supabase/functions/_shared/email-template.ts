@@ -11,7 +11,7 @@ function convertTextToHtml(text: string): string {
       // Handle HTML-style headings (case insensitive)
       if (trimmed.match(/^<h1[^>]*>.*<\/h1>$/i)) {
         const content = trimmed.replace(/<\/?h1[^>]*>/gi, '');
-        return `<h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 28px; color: #333333 !important; margin: 0 0 24px 0; text-align: left; font-weight: 400; line-height: 1.2;">${content}</h1>`;
+        return `<h1 class="tanker-font" style="font-family: 'Tanker', 'Impact', 'Arial Black', 'Franklin Gothic Bold', 'Helvetica Bold', sans-serif; font-size: 28px; color: #333333 !important; margin: 0 0 24px 0; text-align: left; font-weight: 400; line-height: 1.2;">${content}</h1>`;
       }
       
       if (trimmed.match(/^<h2[^>]*>.*<\/h2>$/i)) {
@@ -22,7 +22,7 @@ function convertTextToHtml(text: string): string {
       // Handle markdown-style headings
       if (trimmed.startsWith('H1:')) {
         const content = trimmed.substring(3).trim();
-        return `<h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 28px; color: #333333 !important; margin: 0 0 24px 0; text-align: left; font-weight: 400; line-height: 1.2;">${content}</h1>`;
+        return `<h1 class="tanker-font" style="font-family: 'Tanker', 'Impact', 'Arial Black', 'Franklin Gothic Bold', 'Helvetica Bold', sans-serif; font-size: 28px; color: #333333 !important; margin: 0 0 24px 0; text-align: left; font-weight: 400; line-height: 1.2;">${content}</h1>`;
       }
       
       if (trimmed.startsWith('H2:')) {
@@ -61,13 +61,23 @@ export function createUnifiedEmailTemplate(
   <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
   
   <style>
+    /* Import fonts with fallbacks */
+    @import url('https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap');
+    @import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap');
+    
     /* Force light mode for all email clients */
     * {
       color-scheme: light only !important;
     }
     
     /* Fallbacks for email clients that don't support web fonts */
-    .satoshi-font { font-family: 'Satoshi', Arial, sans-serif !important; }
+    .tanker-font { 
+      font-family: 'Tanker', 'Impact', 'Arial Black', 'Franklin Gothic Bold', 'Helvetica Bold', sans-serif !important; 
+      font-weight: 400 !important;
+    }
+    .satoshi-font { 
+      font-family: 'Satoshi', 'Helvetica Neue', 'Arial', sans-serif !important; 
+    }
   </style>
 </head>
 <body style="margin: 0; padding: 0; background-color: #ffffff !important; color-scheme: light only;">
@@ -100,7 +110,7 @@ export function createUnifiedEmailTemplate(
           <!-- Footer -->
           <tr>
             <td style="background-color: #dc2626 !important; padding: 40px; text-align: center;">
-              <h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 32px; color: white !important; margin: 0 0 16px 0; font-weight: 400;">LILLA IMPROTEATERN</h1>
+              <h1 class="tanker-font" style="font-family: 'Tanker', 'Impact', 'Arial Black', 'Franklin Gothic Bold', 'Helvetica Bold', sans-serif; font-size: 32px; color: white !important; margin: 0 0 16px 0; font-weight: 400;">LILLA IMPROTEATERN</h1>
               <p style="font-size: 14px; color: rgba(255, 255, 255, 0.9) !important; margin: 0; font-family: 'Satoshi', Arial, sans-serif;">
                 <a href="{UNSUBSCRIBE_URL}" style="color: rgba(255, 255, 255, 0.9) !important; text-decoration: underline;">Avprenumerera</a>
               </p>
