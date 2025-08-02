@@ -7,11 +7,18 @@ export function createEmailTemplatePreview(
   variables?: Record<string, string>,
   isTicketTemplate: boolean = false
 ): string {
-  // For ticket templates, use the same logic as send-ticket-confirmation
+  // For ticket templates, use the same exact logic as send-ticket-confirmation
   if (isTicketTemplate && variables) {
+    // Process variables first (same as edge function)
+    let processedContent = markdownContent;
+    Object.entries(variables).forEach(([key, value]) => {
+      const regex = new RegExp(`\\{${key}\\}`, 'gi');
+      processedContent = processedContent.replace(regex, value);
+    });
+    
     // Format date and time properly like in the edge function
     let formattedDate = variables.DATUM || 'Datum';
-    let formattedTime = variables.TID || 'Tid';
+    let formattedTime = '';
     
     try {
       if (formattedDate && formattedDate !== 'Datum') {
@@ -30,39 +37,32 @@ export function createEmailTemplatePreview(
       console.error('Error formatting date in preview:', error);
     }
 
-    // Add the same content structure as send-ticket-confirmation
-    const contentWithTicketInfo = markdownContent + `
+    // Add ticket details exactly like edge function 
+    const contentWithTicketInfo = processedContent + `
 
 H2: Dina biljettdetaljer
 
 Datum: ${formattedDate}
 Tid: ${formattedTime}
-Plats: ${variables.PLATS || 'Plats'}
-Biljetter: ${variables.ANTAL || '1'} st
+Plats: Lilla Improteatern, Teatergatan 3, Stockholm
+Biljetter: 2 st
 Biljettkod: ${variables.BILJETTKOD || 'BILJETTKOD'}
 
 [QR_CODE_PLACEHOLDER]
 
 Visa denna QR-kod vid entrén`;
 
-    // Process content with variables first
-    let processedContent = contentWithTicketInfo;
-    Object.entries(variables).forEach(([key, value]) => {
-      const regex = new RegExp(`\\{${key}\\}`, 'gi');
-      processedContent = processedContent.replace(regex, value);
-    });
-
     // Create the unified template structure (same as edge function)
     const unifiedHtml = createUnifiedEmailTemplatePreview(
       subject,
-      processedContent,
+      contentWithTicketInfo,
       backgroundImage
     );
 
     // Replace QR code placeholder with visual placeholder
     return unifiedHtml.replace(
       '[QR_CODE_PLACEHOLDER]', 
-      `<div style="margin: 20px 0; text-align: center;"><div style="display: inline-block; background-color: #f8f8f8; border: 2px dashed #ccc; padding: 20px; border-radius: 8px; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 60px; margin-bottom: 10px;">📱</div><div style="font-size: 14px; color: #666;">QR-kod</div></div></div>`
+      `<div style="margin: 20px 0;"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y4ZjhmOCIgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjQiLz48dGV4dCB4PSI1MCUiIHk9IjQ1JSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5OxPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNjAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2NjYiPlFSLWtvZDwvdGV4dD48L3N2Zz4=" alt="QR Code Placeholder" style="max-width: 200px; display: block;"></div>`
     );
   }
   

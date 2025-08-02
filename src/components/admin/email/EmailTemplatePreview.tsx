@@ -21,11 +21,8 @@ export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps
 
   const mockVariables = isTicketTemplate ? {
     NAMN: 'Anna Andersson',
-    FÖRESTÄLLNING: 'Improvisation & Comedy - Julshow',
-    DATUM: '15 december 2024',
-    TID: '19:30',
-    PLATS: 'Lilla Improteatern, Teatergatan 3, Stockholm',
-    ANTAL: '2',
+    FORESTALLNING: 'Improvisation & Comedy - Julshow',
+    DATUM: '2024-12-15T19:30:00.000Z',
     BILJETTKOD: 'LIT-2024-1215-001'
   } : {
     NAMN: 'Anna Andersson', 
@@ -65,7 +62,7 @@ export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps
               <div>Börja skriv för att se förhandsvisning</div>
               <div className="text-xs text-center">
                 {isTicketTemplate ? (
-                  <>Tillgängliga variabler: [NAMN], [FÖRESTÄLLNING], [DATUM], [TID], [PLATS], [ANTAL], [BILJETTKOD]</>
+                  <>Tillgängliga variabler: [NAMN], [FORESTALLNING], [DATUM], [BILJETTKOD]</>
                 ) : (
                   <>Tillgängliga variabler: [NAMN], [KURS], [STARTDATUM], [STARTTID]</>
                 )}
