@@ -23,7 +23,13 @@ export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps
     NAMN: 'Anna Andersson',
     FORESTALLNING: 'Improvisation & Comedy - Julshow',
     DATUM: '2024-12-15T19:30:00.000Z',
-    BILJETTKOD: 'LIT-2024-1215-001'
+    BILJETTKOD: 'LIT-2024-1215-001',
+    // Additional mock data to match edge function purchase object
+    show_location: 'Lilla Improteatern, Teatergatan 3, Stockholm',
+    regular_tickets: '1',
+    discount_tickets: '1',
+    buyer_email: 'anna.andersson@example.com',
+    qr_data: 'LIT-2024-1215-001-MOCK'
   } : {
     NAMN: 'Anna Andersson', 
     KURS: 'Nivå 1 - Scenarbete & Improv Comedy',

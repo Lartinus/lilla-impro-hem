@@ -4,7 +4,7 @@ export function createEmailTemplatePreview(
   subject: string, 
   markdownContent: string, 
   backgroundImage?: string,
-  variables?: Record<string, string>,
+  variables?: Record<string, string | number>,
   isTicketTemplate: boolean = false
 ): string {
   // For ticket templates, use the same exact logic as send-ticket-confirmation
@@ -13,11 +13,11 @@ export function createEmailTemplatePreview(
     let processedContent = markdownContent;
     Object.entries(variables).forEach(([key, value]) => {
       const regex = new RegExp(`\\{${key}\\}`, 'gi');
-      processedContent = processedContent.replace(regex, value);
+      processedContent = processedContent.replace(regex, String(value));
     });
     
     // Format date and time properly like in the edge function
-    let formattedDate = variables.DATUM || 'Datum';
+    let formattedDate = String(variables.DATUM || 'Datum');
     let formattedTime = '';
     
     try {
@@ -37,15 +37,18 @@ export function createEmailTemplatePreview(
       console.error('Error formatting date in preview:', error);
     }
 
-    // Add ticket details exactly like edge function 
+    // Add ticket details exactly like edge function using mock purchase data
+    const regularTickets = parseInt(String(variables.regular_tickets || '1'));
+    const discountTickets = parseInt(String(variables.discount_tickets || '1'));
+    const totalTickets = regularTickets + discountTickets;
     const contentWithTicketInfo = processedContent + `
 
 H2: Dina biljettdetaljer
 
 Datum: ${formattedDate}
 Tid: ${formattedTime}
-Plats: Lilla Improteatern, Teatergatan 3, Stockholm
-Biljetter: 2 st
+Plats: ${variables.show_location || 'Lilla Improteatern, Teatergatan 3, Stockholm'}
+Biljetter: ${totalTickets} st
 Biljettkod: ${variables.BILJETTKOD || 'BILJETTKOD'}
 
 [QR_CODE_PLACEHOLDER]
@@ -59,16 +62,17 @@ Visa denna QR-kod vid entrén`;
       backgroundImage
     );
 
-    // Replace QR code placeholder with visual placeholder
-    return unifiedHtml.replace(
-      '[QR_CODE_PLACEHOLDER]', 
-      `<div style="margin: 20px 0;"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y4ZjhmOCIgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjQiLz48dGV4dCB4PSI1MCUiIHk9IjQ1JSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5OxPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNjAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2NjYiPlFSLWtvZDwvdGV4dD48L3N2Zz4=" alt="QR Code Placeholder" style="max-width: 200px; display: block;"></div>`
-    );
+    // Replace placeholders exactly like edge function
+    return unifiedHtml
+      .replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(String(variables.buyer_email || 'preview@example.com'))}`)
+      .replace('[QR_CODE_PLACEHOLDER]', `<div style="margin: 20px 0;"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y4ZjhmOCIgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjQiLz48dGV4dCB4PSI1MCUiIHk9IjQ1JSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5OxPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNjAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2NjYiPlFSLWtvZDwvdGV4dD48L3N2Zz4=" alt="QR Code Placeholder" style="max-width: 200px; display: block;"></div>`);
   }
   
   // For non-ticket templates, use regular markdown conversion
   const htmlContent = variables 
-    ? convertMarkdownToHtmlWithVariables(markdownContent, variables)
+    ? convertMarkdownToHtmlWithVariables(markdownContent, Object.fromEntries(
+        Object.entries(variables).map(([key, value]) => [key, String(value)])
+      ))
     : convertMarkdownToHtml(markdownContent);
   
   return createUnifiedEmailTemplatePreview(subject, markdownContent, backgroundImage);
@@ -141,7 +145,8 @@ function createUnifiedEmailTemplatePreview(
         Improvisationsteater • Kurser • Föreställningar
       </div>
       <div style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif !important; font-size: 12px; opacity: 0.8; color: white !important;">
-        <a href="https://improteatern.se" style="color: white !important; text-decoration: none;">improteatern.se</a>
+        <a href="https://improteatern.se" style="color: white !important; text-decoration: none;">improteatern.se</a><br>
+        <a href="{UNSUBSCRIBE_URL}" style="color: white !important; text-decoration: none; opacity: 0.7; font-size: 10px;">Avprenumerera</a>
       </div>
     </div>
     
