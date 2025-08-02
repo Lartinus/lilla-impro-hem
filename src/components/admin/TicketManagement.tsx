@@ -1,12 +1,17 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState, useMemo } from 'react';
+import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, Ticket } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Search, List, Grid, ArrowUpDown, RefreshCw, Trash2, Ticket } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useTicketManagement } from '@/hooks/useTicketManagement';
 
 interface TicketPurchase {
   id: string;
@@ -22,23 +27,81 @@ interface TicketPurchase {
   payment_status: string;
   ticket_code: string;
   created_at: string;
+  refund_status: string;
+  refund_date: string | null;
+  refund_reason: string | null;
 }
+
+type SortField = 'show_title' | 'buyer_name' | 'created_at' | 'total_amount';
+type SortDirection = 'asc' | 'desc';
 
 export const TicketManagement = () => {
   const isMobile = useIsMobile();
-  const { data: tickets, isLoading } = useQuery({
-    queryKey: ['admin-tickets'],
-    queryFn: async (): Promise<TicketPurchase[]> => {
-      const { data, error } = await supabase
-        .from('ticket_purchases')
-        .select('*')
-        .order('created_at', { ascending: false });
+  const { tickets, isLoading, markRefunded, deleteTicket } = useTicketManagement();
+  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortField, setSortField] = useState<SortField>('created_at');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [isListView, setIsListView] = useState(false);
+  const [refundReason, setRefundReason] = useState('');
 
-      if (error) throw error;
-      return data || [];
-    },
-    staleTime: 2 * 60 * 1000, // 2 minutes
-  });
+  // Filter and sort tickets
+  const filteredAndSortedTickets = useMemo(() => {
+    if (!tickets) return [];
+    
+    // Filter by search term
+    let filtered = tickets.filter(ticket => 
+      ticket.buyer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ticket.buyer_email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ticket.show_title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    // Sort tickets
+    filtered.sort((a, b) => {
+      let aValue: any = a[sortField];
+      let bValue: any = b[sortField];
+      
+      if (sortField === 'created_at') {
+        aValue = new Date(aValue).getTime();
+        bValue = new Date(bValue).getTime();
+      } else if (typeof aValue === 'string') {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+      }
+      
+      if (sortDirection === 'asc') {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
+    });
+    
+    return filtered;
+  }, [tickets, searchTerm, sortField, sortDirection]);
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const getRefundBadge = (status: string) => {
+    switch (status) {
+      case 'processed':
+        return <Badge variant="secondary">Återbetald</Badge>;
+      case 'requested':
+        return <Badge variant="outline">Återbetalning begärd</Badge>;
+      default:
+        return null;
+    }
+  };
+
+  const getTotalTickets = (ticket: TicketPurchase) => {
+    return ticket.regular_tickets + ticket.discount_tickets;
+  };
 
   if (isLoading) {
     return (
@@ -56,39 +119,137 @@ export const TicketManagement = () => {
     );
   }
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'paid':
-        return <Badge variant="default">Betald</Badge>;
-      case 'pending':
-        return <Badge variant="secondary">Väntande</Badge>;
-      case 'failed':
-        return <Badge variant="destructive">Misslyckad</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
-  };
-
   return (
     <div className="space-y-4">
       <div>
         <h2 className="text-2xl font-bold">Biljetthantering</h2>
         <p className="text-muted-foreground">
-          Översikt över alla biljettköp och betalningar
+          Endast betalda biljetter visas här
         </p>
       </div>
+
+      {/* Toolbar */}
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        <div className="flex items-center gap-2 flex-1 max-w-md">
+          <Search className="w-4 h-4 text-muted-foreground" />
+          <Input
+            placeholder="Sök på köpare eller föreställning..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="flex-1"
+          />
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="list-view"
+              checked={isListView}
+              onCheckedChange={setIsListView}
+            />
+            <Label htmlFor="list-view" className="flex items-center gap-1">
+              {isListView ? <List className="w-4 h-4" /> : <Grid className="w-4 h-4" />}
+              {isListView ? 'Lista' : 'Tabell'}
+            </Label>
+          </div>
+        </div>
+      </div>
       
-      {!tickets || tickets.length === 0 ? (
+      {!tickets || filteredAndSortedTickets.length === 0 ? (
         <div className="text-center py-12">
           <Ticket className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
-          <h3 className="text-xl font-semibold mb-3">Inga biljetter hittades</h3>
+          <h3 className="text-xl font-semibold mb-3">
+            {searchTerm ? 'Inga matchande biljetter' : 'Inga biljetter hittades'}
+          </h3>
           <p className="text-muted-foreground max-w-md mx-auto">
-            Inga biljetter har köpts än.
+            {searchTerm ? 'Försök med andra söktermer.' : 'Inga betalda biljetter har köpts än.'}
           </p>
         </div>
+      ) : isListView ? (
+        /* List View */
+        <div className="space-y-2">
+          {filteredAndSortedTickets.map((ticket) => (
+            <Card key={ticket.id} className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <div className="font-medium">{ticket.buyer_name}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {getTotalTickets(ticket)} biljett{getTotalTickets(ticket) !== 1 ? 'er' : ''} • {ticket.show_title}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <code className="text-xs bg-muted px-2 py-1 rounded">
+                    {ticket.ticket_code}
+                  </code>
+                  {getRefundBadge(ticket.refund_status)}
+                  <div className="flex gap-1">
+                    {ticket.refund_status === 'none' && (
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <RefreshCw className="w-4 h-4" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Markera som återbetald</DialogTitle>
+                            <DialogDescription>
+                              Markera denna biljett som återbetald. Detta är endast för administrativt bruk.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <Textarea
+                            placeholder="Anledning till återbetalning (valfritt)"
+                            value={refundReason}
+                            onChange={(e) => setRefundReason(e.target.value)}
+                          />
+                          <DialogFooter>
+                            <Button
+                              onClick={() => {
+                                markRefunded({ id: ticket.id, reason: refundReason });
+                                setRefundReason('');
+                              }}
+                            >
+                              Markera som återbetald
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    )}
+                    
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Radera biljett</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Är du säker på att du vill radera denna biljett? Detta kan inte ångras.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deleteTicket(ticket.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Radera
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
       ) : isMobile ? (
+        /* Mobile Cards */
         <div className="space-y-4">
-          {tickets.map((ticket) => (
+          {filteredAndSortedTickets.map((ticket) => (
             <Card key={ticket.id} className="p-4">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
@@ -103,17 +264,14 @@ export const TicketManagement = () => {
                 </div>
                 <div className="text-right">
                   <div className="text-lg font-semibold">{ticket.total_amount} kr</div>
-                  <div className="mt-1">{getStatusBadge(ticket.payment_status)}</div>
+                  {getRefundBadge(ticket.refund_status)}
                 </div>
               </div>
               
               <div className="space-y-2 mb-3">
-                {ticket.regular_tickets > 0 && (
-                  <div className="text-sm">Ordinarie: {ticket.regular_tickets}</div>
-                )}
-                {ticket.discount_tickets > 0 && (
-                  <div className="text-sm">Rabatt: {ticket.discount_tickets}</div>
-                )}
+                <div className="text-sm">
+                  Totalt: {getTotalTickets(ticket)} biljett{getTotalTickets(ticket) !== 1 ? 'er' : ''}
+                </div>
                 <div className="text-sm">
                   Kod: <code className="text-xs bg-muted px-2 py-1 rounded ml-1">
                     {ticket.ticket_code}
@@ -121,29 +279,110 @@ export const TicketManagement = () => {
                 </div>
               </div>
 
-              <Button variant="outline" size="sm" className="w-full">
-                <Eye className="w-4 h-4 mr-1" />
-                Visa detaljer
-              </Button>
+              <div className="flex gap-2">
+                {ticket.refund_status === 'none' && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="flex-1">
+                        <RefreshCw className="w-4 h-4 mr-1" />
+                        Återbetala
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Markera som återbetald</DialogTitle>
+                        <DialogDescription>
+                          Markera denna biljett som återbetald. Detta är endast för administrativt bruk.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <Textarea
+                        placeholder="Anledning till återbetalning (valfritt)"
+                        value={refundReason}
+                        onChange={(e) => setRefundReason(e.target.value)}
+                      />
+                      <DialogFooter>
+                        <Button
+                          onClick={() => {
+                            markRefunded({ id: ticket.id, reason: refundReason });
+                            setRefundReason('');
+                          }}
+                        >
+                          Markera som återbetald
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
+                
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Radera biljett</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Är du säker på att du vill radera denna biljett? Detta kan inte ångras.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => deleteTicket(ticket.id)}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        Radera
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </Card>
           ))}
         </div>
       ) : (
+        /* Desktop Table */
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Föreställning</TableHead>
+              <TableHead 
+                className="cursor-pointer select-none"
+                onClick={() => handleSort('show_title')}
+              >
+                <div className="flex items-center gap-1">
+                  Föreställning
+                  <ArrowUpDown className="w-4 h-4" />
+                </div>
+              </TableHead>
               <TableHead>Datum</TableHead>
-              <TableHead>Köpare</TableHead>
+              <TableHead 
+                className="cursor-pointer select-none"
+                onClick={() => handleSort('buyer_name')}
+              >
+                <div className="flex items-center gap-1">
+                  Köpare
+                  <ArrowUpDown className="w-4 h-4" />
+                </div>
+              </TableHead>
               <TableHead>Biljetter</TableHead>
-              <TableHead>Belopp</TableHead>
+              <TableHead 
+                className="cursor-pointer select-none"
+                onClick={() => handleSort('total_amount')}
+              >
+                <div className="flex items-center gap-1">
+                  Belopp
+                  <ArrowUpDown className="w-4 h-4" />
+                </div>
+              </TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Biljettkod</TableHead>
               <TableHead>Åtgärder</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tickets.map((ticket) => (
+            {filteredAndSortedTickets.map((ticket) => (
               <TableRow key={ticket.id}>
                 <TableCell className="font-medium">{ticket.show_title}</TableCell>
                 <TableCell>
@@ -156,23 +395,80 @@ export const TicketManagement = () => {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div className="text-sm">
-                    {ticket.regular_tickets > 0 && <div>Ordinarie: {ticket.regular_tickets}</div>}
-                    {ticket.discount_tickets > 0 && <div>Rabatt: {ticket.discount_tickets}</div>}
-                  </div>
+                  {getTotalTickets(ticket)} st
                 </TableCell>
                 <TableCell>{ticket.total_amount} kr</TableCell>
-                <TableCell>{getStatusBadge(ticket.payment_status)}</TableCell>
+                <TableCell>
+                  <div className="flex flex-col gap-1">
+                    <Badge variant="default">Betald</Badge>
+                    {getRefundBadge(ticket.refund_status)}
+                  </div>
+                </TableCell>
                 <TableCell>
                   <code className="text-xs bg-muted px-2 py-1 rounded">
                     {ticket.ticket_code}
                   </code>
                 </TableCell>
                 <TableCell>
-                  <Button variant="outline" size="sm">
-                    <Eye className="w-4 h-4 mr-1" />
-                    Detaljer
-                  </Button>
+                  <div className="flex gap-1">
+                    {ticket.refund_status === 'none' && (
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <RefreshCw className="w-4 h-4" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Markera som återbetald</DialogTitle>
+                            <DialogDescription>
+                              Markera denna biljett som återbetald. Detta är endast för administrativt bruk.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <Textarea
+                            placeholder="Anledning till återbetalning (valfritt)"
+                            value={refundReason}
+                            onChange={(e) => setRefundReason(e.target.value)}
+                          />
+                          <DialogFooter>
+                            <Button
+                              onClick={() => {
+                                markRefunded({ id: ticket.id, reason: refundReason });
+                                setRefundReason('');
+                              }}
+                            >
+                              Markera som återbetald
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    )}
+                    
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Radera biljett</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Är du säker på att du vill radera denna biljett? Detta kan inte ångras.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deleteTicket(ticket.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Radera
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

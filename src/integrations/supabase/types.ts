@@ -982,6 +982,9 @@ export type Database = {
           id: string
           payment_status: string
           qr_data: string
+          refund_date: string | null
+          refund_reason: string | null
+          refund_status: string | null
           regular_tickets: number
           show_date: string
           show_location: string
@@ -1002,6 +1005,9 @@ export type Database = {
           id?: string
           payment_status?: string
           qr_data: string
+          refund_date?: string | null
+          refund_reason?: string | null
+          refund_status?: string | null
           regular_tickets?: number
           show_date: string
           show_location: string
@@ -1022,6 +1028,9 @@ export type Database = {
           id?: string
           payment_status?: string
           qr_data?: string
+          refund_date?: string | null
+          refund_reason?: string | null
+          refund_status?: string | null
           regular_tickets?: number
           show_date?: string
           show_location?: string
