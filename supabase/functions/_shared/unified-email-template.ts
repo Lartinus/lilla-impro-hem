@@ -1,94 +1,109 @@
-/**
- * Unified email template function that matches the design used in SimpleEmailBuilder
- * Used for all automatic emails (newsletter, course confirmations, inquiries, etc.)
- */
-
-export function createUnifiedEmailTemplate(
-  subject: string, 
-  content: string, 
-  backgroundImage?: string,
-  customFooter?: string
-): string {
-  // Process content to handle headers and paragraphs (same logic as SimpleEmailBuilder)
-  const processedContent = content
+function convertTextToHtml(text: string): string {
+  // Convert text to HTML with proper heading support
+  return text
+    .replace(/<br\s*\/?>/gi, '\n') // Convert <br> to newlines
+    .replace(/LILLA IMPROTEATERN.*?Avprenumerera här/s, '') // Remove extra footer text
     .split('\n')
     .map(line => {
       const trimmed = line.trim();
       if (!trimmed) return '';
       
-      // Handle H1 headers
-      if (trimmed.startsWith('H1: ')) {
-        const headerText = trimmed.substring(4);
-        return `<h1 style="font-family: 'Tanker', 'Helvetica Neue', sans-serif !important; font-size: 32px; color: #333333 !important; margin: 24px 0 16px 0; font-weight: 400 !important; line-height: 1.2;">${headerText}</h1>`;
+      // Handle HTML-style headings (case insensitive)
+      if (trimmed.match(/^<h1[^>]*>.*<\/h1>$/i)) {
+        const content = trimmed.replace(/<\/?h1[^>]*>/gi, '');
+        return `<h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 28px; color: #333333 !important; margin: 0 0 24px 0; text-align: left; font-weight: 400; line-height: 1.2;">${content}</h1>`;
       }
       
-      // Handle H2 headers
-      if (trimmed.startsWith('H2: ')) {
-        const headerText = trimmed.substring(4);
-        return `<h2 style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif !important; font-size: 16px; color: #333333 !important; margin: 20px 0 12px 0; font-weight: 700 !important; line-height: 1.2;">${headerText}</h2>`;
+      if (trimmed.match(/^<h2[^>]*>.*<\/h2>$/i)) {
+        const content = trimmed.replace(/<\/?h2[^>]*>/gi, '');
+        return `<h2 style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 20px 0; text-align: left; font-weight: 700; line-height: 1.3;">${content}</h2>`;
       }
       
-      // Regular paragraphs
-      return `<p style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif !important; font-size: 16px; color: #333333 !important; margin: 0 0 16px 0; line-height: 1.6;">${trimmed}</p>`;
+      // Handle markdown-style headings
+      if (trimmed.startsWith('H1:')) {
+        const content = trimmed.substring(3).trim();
+        return `<h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 28px; color: #333333 !important; margin: 0 0 24px 0; text-align: left; font-weight: 400; line-height: 1.2;">${content}</h1>`;
+      }
+      
+      if (trimmed.startsWith('H2:')) {
+        const content = trimmed.substring(3).trim();
+        return `<h2 style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 20px 0; text-align: left; font-weight: 700; line-height: 1.3;">${content}</h2>`;
+      }
+      
+      // Remove remaining HTML tags for regular paragraphs
+      const cleanText = trimmed.replace(/<[^>]*>/g, '');
+      
+      // All other text becomes paragraphs with consistent styling
+      return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 16px 0; text-align: left; line-height: 1.6;">${cleanText}</p>`;
     })
-    .filter(line => line)
+    .filter(line => line) // Remove empty lines
     .join('');
+}
 
+export function createUnifiedEmailTemplate(
+  subject: string, 
+  content: string, 
+  backgroundImage?: string
+): string {
+  // Always convert content to clean HTML
+  const cleanContent = convertTextToHtml(content);
+  
   return `<!DOCTYPE html>
-<html lang="sv">
+<html lang="sv" style="color-scheme: light only;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light only">
-  <meta name="supported-color-schemes" content="light">
   <title>${subject}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Tanker:wght@400&display=swap" rel="stylesheet">
+  
+  <!-- Font loading via link tags for better email client compatibility -->
+  <link href="https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+  
   <style>
+    /* Force light mode for all email clients */
     * {
-      color-scheme: light !important;
+      color-scheme: light only !important;
     }
+    
+    /* Fallbacks for email clients that don't support web fonts */
+    .satoshi-font { font-family: 'Satoshi', Arial, sans-serif !important; }
   </style>
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Satoshi', 'Helvetica Neue', sans-serif; background-color: #f5f5f5 !important; line-height: 1.6; color-scheme: light !important;">
-  <div style="max-width: 600px; margin: 40px auto; background-color: white !important; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-    
-    ${backgroundImage ? `
-      <div style="width: 100%; height: 200px; background-image: url('${backgroundImage}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-      </div>
-    ` : ''}
-    
-    <div style="padding: 20px; background-color: #ffffff !important; color: #333333 !important;">
-      ${processedContent}
-    </div>
-    
-    <div style="background: linear-gradient(135deg, #dc2626, #b91c1c); padding: 32px; color: white !important; text-align: center;">
-      <div style="font-family: 'Tanker', 'Helvetica Neue', sans-serif !important; font-size: 24px; font-weight: 400 !important; margin-bottom: 8px; color: white !important;">
-        LILLA IMPROTEATERN
-      </div>
-      <div style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif !important; font-size: 14px; opacity: 0.9; margin-bottom: 16px; color: white !important;">
-        ${customFooter || 'Improvisationsteater • Kurser • Föreställningar'}
-      </div>
-      <div style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif !important; font-size: 12px; opacity: 0.8; color: white !important;">
-        <a href="https://improteatern.se" style="color: white !important; text-decoration: none;">improteatern.se</a>
-      </div>
-    </div>
-    
-  </div>
+<body style="margin: 0; padding: 0; background-color: #ffffff !important; color-scheme: light only;">
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin: 0; padding: 0; background-color: #ffffff !important;">
+    <tr>
+      <td style="padding: 0; background-color: #ffffff !important;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff !important;">
+          <!-- Content Area -->
+          <tr>
+            <td style="padding: 40px; background-color: #ffffff !important; font-family: 'Satoshi', Arial, sans-serif; line-height: 1.6; color: #333333 !important;">
+              ${cleanContent}
+              
+              <!-- Signature -->
+              <div style="text-align: center; padding-top: 32px; border-top: 1px solid #e8e8e8; margin-top: 32px;">
+                <p style="font-size: 14px; color: #999999 !important; margin: 0 0 8px 0; font-family: 'Satoshi', Arial, sans-serif;">Med vänliga hälsningar</p>
+                <p style="font-size: 18px; font-weight: 500; color: #1a1a1a !important; margin: 0; font-family: 'Satoshi', Arial, sans-serif;">Lilla Improteatern</p>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #dc2626 !important; padding: 40px; text-align: center;">
+              ${backgroundImage ? `<img src="${backgroundImage}" alt="Background" style="position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: 0;">` : ''}
+              <div style="position: relative; z-index: 1;">
+                <h1 style="font-family: 'Tanker', 'Arial Black', Impact, sans-serif; font-size: 32px; color: white !important; margin: 0 0 16px 0; font-weight: 400;">LILLA IMPROTEATERN</h1>
+                <p style="font-size: 14px; color: rgba(255, 255, 255, 0.9) !important; margin: 0; font-family: 'Satoshi', Arial, sans-serif;">
+                  <a href="{UNSUBSCRIBE_URL}" style="color: rgba(255, 255, 255, 0.9) !important; text-decoration: underline;">Avprenumerera</a>
+                </p>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>`;
-}
-
-/**
- * Convert text to HTML with proper formatting for email content
- */
-export function convertTextToHtml(text: string): string {
-  return text
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n/g, '<br>')
-    .replace(/^/, '<p>')
-    .replace(/$/, '</p>')
-    // Remove any unwanted footer text that might be in templates
-    .replace(/<p>\s*Med vänliga hälsningar.*?<\/p>/gi, '')
-    .replace(/<p>\s*LILLA IMPROTEATERN.*?<\/p>/gi, '');
 }

@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { Edit, Eye, Save, X } from 'lucide-react';
+import { createUnifiedEmailTemplate } from '../../../../supabase/functions/_shared/unified-email-template';
 
 interface AutomaticEmailTemplate {
   id: string;
@@ -21,34 +22,25 @@ interface AutomaticEmailTemplate {
 
 const AUTOMATIC_EMAIL_TYPES = [
   {
-    key: 'newsletter_confirmation',
-    name: 'Nyhetsbrev bekräftelse',
-    description: 'Skickas när någon registrerar sig för nyhetsbrev',
-    variables: ['NAMN', 'BEKRAFTELSELANK']
+    key: 'ticket_confirmation',
+    name: 'Biljettbekräftelse',
+    description: 'Skickas när någon köper biljetter',
+    variables: ['NAMN', 'FORESTALLNING', 'DATUM', 'BILJETTKOD'],
+    dbName: 'AUTO: Biljettbekräftelse'
   },
   {
     key: 'course_confirmation',
     name: 'Kursbekräftelse',
     description: 'Skickas när någon bokar en kurs',
-    variables: ['NAMN', 'KURSTITEL', 'STARTDATUM', 'STARTTID']
+    variables: ['NAMN', 'KURSTITEL', 'STARTDATUM', 'STARTTID'],
+    dbName: 'AUTO: Kursbekräftelse'
   },
   {
     key: 'interest_confirmation',
-    name: 'Intresseanmälan bekräftelse',
+    name: 'Intresse bekräftelse',
     description: 'Skickas när någon anmäler intresse',
-    variables: ['NAMN', 'INTRESSETITEL']
-  },
-  {
-    key: 'inquiry_confirmation',
-    name: 'Förfrågningsbekräftelse',
-    description: 'Skickas när någon skickar en förfrågan',
-    variables: ['NAMN', 'FORETAG']
-  },
-  {
-    key: 'ticket_confirmation',
-    name: 'Biljettbekräftelse',
-    description: 'Skickas när någon köper biljetter',
-    variables: ['NAMN', 'FORESTALLNING', 'DATUM', 'BILJETTKOD']
+    variables: ['NAMN', 'INTRESSETITEL'],
+    dbName: 'AUTO: Intresseanmälan bekräftelse'
   }
 ];
 
@@ -64,7 +56,7 @@ export function AutomaticEmailsManager() {
       const { data, error } = await supabase
         .from('email_templates')
         .select('*')
-        .in('name', AUTOMATIC_EMAIL_TYPES.map(type => `AUTO: ${type.name}`))
+        .in('name', AUTOMATIC_EMAIL_TYPES.map(type => type.dbName))
         .eq('is_active', true);
       
       if (error) throw error;
@@ -119,7 +111,7 @@ export function AutomaticEmailsManager() {
   });
 
   const handleEdit = (emailType: typeof AUTOMATIC_EMAIL_TYPES[0]) => {
-    const existingTemplate = templates?.find(t => t.name === `AUTO: ${emailType.name}`);
+    const existingTemplate = templates?.find(t => t.name === emailType.dbName);
     
     if (existingTemplate) {
       setEditingTemplate(existingTemplate);
@@ -127,7 +119,7 @@ export function AutomaticEmailsManager() {
       // Create new template
       setEditingTemplate({
         id: '',
-        name: `AUTO: ${emailType.name}`,
+        name: emailType.dbName,
         subject: getDefaultSubject(emailType.key),
         content: getDefaultContent(emailType.key),
         description: emailType.description
@@ -142,64 +134,90 @@ export function AutomaticEmailsManager() {
   };
 
   const createEmailHtml = (template: AutomaticEmailTemplate) => {
-    // Process content to handle headers and paragraphs (same as in SimpleEmailBuilder)
-    const processedContent = template.content
-      .split('\n')
-      .map(line => {
-        const trimmed = line.trim();
-        if (!trimmed) return '';
-        
-        if (trimmed.startsWith('H1: ')) {
-          const headerText = trimmed.substring(4);
-          return `<h1 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 32px; color: #333333; margin: 24px 0 16px 0; font-weight: 400; line-height: 1.2;">${headerText}</h1>`;
-        }
-        
-        if (trimmed.startsWith('H2: ')) {
-          const headerText = trimmed.substring(4);
-          return `<h2 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 24px; color: #333333; margin: 20px 0 12px 0; font-weight: 400; line-height: 1.2;">${headerText}</h2>`;
-        }
-        
-        return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333; margin: 0 0 16px 0; line-height: 1.6;">${trimmed}</p>`;
-      })
-      .filter(line => line)
-      .join('');
+    // Get the template type to determine mock variables
+    const templateType = AUTOMATIC_EMAIL_TYPES.find(type => type.dbName === template.name);
+    
+    // Create mock variables based on template type
+    let mockVariables: Record<string, string> = {};
+    let processedContent = template.content;
+    
+    if (templateType?.key === 'ticket_confirmation') {
+      mockVariables = {
+        NAMN: 'Anna Andersson',
+        FORESTALLNING: 'Improvisation & Comedy - Julshow',
+        DATUM: '15 december 2024',
+        BILJETTKOD: 'LIT2024ABC123'
+      };
+      
+      // Replace variables first (same as edge function)
+      Object.entries(mockVariables).forEach(([key, value]) => {
+        const regex = new RegExp(`\\{${key}\\}`, 'gi');
+        processedContent = processedContent.replace(regex, value);
+      });
+      
+      // Add ticket details section (same as send-ticket-confirmation)
+      processedContent += `
 
-    return `<!DOCTYPE html>
-<html lang="sv">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${template.subject}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Tanker&display=swap" rel="stylesheet">
-</head>
-<body style="margin: 0; padding: 0; font-family: 'Satoshi', Arial, sans-serif; background-color: #f5f5f5; line-height: 1.6;">
-  <div style="max-width: 600px; margin: 40px auto; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+H2: Dina biljettdetaljer
+
+Datum: 15 december 2024
+Tid: 19:30
+Plats: Lilla Improteatern, Göteborg
+Biljetter: 2 st
+Biljettkod: LIT2024ABC123
+
+[QR_CODE_PLACEHOLDER]
+
+Visa denna QR-kod vid entrén`;
+
+    } else if (templateType?.key === 'course_confirmation') {
+      mockVariables = {
+        NAMN: 'Anna Andersson',
+        KURSTITEL: 'Grundkurs i Improvisation',
+        STARTDATUM: '20 januari 2025',
+        STARTTID: '18:00'
+      };
+      
+      // Replace variables (same as send-course-confirmation)
+      Object.entries(mockVariables).forEach(([key, value]) => {
+        const regex = new RegExp(`\\{${key}\\}`, 'gi');
+        processedContent = processedContent.replace(regex, value);
+      });
+      
+    } else if (templateType?.key === 'interest_confirmation') {
+      mockVariables = {
+        NAMN: 'Anna Andersson',
+        INTRESSETITEL: 'Grundkurs i Improvisation'
+      };
+      
+      // Replace variables (same as send-interest-confirmation)
+      Object.entries(mockVariables).forEach(([key, value]) => {
+        const regex = new RegExp(`\\{${key}\\}`, 'gi');
+        processedContent = processedContent.replace(regex, value);
+      });
+    }
     
-    ${template.background_image ? `
-      <div style="width: 100%; height: 200px; background-image: url('${template.background_image}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-      </div>
-    ` : ''}
+    // Replace QR code placeholder with mock QR code
+    processedContent = processedContent.replace(
+      '[QR_CODE_PLACEHOLDER]', 
+      '<div style="margin: 20px 0;"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzMzMzMzMyIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTIiPkxJVDIwMjRBQkMxMjM8L3RleHQ+PC9zdmc+" alt="QR Code" style="max-width: 200px; display: block;"></div>'
+    );
+
+    // Replace subject with variables
+    let personalizedSubject = template.subject;
+    Object.entries(mockVariables).forEach(([key, value]) => {
+      const regex = new RegExp(`\\{${key}\\}`, 'gi');
+      personalizedSubject = personalizedSubject.replace(regex, value);
+    });
     
-    <div style="padding: 20px; background-color: #ffffff;">
-      ${processedContent}
-    </div>
+    // Use the unified template exactly like the edge functions
+    const htmlContent = createUnifiedEmailTemplate(
+      personalizedSubject,
+      processedContent,
+      template.background_image
+    ).replace('{UNSUBSCRIBE_URL}', 'https://improteatern.se/avprenumerera?email=preview@example.com');
     
-    <div style="background: linear-gradient(135deg, #dc2626, #b91c1c); padding: 32px; color: white; text-align: center;">
-      <div style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 24px; font-weight: 400; margin-bottom: 8px;">
-        LILLA IMPROTEATERN
-      </div>
-      <div style="font-family: 'Satoshi', Arial, sans-serif; font-size: 14px; opacity: 0.9; margin-bottom: 16px;">
-        Improvisationsteater • Kurser • Föreställningar
-      </div>
-      <div style="font-family: 'Satoshi', Arial, sans-serif; font-size: 12px; opacity: 0.8;">
-        <a href="https://improteatern.se" style="color: white; text-decoration: none;">improteatern.se</a>
-      </div>
-    </div>
-    
-  </div>
-</body>
-</html>`;
+    return htmlContent;
   };
 
   if (isLoading) {
@@ -216,7 +234,7 @@ export function AutomaticEmailsManager() {
 
       <div className="grid gap-4">
         {AUTOMATIC_EMAIL_TYPES.map((emailType) => {
-          const existingTemplate = templates?.find(t => t.name === `AUTO: ${emailType.name}`);
+          const existingTemplate = templates?.find(t => t.name === emailType.dbName);
           
           return (
             <Card key={emailType.key}>
@@ -265,7 +283,7 @@ export function AutomaticEmailsManager() {
       <Dialog open={!!editingTemplate} onOpenChange={() => setEditingTemplate(null)}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Redigera {editingTemplate?.name?.replace('AUTO: ', '')}</DialogTitle>
+            <DialogTitle>Redigera {editingTemplate?.name?.replace(/^AUTO: /, '')}</DialogTitle>
             <DialogDescription>
               Anpassa ämne och innehåll för automatiska mejl.
             </DialogDescription>
@@ -328,7 +346,8 @@ export function AutomaticEmailsManager() {
               <div>
                 <Label>Förhandsvisning</Label>
                 <div 
-                  className="border rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto"
+                  className="border rounded-lg bg-white max-h-96 overflow-y-auto"
+                  style={{ transform: 'scale(0.8)', transformOrigin: 'top left', width: '125%', height: '125%' }}
                   dangerouslySetInnerHTML={{ 
                     __html: createEmailHtml(editingTemplate)
                   }}
@@ -343,12 +362,13 @@ export function AutomaticEmailsManager() {
       <Dialog open={!!previewTemplate} onOpenChange={() => setPreviewTemplate(null)}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Förhandsvisning: {previewTemplate?.name?.replace('AUTO: ', '')}</DialogTitle>
+            <DialogTitle>Förhandsvisning: {previewTemplate?.name?.replace(/^AUTO: /, '')}</DialogTitle>
           </DialogHeader>
           
           {previewTemplate && (
             <div 
-              className="border rounded-lg p-4 bg-gray-50"
+              className="border rounded-lg bg-white"
+              style={{ transform: 'scale(0.8)', transformOrigin: 'top left', width: '125%', height: '125%' }}
               dangerouslySetInnerHTML={{ 
                 __html: createEmailHtml(previewTemplate)
               }}
@@ -363,10 +383,8 @@ export function AutomaticEmailsManager() {
 // Helper functions for default content
 function getDefaultSubject(type: string): string {
   switch (type) {
-    case 'newsletter_confirmation': return 'Bekräfta din prenumeration';
     case 'course_confirmation': return 'Välkommen till {KURSTITEL}';
-    case 'interest_confirmation': return 'Tack för din intresseanmälan';
-    case 'inquiry_confirmation': return 'Bekräftelse av förfrågan';
+    case 'interest_confirmation': return 'Tack för din intresseanmälan - {INTRESSETITEL}';
     case 'ticket_confirmation': return 'Dina biljetter till {FORESTALLNING}';
     default: return 'Bekräftelse';
   }
@@ -374,17 +392,6 @@ function getDefaultSubject(type: string): string {
 
 function getDefaultContent(type: string): string {
   switch (type) {
-    case 'newsletter_confirmation':
-      return `H1: Bekräfta din prenumeration
-
-Hej {NAMN}!
-
-Tack för att du vill prenumerera på vårt nyhetsbrev! För att bekräfta din registrering, klicka på länken nedan:
-
-{BEKRAFTELSELANK}
-
-Om du inte begärde denna prenumeration kan du ignorera detta meddelande.`;
-
     case 'course_confirmation':
       return `H1: Välkommen till {KURSTITEL}
 
@@ -407,21 +414,12 @@ Vi har tagit emot din intresseanmälan för {INTRESSETITEL}.
 
 Vi kommer att kontakta dig så snart vi har mer information.`;
 
-    case 'inquiry_confirmation':
-      return `H1: Tack för din förfrågan
-
-Hej {NAMN}!
-
-Vi har tagit emot din förfrågan och kommer att kontakta dig så snart som möjligt.`;
-
     case 'ticket_confirmation':
       return `H1: Dina biljetter
 
 Hej {NAMN}!
 
-Tack för ditt köp! Här är dina biljetter till {FORESTALLNING} den {DATUM}.
-
-Biljettkod: {BILJETTKOD}`;
+Tack för ditt köp! Här är dina biljetter till {FORESTALLNING}.`;
 
     default:
       return 'H1: Bekräftelse\n\nTack för ditt meddelande!';
