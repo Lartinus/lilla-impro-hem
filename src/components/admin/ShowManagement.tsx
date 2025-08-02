@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Plus, Search, Filter, Download, Upload } from 'lucide-react';
@@ -19,11 +18,16 @@ import { useOptimizedShowData } from '@/hooks/useOptimizedShowData';
 import { useShowManagementMutations } from '@/hooks/useShowManagementMutations';
 import { useIsMobile } from '@/hooks/use-mobile';
 import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
+import type { AdminShowWithPerformers } from '@/types/showManagement';
 
-const ShowManagement = () => {
+interface ShowManagementProps {
+  showCompleted?: boolean;
+}
+
+const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedShow, setSelectedShow] = useState<any>(null);
+  const [selectedShow, setSelectedShow] = useState<AdminShowWithPerformers | null>(null);
   const [sortBy, setSortBy] = useState<'date' | 'title' | 'venue'>('date');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
@@ -32,7 +36,7 @@ const ShowManagement = () => {
   const isMobile = useIsMobile();
   
   // Use optimized hooks for better performance
-  const { data: showCards, isLoading: isLoadingCards, error: cardsError } = useAdminShowCards();
+  const { data: showCards, isLoading: isLoadingCards, error: cardsError } = useAdminShowCards(showCompleted);
   
   // Load additional data only when needed (e.g., when dialog opens)
   const { 
@@ -72,16 +76,30 @@ const ShowManagement = () => {
     });
   }, [showCards, searchTerm, filterStatus, sortBy]);
 
+  // Convert ShowCardData to AdminShowWithPerformers for compatibility
+  const convertToAdminShow = (show: any): AdminShowWithPerformers => {
+    return {
+      ...show,
+      show_tag: show.show_tag ? {
+        ...show.show_tag,
+        id: show.tag_id || '',
+        description: null,
+        is_active: true,
+        sort_order: 0
+      } : null
+    };
+  };
+
   const handleEditShow = (show: any) => {
-    setSelectedShow(show);
+    setSelectedShow(convertToAdminShow(show));
     setShowDialog(true);
   };
 
-  const handleDeleteShow = async (show: any) => {
+  const handleDeleteShow = async (showId: string) => {
     if (!confirm('Är du säker på att du vill ta bort denna föreställning?')) return;
     
     try {
-      await deleteShow.mutateAsync(show.id);
+      await deleteShow.mutateAsync(showId);
       toast.success('Föreställning borttagen');
     } catch (error) {
       console.error('Error deleting show:', error);
@@ -89,9 +107,12 @@ const ShowManagement = () => {
     }
   };
 
-  const handleDuplicateShow = async (show: any) => {
+  const handleDuplicateShow = async (showId: string) => {
+    const show = filteredAndSortedShows.find(s => s.id === showId);
+    if (!show) return;
+    
     try {
-      await duplicateShow.mutateAsync(show);
+      await duplicateShow.mutateAsync(convertToAdminShow(show));
       toast.success('Föreställning duplicerad');
     } catch (error) {
       console.error('Error duplicating show:', error);
@@ -138,7 +159,7 @@ const ShowManagement = () => {
             </DialogHeader>
             {showDialog && (
               <ShowForm
-                initialShow={selectedShow}
+                show={selectedShow}
                 venues={venues}
                 performers={performers}
                 showTemplates={showTemplates}
@@ -215,10 +236,10 @@ const ShowManagement = () => {
                   {filteredAndSortedShows.map((show) => (
                     <MobileShowCard
                       key={show.id}
-                      show={show}
-                      onEdit={handleEditShow}
-                      onDelete={handleDeleteShow}
-                      onDuplicate={handleDuplicateShow}
+                      show={convertToAdminShow(show)}
+                      onEdit={() => handleEditShow(show)}
+                      onDelete={() => handleDeleteShow(show.id)}
+                      onDuplicate={() => handleDuplicateShow(show.id)}
                     />
                   ))}
                 </div>
@@ -229,10 +250,10 @@ const ShowManagement = () => {
                       {filteredAndSortedShows.map((show) => (
                         <ShowCard
                           key={show.id}
-                          show={show}
-                          onEdit={handleEditShow}
-                          onDelete={handleDeleteShow}
-                          onDuplicate={handleDuplicateShow}
+                          show={convertToAdminShow(show)}
+                          onEdit={() => handleEditShow(show)}
+                          onDelete={() => handleDeleteShow(show.id)}
+                          onDuplicate={() => handleDuplicateShow(show.id)}
                         />
                       ))}
                     </div>
@@ -253,10 +274,10 @@ const ShowManagement = () => {
                           {filteredAndSortedShows.map((show) => (
                             <ShowRow
                               key={show.id}
-                              show={show}
-                              onEdit={handleEditShow}
-                              onDelete={handleDeleteShow}
-                              onDuplicate={handleDuplicateShow}
+                              show={convertToAdminShow(show)}
+                              onEdit={() => handleEditShow(show)}
+                              onDelete={() => handleDeleteShow(show.id)}
+                              onDuplicate={() => handleDuplicateShow(show.id)}
                             />
                           ))}
                         </div>

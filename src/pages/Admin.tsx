@@ -16,7 +16,7 @@ import ShowTemplateManagement from '@/components/admin/ShowTemplateManagement';
 import { TicketManagement } from '@/components/admin/TicketManagement';
 import { PerformerManagement } from '@/components/admin/PerformerManagement';
 import { InterestSignupManagement } from '@/components/admin/InterestSignupManagement';
-import { ShowManagement } from '@/components/admin/ShowManagement';
+import ShowManagement from '@/components/admin/ShowManagement';
 import { VenueManagement } from '@/components/admin/VenueManagement';
 import { ActorManagement } from '@/components/admin/ActorManagement';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
