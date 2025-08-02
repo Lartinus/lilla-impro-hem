@@ -2,6 +2,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button';
 import { createEmailTemplatePreview } from '@/utils/emailTemplatePreview';
 import { EmailTemplate } from './types';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface EmailTemplatePreviewDialogProps {
   isOpen: boolean;
@@ -14,12 +16,44 @@ export function EmailTemplatePreviewDialog({
   onClose, 
   template 
 }: EmailTemplatePreviewDialogProps) {
+  // Try to fetch the actual template from database if this looks like a preview template
+  const { data: actualTemplate } = useQuery({
+    queryKey: ['actual-email-template-dialog', template?.name],
+    queryFn: async () => {
+      if (!template) return null;
+      
+      // Map preview template names to actual template names
+      let actualTemplateName = template.name;
+      if (template.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE')) {
+        actualTemplateName = 'AUTO: Biljettbekräftelse';
+      }
+      
+      const { data, error } = await supabase
+        .from('email_templates')
+        .select('*')
+        .eq('name', actualTemplateName)
+        .eq('is_active', true)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error fetching actual template:', error);
+        return null;
+      }
+      
+      return data;
+    },
+    enabled: Boolean(template?.name && isOpen)
+  });
+
+  // Use actual template content if available, otherwise fall back to passed template
+  const effectiveTemplate = actualTemplate || template;
+  
   // Check if this is a ticket confirmation template (match actual template names)
-  const isTicketTemplate = template?.name?.includes('AUTO: Biljettbekräftelse') || 
-                           template?.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE') ||
-                           template?.name?.includes('Biljettbekräftelse') ||
-                           template?.subject?.includes('biljetter') ||
-                           template?.content?.includes('biljett');
+  const isTicketTemplate = effectiveTemplate?.name?.includes('AUTO: Biljettbekräftelse') || 
+                           effectiveTemplate?.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE') ||
+                           effectiveTemplate?.name?.includes('Biljettbekräftelse') ||
+                           effectiveTemplate?.subject?.includes('biljetter') ||
+                           effectiveTemplate?.content?.includes('biljett');
 
   // Use same mock variables as EmailTemplatePreview and edge function
   const mockVariables = isTicketTemplate ? {
@@ -48,24 +82,23 @@ export function EmailTemplatePreviewDialog({
             Förhandsvisning: {template?.name}
           </DialogTitle>
         </DialogHeader>
-        <div className="border rounded p-4 bg-muted/50 max-h-[60vh] overflow-y-auto">
-          {template && (
+        <div className="border rounded bg-white max-h-[60vh] overflow-y-auto">
+          {effectiveTemplate && (
             <div 
               dangerouslySetInnerHTML={{ 
                 __html: createEmailTemplatePreview(
-                  template.subject, 
-                  template.content, 
-                  template.background_image || undefined,
+                  effectiveTemplate.subject, 
+                  effectiveTemplate.content, 
+                  effectiveTemplate.background_image || undefined,
                   mockVariables,
                   isTicketTemplate
                 )
               }}
-              className="[&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-3 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-2 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2 [&_p]:mb-2 [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1"
               style={{ 
-                fontFamily: "'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
-                transform: 'scale(0.85)',
+                transform: 'scale(0.7)',
                 transformOrigin: 'top left',
-                width: '118%'
+                width: '143%',
+                minHeight: '500px'
               } as React.CSSProperties}
             />
           )}

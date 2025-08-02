@@ -1,5 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { createEmailTemplatePreview } from '@/utils/emailTemplatePreview';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface TemplateForm {
   name: string;
@@ -14,12 +16,42 @@ interface EmailTemplatePreviewProps {
 }
 
 export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps) {
+  // Try to fetch the actual template from database if this looks like a preview template
+  const { data: actualTemplate } = useQuery({
+    queryKey: ['actual-email-template', templateForm.name],
+    queryFn: async () => {
+      // Map preview template names to actual template names
+      let actualTemplateName = templateForm.name;
+      if (templateForm.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE')) {
+        actualTemplateName = 'AUTO: Biljettbekräftelse';
+      }
+      
+      const { data, error } = await supabase
+        .from('email_templates')
+        .select('*')
+        .eq('name', actualTemplateName)
+        .eq('is_active', true)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error fetching actual template:', error);
+        return null;
+      }
+      
+      return data;
+    },
+    enabled: Boolean(templateForm.name)
+  });
+
+  // Use actual template content if available, otherwise fall back to form content
+  const effectiveTemplate = actualTemplate || templateForm;
+  
   // Check if this is a ticket confirmation template (match actual template names)
-  const isTicketTemplate = templateForm.name?.includes('AUTO: Biljettbekräftelse') || 
-                           templateForm.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE') ||
-                           templateForm.name?.includes('Biljettbekräftelse') ||
-                           templateForm.subject?.includes('biljetter') ||
-                           templateForm.content?.includes('biljett');
+  const isTicketTemplate = effectiveTemplate.name?.includes('AUTO: Biljettbekräftelse') || 
+                           effectiveTemplate.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE') ||
+                           effectiveTemplate.name?.includes('Biljettbekräftelse') ||
+                           effectiveTemplate.subject?.includes('biljetter') ||
+                           effectiveTemplate.content?.includes('biljett');
 
   const mockVariables = isTicketTemplate ? {
     NAMN: 'Anna Andersson',
@@ -45,24 +77,23 @@ export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps
         <CardTitle className="text-lg">Live-förhandsvisning</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="border rounded-lg bg-muted/30 max-h-[70vh] overflow-y-auto">
-          {templateForm.subject || templateForm.content ? (
+        <div className="border rounded-lg bg-white max-h-[70vh] overflow-y-auto">
+          {effectiveTemplate.subject || effectiveTemplate.content ? (
             <div 
               dangerouslySetInnerHTML={{ 
                 __html: createEmailTemplatePreview(
-                  templateForm.subject || 'Ämne saknas', 
-                  templateForm.content || 'Inget innehåll ännu...', 
-                  templateForm.background_image || undefined,
+                  effectiveTemplate.subject || 'Ämne saknas', 
+                  effectiveTemplate.content || 'Inget innehåll ännu...', 
+                  effectiveTemplate.background_image || undefined,
                   mockVariables,
                   isTicketTemplate
                 )
               }}
-              className="[&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-3 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-2 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2 [&_p]:mb-2 [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_li]:mb-1"
               style={{ 
-                fontFamily: "'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
-                transform: 'scale(0.85)',
+                transform: 'scale(0.8)',
                 transformOrigin: 'top left',
-                width: '118%'
+                width: '125%',
+                minHeight: '500px'
               } as React.CSSProperties}
             />
           ) : (
