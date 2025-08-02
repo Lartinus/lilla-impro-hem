@@ -14,8 +14,9 @@ interface EmailTemplatePreviewProps {
 }
 
 export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps) {
-  // Check if this is a ticket confirmation template
+  // Check if this is a ticket confirmation template (match actual template names)
   const isTicketTemplate = templateForm.name?.includes('AUTO: Biljettbekräftelse') || 
+                           templateForm.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE') ||
                            templateForm.name?.includes('Biljettbekräftelse') ||
                            templateForm.subject?.includes('biljetter') ||
                            templateForm.content?.includes('biljett');
@@ -68,11 +69,11 @@ export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps
             <div className="flex flex-col items-center justify-center h-40 text-muted-foreground space-y-2">
               <div>Börja skriv för att se förhandsvisning</div>
               <div className="text-xs text-center">
-                {isTicketTemplate ? (
-                  <>Tillgängliga variabler: [NAMN], [FORESTALLNING], [DATUM], [BILJETTKOD]</>
-                ) : (
-                  <>Tillgängliga variabler: [NAMN], [KURS], [STARTDATUM], [STARTTID]</>
-                )}
+              {isTicketTemplate ? (
+                <>Tillgängliga variabler: NAMN, FORESTALLNING, DATUM, BILJETTKOD</>
+              ) : (
+                <>Tillgängliga variabler: NAMN, KURS, STARTDATUM, STARTTID</>
+              )}
               </div>
             </div>
           )}

@@ -14,8 +14,9 @@ export function EmailTemplatePreviewDialog({
   onClose, 
   template 
 }: EmailTemplatePreviewDialogProps) {
-  // Check if this is a ticket confirmation template (same logic as EmailTemplatePreview)
+  // Check if this is a ticket confirmation template (match actual template names)
   const isTicketTemplate = template?.name?.includes('AUTO: Biljettbekräftelse') || 
+                           template?.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE') ||
                            template?.name?.includes('Biljettbekräftelse') ||
                            template?.subject?.includes('biljetter') ||
                            template?.content?.includes('biljett');
