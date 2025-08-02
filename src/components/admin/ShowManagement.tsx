@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Plus, Search, Filter, Download, Upload } from 'lucide-react';
@@ -16,20 +17,19 @@ import { ShowForm } from './show/ShowForm';
 import { useAdminShowCards } from '@/hooks/useAdminShowsOptimized';
 import { useOptimizedShowData } from '@/hooks/useOptimizedShowData';
 import { useShowManagementMutations } from '@/hooks/useShowManagementMutations';
-import { useMobile } from '@/hooks/use-mobile';
-import { SubtleLoadingOverlay } from '@/components/SubtleLoadingOverlay';
-import type { AdminShowWithPerformers } from '@/types/showManagement';
+import { useIsMobile } from '@/hooks/use-mobile';
+import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
 
 const ShowManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedShow, setSelectedShow] = useState<AdminShowWithPerformers | null>(null);
+  const [selectedShow, setSelectedShow] = useState<any>(null);
   const [sortBy, setSortBy] = useState<'date' | 'title' | 'venue'>('date');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
   
   const queryClient = useQueryClient();
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
   
   // Use optimized hooks for better performance
   const { data: showCards, isLoading: isLoadingCards, error: cardsError } = useAdminShowCards();
@@ -50,7 +50,7 @@ const ShowManagement = () => {
     
     let filtered = showCards.filter(show => {
       const matchesSearch = show.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          show.venue_name?.toLowerCase().includes(searchTerm.toLowerCase());
+                          show.venue?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus = filterStatus === 'all' || 
                            (filterStatus === 'active' && show.is_active) ||
                            (filterStatus === 'inactive' && !show.is_active);
@@ -62,7 +62,7 @@ const ShowManagement = () => {
         case 'title':
           return a.title.localeCompare(b.title);
         case 'venue':
-          return (a.venue_name || '').localeCompare(b.venue_name || '');
+          return (a.venue || '').localeCompare(b.venue || '');
         case 'date':
         default:
           const dateA = a.show_date ? new Date(a.show_date) : new Date(0);
@@ -77,11 +77,11 @@ const ShowManagement = () => {
     setShowDialog(true);
   };
 
-  const handleDeleteShow = async (showId: string) => {
+  const handleDeleteShow = async (show: any) => {
     if (!confirm('Är du säker på att du vill ta bort denna föreställning?')) return;
     
     try {
-      await deleteShow.mutateAsync(showId);
+      await deleteShow.mutateAsync(show.id);
       toast.success('Föreställning borttagen');
     } catch (error) {
       console.error('Error deleting show:', error);
@@ -116,7 +116,7 @@ const ShowManagement = () => {
 
   return (
     <div className="space-y-6">
-      <SubtleLoadingOverlay isLoading={isLoadingCards} />
+      <SubtleLoadingOverlay isVisible={isLoadingCards} />
       
       <div className="flex justify-between items-center">
         <div>
@@ -138,7 +138,7 @@ const ShowManagement = () => {
             </DialogHeader>
             {showDialog && (
               <ShowForm
-                show={selectedShow}
+                initialShow={selectedShow}
                 venues={venues}
                 performers={performers}
                 showTemplates={showTemplates}

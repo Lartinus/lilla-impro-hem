@@ -118,3 +118,19 @@ export const useShowManagementData = (options?: {
     tagsLoading: loadTags ? tagsQuery.isLoading : false,
   };
 };
+
+// Main export for backward compatibility
+export const useOptimizedShowData = (shouldLoad = false) => {
+  const venuesQuery = useVenuesOptimized();
+  const actorsQuery = useActorsOptimized();
+  const templatesQuery = useShowTemplatesOptimized();
+  const tagsQuery = useShowTagsOptimized();
+
+  return {
+    venues: shouldLoad ? venuesQuery.data : undefined,
+    performers: shouldLoad ? actorsQuery.data : undefined,
+    showTemplates: shouldLoad ? templatesQuery.data : undefined,
+    showTags: shouldLoad ? tagsQuery.data : undefined,
+    isLoading: shouldLoad ? (venuesQuery.isLoading || actorsQuery.isLoading || templatesQuery.isLoading || tagsQuery.isLoading) : false,
+  };
+};

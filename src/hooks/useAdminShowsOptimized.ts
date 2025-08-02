@@ -10,10 +10,24 @@ interface ShowCardData {
   show_date: string;
   show_time: string;
   venue: string;
+  venue_address?: string | null;
+  venue_maps_url?: string | null;
+  description?: string | null;
+  regular_price: number;
+  discount_price: number;
+  max_tickets?: number;
   image_url?: string | null;
   is_active: boolean;
   sort_order?: number;
   tag_id?: string | null;
+  created_at: string;
+  updated_at: string;
+  performers: Array<{
+    id: string;
+    name: string;
+    bio: string;
+    image_url?: string | null;
+  }>;
   show_tag?: {
     name: string;
     color: string;
@@ -22,12 +36,6 @@ interface ShowCardData {
 
 // Full show data for detail views
 interface FullShowData extends ShowCardData {
-  venue_address?: string | null;
-  venue_maps_url?: string | null;
-  description?: string | null;
-  regular_price: number;
-  discount_price: number;
-  max_tickets?: number;
   performers: Array<{
     id: string;
     name: string;
@@ -46,16 +54,15 @@ export const useAdminShowCards = (showCompleted: boolean = false) => {
       let query = supabase
         .from('admin_shows')
         .select(`
-          id,
-          title,
-          slug,
-          show_date,
-          show_time,
-          venue,
-          image_url,
-          is_active,
-          sort_order,
-          tag_id,
+          *,
+          show_performers (
+            actors (
+              id,
+              name,
+              bio,
+              image_url
+            )
+          ),
           show_tags (
             name,
             color
@@ -80,6 +87,7 @@ export const useAdminShowCards = (showCompleted: boolean = false) => {
       
       const formattedData = (data || []).map(show => ({
         ...show,
+        performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
         show_tag: show.show_tags || null
       })) as ShowCardData[];
       

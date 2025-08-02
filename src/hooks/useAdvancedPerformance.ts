@@ -38,8 +38,17 @@ export const useAdvancedPerformance = () => {
       
       const loadTime = navigation.loadEventEnd - navigation.loadEventStart;
       
-      // Estimate bundle size (simplified)
-      const bundleSize = Math.round(performance.memory?.usedJSHeapSize / 1024 || 300);
+      // Estimate bundle size (simplified) - fallback to reasonable default
+      let bundleSize = 300; // Default fallback
+      try {
+        // Try to access memory if available
+        const memoryInfo = (performance as any).memory;
+        if (memoryInfo && memoryInfo.usedJSHeapSize) {
+          bundleSize = Math.round(memoryInfo.usedJSHeapSize / 1024);
+        }
+      } catch (e) {
+        // Memory API not available, use fallback
+      }
       
       let currentMetrics: PerformanceMetrics = {
         bundleSize,
@@ -48,38 +57,50 @@ export const useAdvancedPerformance = () => {
       };
 
       // Measure LCP
-      const lcpObserver = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        const lastEntry = entries[entries.length - 1] as any;
-        if (lastEntry) {
-          currentMetrics.lcp = lastEntry.startTime;
-        }
-      });
-
-      // Measure CLS
-      let clsScore = 0;
-      const clsObserver = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries() as any[]) {
-          if (!entry.hadRecentInput) {
-            clsScore += entry.value;
-          }
-        }
-        currentMetrics.cls = clsScore;
-      });
-
-      // Measure FID
-      const fidObserver = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries() as any[]) {
-          currentMetrics.fid = entry.processingStart - entry.startTime;
-        }
-      });
-
       try {
+        const lcpObserver = new PerformanceObserver((list) => {
+          const entries = list.getEntries();
+          const lastEntry = entries[entries.length - 1] as any;
+          if (lastEntry) {
+            currentMetrics.lcp = lastEntry.startTime;
+          }
+        });
+
+        // Measure CLS
+        let clsScore = 0;
+        const clsObserver = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries() as any[]) {
+            if (!entry.hadRecentInput) {
+              clsScore += entry.value;
+            }
+          }
+          currentMetrics.cls = clsScore;
+        });
+
+        // Measure FID
+        const fidObserver = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries() as any[]) {
+            currentMetrics.fid = entry.processingStart - entry.startTime;
+          }
+        });
+
         lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
         clsObserver.observe({ entryTypes: ['layout-shift'] });
         fidObserver.observe({ entryTypes: ['first-input'] });
+
+        // Cleanup observers after measurement
+        setTimeout(() => {
+          try {
+            lcpObserver.disconnect();
+            clsObserver.disconnect();
+            fidObserver.disconnect();
+          } catch (e) {
+            // Observers might not be supported
+          }
+        }, 10000);
+
       } catch (e) {
-        // Observers not supported
+        // Performance observers not supported
       }
 
       // Calculate performance score and violations
@@ -123,15 +144,6 @@ export const useAdvancedPerformance = () => {
           violations,
           recommendations: getPerformanceRecommendations(currentMetrics, violations)
         });
-
-        // Cleanup observers
-        try {
-          lcpObserver.disconnect();
-          clsObserver.disconnect();
-          fidObserver.disconnect();
-        } catch (e) {
-          // Observers might not be supported
-        }
       }, 5000);
     };
 

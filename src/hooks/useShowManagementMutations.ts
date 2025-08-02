@@ -1,3 +1,4 @@
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -39,6 +40,7 @@ export const useShowManagementMutations = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-show-cards'] });
       toast({
         title: "Föreställning skapad",
         description: "Den nya föreställningen har lagts till.",
@@ -64,6 +66,7 @@ export const useShowManagementMutations = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-show-cards'] });
       toast({
         title: "Föreställning uppdaterad",
         description: "Ändringarna har sparats.",
@@ -107,6 +110,7 @@ export const useShowManagementMutations = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-show-cards'] });
       toast({
         title: "Föreställning uppdaterad",
         description: "Ändringarna har sparats.",
@@ -132,9 +136,54 @@ export const useShowManagementMutations = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-show-cards'] });
       toast({
         title: "Föreställning raderad",
         description: "Föreställningen har tagits bort.",
+      });
+    }
+  });
+
+  const duplicateShowMutation = useMutation({
+    mutationFn: async (show: AdminShowWithPerformers) => {
+      const { id, created_at, updated_at, performers, ...showData } = show;
+      const newTitle = `${showData.title} (kopia)`;
+      const newSlug = `${showData.slug}-kopia`;
+      
+      const { data: newShow, error: showError } = await supabase
+        .from('admin_shows')
+        .insert([{
+          ...showData,
+          title: newTitle,
+          slug: newSlug
+        }])
+        .select()
+        .single();
+
+      if (showError) throw showError;
+
+      // Copy performers
+      if (performers && performers.length > 0) {
+        const { error: performerError } = await supabase
+          .from('show_performers')
+          .insert(
+            performers.map(performer => ({
+              show_id: newShow.id,
+              actor_id: performer.id
+            }))
+          );
+
+        if (performerError) throw performerError;
+      }
+
+      return newShow;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-show-cards'] });
+      toast({
+        title: "Föreställning duplicerad",
+        description: "En kopia av föreställningen har skapats.",
       });
     }
   });
@@ -155,6 +204,7 @@ export const useShowManagementMutations = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-show-cards'] });
     },
     onError: (error) => {
       toast({
@@ -181,6 +231,7 @@ export const useShowManagementMutations = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-show-cards'] });
     },
     onError: (error) => {
       toast({
@@ -192,11 +243,12 @@ export const useShowManagementMutations = () => {
   });
 
   return {
-    createShowMutation,
-    updateShowMutation,
-    updateFullShowMutation,
-    deleteShowMutation,
-    moveShowUpMutation,
-    moveShowDownMutation
+    createShow: createShowMutation,
+    updateShow: updateShowMutation,
+    updateFullShow: updateFullShowMutation,
+    deleteShow: deleteShowMutation,
+    duplicateShow: duplicateShowMutation,
+    moveShowUp: moveShowUpMutation,
+    moveShowDown: moveShowDownMutation
   };
 };
