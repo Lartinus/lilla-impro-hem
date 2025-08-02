@@ -12,6 +12,8 @@ interface EmailTemplatesManagerProps {
 }
 
 export function EmailTemplatesManager({ emailTemplates, templatesLoading }: EmailTemplatesManagerProps) {
+  // Filter out automatic templates (those starting with "AUTO:")
+  const nonAutoTemplates = emailTemplates.filter(template => !template.name.startsWith('AUTO:'));
   const [isPreviewDialogOpen, setIsPreviewDialogOpen] = useState(false);
   const [previewTemplate, setPreviewTemplate] = useState<EmailTemplate | null>(null);
 
@@ -49,7 +51,7 @@ export function EmailTemplatesManager({ emailTemplates, templatesLoading }: Emai
   return (
     <>
       <EmailTemplatesList
-        emailTemplates={emailTemplates}
+        emailTemplates={nonAutoTemplates}
         templatesLoading={templatesLoading}
         onEdit={handleEditTemplate}
         onPreview={handlePreviewTemplate}

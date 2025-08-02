@@ -10,19 +10,24 @@ import { Type, Heading1, Heading2, Send, Image } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { ImagePicker } from '../ImagePicker';
 import { supabase } from '@/integrations/supabase/client';
-import { EmailGroup, EmailContact, GroupMember } from './types';
+import { EmailGroup, EmailContact, GroupMember, EmailTemplate } from './types';
 
 interface SimpleEmailBuilderProps {
   emailGroups: EmailGroup[];
   emailContacts: EmailContact[];
+  emailTemplates: EmailTemplate[];
 }
 
-export function SimpleEmailBuilder({ emailGroups, emailContacts }: SimpleEmailBuilderProps) {
+export function SimpleEmailBuilder({ emailGroups, emailContacts, emailTemplates }: SimpleEmailBuilderProps) {
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
   const [backgroundImage, setBackgroundImage] = useState('');
   const [selectedRecipients, setSelectedRecipients] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Filter out automatic templates (those starting with "AUTO:")
+  const nonAutoTemplates = emailTemplates.filter(template => !template.name.startsWith('AUTO:'));
 
   // Fetch group members for the selected group
   const { data: selectedGroupMembers = [] } = useQuery({
@@ -88,6 +93,13 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts }: SimpleEmailBu
     }
   };
 
+  const handleUseTemplate = (template: EmailTemplate) => {
+    setSubject(template.subject);
+    setContent(template.content);
+    setBackgroundImage(template.background_image || '');
+    setSelectedTemplate(template.id);
+  };
+
   const createEmailHtml = (emailSubject: string, emailContent: string, bgImage?: string) => {
     // Process content to handle headers and paragraphs
     const processedContent = emailContent
@@ -120,43 +132,31 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts }: SimpleEmailBu
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${emailSubject}</title>
-  <link href="https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap" rel="stylesheet">
-  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tanker:wght@400&display=swap" rel="stylesheet">
 </head>
 <body style="margin: 0; padding: 0; background-color: #f5f5f5;">
-  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+  <div style="max-width: 600px; margin: 40px auto; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
     ${bgImage ? `
-      <div style="width: 600px; height: 400px; overflow: hidden;">
+      <div style="width: 100%; height: 400px; overflow: hidden;">
         <img src="${bgImage}" alt="Header image" style="width: 100%; height: 100%; object-fit: cover; display: block;">
       </div>
     ` : ''}
     
-    <div style="padding: 20px; background-color: #ffffff;">
+    <div style="padding: 20px; background-color: #ffffff; color: #333333;">
       ${processedContent}
     </div>
     
-    <div style="
-      background-color: #dc2626;
-      padding: 40px;
-      text-align: center;
-      color: white;
-    ">
-      <h1 style="
-        font-family: 'Tanker', 'Arial Black', sans-serif;
-        font-size: 32px;
-        color: white;
-        margin: 0 0 16px 0;
-        font-weight: 400;
-      ">LILLA IMPROTEATERN</h1>
-      <p style="
-        font-family: 'Satoshi', Arial, sans-serif;
-        font-size: 14px;
-        color: rgba(255, 255, 255, 0.9);
-        margin: 0;
-      ">
-        Vill du inte längre få våra mejl? 
-        <a href="{UNSUBSCRIBE_URL}" style="color: rgba(255, 255, 255, 0.9); text-decoration: underline;">Avprenumerera här</a>
-      </p>
+    <div style="background: linear-gradient(135deg, #dc2626, #b91c1c); padding: 32px; color: white; text-align: center;">
+      <div style="font-family: 'Tanker', 'Helvetica Neue', sans-serif; font-size: 24px; font-weight: 400; margin-bottom: 8px; color: white;">
+        LILLA IMPROTEATERN
+      </div>
+      <div style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif; font-size: 14px; opacity: 0.9; margin-bottom: 16px; color: white;">
+        Improvisationsteater • Kurser • Föreställningar
+      </div>
+      <div style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif; font-size: 12px; opacity: 0.8; color: white;">
+        <a href="https://improteatern.se" style="color: white; text-decoration: none;">improteatern.se</a>
+      </div>
     </div>
   </div>
 </body>
@@ -226,6 +226,7 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts }: SimpleEmailBu
       setContent('');
       setBackgroundImage('');
       setSelectedRecipients('');
+      setSelectedTemplate('');
     } catch (error: any) {
       console.error('Email sending error:', error);
       toast({
@@ -244,6 +245,32 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts }: SimpleEmailBu
         <CardTitle className="text-lg">Skapa och skicka mejl</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Template Selector */}
+        <div className="space-y-2">
+          <Label>Använd befintlig mall (valfritt)</Label>
+          <Select value={selectedTemplate} onValueChange={(value) => {
+            if (value) {
+              const template = nonAutoTemplates.find(t => t.id === value);
+              if (template) {
+                handleUseTemplate(template);
+              }
+            } else {
+              setSelectedTemplate('');
+            }
+          }}>
+            <SelectTrigger>
+              <SelectValue placeholder="Välj en mall att börja med" />
+            </SelectTrigger>
+            <SelectContent>
+              {nonAutoTemplates.map((template) => (
+                <SelectItem key={template.id} value={template.id}>
+                  {template.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Recipients */}
         <div className="space-y-2">
           <Label htmlFor="recipients">Mottagare</Label>
@@ -276,7 +303,7 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts }: SimpleEmailBu
         {/* Background Image */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label>Bakgrundsbild (600x400px)</Label>
+            <Label>Header-bild (600x400px)</Label>
             <ImagePicker
               value={backgroundImage}
               onSelect={setBackgroundImage}

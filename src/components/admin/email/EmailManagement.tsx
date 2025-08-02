@@ -159,6 +159,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
           <SimpleEmailBuilder
             emailGroups={emailGroups}
             emailContacts={emailContacts}
+            emailTemplates={emailTemplates}
           />
         );
       

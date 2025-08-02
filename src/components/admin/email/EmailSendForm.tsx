@@ -26,6 +26,8 @@ export function EmailSendForm({
   emailContacts,
   templatesLoading
 }: EmailSendFormProps) {
+  // Filter out automatic templates (those starting with "AUTO:")
+  const nonAutoTemplates = emailTemplates.filter(template => !template.name.startsWith('AUTO:'));
   const [emailSubject, setEmailSubject] = useState('');
   const [emailContent, setEmailContent] = useState('');
   const [selectedRecipients, setSelectedRecipients] = useState('');
@@ -290,7 +292,7 @@ export function EmailSendForm({
           <Label>Använd befintlig mall (valfritt)</Label>
           <Select value={selectedTemplate} onValueChange={(value) => {
             if (value) {
-              const template = emailTemplates.find(t => t.id === value);
+              const template = nonAutoTemplates.find(t => t.id === value);
               if (template) {
                 handleUseTemplate(template);
               }
@@ -305,7 +307,7 @@ export function EmailSendForm({
               <SelectValue placeholder="Välj en mall att börja med" />
             </SelectTrigger>
             <SelectContent>
-              {emailTemplates.map((template) => (
+              {nonAutoTemplates.map((template) => (
                 <SelectItem key={template.id} value={template.id}>
                   {template.name}
                 </SelectItem>
