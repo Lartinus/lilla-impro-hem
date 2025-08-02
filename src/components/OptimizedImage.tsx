@@ -27,6 +27,7 @@ export default function OptimizedImage({
 }: OptimizedImageProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   const { imageUrl, originalSrc, srcSet } = useCallback(() => {
     if (!src) return { imageUrl: null, originalSrc: null, srcSet: '' }
@@ -67,6 +68,7 @@ export default function OptimizedImage({
 
   const handleLoad = useCallback(() => {
     setIsLoading(false)
+    setImageLoaded(true)
     if (onLoad && originalSrc) {
       onLoad(originalSrc)
     }
@@ -89,18 +91,25 @@ export default function OptimizedImage({
   }
 
   return (
-    <div className={`relative ${className}`}>
-      {isLoading && <Skeleton className={`absolute inset-0 ${className}`} />}
+    <div className={`relative ${className} overflow-hidden`} style={{ contentVisibility: 'auto' }}>
+      {isLoading && !imageLoaded && (
+        <Skeleton className={`absolute inset-0 w-full h-full ${className.includes('aspect-') ? '' : 'aspect-[4/3]'}`} />
+      )}
       <img
         src={imageUrl}
         srcSet={srcSet || undefined}
         sizes={sizes}
         alt={alt}
-        className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+        className={`${className} ${isLoading && !imageLoaded ? 'opacity-0' : 'opacity-100'} transition-opacity duration-500 will-change-[opacity]`}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
         onLoad={handleLoad}
         onError={handleError}
+        style={{ 
+          objectFit: 'cover',
+          width: '100%',
+          height: '100%'
+        }}
       />
     </div>
   )

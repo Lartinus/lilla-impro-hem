@@ -43,7 +43,7 @@ export default function ServiceBoxes() {
           className="group flex flex-col bg-[#E7E7E7] overflow-hidden transition-transform duration-300 w-full"
         >
           {/* Bild‐sektion = halva höjden */}
-          <div className="relative h-[200px] lg:h-[250px] overflow-hidden">
+          <div className="relative h-[200px] lg:h-[250px] overflow-hidden aspect-[4/3]">
             <OptimizedImage
               src={svc.image}
               alt={svc.title}
@@ -51,6 +51,7 @@ export default function ServiceBoxes() {
               preferredSize="medium"
               responsive={true}
               sizes="(min-width: 690px) 33vw, 100vw"
+              priority={idx === 0} // First image gets priority
             />
             <div className="absolute inset-0 bg-black/20" />
           </div>
