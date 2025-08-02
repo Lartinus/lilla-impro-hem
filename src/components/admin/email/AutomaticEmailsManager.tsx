@@ -156,9 +156,9 @@ export function AutomaticEmailsManager() {
     if (templateType?.key === 'ticket_confirmation') {
       mockVariables = {
         NAMN: 'Anna Andersson',
-        FORESTALLNING: 'Improvisation & Comedy - Julshow',
-        DATUM: '15 december 2024',
-        BILJETTKOD: 'LIT2024ABC123'
+        FORESTALLNING: 'Lilla Improteatern',
+        DATUM: '15 december 2025',
+        BILJETTKOD: 'LIT2025ABC123'
       };
       
       // Replace variables first (same as edge function)
