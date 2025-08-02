@@ -138,7 +138,7 @@ Visa denna QR-kod vid entrén`;
       template.background_image
     )
     .replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(purchase.buyer_email)}`)
-    .replace('[QR_CODE_PLACEHOLDER]', `<div style="text-align: center; margin: 20px 0;"><img src="${qrCodeUrl}" alt="QR Code" style="max-width: 200px; display: block; margin: 0 auto;"></div>`);
+    .replace('[QR_CODE_PLACEHOLDER]', `<div style="margin: 20px 0;"><img src="${qrCodeUrl}" alt="QR Code" style="max-width: 200px; display: block;"></div>`);
 
     // Send the email with tags for better tracking
     const emailResponse = await fetch('https://api.resend.com/emails', {
