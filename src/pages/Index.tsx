@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import ServiceBoxes from '@/components/ServiceBoxes'
 import ContentOverlay from '@/components/ContentOverlay'
 import OptimizedImage from '@/components/OptimizedImage'
@@ -54,8 +53,6 @@ export default function Index() {
           <ServiceBoxes />
         </div>
       </div>
-      
-      <Footer />
     </div>
   )
 }
