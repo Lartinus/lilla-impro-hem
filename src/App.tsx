@@ -11,6 +11,7 @@ import { useResourceOptimization } from '@/hooks/useResourceOptimization';
 // Static imports for critical path
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
 import Index from '@/pages/Index';
 import About from '@/pages/About';
 import NotFound from '@/pages/NotFound';
@@ -52,14 +53,9 @@ const LazyNewsletterPages = React.lazy(() =>
   }))
 );
 
-// Optimized loading component with better UX
+// Loading fallback for lazy-loaded routes
 const LoadingFallback = ({ message = "Laddar..." }: { message?: string }) => (
-  <div className="flex items-center justify-center min-h-[200px] text-muted-foreground">
-    <div className="flex flex-col items-center gap-2">
-      <div className="loading-spinner rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      <span className="text-sm">{message}</span>
-    </div>
-  </div>
+  <SubtleLoadingOverlay isVisible={true} message={message} />
 );
 
 function App() {
@@ -111,7 +107,7 @@ function App() {
         <div className="min-h-screen flex flex-col bg-background">
           <Header />
           <main className="flex-1">
-            <Suspense fallback={<LoadingFallback />}>
+          <Suspense fallback={<LoadingFallback />}>
               <Routes>
                 {/* Critical routes - loaded immediately */}
                 <Route path="/" element={<Index />} />
