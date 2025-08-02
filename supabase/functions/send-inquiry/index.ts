@@ -2,6 +2,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createUnifiedEmailTemplate } from '../_shared/email-template.ts';
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -219,156 +220,60 @@ const handler = async (req: Request): Promise<Response> => {
       ]
     });
 
-    // Send confirmation email to user
-    const confirmationSubject = inquiryData.type === 'corporate' 
-      ? `Bekräftelse av företagsförfrågan`
-      : `Bekräftelse av förfrågan`;
+    // Get email template from database
+    const templateName = inquiryData.type === 'corporate' 
+      ? 'AUTO: Företagsförfrågan bekräftelse'
+      : 'AUTO: Privatförfrågan bekräftelse';
 
-    // Create confirmation email using clean design
-    function createConfirmationEmail(subject: string, inquiryData: any) {
-      return `
-        <!DOCTYPE html>
-        <html lang="sv" style="margin: 0; padding: 0;">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>${subject}</title>
-        </head>
-        <body style="
-          margin: 0;
-          padding: 0;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-          background-color: #f8f9fa;
-          line-height: 1.6;
-          color: #333333;
-        ">
-          <!-- Container -->
-          <div style="
-            max-width: 600px;
-            margin: 40px auto;
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-          ">
-            <!-- Header -->
-            <div style="
-              background-color: #1a1a1a;
-              color: #ffffff;
-              padding: 40px 32px;
-              text-align: center;
-            ">
-              <h1 style="
-                font-size: 28px;
-                font-weight: 400;
-                margin: 0 0 8px 0;
-                letter-spacing: -0.025em;
-              ">Tack för din förfrågan!</h1>
-              <p style="
-                margin: 0;
-                opacity: 0.9;
-                font-size: 16px;
-              ">Vi återkommer så snart som möjligt</p>
-            </div>
-            
-            <!-- Content -->
-            <div style="padding: 40px 32px;">
-              <div style="margin-bottom: 32px;">
-                <h2 style="
-                  font-size: 20px;
-                  font-weight: 400;
-                  margin: 0 0 16px 0;
-                  color: #1a1a1a;
-                ">Hej ${inquiryData.name}!</h2>
-                
-                <p style="
-                  font-size: 16px;
-                  color: #666;
-                  margin: 0 0 16px 0;
-                  line-height: 1.6;
-                ">Vi har tagit emot din förfrågan och kommer att kontakta dig så snart som möjligt för att diskutera möjligheterna.</p>
-                
-                <p style="
-                  font-size: 16px;
-                  color: #666;
-                  margin: 0;
-                  line-height: 1.6;
-                ">${inquiryData.type === 'corporate' 
-                  ? 'Vi ser fram emot att skapa något fantastiskt för er organisation!' 
-                  : 'Vi ser fram emot att göra ert tillfälle extra speciellt!'}</p>
-              </div>
+    console.log(`Fetching email template: ${templateName}`);
 
-              <!-- Contact Info -->
-              <div style="
-                background-color: #f8f9fa;
-                border-radius: 8px;
-                padding: 24px;
-                border-left: 4px solid #1a1a1a;
-                margin-bottom: 32px;
-              ">
-                <p style="
-                  font-size: 14px;
-                  color: #666;
-                  margin: 0;
-                  line-height: 1.5;
-                ">
-                  <strong style="color: #1a1a1a;">Har du frågor?</strong><br>
-                  Kontakta oss på <a href="mailto:kontakt@improteatern.se" style="color: #1a1a1a; text-decoration: underline;">kontakt@improteatern.se</a><br>
-                  eller besök <a href="https://improteatern.se" style="color: #1a1a1a; text-decoration: underline;">improteatern.se</a>
-                </p>
-              </div>
+    const { data: emailTemplate, error: templateError } = await supabase
+      .from('email_templates')
+      .select('subject, content, background_image')
+      .eq('name', templateName)
+      .eq('is_active', true)
+      .single();
 
-              <!-- Signature -->
-              <div style="
-                text-align: center;
-                padding-top: 24px;
-                border-top: 1px solid #e9ecef;
-              ">
-                <p style="
-                  font-size: 14px;
-                  color: #999;
-                  margin: 0 0 4px 0;
-                ">Med vänliga hälsningar</p>
-                <p style="
-                  font-size: 16px;
-                  font-weight: 500;
-                  color: #1a1a1a;
-                  margin: 0;
-                ">Lilla Improteatern</p>
-              </div>
-            </div>
-
-            <!-- Footer -->
-            <div style="
-              background-color: #f8f9fa;
-              padding: 20px;
-              text-align: center;
-              border-top: 1px solid #e9ecef;
-            ">
-              <p style="
-                font-size: 12px;
-                color: #999;
-                margin: 0;
-              ">
-                Vill du inte längre få våra mejl? 
-                <a href="https://improteatern.se/avprenumerera?email=${encodeURIComponent(inquiryData.email)}" style="
-                  color: #666;
-                  text-decoration: underline;
-                ">Avprenumerera här</a>
-              </p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `;
+    if (templateError) {
+      console.error('Template fetch error:', templateError);
+      throw new Error(`Could not fetch email template: ${templateError.message}`);
     }
 
-    const confirmationContent = createConfirmationEmail(confirmationSubject, inquiryData);
+    console.log('Email template fetched successfully');
+
+    // Prepare variables for replacement
+    const variables: Record<string, string> = {
+      NAMN: inquiryData.name
+    };
+
+    if (inquiryData.type === 'corporate') {
+      variables.FÖRETAG = inquiryData.company || '';
+      variables.TILLFÄLLE = inquiryData.occasion || '';
+    } else {
+      variables.TILLFÄLLE = inquiryData.occasion || '';
+    }
+
+    // Replace variables in subject and content
+    let personalizedSubject = emailTemplate.subject;
+    let personalizedContent = emailTemplate.content;
+
+    Object.entries(variables).forEach(([key, value]) => {
+      const regex = new RegExp(`\\{${key}\\}`, 'gi');
+      personalizedSubject = personalizedSubject.replace(regex, value);
+      personalizedContent = personalizedContent.replace(regex, value);
+    });
+
+    // Create confirmation email using unified template
+    const confirmationContent = createUnifiedEmailTemplate(
+      personalizedSubject,
+      personalizedContent,
+      emailTemplate.background_image
+    ).replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(inquiryData.email)}`);
 
     await resend.emails.send({
       from: "Lilla Improteatern <noreply@improteatern.se>",
       to: [inquiryData.email],
-      subject: confirmationSubject,
+      subject: personalizedSubject,
       html: confirmationContent,
       tags: [
         { name: 'type', value: 'inquiry-confirmation' },

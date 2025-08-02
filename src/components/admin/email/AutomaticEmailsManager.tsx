@@ -41,6 +41,20 @@ const AUTOMATIC_EMAIL_TYPES = [
     description: 'Skickas när någon anmäler intresse',
     variables: ['NAMN', 'INTRESSETITEL'],
     dbName: 'AUTO: Intresseanmälan bekräftelse'
+  },
+  {
+    key: 'corporate_inquiry',
+    name: 'Företagsförfrågan bekräftelse',
+    description: 'Skickas när någon gör en företagsförfrågan',
+    variables: ['NAMN', 'FÖRETAG', 'TILLFÄLLE'],
+    dbName: 'AUTO: Företagsförfrågan bekräftelse'
+  },
+  {
+    key: 'private_inquiry',
+    name: 'Privatförfrågan bekräftelse',
+    description: 'Skickas när någon gör en privatförfrågan',
+    variables: ['NAMN', 'TILLFÄLLE'],
+    dbName: 'AUTO: Privatförfrågan bekräftelse'
   }
 ];
 
@@ -191,6 +205,29 @@ Visa denna QR-kod vid entrén`;
       };
       
       // Replace variables (same as send-interest-confirmation)
+      Object.entries(mockVariables).forEach(([key, value]) => {
+        const regex = new RegExp(`\\{${key}\\}`, 'gi');
+        processedContent = processedContent.replace(regex, value);
+      });
+    } else if (templateType?.key === 'corporate_inquiry') {
+      mockVariables = {
+        NAMN: 'Anna Andersson',
+        FÖRETAG: 'Företag AB',
+        TILLFÄLLE: 'Personalfest 2025'
+      };
+      
+      // Replace variables (same as send-inquiry)
+      Object.entries(mockVariables).forEach(([key, value]) => {
+        const regex = new RegExp(`\\{${key}\\}`, 'gi');
+        processedContent = processedContent.replace(regex, value);
+      });
+    } else if (templateType?.key === 'private_inquiry') {
+      mockVariables = {
+        NAMN: 'Anna Andersson',
+        TILLFÄLLE: 'Födelsedag'
+      };
+      
+      // Replace variables (same as send-inquiry)
       Object.entries(mockVariables).forEach(([key, value]) => {
         const regex = new RegExp(`\\{${key}\\}`, 'gi');
         processedContent = processedContent.replace(regex, value);
@@ -386,6 +423,8 @@ function getDefaultSubject(type: string): string {
     case 'course_confirmation': return 'Välkommen till {KURSTITEL}';
     case 'interest_confirmation': return 'Tack för din intresseanmälan - {INTRESSETITEL}';
     case 'ticket_confirmation': return 'Dina biljetter till {FORESTALLNING}';
+    case 'corporate_inquiry': return 'Bekräftelse av företagsförfrågan';
+    case 'private_inquiry': return 'Bekräftelse av förfrågan';
     default: return 'Bekräftelse';
   }
 }
@@ -420,6 +459,47 @@ Vi kommer att kontakta dig så snart vi har mer information.`;
 Hej {NAMN}!
 
 Tack för ditt köp! Här är dina biljetter till {FORESTALLNING}.`;
+
+    case 'corporate_inquiry':
+      return `H1: Tack för din förfrågan!
+
+Hej {NAMN}!
+
+Vi har tagit emot din företagsförfrågan och kommer att kontakta dig så snart som möjligt för att diskutera möjligheterna.
+
+H2: Dina uppgifter
+
+Företag: {FÖRETAG}
+Tillfälle: {TILLFÄLLE}
+
+Vi ser fram emot att skapa något fantastiskt för er organisation!
+
+H2: Kontakta oss
+
+Har du frågor? Kontakta oss på kontakt@improteatern.se eller besök improteatern.se
+
+Med vänliga hälsningar
+Lilla Improteatern`;
+
+    case 'private_inquiry':
+      return `H1: Tack för din förfrågan!
+
+Hej {NAMN}!
+
+Vi har tagit emot din förfrågan och kommer att kontakta dig så snart som möjligt för att diskutera möjligheterna.
+
+H2: Ditt tillfälle
+
+Tillfälle: {TILLFÄLLE}
+
+Vi ser fram emot att göra ert tillfälle extra speciellt!
+
+H2: Kontakta oss
+
+Har du frågor? Kontakta oss på kontakt@improteatern.se eller besök improteatern.se
+
+Med vänliga hälsningar
+Lilla Improteatern`;
 
     default:
       return 'H1: Bekräftelse\n\nTack för ditt meddelande!';
