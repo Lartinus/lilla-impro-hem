@@ -222,6 +222,57 @@ ul li {
   margin-right: 0.5rem;
 }
 
+/* Animated Hamburger Menu */
+.hamburger-menu {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.hamburger-line {
+  @apply block w-full h-1 bg-primary-foreground transition-all duration-300 ease-in-out;
+  transform-origin: center;
+}
+
+.hamburger-line.top {
+  @apply mb-1.5;
+}
+
+.hamburger-line.middle {
+  @apply mb-1.5;
+}
+
+.hamburger-line.bottom {
+  /* No margin bottom for last line */
+}
+
+/* Hamburger to Cross Animation */
+.hamburger-menu.is-open .hamburger-line.top {
+  @apply rotate-45;
+  transform: translateY(10px) rotate(45deg);
+}
+
+.hamburger-menu.is-open .hamburger-line.middle {
+  @apply opacity-0;
+}
+
+.hamburger-menu.is-open .hamburger-line.bottom {
+  @apply -rotate-45;
+  transform: translateY(-10px) rotate(-45deg);
+}
+
+/* Menu Animation */
+.main-nav {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.main-nav.is-open {
+  @apply opacity-100;
+}
+
+/* Hover Effects */
+.hamburger-menu:hover .hamburger-line {
+  @apply bg-white;
+}
+
 /* Responsive text sizing */
 @media (max-width: 768px) {
   h1 { font-size: 32px; }

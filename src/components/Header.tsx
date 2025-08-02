@@ -49,32 +49,21 @@ export default function Header() {
           LILLA IMPROTEATERN
         </Link>
 
-        {/* Höger sida - Hamburger-meny (alltid längst till höger) */}
+        {/* Höger sida - Animerad Hamburger-meny */}
         <button
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Stäng meny' : 'Öppna meny'}
-          className="w-10 h-10 relative flex flex-col items-center justify-center p-0 ml-auto"
+          className={`w-10 h-10 relative flex flex-col items-center justify-center p-0 ml-auto hamburger-menu ${open ? 'is-open' : ''}`}
         >
-          {open ? (
-            // CSS-baserat kryss (28px högt, 4px brett) - större än hamburgermenyn
-            <>
-              <span className="absolute w-[4px] h-[28px] bg-primary-foreground rotate-45" />
-              <span className="absolute w-[4px] h-[28px] bg-primary-foreground -rotate-45" />
-            </>
-          ) : (
-            // Tre streck, full knappbredd (40px), 4px höjd, 11px mellanrum
-            <>
-              <span className="block w-full h-[4px] bg-primary-foreground mb-[6px]" />
-              <span className="block w-full h-[4px] bg-primary-foreground mb-[6px]" />
-              <span className="block w-full h-[4px] bg-primary-foreground" />
-            </>
-          )}
+          <span className="hamburger-line top"></span>
+          <span className="hamburger-line middle"></span>
+          <span className="hamburger-line bottom"></span>
         </button>
       </div>
 
       {/* Öppen meny (börjar direkt under headern) */}
       {open && (
-        <div className="fixed inset-x-0 top-[85px] z-40 bg-primary-red text-primary-foreground">
+        <div className={`fixed inset-x-0 top-[85px] z-40 bg-primary-red text-primary-foreground main-nav ${open ? 'is-open' : ''}`}>
           <nav className="flex flex-col items-end pr-6 lg:pr-8 space-y-2 pb-6 pt-4">
             {navItems.map(({ to, label }) => {
               const isActive = pathname === to;
