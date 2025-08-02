@@ -80,29 +80,37 @@ export function createUnifiedEmailTemplate(
     }
   </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #ffffff !important; color-scheme: light only;">
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin: 0; padding: 0; background-color: #ffffff !important;">
+<body style="margin: 0; padding: 0; background-color: #E8E8E8 !important; color-scheme: light only;">
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin: 0; padding: 0; background-color: #E8E8E8 !important;">
     <tr>
-      <td style="padding: 0; background-color: #ffffff !important;">
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff !important;">
+      <td style="padding: 0; background-color: #E8E8E8 !important;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: transparent;">
+          
+          <!-- Red Header Border -->
+          <tr>
+            <td style="padding: 0; background-color: #DC2626; height: 5px; line-height: 5px; font-size: 5px;">&nbsp;</td>
+          </tr>
+          
           ${backgroundImage ? `
           <!-- Header Image -->
           <tr>
             <td style="padding: 0;">
-              <img src="${backgroundImage}" alt="Header image" style="width: 100%; height: 400px; object-fit: cover; display: block;">
+              <img src="${backgroundImage}" alt="Header image" style="width: 600px; height: 320px; object-fit: cover; display: block;">
             </td>
           </tr>
           ` : ''}
           
           <!-- Content Area -->
           <tr>
-            <td style="padding: 40px; background-color: #ffffff !important; font-family: 'Satoshi', Arial, sans-serif; line-height: 1.6; color: #333333 !important;">
-              ${cleanContent}
-              
-              <!-- Signature -->
-              <div style="text-align: center; padding-top: 32px; border-top: 1px solid #e8e8e8; margin-top: 32px;">
-                <p style="font-size: 14px; color: #999999 !important; margin: 0 0 8px 0; font-family: 'Satoshi', Arial, sans-serif;">Med vänliga hälsningar</p>
-                <p style="font-size: 18px; font-weight: 500; color: #1a1a1a !important; margin: 0; font-family: 'Satoshi', Arial, sans-serif;">Lilla Improteatern</p>
+            <td style="padding: 0;">
+              <div style="background-color: #ffffff; ${backgroundImage ? 'margin-top: -20px; border-radius: 16px 16px 0 0; box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);' : ''} padding: 40px; font-family: 'Satoshi', Arial, sans-serif; line-height: 1.6; color: #333333 !important;">
+                ${cleanContent}
+                
+                <!-- Signature -->
+                <div style="text-align: center; padding-top: 32px; border-top: 1px solid #e8e8e8; margin-top: 32px;">
+                  <p style="font-size: 14px; color: #999999 !important; margin: 0 0 8px 0; font-family: 'Satoshi', Arial, sans-serif;">Med vänliga hälsningar</p>
+                  <p style="font-size: 18px; font-weight: 500; color: #1a1a1a !important; margin: 0; font-family: 'Satoshi', Arial, sans-serif;">Lilla Improteatern</p>
+                </div>
               </div>
             </td>
           </tr>
