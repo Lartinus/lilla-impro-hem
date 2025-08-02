@@ -229,7 +229,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { data: emailTemplate, error: templateError } = await supabase
       .from('email_templates')
-      .select('subject, content, background_image')
+      .select('subject, content')
       .eq('name', templateName)
       .eq('is_active', true)
       .single();
@@ -266,8 +266,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Create confirmation email using unified template
     const confirmationContent = createUnifiedEmailTemplate(
       personalizedSubject,
-      personalizedContent,
-      emailTemplate.background_image
+      personalizedContent
     ).replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(inquiryData.email)}`);
 
     await resend.emails.send({

@@ -86,8 +86,7 @@ export function AutomaticEmailsManager() {
           .from('email_templates')
           .update({
             subject: template.subject,
-            content: template.content,
-            background_image: template.background_image
+            content: template.content
           })
           .eq('id', template.id)
           .select()
@@ -103,7 +102,6 @@ export function AutomaticEmailsManager() {
             subject: template.subject,
             content: template.content,
             description: template.description,
-            background_image: template.background_image,
             is_active: true
           })
           .select()
@@ -250,8 +248,7 @@ Visa denna QR-kod vid entrén`;
     // Use the unified template exactly like the edge functions
     const htmlContent = createUnifiedEmailTemplate(
       personalizedSubject,
-      processedContent,
-      template.background_image
+      processedContent
     ).replace('{UNSUBSCRIBE_URL}', 'https://improteatern.se/avprenumerera?email=preview@example.com');
     
     return htmlContent;
@@ -338,19 +335,6 @@ Visa denna QR-kod vid entrén`;
                       ...editingTemplate,
                       subject: e.target.value
                     })}
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="background_image">Bakgrundsbild URL (valfritt)</Label>
-                  <Input
-                    id="background_image"
-                    value={editingTemplate.background_image || ''}
-                    onChange={(e) => setEditingTemplate({
-                      ...editingTemplate,
-                      background_image: e.target.value
-                    })}
-                    placeholder="https://example.com/image.jpg"
                   />
                 </div>
                 
