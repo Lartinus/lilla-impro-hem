@@ -81,12 +81,54 @@ export const useTicketManagement = () => {
     },
   });
 
+  const exportTicketsMutation = useMutation({
+    mutationFn: async (showTitle: string) => {
+      if (!tickets) return;
+      
+      const showTickets = tickets.filter(ticket => ticket.show_title === showTitle);
+      
+      const csvHeaders = ['Namn', 'E-post', 'Telefon', 'Antal biljetter', 'Biljettkod', 'Belopp', 'Datum'];
+      const csvData = showTickets.map(ticket => [
+        ticket.buyer_name,
+        ticket.buyer_email,
+        ticket.buyer_phone,
+        (ticket.regular_tickets + ticket.discount_tickets).toString(),
+        ticket.ticket_code,
+        `${ticket.total_amount} kr`,
+        new Date(ticket.created_at).toLocaleDateString('sv-SE')
+      ]);
+      
+      const csvContent = [csvHeaders, ...csvData]
+        .map(row => row.map(cell => `"${cell}"`).join(','))
+        .join('\n');
+      
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `biljetter-${showTitle.replace(/[^a-zA-Z0-9]/g, '-')}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+    onSuccess: (_, showTitle) => {
+      toast.success(`Biljettlista för "${showTitle}" exporterad`);
+    },
+    onError: (error) => {
+      toast.error('Kunde inte exportera biljettlista');
+      console.error('Error exporting tickets:', error);
+    },
+  });
+
   return {
     tickets,
     isLoading,
     markRefunded: markRefundedMutation.mutate,
     deleteTicket: deleteTicketMutation.mutate,
+    exportTickets: exportTicketsMutation.mutate,
     isMarkingRefunded: markRefundedMutation.isPending,
     isDeletingTicket: deleteTicketMutation.isPending,
+    isExporting: exportTicketsMutation.isPending,
   };
 };

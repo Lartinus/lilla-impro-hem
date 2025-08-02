@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, List, Grid, ArrowUpDown, RefreshCw, Trash2, Ticket } from 'lucide-react';
+import { Search, List, Grid, ArrowUpDown, RefreshCw, Trash2, Ticket, Download } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useTicketManagement } from '@/hooks/useTicketManagement';
 
@@ -37,7 +37,7 @@ type SortDirection = 'asc' | 'desc';
 
 export const TicketManagement = () => {
   const isMobile = useIsMobile();
-  const { tickets, isLoading, markRefunded, deleteTicket } = useTicketManagement();
+  const { tickets, isLoading, markRefunded, deleteTicket, exportTickets } = useTicketManagement();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<SortField>('created_at');
@@ -88,6 +88,20 @@ export const TicketManagement = () => {
     }
   };
 
+  // Get unique show titles for export
+  const uniqueShows = useMemo(() => {
+    if (!tickets) return [];
+    const showTitles = [...new Set(tickets.map(ticket => ticket.show_title))];
+    return showTitles.map(title => ({
+      title,
+      count: tickets.filter(ticket => ticket.show_title === title).length
+    }));
+  }, [tickets]);
+
+  const getTotalTickets = (ticket: TicketPurchase) => {
+    return ticket.regular_tickets + ticket.discount_tickets;
+  };
+
   const getRefundBadge = (status: string) => {
     switch (status) {
       case 'processed':
@@ -97,10 +111,6 @@ export const TicketManagement = () => {
       default:
         return null;
     }
-  };
-
-  const getTotalTickets = (ticket: TicketPurchase) => {
-    return ticket.regular_tickets + ticket.discount_tickets;
   };
 
   if (isLoading) {
@@ -121,11 +131,32 @@ export const TicketManagement = () => {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h2 className="text-2xl font-bold">Biljetthantering</h2>
-        <p className="text-muted-foreground">
-          Endast betalda biljetter visas här
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">Biljetthantering</h2>
+          <p className="text-muted-foreground">
+            Endast betalda biljetter visas här
+          </p>
+        </div>
+        
+        {/* Export dropdown */}
+        {uniqueShows.length > 0 && (
+          <div className="flex items-center gap-2">
+            <Label className="text-sm font-medium">Exportera per föreställning:</Label>
+            {uniqueShows.map((show) => (
+              <Button
+                key={show.title}
+                variant="outline"
+                size="sm"
+                onClick={() => exportTickets(show.title)}
+                className="flex items-center gap-1"
+              >
+                <Download className="w-4 h-4" />
+                {show.title} ({show.count})
+              </Button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Toolbar */}
