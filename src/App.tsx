@@ -1,6 +1,6 @@
 
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthProvider } from '@/components/auth/AuthProvider';
 import { usePerformanceMonitor, logBundleInfo } from '@/hooks/usePerformanceMonitor';
@@ -116,6 +116,9 @@ function App() {
                 {/* Critical routes - loaded immediately */}
                 <Route path="/" element={<Index />} />
                 <Route path="/om-oss" element={<About />} />
+                
+                {/* Redirect for backward compatibility */}
+                <Route path="/shows" element={<Navigate to="/forestallningar" replace />} />
                 
                 {/* Lazy loaded routes with intelligent prefetching */}
                 <Route 

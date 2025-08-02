@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 const navItems = [
   { to: '/',           label: 'Hem' },
   { to: '/kurser',     label: 'Kurser' },
-  { to: '/shows',      label: 'Föreställningar' },
+  { to: '/forestallningar',      label: 'Föreställningar' },
   { to: '/boka-oss', label: 'Boka oss' },
   { to: '/lokal',      label: 'Lokal' },
   { to: '/om-oss',     label: 'Om oss & kontakt' },
