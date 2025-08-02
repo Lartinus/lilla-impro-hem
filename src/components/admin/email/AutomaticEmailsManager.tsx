@@ -172,11 +172,11 @@ export function AutomaticEmailsManager() {
 
 H2: Dina biljettdetaljer
 
-Datum: 15 december 2024
+Datum: 15 december 2025
 Tid: 19:30
-Plats: Lilla Improteatern, Göteborg
+Plats: Lilla Improteatern
 Biljetter: 2 st
-Biljettkod: LIT2024ABC123
+Biljettkod: LIT2025ABC123
 
 [QR_CODE_PLACEHOLDER]
 
@@ -185,7 +185,7 @@ Visa denna QR-kod vid entrén`;
     } else if (templateType?.key === 'course_confirmation') {
       mockVariables = {
         NAMN: 'Anna Andersson',
-        KURSTITEL: 'Grundkurs i Improvisation',
+        KURSTITEL: 'Nivå 1 - Improv Comedy',
         STARTDATUM: '20 januari 2025',
         STARTTID: '18:00'
       };
@@ -199,7 +199,7 @@ Visa denna QR-kod vid entrén`;
     } else if (templateType?.key === 'interest_confirmation') {
       mockVariables = {
         NAMN: 'Anna Andersson',
-        INTRESSETITEL: 'Grundkurs i Improvisation'
+        INTRESSETITEL: 'Nivå 1 - Improv Comedy'
       };
       
       // Replace variables (same as send-interest-confirmation)
@@ -348,7 +348,7 @@ Visa denna QR-kod vid entrén`;
                       content: e.target.value
                     })}
                     rows={12}
-                    placeholder="Skriv mejlinnehållet här. Använd H1: för stora rubriker och H2: för mindre rubriker."
+                    placeholder="Skriv mejlinnehållet här. Använd H1: för stora rubriker i början av mejlet och H2: för mindre rubriker som avdelare i mejlet."
                   />
                 </div>
                 
