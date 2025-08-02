@@ -1,240 +1,276 @@
-
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useQueryClient } from '@tanstack/react-query';
+import { Plus, Search, Filter, Download, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Plus, Calendar } from 'lucide-react';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { useAdminShowCards, useAdminShowDetails } from '@/hooks/useAdminShowsOptimized';
-import { useShowManagementData } from '@/hooks/useOptimizedShowData';
-import { useShowManagementMutations } from '@/hooks/useShowManagementMutations';
-import { useBackgroundSync } from '@/hooks/useBackgroundSync';
-import { getDefaultShowForm } from '@/utils/showUtils';
-import { ShowRow } from './show/ShowRow';
-import { MobileShowCard } from './show/MobileShowCard';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 import { ShowCard } from './show/ShowCard';
+import { MobileShowCard } from './show/MobileShowCard';
+import { ShowRow } from './show/ShowRow';
 import { ShowForm } from './show/ShowForm';
-import type { AdminShowWithPerformers, NewShowForm } from '@/types/showManagement';
+import { useAdminShowCards } from '@/hooks/useAdminShowsOptimized';
+import { useOptimizedShowData } from '@/hooks/useOptimizedShowData';
+import { useShowManagementMutations } from '@/hooks/useShowManagementMutations';
+import { useMobile } from '@/hooks/use-mobile';
+import { SubtleLoadingOverlay } from '@/components/SubtleLoadingOverlay';
+import type { AdminShowWithPerformers } from '@/types/showManagement';
 
-export const ShowManagement = ({ showCompleted = false }: { showCompleted?: boolean }) => {
-  const isMobile = useIsMobile();
-  const [isShowDialogOpen, setIsShowDialogOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [editingShow, setEditingShow] = useState<AdminShowWithPerformers | null>(null);
-  const [selectedTemplate, setSelectedTemplate] = useState<string>('');
-  const [newShow, setNewShow] = useState<NewShowForm>(getDefaultShowForm());
-
-  // Use optimized data fetching
-  const { data: shows, isLoading: showsLoading } = useAdminShowCards(showCompleted);
-  const { data: showDetails } = useAdminShowDetails(editingShow?.id);
+const ShowManagement = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showDialog, setShowDialog] = useState(false);
+  const [selectedShow, setSelectedShow] = useState<AdminShowWithPerformers | null>(null);
+  const [sortBy, setSortBy] = useState<'date' | 'title' | 'venue'>('date');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
   
-  // Only load form data when dialog is opened
-  const { venues, actors, showTemplates, showTags } = useShowManagementData({
-    loadVenues: isShowDialogOpen,
-    loadActors: isShowDialogOpen,
-    loadTemplates: isShowDialogOpen,
-    loadTags: isShowDialogOpen,
-  });
+  const queryClient = useQueryClient();
+  const isMobile = useMobile();
+  
+  // Use optimized hooks for better performance
+  const { data: showCards, isLoading: isLoadingCards, error: cardsError } = useAdminShowCards();
+  
+  // Load additional data only when needed (e.g., when dialog opens)
+  const { 
+    venues, 
+    performers, 
+    showTemplates, 
+    showTags,
+    isLoading: isLoadingSupporting 
+  } = useOptimizedShowData(showDialog);
+  
+  const { deleteShow, duplicateShow, updateShow } = useShowManagementMutations();
 
-  // Enable background sync
-  useBackgroundSync();
+  const filteredAndSortedShows = React.useMemo(() => {
+    if (!showCards) return [];
+    
+    let filtered = showCards.filter(show => {
+      const matchesSearch = show.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          show.venue_name?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus = filterStatus === 'all' || 
+                           (filterStatus === 'active' && show.is_active) ||
+                           (filterStatus === 'inactive' && !show.is_active);
+      return matchesSearch && matchesStatus;
+    });
 
-  const {
-    createShowMutation,
-    updateShowMutation,
-    updateFullShowMutation,
-    deleteShowMutation,
-    moveShowUpMutation,
-    moveShowDownMutation
-  } = useShowManagementMutations();
-
-  const resetForm = () => {
-    setNewShow(getDefaultShowForm());
-    setSelectedTemplate('');
-    setIsEditMode(false);
-    setEditingShow(null);
-  };
+    return filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'title':
+          return a.title.localeCompare(b.title);
+        case 'venue':
+          return (a.venue_name || '').localeCompare(b.venue_name || '');
+        case 'date':
+        default:
+          const dateA = a.show_date ? new Date(a.show_date) : new Date(0);
+          const dateB = b.show_date ? new Date(b.show_date) : new Date(0);
+          return dateB.getTime() - dateA.getTime();
+      }
+    });
+  }, [showCards, searchTerm, filterStatus, sortBy]);
 
   const handleEditShow = (show: any) => {
-    setEditingShow(show);
-    // Form will be populated when showDetails loads
-    setIsEditMode(true);
-    setIsShowDialogOpen(true);
+    setSelectedShow(show);
+    setShowDialog(true);
   };
 
-  // Update form when show details are loaded
-  React.useEffect(() => {
-    if (showDetails && isEditMode) {
-      setNewShow({
-        title: showDetails.title,
-        slug: showDetails.slug,
-        image_url: showDetails.image_url || '',
-        show_date: showDetails.show_date,
-        show_time: showDetails.show_time,
-        venue: showDetails.venue,
-        venue_address: showDetails.venue_address || '',
-        venue_maps_url: showDetails.venue_maps_url || '',
-        description: showDetails.description || '',
-        regular_price: showDetails.regular_price,
-        discount_price: showDetails.discount_price,
-        max_tickets: showDetails.max_tickets || 100,
-        is_active: showDetails.is_active,
-        performer_ids: showDetails.performers.map(p => p.id),
-        tag_id: showDetails.tag_id || null
-      });
-    }
-  }, [showDetails, isEditMode]);
-
-  const handleToggleShowVisibility = (show: any) => {
-    updateShowMutation.mutate({
-      id: show.id,
-      data: { is_active: !show.is_active }
-    });
-  };
-
-  const handleDeleteShow = (show: any) => {
-    deleteShowMutation.mutate(show.id);
-  };
-
-  const handleMoveUp = (show: any) => {
-    if (shows) {
-      moveShowUpMutation.mutate({ show, shows });
+  const handleDeleteShow = async (showId: string) => {
+    if (!confirm('Är du säker på att du vill ta bort denna föreställning?')) return;
+    
+    try {
+      await deleteShow.mutateAsync(showId);
+      toast.success('Föreställning borttagen');
+    } catch (error) {
+      console.error('Error deleting show:', error);
+      toast.error('Kunde inte ta bort föreställning');
     }
   };
 
-  const handleMoveDown = (show: any) => {
-    if (shows) {
-      moveShowDownMutation.mutate({ show, shows });
+  const handleDuplicateShow = async (show: any) => {
+    try {
+      await duplicateShow.mutateAsync(show);
+      toast.success('Föreställning duplicerad');
+    } catch (error) {
+      console.error('Error duplicating show:', error);
+      toast.error('Kunde inte duplicera föreställning');
     }
   };
 
-  const handleCreateShow = () => {
-    if (shows) {
-      createShowMutation.mutate({ showData: newShow, showsLength: shows.length });
-    }
+  const handleCloseDialog = () => {
+    setShowDialog(false);
+    setSelectedShow(null);
   };
 
-  const handleUpdateShow = () => {
-    if (editingShow) {
-      updateFullShowMutation.mutate({ id: editingShow.id, showData: newShow });
-    }
-  };
-
-  const handleDialogClose = (open: boolean) => {
-    setIsShowDialogOpen(open);
-    if (!open) {
-      resetForm();
-    }
-  };
+  if (cardsError) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <p className="text-red-600">Ett fel uppstod vid hämtning av föreställningar: {cardsError.message}</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="text-2xl font-bold">{showCompleted ? 'Genomförda föreställningar' : 'Aktiva föreställningar'}</h2>
-        <p className="text-muted-foreground">
-          {showCompleted ? 'Arkiv med föreställningar som redan genomförts' : 'Hantera kommande och pågående föreställningar'}
-        </p>
-      </div>
-        {!showCompleted && (
-          <div className="flex justify-start items-center">
-            <Button 
-              onClick={() => setIsShowDialogOpen(true)}
-              className="w-full sm:w-auto"
-            >
-              <Plus className="w-4 h-4 mr-2" />
+    <div className="space-y-6">
+      <SubtleLoadingOverlay isLoading={isLoadingCards} />
+      
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">Föreställningar</h2>
+          <p className="text-muted-foreground">Hantera teaterföreställningar</p>
+        </div>
+        <Dialog open={showDialog} onOpenChange={setShowDialog}>
+          <DialogTrigger asChild>
+            <Button onClick={() => setShowDialog(true)}>
+              <Plus className="h-4 w-4 mr-2" />
               Lägg till föreställning
             </Button>
-          </div>
-        )}
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {selectedShow ? 'Redigera föreställning' : 'Lägg till ny föreställning'}
+              </DialogTitle>
+            </DialogHeader>
+            {showDialog && (
+              <ShowForm
+                show={selectedShow}
+                venues={venues}
+                performers={performers}
+                showTemplates={showTemplates}
+                showTags={showTags}
+                onClose={handleCloseDialog}
+                isLoading={isLoadingSupporting}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+      </div>
 
-        {showsLoading ? (
-          <div className="text-center py-8">Laddar föreställningar...</div>
-        ) : shows && shows.length > 0 ? (
-          isMobile ? (
-            <div className="space-y-6">
-              {shows.map((show, index) => (
-                <MobileShowCard
-                  key={show.id}
-                  show={show as any}
-                  index={index}
-                  totalShows={shows.length}
-                  showCompleted={showCompleted}
-                  onEdit={handleEditShow}
-                  onToggleVisibility={handleToggleShowVisibility}
-                  onDelete={handleDeleteShow}
-                  onMoveUp={handleMoveUp}
-                  onMoveDown={handleMoveDown}
+      <Card>
+        <CardHeader>
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-2 flex-1">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Sök föreställningar..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
                 />
+              </div>
+              <Select value={filterStatus} onValueChange={(value: 'all' | 'active' | 'inactive') => setFilterStatus(value)}>
+                <SelectTrigger className="w-full sm:w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Alla</SelectItem>
+                  <SelectItem value="active">Aktiva</SelectItem>
+                  <SelectItem value="inactive">Inaktiva</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={sortBy} onValueChange={(value: 'date' | 'title' | 'venue') => setSortBy(value)}>
+                <SelectTrigger className="w-full sm:w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="date">Datum</SelectItem>
+                  <SelectItem value="title">Titel</SelectItem>
+                  <SelectItem value="venue">Lokal</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {!isMobile && (
+              <Tabs value={viewMode} onValueChange={(value: 'cards' | 'table') => setViewMode(value)}>
+                <TabsList>
+                  <TabsTrigger value="cards">Kort</TabsTrigger>
+                  <TabsTrigger value="table">Tabell</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            )}
+          </div>
+        </CardHeader>
+        
+        <CardContent>
+          {isLoadingCards ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-48 bg-muted animate-pulse rounded-lg" />
               ))}
+            </div>
+          ) : filteredAndSortedShows.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Inga föreställningar hittades</p>
             </div>
           ) : (
-            <div className="grid gap-4">
-              {shows.map((show, index) => (
-                <ShowCard
-                  key={show.id}
-                  show={show as any}
-                  index={index}
-                  totalShows={shows.length}
-                  showCompleted={showCompleted}
-                  onEdit={handleEditShow}
-                  onToggleVisibility={handleToggleShowVisibility}
-                  onDelete={handleDeleteShow}
-                  onMoveUp={handleMoveUp}
-                  onMoveDown={handleMoveDown}
-                />
-              ))}
-            </div>
-          )
-        ) : (
-          <div className="text-center py-12">
-            <Calendar className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
-            <h3 className="text-xl font-semibold mb-3">Inga föreställningar</h3>
-            <p className="text-muted-foreground max-w-md mx-auto">
-              Lägg till din första föreställning för att komma igång.
-            </p>
-          </div>
-        )}
-
-      {/* Show Dialog - only loads heavy data when opened */}
-      <Dialog open={isShowDialogOpen} onOpenChange={handleDialogClose}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {isEditMode ? 'Redigera föreställning' : 'Lägg till föreställning'}
-            </DialogTitle>
-          </DialogHeader>
-          
-          {isShowDialogOpen && (
-            <ShowForm
-              newShow={newShow}
-              setNewShow={setNewShow}
-              isEditMode={isEditMode}
-              selectedTemplate={selectedTemplate}
-              setSelectedTemplate={setSelectedTemplate}
-              showTemplates={showTemplates}
-              venues={venues}
-              actors={actors}
-              showTags={showTags}
-            />
+            <>
+              {isMobile ? (
+                <div className="space-y-4">
+                  {filteredAndSortedShows.map((show) => (
+                    <MobileShowCard
+                      key={show.id}
+                      show={show}
+                      onEdit={handleEditShow}
+                      onDelete={handleDeleteShow}
+                      onDuplicate={handleDuplicateShow}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <Tabs value={viewMode} className="w-full">
+                  <TabsContent value="cards">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {filteredAndSortedShows.map((show) => (
+                        <ShowCard
+                          key={show.id}
+                          show={show}
+                          onEdit={handleEditShow}
+                          onDelete={handleDeleteShow}
+                          onDuplicate={handleDuplicateShow}
+                        />
+                      ))}
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="table">
+                    <div className="rounded-md border">
+                      <div className="overflow-x-auto">
+                        <div className="min-w-full">
+                          <div className="grid grid-cols-6 gap-4 p-4 font-medium border-b bg-muted/50">
+                            <div>Titel</div>
+                            <div>Datum</div>
+                            <div>Tid</div>
+                            <div>Lokal</div>
+                            <div>Status</div>
+                            <div>Åtgärder</div>
+                          </div>
+                          {filteredAndSortedShows.map((show) => (
+                            <ShowRow
+                              key={show.id}
+                              show={show}
+                              onEdit={handleEditShow}
+                              onDelete={handleDeleteShow}
+                              onDuplicate={handleDuplicateShow}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              )}
+            </>
           )}
-
-          <div className="flex justify-end gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setIsShowDialogOpen(false)}
-            >
-              Avbryt
-            </Button>
-            <Button
-              onClick={isEditMode ? handleUpdateShow : handleCreateShow}
-              disabled={createShowMutation.isPending || updateFullShowMutation.isPending}
-            >
-              {isEditMode ? 'Uppdatera' : 'Skapa'} föreställning
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+        </CardContent>
+      </Card>
     </div>
   );
 };
+
+export default ShowManagement;

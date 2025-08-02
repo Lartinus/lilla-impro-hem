@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthProvider } from '@/components/auth/AuthProvider';
 import { usePerformanceMonitor, logBundleInfo } from '@/hooks/usePerformanceMonitor';
+import { useBackgroundSync } from '@/hooks/useBackgroundSync';
+import { useAdvancedPerformance } from '@/hooks/useAdvancedPerformance';
+import { useResourceOptimization } from '@/hooks/useResourceOptimization';
 
 // Static imports for critical path
 import Header from '@/components/Header';
@@ -18,16 +21,8 @@ const LazyCourses = React.lazy(() => import('@/pages/Courses'));
 const LazyLokal = React.lazy(() => import('@/pages/Lokal'));
 const LazyBokaOss = React.lazy(() => import('@/pages/BokaOss'));
 const LazyShowDetails = React.lazy(() => import('@/pages/ShowDetails'));
-const LazyAdmin = React.lazy(() => 
-  import('@/components/LazyAdminDashboard').then(module => ({ 
-    default: module.LazyAdminDashboard 
-  }))
-);
-const LazyStripeCheckout = React.lazy(() => 
-  import('@/components/LazyStripeCheckout').then(module => ({ 
-    default: module.LazyStripeCheckout 
-  }))
-);
+const LazyAdmin = React.lazy(() => import('@/components/LazyAdminDashboard'));
+const LazyStripeCheckout = React.lazy(() => import('@/components/LazyStripeCheckout'));
 const LazyPaymentPages = React.lazy(() => 
   Promise.all([
     import('@/pages/TicketPaymentSuccess'),
@@ -57,26 +52,58 @@ const LazyNewsletterPages = React.lazy(() =>
   }))
 );
 
-// Optimized loading component
+// Optimized loading component with better UX
 const LoadingFallback = ({ message = "Laddar..." }: { message?: string }) => (
   <div className="flex items-center justify-center min-h-[200px] text-muted-foreground">
     <div className="flex flex-col items-center gap-2">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="loading-spinner rounded-full h-8 w-8 border-b-2 border-primary"></div>
       <span className="text-sm">{message}</span>
     </div>
   </div>
 );
 
 function App() {
-  // Monitor performance improvements
+  // Phase 1 & 2 optimizations
   usePerformanceMonitor();
+  useBackgroundSync();
   
-  // Log bundle info in development
+  // Phase 3 advanced optimizations
+  const { metrics, budgetViolations, optimizeQueryCache } = useAdvancedPerformance();
+  const { preloadRoute, preloadImage } = useResourceOptimization({
+    enablePrefetch: true,
+    enablePreload: true,
+    aggressiveCaching: true,
+  });
+  
+  // Log performance improvements and bundle info
   React.useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       logBundleInfo();
+      
+      // Log performance improvements after all optimizations
+      setTimeout(() => {
+        console.log('🚀 Phase 3 Performance Summary:', {
+          metrics,
+          budgetViolations,
+          optimizationsApplied: [
+            '✅ Image optimization with WebP/AVIF',
+            '✅ Lazy loading and code splitting',
+            '✅ Optimized API queries',
+            '✅ Background sync',
+            '✅ Advanced performance monitoring',
+            '✅ Resource prefetching',
+            '✅ Aggressive caching'
+          ]
+        });
+      }, 3000);
     }
-  }, []);
+  }, [metrics, budgetViolations]);
+
+  // Periodic cache optimization
+  React.useEffect(() => {
+    const interval = setInterval(optimizeQueryCache, 10 * 60 * 1000); // Every 10 minutes
+    return () => clearInterval(interval);
+  }, [optimizeQueryCache]);
 
   return (
     <AuthProvider>
@@ -90,7 +117,7 @@ function App() {
                 <Route path="/" element={<Index />} />
                 <Route path="/om-oss" element={<About />} />
                 
-                {/* Lazy loaded routes */}
+                {/* Lazy loaded routes with intelligent prefetching */}
                 <Route 
                   path="/forestallningar" 
                   element={
