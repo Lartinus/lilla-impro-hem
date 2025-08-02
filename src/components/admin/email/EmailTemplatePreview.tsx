@@ -15,8 +15,9 @@ interface EmailTemplatePreviewProps {
 
 export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps) {
   // Check if this is a ticket confirmation template
-  const isTicketTemplate = templateForm.name?.includes('Biljettbekräftelse') || 
-                           templateForm.subject?.includes('biljett') ||
+  const isTicketTemplate = templateForm.name?.includes('AUTO: Biljettbekräftelse') || 
+                           templateForm.name?.includes('Biljettbekräftelse') ||
+                           templateForm.subject?.includes('biljetter') ||
                            templateForm.content?.includes('biljett');
 
   const mockVariables = isTicketTemplate ? {

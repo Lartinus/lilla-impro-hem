@@ -9,11 +9,21 @@ export function createEmailTemplatePreview(
 ): string {
   // For ticket templates, use the same exact logic as send-ticket-confirmation
   if (isTicketTemplate && variables) {
+    // Check variable format in content - either {VAR} or [VAR]
+    const usesCurlyBraces = markdownContent.includes('{NAMN}') || markdownContent.includes('{FORESTALLNING}');
+    const usesSquareBraces = markdownContent.includes('[NAMN]') || markdownContent.includes('[FORESTALLNING]');
+    
     // Process variables first (same as edge function)
     let processedContent = markdownContent;
     Object.entries(variables).forEach(([key, value]) => {
-      const regex = new RegExp(`\\{${key}\\}`, 'gi');
-      processedContent = processedContent.replace(regex, String(value));
+      if (usesCurlyBraces) {
+        const regex = new RegExp(`\\{${key}\\}`, 'gi');
+        processedContent = processedContent.replace(regex, String(value));
+      }
+      if (usesSquareBraces) {
+        const regex = new RegExp(`\\[${key}\\]`, 'gi');
+        processedContent = processedContent.replace(regex, String(value));
+      }
     });
     
     // Format date and time properly like in the edge function
@@ -68,14 +78,18 @@ Visa denna QR-kod vid entrén`;
       .replace('[QR_CODE_PLACEHOLDER]', `<div style="margin: 20px 0;"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y4ZjhmOCIgc3Ryb2tlPSIjY2NjIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjQiLz48dGV4dCB4PSI1MCUiIHk9IjQ1JSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5OxPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNjAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2NjYiPlFSLWtvZDwvdGV4dD48L3N2Zz4=" alt="QR Code Placeholder" style="max-width: 200px; display: block;"></div>`);
   }
   
-  // For non-ticket templates, use regular markdown conversion
-  const htmlContent = variables 
-    ? convertMarkdownToHtmlWithVariables(markdownContent, Object.fromEntries(
-        Object.entries(variables).map(([key, value]) => [key, String(value)])
-      ))
-    : convertMarkdownToHtml(markdownContent);
+  // For non-ticket templates, use regular markdown conversion with variable replacement
+  let processedContent = markdownContent;
+  if (variables) {
+    Object.entries(variables).forEach(([key, value]) => {
+      const squareRegex = new RegExp(`\\[${key}\\]`, 'gi');
+      const curlyRegex = new RegExp(`\\{${key}\\}`, 'gi');
+      processedContent = processedContent.replace(squareRegex, String(value));
+      processedContent = processedContent.replace(curlyRegex, String(value));
+    });
+  }
   
-  return createUnifiedEmailTemplatePreview(subject, markdownContent, backgroundImage);
+  return createUnifiedEmailTemplatePreview(subject, processedContent, backgroundImage);
 }
 
 // Create unified template preview that matches the actual email structure
