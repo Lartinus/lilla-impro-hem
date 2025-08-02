@@ -11,6 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import { ImagePicker } from '../ImagePicker';
 import { supabase } from '@/integrations/supabase/client';
 import { EmailGroup, EmailContact, GroupMember, EmailTemplate } from './types';
+import { createUnifiedEmailTemplate } from '../../../../supabase/functions/_shared/unified-email-template';
 
 interface SimpleEmailBuilderProps {
   emailGroups: EmailGroup[];
@@ -100,68 +101,6 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts, emailTemplates 
     setSelectedTemplate(template.id);
   };
 
-  const createEmailHtml = (emailSubject: string, emailContent: string, bgImage?: string) => {
-    // Process content to handle headers and paragraphs
-    const processedContent = emailContent
-      .split('\n')
-      .map(line => {
-        const trimmed = line.trim();
-        if (!trimmed) return '';
-        
-        // Handle H1 headers
-        if (trimmed.startsWith('H1: ')) {
-          const headerText = trimmed.substring(4);
-          return `<h1 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 32px; color: #333333; margin: 24px 0 16px 0; font-weight: 400; line-height: 1.2;">${headerText}</h1>`;
-        }
-        
-        // Handle H2 headers
-        if (trimmed.startsWith('H2: ')) {
-          const headerText = trimmed.substring(4);
-          return `<h2 style="font-family: 'Tanker', 'Arial Black', sans-serif; font-size: 24px; color: #333333; margin: 20px 0 12px 0; font-weight: 400; line-height: 1.2;">${headerText}</h2>`;
-        }
-        
-        // Regular paragraphs
-        return `<p style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333; margin: 0 0 16px 0; line-height: 1.6;">${trimmed}</p>`;
-      })
-      .filter(line => line)
-      .join('');
-
-    return `<!DOCTYPE html>
-<html lang="sv">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${emailSubject}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Tanker:wght@400&display=swap" rel="stylesheet">
-</head>
-<body style="margin: 0; padding: 0; background-color: #f5f5f5;">
-  <div style="max-width: 600px; margin: 40px auto; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-    ${bgImage ? `
-      <div style="width: 100%; height: 400px; overflow: hidden;">
-        <img src="${bgImage}" alt="Header image" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-      </div>
-    ` : ''}
-    
-    <div style="padding: 20px; background-color: #ffffff; color: #333333;">
-      ${processedContent}
-    </div>
-    
-    <div style="background: linear-gradient(135deg, #dc2626, #b91c1c); padding: 32px; color: white; text-align: center;">
-      <div style="font-family: 'Tanker', 'Helvetica Neue', sans-serif; font-size: 24px; font-weight: 400; margin-bottom: 8px; color: white;">
-        LILLA IMPROTEATERN
-      </div>
-      <div style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif; font-size: 14px; opacity: 0.9; margin-bottom: 16px; color: white;">
-        Improvisationsteater • Kurser • Föreställningar
-      </div>
-      <div style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif; font-size: 12px; opacity: 0.8; color: white;">
-        <a href="https://improteatern.se" style="color: white; text-decoration: none;">improteatern.se</a>
-      </div>
-    </div>
-  </div>
-</body>
-</html>`;
-  };
 
   const handleSendEmail = async () => {
     if (!subject.trim() || !content.trim()) {
@@ -201,7 +140,7 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts, emailTemplates 
         return;
       }
 
-      const htmlContent = createEmailHtml(subject, content, backgroundImage);
+      const htmlContent = createUnifiedEmailTemplate(subject, content, backgroundImage);
 
       const { data, error } = await supabase.functions.invoke('send-bulk-email', {
         body: {
@@ -372,7 +311,7 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts, emailTemplates 
             {content ? (
               <div 
                 dangerouslySetInnerHTML={{ 
-                  __html: createEmailHtml(subject || 'Ämne', content, backgroundImage)
+                  __html: createUnifiedEmailTemplate(subject || 'Ämne', content, backgroundImage)
                 }}
               />
             ) : (
