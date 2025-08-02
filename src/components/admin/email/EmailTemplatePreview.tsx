@@ -92,6 +92,11 @@ export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps
                   .satoshi-font { 
                     font-family: 'Satoshi', 'Helvetica Neue', 'Arial', sans-serif !important; 
                   }
+                  
+                  /* Remove underline from H1 in email preview to match actual emails */
+                  h1 {
+                    text-decoration: none !important;
+                  }
                 `}
               </style>
               <div 
