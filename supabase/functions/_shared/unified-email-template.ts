@@ -25,7 +25,7 @@ export function createUnifiedEmailTemplate(
       // Handle H2 headers
       if (trimmed.startsWith('H2: ')) {
         const headerText = trimmed.substring(4);
-        return `<h2 style="font-family: 'Tanker', 'Helvetica Neue', sans-serif !important; font-size: 24px; color: #333333 !important; margin: 20px 0 12px 0; font-weight: 400 !important; line-height: 1.2;">${headerText}</h2>`;
+        return `<h2 style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif !important; font-size: 16px; color: #333333 !important; margin: 20px 0 12px 0; font-weight: 700 !important; line-height: 1.2;">${headerText}</h2>`;
       }
       
       // Regular paragraphs

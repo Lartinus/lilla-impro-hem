@@ -7,135 +7,145 @@ export function createEmailTemplatePreview(
   variables?: Record<string, string>,
   isTicketTemplate: boolean = false
 ): string {
-  const hasBackground = backgroundImage && backgroundImage.trim() !== '';
-  let htmlContent = variables 
-    ? convertMarkdownToHtmlWithVariables(markdownContent, variables)
-    : convertMarkdownToHtml(markdownContent);
-
-  // Add ticket-specific content if this is a ticket confirmation template
+  // For ticket templates, use the same logic as send-ticket-confirmation
   if (isTicketTemplate && variables) {
-    const ticketDetailsSection = `
-      <div style="background-color: #FFFFFF; border: 2px solid #DC2626; border-radius: 10px; padding: 20px; margin: 20px 0;">
-        <h2 style="color: #DC2626; margin: 0 0 15px 0; font-size: 20px; font-weight: bold;">🎭 Dina biljettdetaljer</h2>
-        <div style="display: grid; gap: 8px;">
-          <div><strong>Föreställning:</strong> ${variables.FÖRESTÄLLNING || 'Föreställning'}</div>
-          <div><strong>Datum:</strong> ${variables.DATUM || 'Datum'}</div>
-          <div><strong>Tid:</strong> ${variables.TID || 'Tid'}</div>
-          <div><strong>Plats:</strong> ${variables.PLATS || 'Plats'}</div>
-          <div><strong>Antal biljetter:</strong> ${variables.ANTAL || '1'}</div>
-          <div><strong>Biljettkod:</strong> <code style="background-color: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-family: monospace;">${variables.BILJETTKOD || 'BILJETTKOD'}</code></div>
-        </div>
-      </div>
-      
-      <div style="text-align: center; margin: 25px 0;">
-        <div style="display: inline-block; background-color: #f8f8f8; border: 2px dashed #ccc; padding: 20px; border-radius: 8px;">
-          <div style="font-size: 60px; margin-bottom: 10px;">📱</div>
-          <div style="font-size: 14px; color: #666;">QR-kod för entré</div>
-          <div style="font-size: 12px; color: #999; margin-top: 5px;">Visa denna kod i entrén</div>
-        </div>
-      </div>
-      
-      <div style="background-color: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 15px; margin: 20px 0;">
-        <h3 style="color: #DC2626; margin: 0 0 10px 0; font-size: 16px;">ℹ️ Viktig information</h3>
-        <ul style="margin: 0; padding-left: 20px; color: #7F1D1D;">
-          <li>Kom gärna 15 minuter före föreställningens start</li>
-          <li>Visa denna bekräftelse eller QR-koden i entrén</li>
-          <li>Vi rekommenderar att spara denna bekräftelse i din telefon</li>
-          <li>Kontakta oss vid frågor: info@lillaimproteatern.se</li>
-        </ul>
-      </div>
-    `;
+    // Format date and time properly like in the edge function
+    let formattedDate = variables.DATUM || 'Datum';
+    let formattedTime = variables.TID || 'Tid';
     
-    htmlContent += ticketDetailsSection;
+    try {
+      if (formattedDate && formattedDate !== 'Datum') {
+        const showDateTime = new Date(formattedDate);
+        formattedDate = showDateTime.toLocaleDateString('sv-SE', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        formattedTime = showDateTime.toLocaleTimeString('sv-SE', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        });
+      }
+    } catch (error) {
+      console.error('Error formatting date in preview:', error);
+    }
+
+    // Add the same content structure as send-ticket-confirmation
+    const contentWithTicketInfo = markdownContent + `
+
+H2: Dina biljettdetaljer
+
+Datum: ${formattedDate}
+Tid: ${formattedTime}
+Plats: ${variables.PLATS || 'Plats'}
+Biljetter: ${variables.ANTAL || '1'} st
+Biljettkod: ${variables.BILJETTKOD || 'BILJETTKOD'}
+
+[QR_CODE_PLACEHOLDER]
+
+Visa denna QR-kod vid entrén`;
+
+    // Process content with variables first
+    let processedContent = contentWithTicketInfo;
+    Object.entries(variables).forEach(([key, value]) => {
+      const regex = new RegExp(`\\{${key}\\}`, 'gi');
+      processedContent = processedContent.replace(regex, value);
+    });
+
+    // Create the unified template structure (same as edge function)
+    const unifiedHtml = createUnifiedEmailTemplatePreview(
+      subject,
+      processedContent,
+      backgroundImage
+    );
+
+    // Replace QR code placeholder with visual placeholder
+    return unifiedHtml.replace(
+      '[QR_CODE_PLACEHOLDER]', 
+      `<div style="margin: 20px 0; text-align: center;"><div style="display: inline-block; background-color: #f8f8f8; border: 2px dashed #ccc; padding: 20px; border-radius: 8px; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; flex-direction: column;"><div style="font-size: 60px; margin-bottom: 10px;">📱</div><div style="font-size: 14px; color: #666;">QR-kod</div></div></div>`
+    );
   }
   
-  return `
-    <!DOCTYPE html>
-    <html lang="sv" style="margin: 0; padding: 0;">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${subject}</title>
-      <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
-      <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet">
-    </head>
-    <body style="
-      margin: 0;
-      padding: 0;
-      font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      background-color: #EBEBEB;
-      line-height: 1.6;
-      color: #333333;
-    ">
-      <div style="max-width: 600px; margin: 0 auto; background-color: #EBEBEB;">
-        ${hasBackground ? `
-          <div style="
-            text-align: center;
-            padding: 0;
-            margin: 0;
-          ">
-            <img src="${backgroundImage}" alt="" style="
-              width: 600px;
-              height: 400px;
-              object-fit: cover;
-              display: block;
-              margin: 0 auto;
-            "/>
-          </div>
-        ` : ''}
-        
-        <div style="
-          max-width: 600px;
-          margin: ${hasBackground ? '-50px auto 0' : '0 auto'};
-          padding: 40px;
-          background-color: #F3F3F3;
-          border-radius: 10px;
-          position: relative;
-          z-index: 1;
-        ">
-          <div style="
-            font-size: 16px;
-            line-height: 1.6;
-            color: #333333;
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-          ">
-            ${htmlContent}
-          </div>
-        </div>
-        
-        <!-- Red footer -->
-        <div style="
-          width: 600px;
-          height: 180px;
-          background-color: #DC2626;
-          margin: 0 auto;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-        ">
-          <div style="
-            font-family: 'Titan One', cursive;
-            font-size: 32px;
-            color: white;
-            margin: 0 0 16px 0;
-            line-height: 1;
-          ">
-            LILLA IMPROTEATERN
-          </div>
-          <div style="
-            font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            font-size: 16px;
-            color: white;
-            margin: 0;
-            line-height: 1.2;
-          ">
-            Vill du inte längre få våra mejl? <a href="#" style="color: white; text-decoration: underline;">Avprenumerera här</a>
-          </div>
-        </div>
+  // For non-ticket templates, use regular markdown conversion
+  const htmlContent = variables 
+    ? convertMarkdownToHtmlWithVariables(markdownContent, variables)
+    : convertMarkdownToHtml(markdownContent);
+  
+  return createUnifiedEmailTemplatePreview(subject, markdownContent, backgroundImage);
+}
+
+// Create unified template preview that matches the actual email structure
+function createUnifiedEmailTemplatePreview(
+  subject: string, 
+  content: string, 
+  backgroundImage?: string
+): string {
+  // Process content to handle headers and paragraphs (same logic as unified-email-template.ts)
+  const processedContent = content
+    .split('\n')
+    .map(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return '';
+      
+      // Handle H1 headers
+      if (trimmed.startsWith('H1: ')) {
+        const headerText = trimmed.substring(4);
+        return `<h1 style="font-family: 'Tanker', 'Helvetica Neue', sans-serif !important; font-size: 32px; color: #333333 !important; margin: 24px 0 16px 0; font-weight: 400 !important; line-height: 1.2;">${headerText}</h1>`;
+      }
+      
+      // Handle H2 headers - FIXED to use Satoshi bold 16px
+      if (trimmed.startsWith('H2: ')) {
+        const headerText = trimmed.substring(4);
+        return `<h2 style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif !important; font-size: 16px; color: #333333 !important; margin: 20px 0 12px 0; font-weight: 700 !important; line-height: 1.2;">${headerText}</h2>`;
+      }
+      
+      // Regular paragraphs
+      return `<p style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif !important; font-size: 16px; color: #333333 !important; margin: 0 0 16px 0; line-height: 1.6;">${trimmed}</p>`;
+    })
+    .filter(line => line)
+    .join('');
+  
+  return `<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light">
+  <title>${subject}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tanker:wght@400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      color-scheme: light !important;
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Satoshi', 'Helvetica Neue', sans-serif; background-color: #f5f5f5 !important; line-height: 1.6; color-scheme: light !important;">
+  <div style="max-width: 600px; margin: 40px auto; background-color: white !important; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+    
+    ${backgroundImage ? `
+      <div style="width: 100%; height: 200px; background-image: url('${backgroundImage}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
       </div>
-    </body>
-    </html>
-  `;
+    ` : ''}
+    
+    <div style="padding: 20px; background-color: #ffffff !important; color: #333333 !important;">
+      ${processedContent}
+    </div>
+    
+    <div style="background: linear-gradient(135deg, #dc2626, #b91c1c); padding: 32px; color: white !important; text-align: center;">
+      <div style="font-family: 'Tanker', 'Helvetica Neue', sans-serif !important; font-size: 24px; font-weight: 400 !important; margin-bottom: 8px; color: white !important;">
+        LILLA IMPROTEATERN
+      </div>
+      <div style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif !important; font-size: 14px; opacity: 0.9; margin-bottom: 16px; color: white !important;">
+        Improvisationsteater • Kurser • Föreställningar
+      </div>
+      <div style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif !important; font-size: 12px; opacity: 0.8; color: white !important;">
+        <a href="https://improteatern.se" style="color: white !important; text-decoration: none;">improteatern.se</a>
+      </div>
+    </div>
+    
+  </div>
+</body>
+</html>`;
 }
