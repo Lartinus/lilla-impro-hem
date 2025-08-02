@@ -26,35 +26,35 @@ const AUTOMATIC_EMAIL_TYPES = [
     name: 'Biljettbekräftelse',
     description: 'Skickas när någon köper biljetter',
     variables: ['NAMN', 'FORESTALLNING', 'DATUM', 'BILJETTKOD'],
-    dbName: 'AUTO: Biljettbekräftelse'
+    dbName: 'AUTO: ticket_confirmation'
   },
   {
     key: 'course_confirmation',
     name: 'Kursbekräftelse',
     description: 'Skickas när någon bokar en kurs',
     variables: ['NAMN', 'KURSTITEL', 'STARTDATUM', 'STARTTID'],
-    dbName: 'AUTO: Kursbekräftelse'
+    dbName: 'AUTO: course_confirmation'
   },
   {
     key: 'interest_confirmation',
     name: 'Intresse bekräftelse',
     description: 'Skickas när någon anmäler intresse',
     variables: ['NAMN', 'INTRESSETITEL'],
-    dbName: 'AUTO: Intresseanmälan bekräftelse'
+    dbName: 'AUTO: interest_confirmation'
   },
   {
     key: 'corporate_inquiry',
     name: 'Företagsförfrågan bekräftelse',
     description: 'Skickas när någon gör en företagsförfrågan',
     variables: ['NAMN', 'FÖRETAG', 'TILLFÄLLE'],
-    dbName: 'AUTO: Företagsförfrågan bekräftelse'
+    dbName: 'AUTO: corporate_inquiry'
   },
   {
     key: 'private_inquiry',
     name: 'Privatförfrågan bekräftelse',
     description: 'Skickas när någon gör en privatförfrågan',
     variables: ['NAMN', 'TILLFÄLLE'],
-    dbName: 'AUTO: Privatförfrågan bekräftelse'
+    dbName: 'AUTO: private_inquiry'
   }
 ];
 
@@ -128,14 +128,7 @@ export function AutomaticEmailsManager() {
     if (existingTemplate) {
       setEditingTemplate(existingTemplate);
     } else {
-      // Create new template
-      setEditingTemplate({
-        id: '',
-        name: emailType.dbName,
-        subject: getDefaultSubject(emailType.key),
-        content: getDefaultContent(emailType.key),
-        description: emailType.description
-      });
+      toast.error(`Mall för "${emailType.name}" saknas i databasen. Kontakta en utvecklare.`);
     }
   };
 
@@ -399,93 +392,4 @@ Visa denna QR-kod vid entrén`;
       </Dialog>
     </div>
   );
-}
-
-// Helper functions for default content
-function getDefaultSubject(type: string): string {
-  switch (type) {
-    case 'course_confirmation': return 'Välkommen till {KURSTITEL}';
-    case 'interest_confirmation': return 'Tack för din intresseanmälan - {INTRESSETITEL}';
-    case 'ticket_confirmation': return 'Dina biljetter till {FORESTALLNING}';
-    case 'corporate_inquiry': return 'Bekräftelse av företagsförfrågan';
-    case 'private_inquiry': return 'Bekräftelse av förfrågan';
-    default: return 'Bekräftelse';
-  }
-}
-
-function getDefaultContent(type: string): string {
-  switch (type) {
-    case 'course_confirmation':
-      return `H1: Välkommen till {KURSTITEL}
-
-Hej {NAMN}!
-
-Vi ser fram emot att träffa dig på kursen!
-
-H2: Praktisk information
-
-Kursen startar: {STARTDATUM} kl {STARTTID}
-
-Mer information kommer att skickas ut innan kursstart.`;
-
-    case 'interest_confirmation':
-      return `H1: Tack för din intresseanmälan
-
-Hej {NAMN}!
-
-Vi har tagit emot din intresseanmälan för {INTRESSETITEL}.
-
-Vi kommer att kontakta dig så snart vi har mer information.`;
-
-    case 'ticket_confirmation':
-      return `H1: Dina biljetter
-
-Hej {NAMN}!
-
-Tack för ditt köp! Här är dina biljetter till {FORESTALLNING}.`;
-
-    case 'corporate_inquiry':
-      return `H1: Tack för din förfrågan!
-
-Hej {NAMN}!
-
-Vi har tagit emot din företagsförfrågan och kommer att kontakta dig så snart som möjligt för att diskutera möjligheterna.
-
-H2: Dina uppgifter
-
-Företag: {FÖRETAG}
-Tillfälle: {TILLFÄLLE}
-
-Vi ser fram emot att skapa något fantastiskt för er organisation!
-
-H2: Kontakta oss
-
-Har du frågor? Kontakta oss på kontakt@improteatern.se eller besök improteatern.se
-
-Med vänliga hälsningar
-Lilla Improteatern`;
-
-    case 'private_inquiry':
-      return `H1: Tack för din förfrågan!
-
-Hej {NAMN}!
-
-Vi har tagit emot din förfrågan och kommer att kontakta dig så snart som möjligt för att diskutera möjligheterna.
-
-H2: Ditt tillfälle
-
-Tillfälle: {TILLFÄLLE}
-
-Vi ser fram emot att göra ert tillfälle extra speciellt!
-
-H2: Kontakta oss
-
-Har du frågor? Kontakta oss på kontakt@improteatern.se eller besök improteatern.se
-
-Med vänliga hälsningar
-Lilla Improteatern`;
-
-    default:
-      return 'H1: Bekräftelse\n\nTack för ditt meddelande!';
-  }
 }
