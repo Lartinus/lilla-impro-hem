@@ -6,8 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { Settings, LogIn, LogOut, Menu } from 'lucide-react';
+import { Settings, LogIn, LogOut, Menu, Home } from 'lucide-react';
 import Header from '@/components/Header';
+import { Link } from 'react-router-dom';
 import LoginForm from '@/components/auth/LoginForm';
 import SignUpForm from '@/components/auth/SignUpForm';
 import { CourseManagement } from '@/components/admin/CourseManagement';
@@ -180,11 +181,22 @@ const AdminDashboard = () => {
         
         <div className="flex-1 flex flex-col min-w-0">
           {/* Header */}
-          <header className="sticky top-0 z-50 h-16 flex items-center justify-between border-b bg-white px-4 md:px-6 shrink-0">
+          <header className="sticky top-0 z-50 h-16 flex items-center justify-between bg-white px-4 md:px-6 shrink-0">
             <div className="flex items-center gap-4 min-w-0">
               <SidebarTrigger className="md:hidden shrink-0" />
             </div>
             <div className="flex items-center gap-2 md:gap-3 shrink-0">
+              <Button 
+                asChild
+                variant="outline" 
+                size="sm" 
+                className="text-xs flex items-center font-satoshi"
+              >
+                <Link to="/">
+                  <Home className="w-3 h-3 mr-1" />
+                  <span className="hidden sm:inline">Startsida</span>
+                </Link>
+              </Button>
               <Badge variant="secondary" className="text-xs flex items-center font-satoshi hidden sm:flex">
                 <Settings className="w-3 h-3 mr-1" />
                 Admin
