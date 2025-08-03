@@ -112,7 +112,7 @@ serve(async (req) => {
 
       // Return success URL for free tickets
       return new Response(JSON.stringify({ 
-        url: `${req.headers.get('origin')}/shows/tack?session_id=${freeTicketId}` 
+        url: `${req.headers.get('origin')}/forestallningar/tack?session_id=${freeTicketId}` 
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -132,7 +132,7 @@ serve(async (req) => {
         'line_items[0][price_data][unit_amount]': (totalAmount * 100).toString(),
         'line_items[0][quantity]': '1',
         'mode': 'payment',
-        'success_url': `${req.headers.get('origin')}/shows/tack?session_id={CHECKOUT_SESSION_ID}`,
+        'success_url': `${req.headers.get('origin')}/forestallningar/tack?session_id={CHECKOUT_SESSION_ID}`,
         'cancel_url': `${req.headers.get('origin')}/payment-cancelled`,
         'metadata[show_slug]': showSlug,
         'metadata[ticket_code]': ticketCode,

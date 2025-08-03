@@ -30,6 +30,7 @@ const LazyLokal = React.lazy(() => import('@/pages/Lokal'));
 const LazyBokaOss = React.lazy(() => import('@/pages/BokaOss'));
 const LazyShowDetails = React.lazy(() => import('@/pages/ShowDetails'));
 const LazyAdmin = React.lazy(() => import('@/pages/Admin'));
+const LazyTicketSuccess = React.lazy(() => import('@/pages/TicketPaymentSuccess'));
 const LazyPaymentPages = React.lazy(() => 
   Promise.all([
     import('@/pages/TicketPaymentSuccess'),
@@ -166,6 +167,16 @@ function App() {
                   element={
                     <Suspense fallback={<AdminSkeleton />}>
                       <LazyAdmin />
+                    </Suspense>
+                  } 
+                />
+                
+                 {/* Ticket confirmation route */}
+                <Route 
+                  path="/forestallningar/tack" 
+                  element={
+                    <Suspense fallback={null}>
+                      <LazyTicketSuccess />
                     </Suspense>
                   } 
                 />

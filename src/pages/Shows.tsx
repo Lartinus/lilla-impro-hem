@@ -31,7 +31,7 @@ export default function Shows() {
     const canceled = searchParams.get('canceled');
     
     if (success === 'true') {
-      navigate('/shows/tack', { replace: true });
+      navigate('/forestallningar/tack', { replace: true });
     } else if (canceled === 'true') {
       navigate('/payment-cancelled', { replace: true });
     }

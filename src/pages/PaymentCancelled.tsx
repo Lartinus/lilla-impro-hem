@@ -44,7 +44,7 @@ const PaymentCancelled = () => {
                   </Link>
                 </Button>
                 <Button asChild variant="outline">
-                  <Link to="/shows">
+                  <Link to="/forestallningar">
                     <RefreshCw className="w-4 h-4 mr-2" />
                     Försök igen - Föreställningar
                   </Link>
