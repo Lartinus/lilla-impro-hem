@@ -47,6 +47,111 @@ export const WaitlistForm = ({ courseInstanceId, courseTitle, onClose, isMobile 
     }
   };
 
+  if (isMobile) {
+    return (
+      <Form {...form}>
+        <form id="waitlist-form" onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Namn *</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Ditt fullständiga namn" 
+                      className="rounded-none" 
+                      maxLength={100}
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>E-postadress *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="din@email.se" type="email" className="rounded-none" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Telefonnummer *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="070-123 45 67" type="tel" className="rounded-none" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Meddelande (valfritt)</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Eventuellt meddelande..." 
+                      className="rounded-none min-h-[80px]" 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <p className="text-sm text-yellow-800">
+              <strong>Kursen är fullbokad!</strong> Genom att skriva upp dig på väntelistan får du chansen att delta om en plats blir ledig. Vi kontaktar dig i den ordning anmälningarna kom in.
+            </p>
+          </div>
+        </form>
+
+        {/* Fixed button area at bottom for mobile */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 pb-safe">
+          <div className="flex space-x-3">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={onClose} 
+              className="flex-1 rounded-none"
+            >
+              Avbryt
+            </Button>
+            <Button 
+              type="submit"
+              form="waitlist-form"
+              disabled={isSubmitting} 
+              variant="blue" 
+              className="flex-1 rounded-none"
+            >
+              {isSubmitting ? 'Skickar...' : 'Skriv upp mig'}
+            </Button>
+          </div>
+        </div>
+      </Form>
+    );
+  }
+
+  // Desktop version
   const formContent = (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
@@ -123,7 +228,7 @@ export const WaitlistForm = ({ courseInstanceId, courseTitle, onClose, isMobile 
           </p>
         </div>
 
-        <div className={`flex space-x-2 ${isMobile ? 'pt-4' : 'pt-4'}`}>
+        <div className="flex space-x-2 pt-4">
           <Button type="button" variant="outline" onClick={onClose} className="flex-1 rounded-none">
             Avbryt
           </Button>

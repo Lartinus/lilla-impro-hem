@@ -127,13 +127,15 @@ const CourseBookingForm = ({
     if (isSoldOut && courseInstance) {
       return (
         <div className="flex flex-col h-full">
-          <div className="flex-1 overflow-y-auto p-4">
-            <WaitlistForm 
-              courseInstanceId={courseInstance.id} 
-              courseTitle={courseTitle} 
-              onClose={() => setOpen(false)} 
-              isMobile={true}
-            />
+          <div className="flex-1 overflow-y-auto px-6 py-4">
+            <div className="pb-40 md:pb-32">
+              <WaitlistForm 
+                courseInstanceId={courseInstance.id} 
+                courseTitle={courseTitle} 
+                onClose={() => setOpen(false)} 
+                isMobile={true}
+              />
+            </div>
           </div>
         </div>
       );
