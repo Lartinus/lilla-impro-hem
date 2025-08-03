@@ -10,7 +10,6 @@ import { useWaitlistBooking } from '@/hooks/useWaitlistBooking';
 const waitlistSchema = z.object({
   name: z.string().min(1, "Namn krävs"),
   email: z.string().email("Ogiltig e-postadress"),
-  phone: z.string().min(6, "Telefonnummer måste vara minst 6 tecken"),
   message: z.string(),
 });
 
@@ -29,7 +28,6 @@ export const WaitlistForm = ({ courseInstanceId, courseTitle, onClose, isMobile 
     defaultValues: {
       name: '',
       email: '',
-      phone: '',
       message: '',
     },
   });
@@ -38,7 +36,7 @@ export const WaitlistForm = ({ courseInstanceId, courseTitle, onClose, isMobile 
     const result = await submitWaitlistBooking({
       name: values.name,
       email: values.email,
-      phone: values.phone,
+      phone: '', // Empty phone since it's not required
       message: values.message
     });
     if (result.success) {
@@ -79,20 +77,6 @@ export const WaitlistForm = ({ courseInstanceId, courseTitle, onClose, isMobile 
                   <FormLabel>E-postadress *</FormLabel>
                   <FormControl>
                     <Input placeholder="din@email.se" type="email" className="rounded-none" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefonnummer *</FormLabel>
-                  <FormControl>
-                    <Input placeholder="070-123 45 67" type="tel" className="rounded-none" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -189,19 +173,6 @@ export const WaitlistForm = ({ courseInstanceId, courseTitle, onClose, isMobile 
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Telefonnummer *</FormLabel>
-                <FormControl>
-                  <Input placeholder="070-123 45 67" type="tel" className="rounded-none" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           <FormField
             control={form.control}
