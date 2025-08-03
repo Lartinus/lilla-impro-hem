@@ -334,7 +334,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex-1">
-          <h2 className="text-2xl font-bold">{showCompleted ? 'Genomförda kurser' : 'Aktiva kurser'}</h2>
+          <h2 className="text-2xl font-bold font-satoshi">{showCompleted ? 'Genomförda kurser' : 'Aktiva kurser'}</h2>
           <p className="text-muted-foreground mt-1">
             Hantera kursinstanser och deras deltagare
           </p>
@@ -705,7 +705,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
 
       {/* Participants Dialog */}
       <Dialog open={isParticipantsDialogOpen} onOpenChange={setIsParticipantsDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle className="flex items-center justify-between">
               <span>Deltagare - {selectedCourse?.course_title}</span>
@@ -735,9 +735,9 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
           <div className="flex-1 overflow-hidden flex flex-col gap-4">
             {/* Add Participant Form */}
             {isAddParticipantFormOpen && (
-              <Card>
+                <Card>
                 <CardContent className="p-4">
-                  <h3 className="font-medium mb-3">Lägg till ny deltagare</h3>
+                  <h3 className="font-medium mb-3 font-satoshi">Lägg till ny deltagare</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>
                       <Label htmlFor="participantName">Namn *</Label>
@@ -809,13 +809,13 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                   <div className="border rounded-lg flex-1 overflow-hidden">
                     <div className="overflow-auto h-full">
                       <Table>
-                         <TableHeader className="sticky top-0 bg-background">
-                           <TableRow>
-                             <TableHead>Namn</TableHead>
-                             <TableHead>E-post</TableHead>
-                             <TableHead className="w-32">Åtgärder</TableHead>
-                           </TableRow>
-                         </TableHeader>
+                          <TableHeader className="sticky top-0 bg-background">
+                            <TableRow>
+                              <TableHead className="font-satoshi">Namn</TableHead>
+                              <TableHead className="font-satoshi">E-post</TableHead>
+                              <TableHead className="w-48 font-satoshi">Åtgärder</TableHead>
+                            </TableRow>
+                          </TableHeader>
                          <TableBody>
                            {participants.map((participant, index) => (
                              <TableRow key={index}>
