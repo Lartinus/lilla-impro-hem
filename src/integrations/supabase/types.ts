@@ -471,6 +471,39 @@ export type Database = {
         }
         Relationships: []
       }
+      course_waitlist: {
+        Row: {
+          course_instance_id: string
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          name: string
+          phone: string
+          position_in_queue: number
+        }
+        Insert: {
+          course_instance_id: string
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          phone: string
+          position_in_queue?: number
+        }
+        Update: {
+          course_instance_id?: string
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string
+          position_in_queue?: number
+        }
+        Relationships: []
+      }
       discount_codes: {
         Row: {
           code: string
