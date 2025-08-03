@@ -11,10 +11,13 @@ import {
   PowerOff, 
   Power, 
   Archive, 
-  Trash2 
+  Trash2,
+  Clock
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { CourseWithBookings, Performer } from '@/types/courseManagement';
+import { useWaitlistManagement } from '@/hooks/useWaitlistManagement';
+import { WaitlistDialog } from '../WaitlistDialog';
 
 interface MobileCourseCardProps {
   course: CourseWithBookings;
@@ -47,6 +50,9 @@ export function MobileCourseCard({
   performers,
   showCompleted
 }: MobileCourseCardProps) {
+  // Get waitlist data for this course
+  const { waitlistCount, isLoadingCount } = useWaitlistManagement(course.id);
+
   return (
     <Card>
       <CardContent className="p-4">
@@ -125,6 +131,27 @@ export function MobileCourseCard({
                 <Users className="w-3 h-3 mr-1 flex-shrink-0" />
                 <span className="truncate">Deltagare ({course.bookingCount})</span>
               </Button>
+              
+              <WaitlistDialog
+                courseInstanceId={course.id}
+                courseTitle={course.course_title}
+                courseTableName={course.table_name}
+                waitlistCount={waitlistCount}
+              >
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="flex-1 min-w-0 text-xs px-2"
+                  disabled={isLoadingCount}
+                >
+                  <Clock className="w-3 h-3 mr-1 flex-shrink-0" />
+                  <span className="truncate">Väntelista {waitlistCount > 0 && `(${waitlistCount})`}</span>
+                </Button>
+              </WaitlistDialog>
+            </div>
+            
+            {/* Andra raden - Sekundära åtgärder */}
+            <div className="flex gap-2 min-w-0">
               <Button 
                 variant="outline" 
                 size="sm"
@@ -134,21 +161,7 @@ export function MobileCourseCard({
                 <Edit className="w-3 h-3 mr-1 flex-shrink-0" />
                 <span className="truncate">Redigera</span>
               </Button>
-            </div>
-            
-            {/* Andra raden - Sekundära åtgärder */}
-            <div className="flex gap-2 min-w-0">
-              {showCompleted && onRestore && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => onRestore(course)}
-                  className="flex-1 min-w-0 text-xs px-2"
-                >
-                  <RotateCcw className="w-3 h-3 mr-1 flex-shrink-0" />
-                  <span className="truncate">Återställ</span>
-                </Button>
-              )}
+              
               {!showCompleted && (
                 <Button 
                   variant="outline" 
@@ -162,6 +175,21 @@ export function MobileCourseCard({
                     <Power className="w-3 h-3 mr-1 flex-shrink-0" />
                   )}
                   <span className="truncate">{course.is_active ? 'Inaktivera' : 'Aktivera'}</span>
+                </Button>
+              )}
+            </div>
+            
+            {/* Tredje raden - Destruktiva/admin åtgärder */}
+            <div className="flex gap-2 min-w-0">
+              {showCompleted && onRestore && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => onRestore(course)}
+                  className="flex-1 min-w-0 text-xs px-2"
+                >
+                  <RotateCcw className="w-3 h-3 mr-1 flex-shrink-0" />
+                  <span className="truncate">Återställ</span>
                 </Button>
               )}
               {!showCompleted && onMarkCompleted && (
