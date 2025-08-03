@@ -5,7 +5,7 @@ import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 import { InterestSignupSection } from '@/components/InterestSignupSection';
 import { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useAdminCourses } from '@/hooks/useAdminCourses';
+import { useAdminCourseCards } from '@/hooks/useAdminCoursesOptimized';
 import OptimizedImage from '@/components/OptimizedImage';
 
 const Courses = () => {
@@ -24,7 +24,7 @@ const Courses = () => {
     }
   }, [searchParams, navigate]);
 
-  const { data: adminCourses, isLoading: adminLoading } = useAdminCourses();
+  const { data: adminCourses, isLoading: adminLoading } = useAdminCourseCards();
   const courses = adminCourses || [];
   const practicalInfo = ['Kommer inom kort.'];
 

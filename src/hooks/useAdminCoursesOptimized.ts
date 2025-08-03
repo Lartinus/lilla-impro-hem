@@ -1,6 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { getCurrentCourseBookings } from './useCourseInstances';
 
 // Lightweight interface for course cards
 interface CourseCardData {
@@ -20,6 +21,7 @@ interface CourseCardData {
     name: string;
     image: string | null;
   } | null;
+  currentParticipants?: number;
 }
 
 // Full course data for detail views
@@ -62,7 +64,8 @@ export const useAdminCourseCards = () => {
           price,
           discount_price,
           instructor_id_1,
-          sort_order
+          sort_order,
+          max_participants
         `)
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
@@ -82,7 +85,20 @@ export const useAdminCourseCards = () => {
             .eq('is_active', true)
         : { data: [] };
 
-      const formattedCourses = (courseInstances || [])
+      // Get booking counts for all courses in parallel
+      const coursesWithBookingCounts = await Promise.all(
+        (courseInstances || []).map(async (instance) => {
+          let currentParticipants = 0;
+          try {
+            currentParticipants = await getCurrentCourseBookings(instance.table_name);
+          } catch (error) {
+            console.warn(`Could not get booking count for ${instance.table_name}:`, error);
+          }
+          return { ...instance, currentParticipants };
+        })
+      );
+
+      const formattedCourses = coursesWithBookingCounts
         .map(instance => {
           const instructor = instance.instructor_id_1 
             ? performers?.find(p => p.id === instance.instructor_id_1)
@@ -99,7 +115,8 @@ export const useAdminCourseCards = () => {
             available: true,
             showButton: true,
             buttonText: 'Anmäl dig',
-            teacher
+            teacher,
+            currentParticipants: instance.currentParticipants
           };
         })
         .filter(course => {
