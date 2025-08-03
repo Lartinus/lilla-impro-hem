@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
       }
     });
 
-    // Get the Authorization header from the request
+    // Get the Authorization header from the request to verify the calling user
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       console.error('No authorization header found');
@@ -50,9 +50,18 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Create a client with the user's token to verify they're admin
+    const userSupabase = createClient(supabaseUrl, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaW1uc2JlZXhra3FyYWdtZHpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MzI5MTEsImV4cCI6MjA2NDEwODkxMX0.Pwq8q3IP60BkTkl9TdMa5PWOVSayKaMXVY8Z3XJ-1UA', {
+      global: {
+        headers: {
+          Authorization: authHeader
+        }
+      }
+    });
+
     // Extract the token and verify the user
     const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const { data: { user }, error: authError } = await userSupabase.auth.getUser();
     
     if (authError || !user) {
       console.error('Authentication failed:', authError);
@@ -65,8 +74,8 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Check if user has admin role
-    const { data: userRoles, error: roleError } = await supabase
+    // Check if user has admin role using the user's client
+    const { data: userRoles, error: roleError } = await userSupabase
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id);
@@ -82,7 +91,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Use the service role client but set the auth context
+    // Now use the service role client to insert the participant (bypassing RLS)
     const { data, error } = await supabase
       .from(table_name)
       .insert({
