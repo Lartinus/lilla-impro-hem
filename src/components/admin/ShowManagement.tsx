@@ -81,14 +81,20 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
     return filtered.sort((a, b) => {
       switch (sortBy) {
         case 'title':
-          return a.title.localeCompare(b.title);
+          return a.title.localeCompare(b.title, 'sv');
         case 'venue':
-          return (a.venue || '').localeCompare(b.venue || '');
+          return (a.venue || '').localeCompare(b.venue || '', 'sv');
         case 'date':
         default:
-          const dateA = a.show_date ? new Date(a.show_date) : new Date(0);
-          const dateB = b.show_date ? new Date(b.show_date) : new Date(0);
-          return dateB.getTime() - dateA.getTime();
+          // For date sorting, ensure we handle null/undefined dates properly
+          if (!a.show_date && !b.show_date) return 0;
+          if (!a.show_date) return 1; // null dates go to end
+          if (!b.show_date) return -1; // null dates go to end
+          
+          const dateA = new Date(a.show_date + 'T' + (a.show_time || '00:00:00'));
+          const dateB = new Date(b.show_date + 'T' + (b.show_time || '00:00:00'));
+          
+          return dateA.getTime() - dateB.getTime(); // Ascending order (earliest first)
       }
     });
   }, [showCards, searchTerm, filterStatus, sortBy]);
@@ -161,21 +167,22 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
   return (
     <div className="space-y-6">
       
-      <div className="flex justify-between items-center">
-        <div>
+      <div>
+        <div className="mb-4">
           <h2 className="text-2xl font-bold">Föreställningar</h2>
           <p className="text-muted-foreground">Hantera teaterföreställningar</p>
         </div>
+        
         <Dialog open={showDialog} onOpenChange={setShowDialog}>
           <DialogTrigger asChild>
-            <Button onClick={() => setShowDialog(true)}>
+            <Button onClick={() => setShowDialog(true)} className="font-satoshi">
               <Plus className="h-4 w-4 mr-2" />
               Lägg till föreställning
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className="font-satoshi">
                 {selectedShow ? 'Redigera föreställning' : 'Lägg till ny föreställning'}
               </DialogTitle>
             </DialogHeader>
