@@ -1,6 +1,13 @@
 import { useState, useCallback, useEffect } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { imageCache } from '@/services/imageCache'
+import { 
+  generateResponsiveImageSources, 
+  getOptimizedImageUrl,
+  generateSizesAttribute,
+  generateBlurPlaceholder,
+  preloadCriticalImage
+} from '@/utils/imageOptimization'
 
 interface OptimizedImageProps {
   src: string | null
@@ -12,6 +19,10 @@ interface OptimizedImageProps {
   priority?: boolean
   responsive?: boolean
   sizes?: string
+  layout?: 'hero' | 'card' | 'thumbnail' | 'full-width' | 'custom'
+  width?: number
+  height?: number
+  blurPlaceholder?: boolean
 }
 
 export default function OptimizedImage({
@@ -22,21 +33,61 @@ export default function OptimizedImage({
   preferredSize = 'small',
   onLoad,
   priority = false,
-  responsive = false,
+  responsive = true,
   sizes,
+  layout = 'card',
+  width,
+  height,
+  blurPlaceholder = true,
 }: OptimizedImageProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
   const [showImage, setShowImage] = useState(false)
 
-  const { imageUrl, originalSrc, srcSet } = useCallback(() => {
-    if (!src) return { imageUrl: null, originalSrc: null, srcSet: '' }
+  const { imageUrl, originalSrc, avifSrcSet, webpSrcSet, fallbackSrcSet, sizesAttr, blurDataUrl } = useCallback(() => {
+    if (!src) return { 
+      imageUrl: null, 
+      originalSrc: null, 
+      avifSrcSet: '', 
+      webpSrcSet: '', 
+      fallbackSrcSet: '',
+      sizesAttr: '',
+      blurDataUrl: ''
+    };
+    
+    let baseSrc: string;
     if (typeof src === 'string') {
-      return { imageUrl: src, originalSrc: src, srcSet: '' }
+      baseSrc = src;
+    } else {
+      baseSrc = (src as any)?.data?.attributes?.url || (src as any)?.url;
     }
-    const url = (src as any)?.data?.attributes?.url || (src as any)?.url
-    return { imageUrl: url, originalSrc: url, srcSet: '' }
-  }, [src])()
+    
+    if (!baseSrc) return { 
+      imageUrl: null, 
+      originalSrc: null, 
+      avifSrcSet: '', 
+      webpSrcSet: '', 
+      fallbackSrcSet: '',
+      sizesAttr: '',
+      blurDataUrl: ''
+    };
+
+    // Generate responsive sources
+    const responsiveSources = responsive ? generateResponsiveImageSources(baseSrc) : null;
+    const optimizedUrl = getOptimizedImageUrl(baseSrc);
+    const sizesAttribute = sizes || generateSizesAttribute(layout);
+    const placeholder = blurPlaceholder ? generateBlurPlaceholder(width, height) : '';
+
+    return {
+      imageUrl: optimizedUrl,
+      originalSrc: baseSrc,
+      avifSrcSet: responsiveSources?.avif || '',
+      webpSrcSet: responsiveSources?.webp || '',
+      fallbackSrcSet: responsiveSources?.fallback || '',
+      sizesAttr: sizesAttribute,
+      blurDataUrl: placeholder
+    };
+  }, [src, responsive, sizes, layout, width, height, blurPlaceholder])()
 
   // Check cache and preload if needed
   useEffect(() => {
@@ -45,6 +96,11 @@ export default function OptimizedImage({
     // Always start with loading state for consistent animation
     setIsLoading(true)
     setShowImage(false)
+    
+    // Preload critical images immediately
+    if (priority) {
+      preloadCriticalImage(originalSrc, 'webp');
+    }
     
     // If image is already cached, add minimal delay for smooth animation
     if (imageCache.isImageLoaded(originalSrc)) {
@@ -60,7 +116,7 @@ export default function OptimizedImage({
 
     // Preload image if it's priority or in viewport soon
     if (priority) {
-      imageCache.preloadImage(originalSrc).then(success => {
+      imageCache.preloadImage(imageUrl || originalSrc).then(success => {
         if (!success) {
           setHasError(true)
         }
@@ -71,7 +127,7 @@ export default function OptimizedImage({
         }
       })
     }
-  }, [originalSrc, priority, onLoad])
+  }, [originalSrc, imageUrl, priority, onLoad])
 
   const handleLoad = useCallback(() => {
     setIsLoading(false)
@@ -102,22 +158,42 @@ export default function OptimizedImage({
       {isLoading && (
         <Skeleton className={`absolute inset-0 w-full h-full ${className.includes('aspect-') ? '' : 'aspect-[4/3]'}`} />
       )}
-      <img
-        src={imageUrl}
-        srcSet={srcSet || undefined}
-        sizes={sizes}
-        alt={alt}
-        className={`${className} ${showImage ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 will-change-[opacity]`}
-        loading={priority ? "eager" : "lazy"}
-        decoding="async"
-        onLoad={handleLoad}
-        onError={handleError}
-        style={{ 
-          objectFit: 'cover',
-          width: '100%',
-          height: '100%'
-        }}
-      />
+      {blurPlaceholder && blurDataUrl && isLoading && (
+        <img
+          src={blurDataUrl}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover blur-sm scale-110"
+          style={{ filter: 'blur(10px)' }}
+        />
+      )}
+      <picture>
+        {avifSrcSet && (
+          <source srcSet={avifSrcSet} sizes={sizesAttr} type="image/avif" />
+        )}
+        {webpSrcSet && (
+          <source srcSet={webpSrcSet} sizes={sizesAttr} type="image/webp" />
+        )}
+        {fallbackSrcSet && (
+          <source srcSet={fallbackSrcSet} sizes={sizesAttr} />
+        )}
+        <img
+          src={imageUrl || originalSrc}
+          alt={alt}
+          className={`${className} ${showImage ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 will-change-[opacity]`}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
+          fetchPriority={priority ? "high" : "auto"}
+          onLoad={handleLoad}
+          onError={handleError}
+          width={width}
+          height={height}
+          style={{ 
+            objectFit: 'cover',
+            width: '100%',
+            height: '100%'
+          }}
+        />
+      </picture>
     </div>
   )
 }

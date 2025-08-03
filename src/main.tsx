@@ -5,6 +5,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App.tsx";
 import "./index.css";
 
+// Performance and optimization monitoring
+console.log('🚀 Performance optimization initialized');
+
+// Font loading optimization check
+if ('fonts' in document) {
+  console.log('🔤 Font Loading API supported - optimized font loading enabled');
+} else {
+  console.log('🔤 Font Loading API not supported - using fallback font loading');
+}
+
 // Optimized QueryClient configuration for better performance
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -27,25 +27,50 @@
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="/SoMe_LIT.jpg" />
 
-    <!-- Critical resource preloading -->
+    <!-- Critical resource preloading with optimized priorities -->
     <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
     <link rel="preconnect" href="https://js.stripe.com" crossorigin>
     <link rel="dns-prefetch" href="https://improteatern.supabase.co">
     
-    <!-- Preload RetroVoice font to prevent FOUT -->
-    <link rel="preload" href="/fonts/RetroVoice-RegularNormEx2.ttf" as="font" type="font/ttf" crossorigin>
+    <!-- Preload critical fonts with WOFF2 format for better compression -->
+    <link rel="preload" href="/fonts/tanker.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/satoshi.woff2" as="font" type="font/woff2" crossorigin>
     
-    <!-- Preload critical images for faster loading with modern formats -->
+    <!-- Preload hero images in multiple formats with priority -->
+    <link rel="preload" href="/uploads/images/Rosenqvist-6301.avif" as="image" type="image/avif">
     <link rel="preload" href="/uploads/images/Rosenqvist-6301.webp" as="image" type="image/webp">
-    <link rel="preload" href="/uploads/images/Rosenqvist-6301.jpg" as="image" type="image/jpeg">
+    <link rel="preload" href="/uploads/images/kurser_LIT_2024.avif" as="image" type="image/avif">
     <link rel="preload" href="/uploads/images/kurser_LIT_2024.webp" as="image" type="image/webp">
-    <link rel="preload" href="/uploads/images/kurser_LIT_2024.jpg" as="image" type="image/jpeg">
-    <link rel="preload" href="/uploads/images/Improvision2024.webp" as="image" type="image/webp">
-    <link rel="preload" href="/uploads/images/Improvision2024.jpg" as="image" type="image/jpeg">
-    <link rel="preload" href="/uploads/images/corporate_LIT_2024.webp" as="image" type="image/webp">
-    <link rel="preload" href="/uploads/images/corporate_LIT_2024.jpg" as="image" type="image/jpeg">
-
-    <!-- Typography system with optimized loading -->
+    
+    <!-- Self-hosted fonts with optimized loading and display swap -->
+    <style>
+      @font-face {
+        font-family: 'Tanker';
+        src: url('/fonts/tanker.woff2') format('woff2'),
+             url('/fonts/tanker.woff') format('woff');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Satoshi';
+        src: url('/fonts/satoshi.woff2') format('woff2'),
+             url('/fonts/satoshi.woff') format('woff');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Rajdhani';
+        src: url('/fonts/rajdhani.woff2') format('woff2'),
+             url('/fonts/rajdhani.woff') format('woff');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style>
+    
+    <!-- Fallback external fonts loaded asynchronously -->
     <link href="https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <link href="https://api.fontshare.com/v2/css?f[]=rajdhani@400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
