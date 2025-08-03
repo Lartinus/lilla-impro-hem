@@ -57,6 +57,12 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   const hasCourseSpecificInfo = course.practicalInfo && course.practicalInfo.length > 0;
   const shouldShowPracticalInfo = hasCourseSpecificInfo;
 
+  // Check if course is sold out
+  const remainingSpots = course.max_participants && course.currentParticipants !== undefined 
+    ? course.max_participants - course.currentParticipants 
+    : null;
+  const isSoldOut = remainingSpots !== null && remainingSpots <= 0;
+
   // Determine button behavior based on course title
   const isHouseTeams = course.course_title.includes("House teams") || course.course_title.includes("fortsättning");
   const isWorkshops = course.course_title.includes("Helgworkshop") || course.course_title.includes("specialkurs");
@@ -66,7 +72,15 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   
   // For house teams, set available to false to show interest form
   const courseAvailability = isHouseTeams ? false : course.available;
-  const buttonText = isHouseTeams ? "Anmäl intresse" : course.buttonText;
+  
+  // Determine button text based on sold out status
+  let finalButtonText = "Betala med Stripe";
+  if (isHouseTeams) {
+    finalButtonText = "Anmäl intresse";
+  } else if (isSoldOut) {
+    finalButtonText = "Fullbokad!";
+  }
+  
   const buttonVariant = isHouseTeams ? "blue" : "default";
 
   return (
@@ -92,12 +106,13 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
                 const remainingSpots = course.max_participants && course.currentParticipants !== undefined 
                   ? course.max_participants - course.currentParticipants 
                   : null;
+                const isSoldOut = remainingSpots !== null && remainingSpots <= 0;
                 const showFewSpotsWarning = remainingSpots !== null && remainingSpots <= 5 && remainingSpots > 0;
                 
-                return showFewSpotsWarning ? (
+                return (isSoldOut || showFewSpotsWarning) ? (
                   <div className="relative bg-[#E7E7E7] px-2">
                     <div className="inline-flex items-center justify-center w-[120px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-primary border-primary text-white">
-                      Få platser kvar
+                      {isSoldOut ? "Fullbokad!" : "Få platser kvar"}
                     </div>
                   </div>
                 ) : null;
@@ -153,7 +168,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             tableName={course.table_name}
             isAvailable={courseAvailability}
             showButton={shouldShowButton}
-            buttonText={isHouseTeams ? buttonText : "Betala med Stripe"}
+            buttonText={finalButtonText}
             buttonVariant={buttonVariant}
             maxParticipants={course.maxParticipants}
             courseInstance={course.price && course.price > 0 ? {
