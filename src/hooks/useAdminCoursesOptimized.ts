@@ -20,6 +20,7 @@ interface CourseCardData {
     id: string;
     name: string;
     image: string | null;
+    bio: string;
   } | null;
   currentParticipants?: number;
   description?: string;
@@ -92,7 +93,7 @@ export const useAdminCourseCards = () => {
       const { data: performers } = instructorIds.length > 0 
         ? await supabase
             .from('performers')
-            .select('id, name, image_url')
+            .select('id, name, image_url, bio')
             .in('id', instructorIds)
             .eq('is_active', true)
         : { data: [] };
@@ -123,6 +124,7 @@ export const useAdminCourseCards = () => {
             id: instructor.id,
             name: instructor.name,
             image: instructor.image_url?.replace('public/', '/') || null,
+            bio: instructor.bio || ''
           } : null;
 
           return {
