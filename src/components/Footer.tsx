@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const footerNavItems = [
   { to: '/', label: 'HEM' },
   { to: '/kurser', label: 'KURSER' },
-  { to: '/shows', label: 'FÖRESTÄLLNINGAR' },
+  { to: '/forestallningar', label: 'FÖRESTÄLLNINGAR' },
   { to: '/boka-oss', label: 'BOKA OSS' },
   { to: '/om-oss', label: 'OM OSS' },
   { to: '/om-oss', label: 'KONTAKT' },

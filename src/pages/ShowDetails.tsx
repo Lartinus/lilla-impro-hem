@@ -133,7 +133,7 @@ const ShowDetails = () => {
               {/* Back link positioned above content, aligned with text */}
               <div className="absolute -top-8 left-6 md:left-8 z-20">
                 <Link 
-                  to="/shows" 
+                  to="/forestallningar" 
                   className="inline-flex items-center hover:opacity-80 transition-colors"
                   style={{ color: 'rgb(var(--white))', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
                 >
@@ -229,7 +229,7 @@ const ShowDetails = () => {
               {/* Back to shows link */}
               <div className="mb-8">
                 <Link 
-                  to="/shows" 
+                  to="/forestallningar" 
                   className="inline-flex items-center text-black hover:text-black/80 transition-colors"
                 >
                   <MoveLeft size={24} className="mr-2" />

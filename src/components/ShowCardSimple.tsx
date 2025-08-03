@@ -104,7 +104,7 @@ const ShowCardSimple = ({
             </div>
           </div>
           
-          <Link to={`/shows/${show.slug}`}>
+          <Link to={`/forestallningar/${show.slug}`}>
             <Button 
               variant="default"
               className="w-full"
