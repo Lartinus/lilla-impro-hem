@@ -1,4 +1,5 @@
 import React from 'react';
+import { AlertTriangle } from 'lucide-react';
 
 interface PracticalInfoProps {
   sessions?: number;
@@ -10,6 +11,7 @@ interface PracticalInfoProps {
   discountPrice?: number;
   additionalInfo?: string;
   practicalInfoText?: string;
+  currentParticipants?: number;
 }
 
 export const PracticalInfo = ({ 
@@ -21,7 +23,8 @@ export const PracticalInfo = ({
   price, 
   discountPrice,
   additionalInfo,
-  practicalInfoText
+  practicalInfoText,
+  currentParticipants
 }: PracticalInfoProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -99,11 +102,27 @@ export const PracticalInfo = ({
 
   const items = getPracticalItems();
 
+  // Calculate remaining spots
+  const remainingSpots = maxParticipants && currentParticipants !== undefined 
+    ? maxParticipants - currentParticipants 
+    : null;
+  
+  const showFewSpotsWarning = remainingSpots !== null && remainingSpots <= 5 && remainingSpots > 0;
+
   if (items.length === 0) return null;
 
   return (
     <div className="mb-6">
       <h2 className="mb-2">Praktisk information</h2>
+      
+      {/* Few spots warning - show after the date info */}
+      {showFewSpotsWarning && (
+        <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
+          <AlertTriangle className="w-4 h-4" />
+          Få platser kvar
+        </div>
+      )}
+      
       <ul className="space-y-2">
         {items.map((item, index) => (
           <li key={index} className="flex items-start space-x-3">

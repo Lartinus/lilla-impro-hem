@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { getCurrentCourseBookings } from './useCourseInstances';
 
 export interface AdminCourse {
   id: string;
@@ -38,6 +39,7 @@ export interface AdminCourse {
     image: string | null;
     bio: string;
   }>;
+  currentParticipants?: number;
 }
 
 export const useAdminCourses = () => {
@@ -60,8 +62,21 @@ export const useAdminCourses = () => {
 
       if (performersError) throw performersError;
 
+      // Get booking counts for all courses in parallel
+      const coursesWithBookingCounts = await Promise.all(
+        (courseInstances || []).map(async (instance) => {
+          let currentParticipants = 0;
+          try {
+            currentParticipants = await getCurrentCourseBookings(instance.table_name);
+          } catch (error) {
+            console.warn(`Could not get booking count for ${instance.table_name}:`, error);
+          }
+          return { ...instance, currentParticipants };
+        })
+      );
+
       // Format course instances to match the CourseCard interface and filter out helgworkshops
-      return (courseInstances || [])
+      const formattedCourses = coursesWithBookingCounts
         .map(instance => {
           // Find instructors by their IDs
           const instructor1 = instance.instructor_id_1 
@@ -110,7 +125,8 @@ export const useAdminCourses = () => {
             sessions: instance.sessions,
             hours_per_session: instance.hours_per_session,
             price: instance.price,
-            discount_price: instance.discount_price
+            discount_price: instance.discount_price,
+            currentParticipants: instance.currentParticipants
           };
         })
         .filter(course => {
@@ -121,6 +137,8 @@ export const useAdminCourses = () => {
                  !title.includes('helgworkshops') &&
                  !title.includes('specialkurser');
         });
+      
+      return formattedCourses;
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
   });

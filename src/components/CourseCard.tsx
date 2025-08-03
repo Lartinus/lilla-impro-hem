@@ -44,6 +44,7 @@ interface Course {
   price?: number;
   discount_price?: number;
   table_name?: string;
+  currentParticipants?: number;
 }
 
 interface CourseCardProps {
@@ -117,6 +118,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           hoursPerSession={course.hours_per_session}
           price={course.price}
           discountPrice={course.discount_price}
+          currentParticipants={course.currentParticipants}
         />
         
         <div className="flex-1"></div>
