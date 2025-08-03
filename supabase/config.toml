@@ -94,3 +94,6 @@ verify_jwt = false
 
 [functions.stripe-webhook]
 verify_jwt = false
+
+[functions.add-course-participant]
+verify_jwt = true

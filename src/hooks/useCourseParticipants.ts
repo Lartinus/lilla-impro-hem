@@ -107,7 +107,11 @@ export const useCourseParticipants = () => {
           table_name: tableName,
           participant_name: name,
           participant_email: email,
-          participant_phone: phone
+          participant_phone: phone,
+          participant_address: '',
+          participant_postal_code: '',
+          participant_city: '',
+          participant_message: ''
         }
       });
 
@@ -115,10 +119,11 @@ export const useCourseParticipants = () => {
 
       if (error) {
         console.error('❌ Edge function error:', error);
-        throw new Error(`Databasfel: ${error.message}`);
+        throw new Error(`Edge function fel: ${error.message}`);
       }
       
       if (!data?.success) {
+        console.error('❌ Database function failed:', data);
         throw new Error(data?.error || 'Deltagaren kunde inte läggas till');
       }
       
