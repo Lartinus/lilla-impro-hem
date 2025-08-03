@@ -82,17 +82,18 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Call the database function to add participant
-    const { data, error } = await supabase.rpc('add_course_participant', {
-      table_name,
-      participant_name,
-      participant_email,
-      participant_phone: participant_phone || '',
-      participant_address: participant_address || '',
-      participant_postal_code: participant_postal_code || '',
-      participant_city: participant_city || '',
-      participant_message: participant_message || ''
-    });
+    // Use the service role client but set the auth context
+    const { data, error } = await supabase
+      .from(table_name)
+      .insert({
+        name: participant_name,
+        email: participant_email.toLowerCase(),
+        phone: participant_phone || '',
+        address: participant_address || '',
+        postal_code: participant_postal_code || '',
+        city: participant_city || '',
+        message: participant_message || ''
+      });
 
     if (error) {
       console.error('Database function error:', error);
