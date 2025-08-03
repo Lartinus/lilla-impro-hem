@@ -8,6 +8,7 @@ import OptimizedImage from '@/components/OptimizedImage';
 import ShowTag from '@/components/ShowTag';
 import MainCard from '@/components/MainCard';
 import Header from '@/components/Header';
+import ShowDetailsSkeleton from '@/components/skeletons/ShowDetailsSkeleton';
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAdminShows } from '@/hooks/useAdminShows';
@@ -78,11 +79,7 @@ const ShowDetails = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <SubtleLoadingOverlay isVisible={true} />
-      </div>
-    );
+    return <ShowDetailsSkeleton />;
   }
 
   if (error) {
