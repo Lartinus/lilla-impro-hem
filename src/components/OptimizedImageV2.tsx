@@ -26,6 +26,7 @@ export default function OptimizedImageV2({
 }: OptimizedImageV2Props) {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
+  const [showImage, setShowImage] = useState(false)
   const [imageFormat, setImageFormat] = useState<'webp' | 'avif' | 'jpg'>('jpg')
 
   // Detect browser support for modern image formats
@@ -67,23 +68,34 @@ export default function OptimizedImageV2({
 
   const imageUrl = src?.includes('http') ? src : src ? `/uploads/images/${src}` : null
 
-  // Preload critical images
+  // Preload critical images with consistent animation
   useEffect(() => {
-    if (!imageUrl || !priority) return
+    if (!imageUrl) return
+    
+    // Always start with loading state for consistent animation
+    setIsLoading(true)
+    setShowImage(false)
     
     if (imageCache.isImageLoaded(imageUrl)) {
-      setIsLoading(false)
+      setTimeout(() => {
+        setIsLoading(false)
+        setTimeout(() => setShowImage(true), 50) // Smooth fade-in
+      }, 100)
       return
     }
 
-    imageCache.preloadImage(imageUrl).then(success => {
-      if (!success) setHasError(true)
-      setIsLoading(false)
-    })
+    if (priority) {
+      imageCache.preloadImage(imageUrl).then(success => {
+        if (!success) setHasError(true)
+        setIsLoading(false)
+        setTimeout(() => setShowImage(true), 50) // Smooth fade-in
+      })
+    }
   }, [imageUrl, priority])
 
   const handleLoad = useCallback(() => {
     setIsLoading(false)
+    setTimeout(() => setShowImage(true), 50) // Smooth fade-in
   }, [])
 
   const handleError = useCallback(() => {
@@ -107,7 +119,7 @@ export default function OptimizedImageV2({
         srcSet={generateSrcSet(imageUrl)}
         sizes={sizes}
         alt={alt}
-        className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+        className={`${className} ${showImage ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}
         loading={priority ? "eager" : loading}
         decoding="async"
         onLoad={handleLoad}

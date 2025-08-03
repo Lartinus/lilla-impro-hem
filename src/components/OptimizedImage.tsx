@@ -27,7 +27,7 @@ export default function OptimizedImage({
 }: OptimizedImageProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
+  const [showImage, setShowImage] = useState(false)
 
   const { imageUrl, originalSrc, srcSet } = useCallback(() => {
     if (!src) return { imageUrl: null, originalSrc: null, srcSet: '' }
@@ -42,13 +42,19 @@ export default function OptimizedImage({
   useEffect(() => {
     if (!originalSrc) return
     
-    // If image is already cached, set loading to false immediately
+    // Always start with loading state for consistent animation
+    setIsLoading(true)
+    setShowImage(false)
+    
+    // If image is already cached, add minimal delay for smooth animation
     if (imageCache.isImageLoaded(originalSrc)) {
-      setIsLoading(false)
-      setHasError(false)
-      if (onLoad) {
-        onLoad(originalSrc)
-      }
+      setTimeout(() => {
+        setIsLoading(false)
+        setTimeout(() => setShowImage(true), 50) // Smooth fade-in
+        if (onLoad) {
+          onLoad(originalSrc)
+        }
+      }, 100)
       return
     }
 
@@ -59,6 +65,7 @@ export default function OptimizedImage({
           setHasError(true)
         }
         setIsLoading(false)
+        setTimeout(() => setShowImage(true), 50) // Smooth fade-in
         if (onLoad) {
           onLoad(originalSrc)
         }
@@ -68,7 +75,7 @@ export default function OptimizedImage({
 
   const handleLoad = useCallback(() => {
     setIsLoading(false)
-    setImageLoaded(true)
+    setTimeout(() => setShowImage(true), 50) // Smooth fade-in
     if (onLoad && originalSrc) {
       onLoad(originalSrc)
     }
@@ -92,7 +99,7 @@ export default function OptimizedImage({
 
   return (
     <div className={`relative ${className} overflow-hidden`} style={{ contentVisibility: 'auto' }}>
-      {isLoading && !imageLoaded && (
+      {isLoading && (
         <Skeleton className={`absolute inset-0 w-full h-full ${className.includes('aspect-') ? '' : 'aspect-[4/3]'}`} />
       )}
       <img
@@ -100,7 +107,7 @@ export default function OptimizedImage({
         srcSet={srcSet || undefined}
         sizes={sizes}
         alt={alt}
-        className={`${className} ${isLoading && !imageLoaded ? 'opacity-0' : 'opacity-100'} transition-opacity duration-500 will-change-[opacity]`}
+        className={`${className} ${showImage ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 will-change-[opacity]`}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
         onLoad={handleLoad}
