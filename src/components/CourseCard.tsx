@@ -82,21 +82,26 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
                 {course.subtitle}
               </h3>
               
-              {/* Few spots warning - positioned after subtitle, before dashed line */}
-              {(() => {
-                const remainingSpots = course.max_participants && course.currentParticipants !== undefined 
-                  ? course.max_participants - course.currentParticipants 
-                  : null;
-                const showFewSpotsWarning = remainingSpots !== null && remainingSpots <= 5 && remainingSpots > 0;
-                
-                return showFewSpotsWarning ? (
-                  <div className="mb-3 inline-flex items-center justify-center w-[120px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-primary border-primary text-white">
-                    Få platser kvar
-                  </div>
-                ) : null;
-              })()}
-              
-              <div className="course-dashed-line"></div>
+              {/* Dashed line with optional "Få platser kvar" tag in the middle */}
+              <div className="pt-1 my-1">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex-1 border-t-2 border-dashed border-black"></div>
+                  {(() => {
+                    const remainingSpots = course.max_participants && course.currentParticipants !== undefined 
+                      ? course.max_participants - course.currentParticipants 
+                      : null;
+                    const showFewSpotsWarning = remainingSpots !== null && remainingSpots <= 5 && remainingSpots > 0;
+                    
+                    return showFewSpotsWarning ? (
+                      <div className="ml-2 -my-[10px]">
+                        <div className="inline-flex items-center justify-center w-[120px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-primary border-primary text-white">
+                          Få platser kvar
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
+                </div>
+              </div>
             </>
           )}
         </div>
