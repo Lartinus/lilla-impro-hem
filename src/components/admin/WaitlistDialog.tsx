@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Users, UserPlus, UserX, Clock } from 'lucide-react';
 import { useWaitlistManagement } from '@/hooks/useWaitlistManagement';
@@ -55,9 +56,9 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto sm:max-w-[95vw] sm:max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 flex-wrap">
             <Users className="h-5 w-5" />
-            Väntelista - {courseTitle}
+            <span className="text-sm sm:text-base">Väntelista - {courseTitle}</span>
             <Badge variant="secondary" className="ml-2">
               {waitlistCount} personer
             </Badge>
@@ -75,106 +76,213 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
               <p>Ingen väntelista för denna kurs ännu.</p>
             </div>
           ) : (
-            <div className="border rounded-lg">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-16">Position</TableHead>
-                    <TableHead>Namn</TableHead>
-                    <TableHead>E-post</TableHead>
-                    <TableHead>Meddelande</TableHead>
-                    <TableHead>Anmäld</TableHead>
-                    <TableHead className="text-right">Åtgärder</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {waitlistEntries.map((entry, index) => (
-                    <TableRow key={entry.id}>
-                      <TableCell>
-                        <Badge variant="outline" className="font-mono">
-                          #{entry.position_in_queue}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="font-medium">{entry.name}</TableCell>
-                      <TableCell>{entry.email}</TableCell>
-                      <TableCell className="max-w-xs truncate" title={entry.message || ''}>
-                        {entry.message || '-'}
-                      </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
-                        {format(new Date(entry.created_at), 'dd MMM yyyy, HH:mm', { locale: sv })}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex gap-2 justify-end">
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                disabled={isMoving || isRemoving}
-                                className="h-8"
-                              >
-                                <UserPlus className="h-4 w-4 mr-1" />
-                                Flytta till kurs
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Flytta till kurs</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Är du säker på att du vill flytta <strong>{entry.name}</strong> från väntelistan till kursen? 
-                                  Personen kommer att läggas till som kursdeltagare och tas bort från väntelistan.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Avbryt</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={() => handleMoveToParticipants(entry.email, entry.name)}
-                                  className="bg-green-600 hover:bg-green-700"
-                                >
-                                  Flytta till kurs
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                disabled={isMoving || isRemoving}
-                                className="h-8 text-red-600 hover:text-red-700"
-                              >
-                                <UserX className="h-4 w-4 mr-1" />
-                                Ta bort
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Ta bort från väntelista</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Är du säker på att du vill ta bort <strong>{entry.name}</strong> från väntelistan? 
-                                  Denna åtgärd kan inte ångras.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Avbryt</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={() => handleRemoveFromWaitlist(entry.email, entry.name)}
-                                  className="bg-red-600 hover:bg-red-700"
-                                >
-                                  Ta bort
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
-                      </TableCell>
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block border rounded-lg">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-16">Position</TableHead>
+                      <TableHead>Namn</TableHead>
+                      <TableHead>E-post</TableHead>
+                      <TableHead>Meddelande</TableHead>
+                      <TableHead>Anmäld</TableHead>
+                      <TableHead className="text-right">Åtgärder</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {waitlistEntries.map((entry, index) => (
+                      <TableRow key={entry.id}>
+                        <TableCell>
+                          <Badge variant="outline" className="font-mono">
+                            #{entry.position_in_queue}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="font-medium">{entry.name}</TableCell>
+                        <TableCell>{entry.email}</TableCell>
+                        <TableCell className="max-w-xs truncate" title={entry.message || ''}>
+                          {entry.message || '-'}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {format(new Date(entry.created_at), 'dd MMM yyyy, HH:mm', { locale: sv })}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex gap-2 justify-end">
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  disabled={isMoving || isRemoving}
+                                  className="h-8"
+                                >
+                                  <UserPlus className="h-4 w-4 mr-1" />
+                                  Flytta till kurs
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Flytta till kurs</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Är du säker på att du vill flytta <strong>{entry.name}</strong> från väntelistan till kursen? 
+                                    Personen kommer att läggas till som kursdeltagare och tas bort från väntelistan.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    onClick={() => handleMoveToParticipants(entry.email, entry.name)}
+                                    className="bg-green-600 hover:bg-green-700"
+                                  >
+                                    Flytta till kurs
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  disabled={isMoving || isRemoving}
+                                  className="h-8 text-red-600 hover:text-red-700"
+                                >
+                                  <UserX className="h-4 w-4 mr-1" />
+                                  Ta bort
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Ta bort från väntelista</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Är du säker på att du vill ta bort <strong>{entry.name}</strong> från väntelistan? 
+                                    Denna åtgärd kan inte ångras.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    onClick={() => handleRemoveFromWaitlist(entry.email, entry.name)}
+                                    className="bg-red-600 hover:bg-red-700"
+                                  >
+                                    Ta bort
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-3">
+                {waitlistEntries.map((entry, index) => (
+                  <Card key={entry.id} className="shadow-sm">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <Badge variant="outline" className="font-mono text-xs">
+                            #{entry.position_in_queue}
+                          </Badge>
+                          {entry.name}
+                        </CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0 space-y-3">
+                      <div className="space-y-2 text-sm">
+                        <div>
+                          <span className="font-medium text-muted-foreground">E-post:</span>
+                          <div className="break-all">{entry.email}</div>
+                        </div>
+                        {entry.message && (
+                          <div>
+                            <span className="font-medium text-muted-foreground">Meddelande:</span>
+                            <div className="text-sm">{entry.message}</div>
+                          </div>
+                        )}
+                        <div>
+                          <span className="font-medium text-muted-foreground">Anmäld:</span>
+                          <div className="text-xs text-muted-foreground">
+                            {format(new Date(entry.created_at), 'dd MMM yyyy, HH:mm', { locale: sv })}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2 pt-2">
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={isMoving || isRemoving}
+                              className="w-full"
+                            >
+                              <UserPlus className="h-4 w-4 mr-2" />
+                              Flytta till kurs
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Flytta till kurs</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Är du säker på att du vill flytta <strong>{entry.name}</strong> från väntelistan till kursen? 
+                                Personen kommer att läggas till som kursdeltagare och tas bort från väntelistan.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => handleMoveToParticipants(entry.email, entry.name)}
+                                className="bg-green-600 hover:bg-green-700"
+                              >
+                                Flytta till kurs
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={isMoving || isRemoving}
+                              className="w-full text-red-600 hover:text-red-700"
+                            >
+                              <UserX className="h-4 w-4 mr-2" />
+                              Ta bort från väntelista
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Ta bort från väntelista</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Är du säker på att du vill ta bort <strong>{entry.name}</strong> från väntelistan? 
+                                Denna åtgärd kan inte ångras.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => handleRemoveFromWaitlist(entry.email, entry.name)}
+                                className="bg-red-600 hover:bg-red-700"
+                              >
+                                Ta bort
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </DialogContent>
