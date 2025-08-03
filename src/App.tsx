@@ -15,6 +15,14 @@ import Index from '@/pages/Index';
 import About from '@/pages/About';
 import NotFound from '@/pages/NotFound';
 
+// Skeleton components
+import CoursesSkeleton from '@/components/skeletons/CoursesSkeleton';
+import ShowsSkeleton from '@/components/skeletons/ShowsSkeleton';
+import ShowDetailsSkeleton from '@/components/skeletons/ShowDetailsSkeleton';
+import BokaOssSkeleton from '@/components/skeletons/BokaOssSkeleton';
+import LokalSkeleton from '@/components/skeletons/LokalSkeleton';
+import AdminSkeleton from '@/components/skeletons/AdminSkeleton';
+
 // Lazy imports for better code splitting
 const LazyShows = React.lazy(() => import('@/pages/Shows'));
 const LazyCourses = React.lazy(() => import('@/pages/Courses'));
@@ -115,7 +123,7 @@ function App() {
                 <Route 
                   path="/forestallningar" 
                   element={
-                    <Suspense fallback={null}>
+                    <Suspense fallback={<ShowsSkeleton />}>
                       <LazyShows />
                     </Suspense>
                   } 
@@ -123,7 +131,7 @@ function App() {
                 <Route 
                   path="/kurser" 
                   element={
-                    <Suspense fallback={null}>
+                    <Suspense fallback={<CoursesSkeleton />}>
                       <LazyCourses />
                     </Suspense>
                   } 
@@ -131,7 +139,7 @@ function App() {
                 <Route 
                   path="/lokal" 
                   element={
-                    <Suspense fallback={null}>
+                    <Suspense fallback={<LokalSkeleton />}>
                       <LazyLokal />
                     </Suspense>
                   } 
@@ -139,7 +147,7 @@ function App() {
                 <Route 
                   path="/boka-oss" 
                   element={
-                    <Suspense fallback={null}>
+                    <Suspense fallback={<BokaOssSkeleton />}>
                       <LazyBokaOss />
                     </Suspense>
                   } 
@@ -147,7 +155,7 @@ function App() {
                 <Route 
                   path="/forestallningar/:slug" 
                   element={
-                    <Suspense fallback={null}>
+                    <Suspense fallback={<ShowDetailsSkeleton />}>
                       <LazyShowDetails />
                     </Suspense>
                   } 
@@ -157,7 +165,7 @@ function App() {
                 <Route 
                   path="/admin/*" 
                   element={
-                    <Suspense fallback={null}>
+                    <Suspense fallback={<AdminSkeleton />}>
                       <LazyAdmin />
                     </Suspense>
                   } 
