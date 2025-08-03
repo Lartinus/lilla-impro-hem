@@ -11,7 +11,7 @@ const SubtleLoadingOverlay = ({ isVisible, progress = 0, message = "Laddar..." }
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-x-0 top-[85px] bottom-0 bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary z-50 flex items-center justify-center">
+    <div className="fixed inset-x-0 top-[85px] h-[calc(100vh-85px-200px)] bg-gradient-to-br from-theatre-primary via-theatre-secondary to-theatre-tertiary z-50 flex items-center justify-center">
       <div className="text-center text-white">
         <div className="mb-4">
           <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto"></div>
