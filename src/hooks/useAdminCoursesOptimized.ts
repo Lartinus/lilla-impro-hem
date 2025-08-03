@@ -22,6 +22,13 @@ interface CourseCardData {
     image: string | null;
   } | null;
   currentParticipants?: number;
+  description?: string;
+  course_info?: string;
+  practical_info?: string;
+  start_time?: string | null;
+  sessions?: number | null;
+  hours_per_session?: number | null;
+  max_participants?: number | null;
 }
 
 // Full course data for detail views
@@ -65,7 +72,12 @@ export const useAdminCourseCards = () => {
           discount_price,
           instructor_id_1,
           sort_order,
-          max_participants
+          max_participants,
+          course_info,
+          practical_info,
+          start_time,
+          sessions,
+          hours_per_session
         `)
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
@@ -90,7 +102,10 @@ export const useAdminCourseCards = () => {
         (courseInstances || []).map(async (instance) => {
           let currentParticipants = 0;
           try {
-            currentParticipants = await getCurrentCourseBookings(instance.table_name);
+            // Only try to get booking count if table exists (no special characters that break naming)
+            if (instance.table_name && !instance.table_name.includes('_l_ngform_')) {
+              currentParticipants = await getCurrentCourseBookings(instance.table_name);
+            }
           } catch (error) {
             console.warn(`Could not get booking count for ${instance.table_name}:`, error);
           }
@@ -116,7 +131,8 @@ export const useAdminCourseCards = () => {
             showButton: true,
             buttonText: 'Anmäl dig',
             teacher,
-            currentParticipants: instance.currentParticipants
+            currentParticipants: instance.currentParticipants,
+            description: instance.course_info || `${instance.course_title} - skapat från administratörspanelen.`
           };
         })
         .filter(course => {
