@@ -77,8 +77,12 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             {course.course_title}
           </h2>
           {course.subtitle && (
-            <div className="course-dashed-line">
-              {/* Few spots warning - positioned over the dashed line */}
+            <>
+              <h3>
+                {course.subtitle}
+              </h3>
+              
+              {/* Few spots warning - positioned after subtitle, before dashed line */}
               {(() => {
                 const remainingSpots = course.max_participants && course.currentParticipants !== undefined 
                   ? course.max_participants - course.currentParticipants 
@@ -86,16 +90,14 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
                 const showFewSpotsWarning = remainingSpots !== null && remainingSpots <= 5 && remainingSpots > 0;
                 
                 return showFewSpotsWarning ? (
-                  <div className="mb-2 inline-flex items-center justify-center w-[120px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-primary border-primary text-white">
+                  <div className="mb-3 inline-flex items-center justify-center w-[120px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-primary border-primary text-white">
                     Få platser kvar
                   </div>
                 ) : null;
               })()}
               
-              <h3>
-                {course.subtitle}
-              </h3>
-            </div>
+              <div className="course-dashed-line"></div>
+            </>
           )}
         </div>
         <div 
