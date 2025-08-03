@@ -55,7 +55,7 @@ const AdminDashboard = () => {
   if (authLoading || roleLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center font-satoshi bg-background-gray">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-red"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-300"></div>
       </div>
     );
   }
