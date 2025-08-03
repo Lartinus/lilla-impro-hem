@@ -176,6 +176,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
               courseTitle={course.course_title}
               courseTableName={course.table_name}
               waitlistCount={waitlistCount}
+              coursePrice={course.price}
             >
               <Button
                 variant="outline"

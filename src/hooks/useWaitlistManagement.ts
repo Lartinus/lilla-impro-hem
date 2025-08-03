@@ -68,11 +68,13 @@ export const useWaitlistManagement = (courseInstanceId?: string) => {
     mutationFn: async ({ 
       courseInstanceId, 
       email, 
-      courseTableName 
+      courseTableName,
+      coursePrice = 0
     }: { 
       courseInstanceId: string; 
       email: string; 
       courseTableName: string; 
+      coursePrice?: number;
     }) => {
       // Get the waitlist entry to get person's details
       const { data: waitlistEntry, error: getError } = await supabase
@@ -86,42 +88,98 @@ export const useWaitlistManagement = (courseInstanceId?: string) => {
         throw new Error('Could not find waitlist entry');
       }
 
-      // Add person to course using existing function
-      const { error: addError } = await supabase.rpc('add_course_participant', {
-        table_name: courseTableName,
-        participant_name: waitlistEntry.name,
-        participant_email: waitlistEntry.email,
-        participant_phone: '', // Phone not required for waitlist
-        participant_address: '',
-        participant_postal_code: '',
-        participant_city: '',
-        participant_message: waitlistEntry.message || ''
-      });
+      // If course has a price, trigger payment flow
+      if (coursePrice > 0) {
+        // Get course details for payment
+        const { data: courseInstance, error: courseError } = await supabase
+          .from('course_instances')
+          .select('*')
+          .eq('id', courseInstanceId)
+          .single();
 
-      if (addError) {
-        throw new Error(`Failed to add to course: ${addError.message}`);
+        if (courseError || !courseInstance) {
+          throw new Error('Could not find course details');
+        }
+
+        // Create checkout session for waitlist participant
+        const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke('create-course-checkout', {
+          body: {
+            courseInstanceId,
+            courseTitle: courseInstance.course_title,
+            courseTableName,
+            price: courseInstance.price,
+            discountPrice: courseInstance.discount_price,
+            buyerName: waitlistEntry.name,
+            buyerEmail: waitlistEntry.email,
+            buyerPhone: '', // Phone not required for waitlist
+            buyerAddress: '',
+            buyerPostalCode: '',
+            buyerCity: '',
+            buyerMessage: waitlistEntry.message || '',
+            useDiscountPrice: false
+          }
+        });
+
+        if (checkoutError || !checkoutData?.url) {
+          throw new Error('Failed to create payment session');
+        }
+
+        // Open payment in new tab
+        window.open(checkoutData.url, '_blank');
+
+        // Remove from waitlist after payment session is created
+        const { error: removeError } = await supabase.rpc('remove_from_waitlist', {
+          course_instance_id_param: courseInstanceId,
+          email_param: email
+        });
+
+        if (removeError) {
+          console.error('Warning: Failed to remove from waitlist:', removeError);
+        }
+
+        return { success: true, requiresPayment: true };
+      } else {
+        // Free course - add directly to course
+        const { error: addError } = await supabase.rpc('add_course_participant', {
+          table_name: courseTableName,
+          participant_name: waitlistEntry.name,
+          participant_email: waitlistEntry.email,
+          participant_phone: '', // Phone not required for waitlist
+          participant_address: '',
+          participant_postal_code: '',
+          participant_city: '',
+          participant_message: waitlistEntry.message || ''
+        });
+
+        if (addError) {
+          throw new Error(`Failed to add to course: ${addError.message}`);
+        }
+
+        // Remove from waitlist
+        const { error: removeError } = await supabase.rpc('remove_from_waitlist', {
+          course_instance_id_param: courseInstanceId,
+          email_param: email
+        });
+
+        if (removeError) {
+          throw new Error(`Failed to remove from waitlist: ${removeError.message}`);
+        }
+
+        return { success: true, requiresPayment: false };
       }
-
-      // Remove from waitlist
-      const { error: removeError } = await supabase.rpc('remove_from_waitlist', {
-        course_instance_id_param: courseInstanceId,
-        email_param: email
-      });
-
-      if (removeError) {
-        throw new Error(`Failed to remove from waitlist: ${removeError.message}`);
-      }
-
-      return { success: true };
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Invalidate and refetch related queries
       queryClient.invalidateQueries({ queryKey: ['waitlist'] });
       queryClient.invalidateQueries({ queryKey: ['waitlist-count'] });
       queryClient.invalidateQueries({ queryKey: ['course-participants'] });
       queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
       
-      toast.success('Person moved from waitlist to course successfully!');
+      if (data.requiresPayment) {
+        toast.success('Betalningslänk öppnad! Personen läggs till kursen när betalningen är klar.');
+      } else {
+        toast.success('Person moved from waitlist to course successfully!');
+      }
     },
     onError: (error: any) => {
       console.error('Error moving from waitlist:', error);

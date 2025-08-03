@@ -15,6 +15,7 @@ interface WaitlistDialogProps {
   courseTitle: string;
   courseTableName: string;
   waitlistCount: number;
+  coursePrice?: number;
   children: React.ReactNode;
 }
 
@@ -23,6 +24,7 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
   courseTitle,
   courseTableName,
   waitlistCount,
+  coursePrice = 0,
   children
 }) => {
   const {
@@ -38,7 +40,8 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
     moveFromWaitlist({
       courseInstanceId,
       email,
-      courseTableName
+      courseTableName,
+      coursePrice
     });
   };
 
