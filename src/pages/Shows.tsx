@@ -10,7 +10,7 @@ import ShowTag from '@/components/ShowTag';
 import MainCard from '@/components/MainCard';
 import OptimizedImage from '@/components/OptimizedImage';
 
-import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
+import ShowsSkeleton from '@/components/skeletons/ShowsSkeleton';
 import { NewsletterSignupModal } from '@/components/NewsletterSignupModal';
 import { Button } from '@/components/ui/button';
 import { useImageLoader } from '@/hooks/useImageLoader';
@@ -93,9 +93,12 @@ export default function Shows() {
 
   const { handleImageLoad, allImagesLoaded } = useImageLoader(imageUrls);
   
-  // Check if we should show loading overlay - don't wait forever for images
+  // Check if we should show loading
   const shouldShowLoading = showsLoading || tagsLoading;
 
+  if (shouldShowLoading) {
+    return <ShowsSkeleton />;
+  }
 
   if (showsError) {
     return (

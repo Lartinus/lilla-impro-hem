@@ -18,7 +18,7 @@ import { useAdminShowCards } from '@/hooks/useAdminShowsOptimized';
 import { useOptimizedShowData } from '@/hooks/useOptimizedShowData';
 import { useShowManagementMutations } from '@/hooks/useShowManagementMutations';
 import { useIsMobile } from '@/hooks/use-mobile';
-import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
+import AdminSkeleton from '@/components/skeletons/AdminSkeleton';
 import type { AdminShowWithPerformers, NewShowForm } from '@/types/showManagement';
 
 interface ShowManagementProps {
@@ -154,9 +154,12 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
     );
   }
 
+  if (isLoadingCards) {
+    return <AdminSkeleton />;
+  }
+
   return (
     <div className="space-y-6">
-      <SubtleLoadingOverlay isVisible={isLoadingCards} />
       
       <div className="flex justify-between items-center">
         <div>

@@ -29,8 +29,7 @@ const LazyCourses = React.lazy(() => import('@/pages/Courses'));
 const LazyLokal = React.lazy(() => import('@/pages/Lokal'));
 const LazyBokaOss = React.lazy(() => import('@/pages/BokaOss'));
 const LazyShowDetails = React.lazy(() => import('@/pages/ShowDetails'));
-const LazyAdmin = React.lazy(() => import('@/components/LazyAdminDashboard'));
-const LazyStripeCheckout = React.lazy(() => import('@/components/LazyStripeCheckout'));
+const LazyAdmin = React.lazy(() => import('@/pages/Admin'));
 const LazyPaymentPages = React.lazy(() => 
   Promise.all([
     import('@/pages/TicketPaymentSuccess'),
@@ -191,15 +190,6 @@ function App() {
                   } 
                 />
                 
-                {/* Stripe checkout */}
-                <Route 
-                  path="/stripe-checkout" 
-                  element={
-                    <Suspense fallback={null}>
-                      <LazyStripeCheckout />
-                    </Suspense>
-                  } 
-                />
                 
                 {/* Fallback */}
                 <Route path="*" element={<NotFound />} />

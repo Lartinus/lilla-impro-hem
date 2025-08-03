@@ -12,7 +12,7 @@ import ShowDetailsSkeleton from '@/components/skeletons/ShowDetailsSkeleton';
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAdminShows } from '@/hooks/useAdminShows';
-import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
+
 import { MapPin, MoveLeft } from 'lucide-react';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
 
