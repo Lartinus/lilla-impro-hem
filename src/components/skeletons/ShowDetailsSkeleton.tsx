@@ -1,9 +1,14 @@
+import { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MainCard from '@/components/MainCard';
 
 export default function ShowDetailsSkeleton() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       <Header />

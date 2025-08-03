@@ -1,6 +1,11 @@
+import { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const AdminSkeleton = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="flex h-screen">

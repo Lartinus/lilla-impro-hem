@@ -1,9 +1,14 @@
+import { useEffect } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 
 const CoursesSkeleton = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen">
       <Header />
