@@ -1,7 +1,6 @@
 
 import { useEffect } from 'react';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import PerformersSection from '@/components/PerformersSection';
 import OptimizedImage from '@/components/OptimizedImage';
 
@@ -66,8 +65,6 @@ const About = () => {
           </div>
         </div>
       </div>
-      
-      <Footer />
     </>
   );
 };

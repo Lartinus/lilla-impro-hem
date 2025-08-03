@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import OptimizedImage from '@/components/OptimizedImage';
 
 const Lokal = () => {
@@ -44,8 +43,6 @@ const Lokal = () => {
           </div>
         </div>
       </div>
-      
-      <Footer />
     </div>
   );
 };

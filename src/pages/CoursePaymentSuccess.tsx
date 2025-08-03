@@ -4,7 +4,6 @@ import { CheckCircle2, ArrowLeft, Mail, Calendar, User, MapPin } from 'lucide-re
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 interface CourseDetails {
   courseTitle: string;
@@ -109,8 +108,6 @@ const CoursePaymentSuccess = () => {
           </Card>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };

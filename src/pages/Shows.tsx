@@ -2,7 +2,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { useAdminShows, formatAdminShowForCard } from '@/hooks/useAdminShows';
 import { useShowTags } from '@/hooks/useShowTags';
 import ShowCardSimple from '@/components/ShowCardSimple';
@@ -123,7 +122,6 @@ export default function Shows() {
             </Button>
           </div>
         </div>
-        <Footer />
       </>
     );
   }
@@ -245,8 +243,6 @@ export default function Shows() {
         open={isNewsletterModalOpen}
         onOpenChange={setIsNewsletterModalOpen}
       />
-      
-      <Footer />
     </>
   );
 }

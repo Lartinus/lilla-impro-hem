@@ -3,7 +3,7 @@ import TicketPurchaseComplete from '@/components/TicketPurchaseComplete';
 import PerformersSection from '@/components/PerformersSection';
 import NewsletterSignupSection from '@/components/NewsletterSignupSection';
 import { NewsletterSignupModal } from '@/components/NewsletterSignupModal';
-import Footer from '@/components/Footer';
+
 import OptimizedImage from '@/components/OptimizedImage';
 import ShowTag from '@/components/ShowTag';
 import MainCard from '@/components/MainCard';
@@ -241,8 +241,6 @@ const ShowDetails = () => {
           </div>
         </div>
       </div>
-      
-      <Footer />
       
       <NewsletterSignupModal 
         open={isNewsletterModalOpen} 

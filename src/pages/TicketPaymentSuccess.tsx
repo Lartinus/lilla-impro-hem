@@ -4,7 +4,6 @@ import { CheckCircle2, ArrowLeft, Calendar, Ticket } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { supabase } from '@/integrations/supabase/client';
 
 interface TicketDetails {
@@ -163,8 +162,6 @@ const TicketPaymentSuccess = () => {
           </Card>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };

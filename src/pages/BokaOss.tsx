@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
 import PrivateInquiryForm from '@/components/PrivateInquiryForm';
 import OptimizedImage from '@/components/OptimizedImage';
@@ -166,8 +165,6 @@ export default function AnlitaOss() {
           </div>
         </div>
       </div>
-      
-      <Footer />
     </>
   );
 }

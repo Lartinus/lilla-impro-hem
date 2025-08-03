@@ -1,6 +1,5 @@
 // src/pages/Courses.tsx
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import CourseGrid from '@/components/CourseGrid';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton';
 import { InterestSignupSection } from '@/components/InterestSignupSection';
@@ -127,8 +126,6 @@ const Courses = () => {
           </div>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 };
