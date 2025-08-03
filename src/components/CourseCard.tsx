@@ -78,25 +78,25 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           </h2>
           {course.subtitle && (
             <div className="course-dashed-line">
+              {/* Few spots warning - positioned over the dashed line */}
+              {(() => {
+                const remainingSpots = course.max_participants && course.currentParticipants !== undefined 
+                  ? course.max_participants - course.currentParticipants 
+                  : null;
+                const showFewSpotsWarning = remainingSpots !== null && remainingSpots <= 5 && remainingSpots > 0;
+                
+                return showFewSpotsWarning ? (
+                  <div className="mb-2 inline-flex items-center justify-center w-[120px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-primary border-primary text-white">
+                    Få platser kvar
+                  </div>
+                ) : null;
+              })()}
+              
               <h3>
                 {course.subtitle}
               </h3>
             </div>
           )}
-          
-          {/* Few spots warning - positioned after subtitle */}
-          {(() => {
-            const remainingSpots = course.max_participants && course.currentParticipants !== undefined 
-              ? course.max_participants - course.currentParticipants 
-              : null;
-            const showFewSpotsWarning = remainingSpots !== null && remainingSpots <= 5 && remainingSpots > 0;
-            
-            return showFewSpotsWarning ? (
-              <div className="mb-4 inline-flex items-center justify-center w-[120px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-primary border-primary text-white">
-                Få platser kvar
-              </div>
-            ) : null;
-          })()}
         </div>
         <div 
           className="mb-4 text-base body-text mt-0 [&>p]:mb-0.5 [&>p]:mt-0 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0 [&>*:first-child]:mt-0"
