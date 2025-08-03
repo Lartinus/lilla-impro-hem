@@ -1,0 +1,5 @@
+# Redirect old paths for better SEO
+/shows/* /forestallningar/:splat 301!
+
+# SPA fallback
+/* /index.html 200

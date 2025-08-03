@@ -3,10 +3,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthProvider } from '@/components/auth/AuthProvider';
-import { usePerformanceMonitor, logBundleInfo } from '@/hooks/usePerformanceMonitor';
-import { useBackgroundSync } from '@/hooks/useBackgroundSync';
-import { useAdvancedPerformance } from '@/hooks/useAdvancedPerformance';
-import { useResourceOptimization } from '@/hooks/useResourceOptimization';
+// Removed performance monitoring hooks for better performance
 
 // Static imports for critical path
 import Header from '@/components/Header';
@@ -62,47 +59,7 @@ const LazyNewsletterPages = React.lazy(() =>
 
 
 function App() {
-  // Phase 1 & 2 optimizations
-  usePerformanceMonitor();
-  useBackgroundSync();
-  
-  // Phase 3 advanced optimizations
-  const { metrics, budgetViolations, optimizeQueryCache } = useAdvancedPerformance();
-  const { preloadRoute, preloadImage } = useResourceOptimization({
-    enablePrefetch: true,
-    enablePreload: true,
-    aggressiveCaching: true,
-  });
-  
-  // Log performance improvements and bundle info
-  React.useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      logBundleInfo();
-      
-      // Log performance improvements after all optimizations
-      setTimeout(() => {
-        console.log('🚀 Phase 3 Performance Summary:', {
-          metrics,
-          budgetViolations,
-          optimizationsApplied: [
-            '✅ Image optimization with WebP/AVIF',
-            '✅ Lazy loading and code splitting',
-            '✅ Optimized API queries',
-            '✅ Background sync',
-            '✅ Advanced performance monitoring',
-            '✅ Resource prefetching',
-            '✅ Aggressive caching'
-          ]
-        });
-      }, 3000);
-    }
-  }, [metrics, budgetViolations]);
-
-  // Periodic cache optimization
-  React.useEffect(() => {
-    const interval = setInterval(optimizeQueryCache, 10 * 60 * 1000); // Every 10 minutes
-    return () => clearInterval(interval);
-  }, [optimizeQueryCache]);
+  // Performance optimized - removed monitoring overhead
 
   return (
     <AuthProvider>

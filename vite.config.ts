@@ -21,99 +21,34 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // Advanced bundle optimization
+    // Simplified chunking for better CDN caching
     rollupOptions: {
       output: {
         manualChunks: {
-          // Core React chunks
-          'react-vendor': ['react', 'react-dom'],
-          'router': ['react-router-dom'],
-          'query': ['@tanstack/react-query'],
-          
-          // UI library chunks
-          'radix-ui': [
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-select',
-            '@radix-ui/react-tabs',
-            '@radix-ui/react-tooltip',
-          ],
-          'ui-components': [
-            '@radix-ui/react-accordion',
-            '@radix-ui/react-alert-dialog',
-            '@radix-ui/react-avatar',
-            '@radix-ui/react-checkbox',
-            '@radix-ui/react-label',
-            '@radix-ui/react-popover',
-            '@radix-ui/react-progress',
-            '@radix-ui/react-radio-group',
-            '@radix-ui/react-scroll-area',
-            '@radix-ui/react-separator',
-            '@radix-ui/react-slider',
-            '@radix-ui/react-switch',
-            '@radix-ui/react-toast',
-          ],
-          
-          // Feature-specific chunks
-          'charts': ['recharts'],
-          'carousel': ['embla-carousel-react'],
-          'stripe': ['@stripe/stripe-js'],
-          'icons': ['lucide-react'],
-          'forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
-          'dates': ['date-fns', 'react-day-picker'],
-          
-          // Database and auth
+          // Essential chunks only
+          'vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui': ['@tanstack/react-query', 'lucide-react', 'clsx', 'tailwind-merge'],
           'supabase': ['@supabase/supabase-js'],
-          
-          // Utilities
-          'utils': [
-            'clsx',
-            'class-variance-authority',
-            'tailwind-merge',
-            'cmdk',
-            'sonner',
-            'vaul',
-            'input-otp',
-            'marked',
-            'dompurify'
-          ],
         },
+        // CDN-friendly file naming
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
       },
     },
-    // Optimize chunk sizes
-    chunkSizeWarningLimit: 600,
-    
-    // Enable modern browser optimizations
+    chunkSizeWarningLimit: 500,
     target: 'es2020',
-    
-    // Minimize CSS
-    cssCodeSplit: true,
-    
-    // Source maps for production debugging
-    sourcemap: mode === 'production' ? false : true,
+    cssCodeSplit: false, // Bundle CSS for better caching
+    sourcemap: false, // Disable sourcemaps for faster builds
   },
   
-  // Optimize dependencies pre-bundling
+  // Minimal dependency optimization
   optimizeDeps: {
-    include: [
-      'react',
-      'react-dom',
-      'react-router-dom',
-      '@tanstack/react-query',
-      'lucide-react',
-      'clsx',
-      'tailwind-merge'
-    ],
-    exclude: [
-      '@stripe/stripe-js', // Load dynamically
-      'recharts', // Lazy loaded
-      'embla-carousel-react' // Lazy loaded
-    ]
+    include: ['react', 'react-dom', 'react-router-dom'],
+    exclude: ['@stripe/stripe-js', 'recharts', 'embla-carousel-react']
   },
   
-  // Performance optimizations
   esbuild: {
-    // Drop console and debugger in production
     drop: mode === 'production' ? ['console', 'debugger'] : [],
   },
 }));
