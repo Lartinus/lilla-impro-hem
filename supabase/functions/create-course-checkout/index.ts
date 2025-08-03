@@ -32,7 +32,8 @@ serve(async (req) => {
       buyerPostalCode,
       buyerCity,
       buyerMessage,
-      useDiscountPrice
+      useDiscountPrice,
+      offerToken
     } = body;
 
     console.log('Request body received:', body);
@@ -84,23 +85,36 @@ serve(async (req) => {
     console.log('Full session object:', JSON.stringify(session, null, 2));
 
     // Store course purchase in database
+    const purchaseData: any = {
+      course_instance_id: courseInstanceId,
+      course_title: courseTitle,
+      course_table_name: courseTableName,
+      total_amount: totalAmount,
+      buyer_name: buyerName,
+      buyer_email: buyerEmail,
+      buyer_phone: buyerPhone,
+      buyer_address: buyerAddress || null,
+      buyer_postal_code: buyerPostalCode || null,
+      buyer_city: buyerCity || null,
+      buyer_message: buyerMessage || null,
+      stripe_session_id: session.id,
+      payment_status: 'pending'
+    };
+
     const { error: insertError } = await supabase
       .from('course_purchases')
-      .insert({
-        course_instance_id: courseInstanceId,
-        course_title: courseTitle,
-        course_table_name: courseTableName,
-        total_amount: totalAmount,
-        buyer_name: buyerName,
-        buyer_email: buyerEmail,
-        buyer_phone: buyerPhone,
-        buyer_address: buyerAddress || null,
-        buyer_postal_code: buyerPostalCode || null,
-        buyer_city: buyerCity || null,
-        buyer_message: buyerMessage || null,
-        stripe_session_id: session.id,
-        payment_status: 'pending'
-      });
+      .insert(purchaseData);
+
+    // If this is from a course offer, update the offer status
+    if (offerToken) {
+      await supabase
+        .from('course_offers')
+        .update({ 
+          status: 'payment_initiated',
+          stripe_session_id: session.id 
+        })
+        .eq('offer_token', offerToken);
+    }
 
     if (insertError) {
       console.error('Error storing course purchase:', insertError);

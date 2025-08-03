@@ -10,6 +10,8 @@ interface WaitlistEntry {
   message?: string;
   position_in_queue: number;
   created_at: string;
+  offer_sent?: boolean;
+  offer_sent_at?: string;
 }
 
 export const useWaitlistManagement = (courseInstanceId?: string) => {

@@ -13,6 +13,7 @@ interface CourseOfferRequest {
   courseTitle: string;
   courseTableName: string;
   coursePrice: number;
+  courseDiscountPrice: number;
   waitlistEmail: string;
   waitlistName: string;
   waitlistPhone?: string;
@@ -77,6 +78,7 @@ serve(async (req) => {
         course_title: requestData.courseTitle,
         course_table_name: requestData.courseTableName,
         course_price: requestData.coursePrice,
+        course_discount_price: requestData.courseDiscountPrice,
         waitlist_email: requestData.waitlistEmail,
         waitlist_name: requestData.waitlistName,
         waitlist_phone: requestData.waitlistPhone || '',
@@ -90,12 +92,22 @@ serve(async (req) => {
       throw new Error(`Failed to create offer record: ${offerError.message}`);
     }
 
+    // Get email template from database
+    const { data: emailTemplate } = await supabaseAdmin
+      .from('email_templates')
+      .select('subject, content')
+      .eq('name', 'AUTO: course_offer')
+      .eq('is_active', true)
+      .single();
+
     // Send email using Resend
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-    const origin = req.headers.get('origin') || 'https://gcimnsbeexkkqragmdzo.supabase.co';
+    const origin = req.headers.get('origin') || 'https://improteatern.se';
     const offerUrl = `${origin}/course-offer-payment/${offerToken}`;
 
-    const emailContent = `
+    // Use template if available, otherwise fallback to default
+    let emailSubject = 'Du har erbjudits en plats i kursen!';
+    let emailContent = `
 H1: Du har erbjudits en plats i kursen!
 
 Hej ${requestData.waitlistName}!
@@ -104,7 +116,8 @@ Vi är glada att kunna erbjuda dig en plats i kursen "${requestData.courseTitle}
 
 **Kursinformation:**
 - Kurs: ${requestData.courseTitle}
-- Pris: ${requestData.coursePrice} kr
+- Ordinarie pris: ${requestData.coursePrice} kr
+- Studentpris: ${requestData.courseDiscountPrice} kr
 
 För att säkra din plats behöver du betala senast ${expiresAt.toLocaleDateString('sv-SE')} kl ${expiresAt.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}.
 
@@ -118,17 +131,42 @@ Har du frågor? Svara bara på detta mejl.
 Välkommen!
 `;
 
+    if (emailTemplate) {
+      emailSubject = emailTemplate.subject
+        .replace('{KURSTITEL}', requestData.courseTitle);
+      
+      emailContent = emailTemplate.content
+        .replace('{NAMN}', requestData.waitlistName)
+        .replace(/\{KURSTITEL\}/g, requestData.courseTitle)
+        .replace('{ORDINARIE_PRIS}', requestData.coursePrice.toString())
+        .replace('{STUDENT_PRIS}', requestData.courseDiscountPrice.toString())
+        .replace('{GILTIGT_TILL}', `${expiresAt.toLocaleDateString('sv-SE')} kl ${expiresAt.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}`)
+        .replace('{BETALLANK}', offerUrl);
+    }
+
     const htmlContent = createUnifiedEmailTemplate(
-      'Du har erbjudits en plats i kursen!',
+      emailSubject,
       emailContent
     );
 
     const { error: emailError } = await resend.emails.send({
       from: 'Improteatern <noreply@improteatern.se>',
       to: [requestData.waitlistEmail],
-      subject: `Plats ledig i ${requestData.courseTitle}`,
+      subject: emailSubject,
       html: htmlContent,
     });
+
+    if (!emailError) {
+      // Mark waitlist entry as having received offer
+      await supabaseAdmin
+        .from('course_waitlist')
+        .update({
+          offer_sent: true,
+          offer_sent_at: new Date().toISOString()
+        })
+        .eq('course_instance_id', requestData.courseInstanceId)
+        .eq('email', requestData.waitlistEmail);
+    }
 
     if (emailError) {
       console.error('Email send error:', emailError);

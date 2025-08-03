@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -10,7 +12,9 @@ interface CourseOffer {
   id: string;
   course_title: string;
   course_price: number;
+  course_discount_price: number;
   waitlist_name: string;
+  waitlist_email: string;
   expires_at: string;
   status: string;
 }
@@ -22,6 +26,7 @@ const CourseOfferPayment = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedPrice, setSelectedPrice] = useState<'regular' | 'discount'>('regular');
 
   useEffect(() => {
     if (!token) {
@@ -37,7 +42,7 @@ const CourseOfferPayment = () => {
     try {
       const { data, error } = await supabase
         .from('course_offers')
-        .select('id, course_title, course_price, waitlist_name, expires_at, status')
+        .select('id, course_title, course_price, course_discount_price, waitlist_name, waitlist_email, expires_at, status')
         .eq('offer_token', token)
         .eq('status', 'sent')
         .gt('expires_at', new Date().toISOString())
@@ -62,14 +67,19 @@ const CourseOfferPayment = () => {
 
     setIsProcessing(true);
     try {
+      const finalPrice = selectedPrice === 'discount' ? offer.course_discount_price : offer.course_price;
+      
       // Create Stripe checkout session for the course offer
       const { data, error } = await supabase.functions.invoke('create-course-checkout', {
         body: {
           courseInstanceId: offer.id,
           courseTitle: offer.course_title,
-          coursePrice: offer.course_price,
+          courseTableName: '',
+          price: offer.course_price,
+          discountPrice: offer.course_discount_price,
+          useDiscountPrice: selectedPrice === 'discount',
           buyerName: offer.waitlist_name,
-          buyerEmail: '', // Will be filled from offer data in the function
+          buyerEmail: offer.waitlist_email,
           buyerPhone: '',
           buyerAddress: '',
           buyerPostalCode: '',
@@ -131,6 +141,7 @@ const CourseOfferPayment = () => {
   const timeLeft = expiresAt.getTime() - Date.now();
   const hoursLeft = Math.floor(timeLeft / (1000 * 60 * 60));
   const minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+  const finalPrice = selectedPrice === 'discount' ? offer.course_discount_price : offer.course_price;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
@@ -147,11 +158,7 @@ const CourseOfferPayment = () => {
             <p className="text-muted-foreground">Hej {offer.waitlist_name}!</p>
           </div>
 
-          <div className="bg-muted p-4 rounded-lg">
-            <div className="flex justify-between items-center mb-2">
-              <span className="font-medium">Pris:</span>
-              <span className="text-lg font-bold">{offer.course_price} kr</span>
-            </div>
+          <div className="bg-muted p-4 rounded-lg space-y-4">
             <div className="flex justify-between items-center">
               <span className="font-medium">Erbjudandet gäller:</span>
               <span className="text-sm">
@@ -160,6 +167,37 @@ const CourseOfferPayment = () => {
                   : 'Utgånget'
                 }
               </span>
+            </div>
+
+            <div>
+              <Label className="text-base font-medium mb-3 block">Välj pris:</Label>
+              <RadioGroup value={selectedPrice} onValueChange={(value: 'regular' | 'discount') => setSelectedPrice(value)}>
+                <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                  <RadioGroupItem value="regular" id="regular" />
+                  <Label htmlFor="regular" className="flex-1 cursor-pointer">
+                    <div className="flex justify-between items-center">
+                      <span>Ordinarie pris</span>
+                      <span className="font-bold">{offer.course_price} kr</span>
+                    </div>
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                  <RadioGroupItem value="discount" id="discount" />
+                  <Label htmlFor="discount" className="flex-1 cursor-pointer">
+                    <div className="flex justify-between items-center">
+                      <span>Studentpris</span>
+                      <span className="font-bold">{offer.course_discount_price} kr</span>
+                    </div>
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <div className="pt-2 border-t">
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-lg">Att betala:</span>
+                <span className="text-xl font-bold text-primary">{finalPrice} kr</span>
+              </div>
             </div>
           </div>
 
@@ -181,7 +219,7 @@ const CourseOfferPayment = () => {
                     Behandlar...
                   </>
                 ) : (
-                  `Betala ${offer.course_price} kr`
+                  `Betala ${finalPrice} kr`
                 )}
               </Button>
             </div>

@@ -138,6 +138,7 @@ export function MobileCourseCard({
                 courseTableName={course.table_name}
                 waitlistCount={waitlistCount}
                 coursePrice={course.price}
+                courseDiscountPrice={course.discount_price || 0}
               >
                 <Button 
                   variant="outline" 

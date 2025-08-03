@@ -354,6 +354,7 @@ export type Database = {
       }
       course_offers: {
         Row: {
+          course_discount_price: number | null
           course_instance_id: string
           course_price: number
           course_table_name: string
@@ -372,6 +373,7 @@ export type Database = {
           waitlist_phone: string | null
         }
         Insert: {
+          course_discount_price?: number | null
           course_instance_id: string
           course_price: number
           course_table_name: string
@@ -390,6 +392,7 @@ export type Database = {
           waitlist_phone?: string | null
         }
         Update: {
+          course_discount_price?: number | null
           course_instance_id?: string
           course_price?: number
           course_table_name?: string
@@ -536,6 +539,8 @@ export type Database = {
           id: string
           message: string | null
           name: string
+          offer_sent: boolean | null
+          offer_sent_at: string | null
           phone: string | null
           position_in_queue: number
         }
@@ -546,6 +551,8 @@ export type Database = {
           id?: string
           message?: string | null
           name: string
+          offer_sent?: boolean | null
+          offer_sent_at?: string | null
           phone?: string | null
           position_in_queue?: number
         }
@@ -556,6 +563,8 @@ export type Database = {
           id?: string
           message?: string | null
           name?: string
+          offer_sent?: boolean | null
+          offer_sent_at?: string | null
           phone?: string | null
           position_in_queue?: number
         }

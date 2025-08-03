@@ -7,6 +7,7 @@ interface CourseOfferData {
   courseTitle: string;
   courseTableName: string;
   coursePrice: number;
+  courseDiscountPrice: number;
   waitlistEmail: string;
   waitlistName: string;
   waitlistPhone?: string;
