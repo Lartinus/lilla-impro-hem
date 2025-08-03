@@ -40,7 +40,7 @@ export function ShowCard({
   return (
     <Card className={cn(
       "shadow-sm hover:shadow-md transition-shadow duration-200 border-l-4",
-      show.is_active ? "border-l-primary bg-card" : "border-l-muted bg-muted/30 opacity-75",
+      show.is_active ? "border-l-blue-500 bg-card" : "border-l-muted bg-muted/30 opacity-75",
     )}>
       <CardContent className="p-5">
         <div className="space-y-4">
