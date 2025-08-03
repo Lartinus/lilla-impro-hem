@@ -124,7 +124,7 @@ Välkommen!
     );
 
     const { error: emailError } = await resend.emails.send({
-      from: 'Improvision <onboarding@resend.dev>',
+      from: 'Improteatern <noreply@improteatern.se>',
       to: [requestData.waitlistEmail],
       subject: `Plats ledig i ${requestData.courseTitle}`,
       html: htmlContent,
