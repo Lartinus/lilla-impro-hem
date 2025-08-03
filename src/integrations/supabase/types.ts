@@ -479,7 +479,7 @@ export type Database = {
           id: string
           message: string | null
           name: string
-          phone: string
+          phone: string | null
           position_in_queue: number
         }
         Insert: {
@@ -489,7 +489,7 @@ export type Database = {
           id?: string
           message?: string | null
           name: string
-          phone: string
+          phone?: string | null
           position_in_queue?: number
         }
         Update: {
@@ -499,7 +499,7 @@ export type Database = {
           id?: string
           message?: string | null
           name?: string
-          phone?: string
+          phone?: string | null
           position_in_queue?: number
         }
         Relationships: []
