@@ -22,6 +22,12 @@ interface CourseCardData {
     image: string | null;
     bio: string;
   } | null;
+  teachers?: Array<{
+    id: string;
+    name: string;
+    image: string | null;
+    bio: string;
+  }>;
   currentParticipants?: number;
   description?: string;
   course_info?: string;
@@ -127,12 +133,16 @@ export const useAdminCourseCards = () => {
             bio: instructor.bio || ''
           } : null;
 
+          // Create teachers array for multiple instructors
+          const teachers = teacher ? [teacher] : [];
+          
           return {
             ...instance,
             available: true,
             showButton: true,
             buttonText: 'Anmäl dig',
             teacher,
+            teachers,
             currentParticipants: instance.currentParticipants,
             description: instance.course_info || `${instance.course_title} - skapat från administratörspanelen.`
           };
