@@ -84,8 +84,10 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           
           {/* Dashed line with optional "Få platser kvar" tag in the middle */}
           <div className="pt-1 my-1">
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex-1 border-t-2 border-dashed border-black"></div>
+            <div className="flex items-center justify-center relative mb-1">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t-2 border-dashed border-black"></div>
+              </div>
               {(() => {
                 const remainingSpots = course.max_participants && course.currentParticipants !== undefined 
                   ? course.max_participants - course.currentParticipants 
@@ -93,7 +95,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
                 const showFewSpotsWarning = remainingSpots !== null && remainingSpots <= 5 && remainingSpots > 0;
                 
                 return showFewSpotsWarning ? (
-                  <div className="ml-2 -my-[10px]">
+                  <div className="relative bg-[#E7E7E7] px-2">
                     <div className="inline-flex items-center justify-center w-[120px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-primary border-primary text-white">
                       Få platser kvar
                     </div>

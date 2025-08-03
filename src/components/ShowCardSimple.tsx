@@ -87,10 +87,12 @@ const ShowCardSimple = ({
             </div>
             
             <div className="pt-1 my-1">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex-1 border-t-2 border-dashed border-black"></div>
+              <div className="flex items-center justify-center relative mb-1">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t-2 border-dashed border-black"></div>
+                </div>
                 {show.tag && (
-                  <div className="ml-2 -my-[10px]">
+                  <div className="relative bg-[#E7E7E7] px-2">
                     <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
                   </div>
                 )}
