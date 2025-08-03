@@ -78,7 +78,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   if (isHouseTeams) {
     finalButtonText = "Anmäl intresse";
   } else if (isSoldOut) {
-    finalButtonText = "Fullbokad! Skriv upp dig på väntelista";
+    finalButtonText = "Väntelista";
   }
   
   const buttonVariant = isHouseTeams ? "blue" : "default";
