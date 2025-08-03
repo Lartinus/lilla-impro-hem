@@ -115,10 +115,10 @@ export const PracticalInfo = ({
     <div className="mb-6">
       <h2 className="mb-2">Praktisk information</h2>
       
-      {/* Few spots warning - show after the date info */}
+      {/* Few spots warning - styled like ShowTag */}
       {showFewSpotsWarning && (
-        <div className="mb-3 inline-flex items-center gap-2 px-3 py-1.5 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
-          <AlertTriangle className="w-4 h-4" />
+        <div className="mb-3 inline-flex items-center justify-center gap-2 w-[140px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-orange-500 border-orange-500 text-white">
+          <AlertTriangle className="w-3 h-3" />
           Få platser kvar
         </div>
       )}
