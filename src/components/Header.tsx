@@ -1,6 +1,7 @@
 // src/components/Header.tsx
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import OptimizedImage from './OptimizedImage';
 
 const navItems = [
   { to: '/',           label: 'Hem' },
@@ -29,15 +30,19 @@ export default function Header() {
             isHovering ? 'animate-spin-360' : 'animate-spin-reverse'
           }`}
         >
-          <img 
+          <OptimizedImage 
             src="/Favicon1.svg" 
             alt="LIT Logo" 
             className="w-10 h-10 absolute top-[10px] left-0 transition-opacity duration-300 group-hover:opacity-0"
+            priority={true}
+            sizes="40px"
           />
-          <img 
+          <OptimizedImage 
             src="/Favicon2.svg" 
             alt="LIT Logo Hover" 
             className="w-10 h-10 absolute top-[10px] left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            priority={true}
+            sizes="40px"
           />
         </Link>
 
