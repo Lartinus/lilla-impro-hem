@@ -707,13 +707,16 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       <Dialog open={isParticipantsDialogOpen} onOpenChange={setIsParticipantsDialogOpen}>
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <span>Deltagare - {selectedCourse?.course_title}</span>
-              <div className="flex gap-2">
+            <div className="space-y-3">
+              <DialogTitle className="text-left font-satoshi">
+                Deltagare - {selectedCourse?.course_title}
+              </DialogTitle>
+              <div className="flex justify-end gap-2">
                 <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={() => setIsAddParticipantFormOpen(!isAddParticipantFormOpen)}
+                  className="font-satoshi"
                 >
                   <UserPlus className="w-4 h-4 mr-1" />
                   Lägg till deltagare
@@ -723,13 +726,14 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                     variant="outline" 
                     size="sm" 
                     onClick={exportParticipantsWrapper}
+                    className="font-satoshi"
                   >
                     <Download className="w-4 h-4 mr-1" />
                     Exportera CSV
                   </Button>
                 )}
               </div>
-            </DialogTitle>
+            </div>
           </DialogHeader>
           
           <div className="flex-1 overflow-hidden flex flex-col gap-4">
