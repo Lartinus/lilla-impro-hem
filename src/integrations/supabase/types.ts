@@ -1228,6 +1228,10 @@ export type Database = {
           name: string
         }[]
       }
+      get_waitlist_count: {
+        Args: { course_instance_id_param: string }
+        Returns: number
+      }
       has_role: {
         Args: {
           _user_id: string
