@@ -194,10 +194,21 @@ export const useCourseParticipants = () => {
   };
 
   const handleAddParticipant = (tableName: string) => {
-    if (!newParticipant.name.trim() || !newParticipant.email.trim()) {
+    if (!newParticipant.name.trim() || !newParticipant.email.trim() || !newParticipant.phone.trim()) {
       toast({
         title: "Ofullständig information",
-        description: "Namn och e-post är obligatoriska.",
+        description: "Namn, e-post och telefonnummer är obligatoriska.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate phone number format (6-20 characters, only numbers, +, -, (), and spaces)
+    const phoneRegex = /^[+0-9\s\-()]+$/;
+    if (newParticipant.phone.length < 6 || newParticipant.phone.length > 20 || !phoneRegex.test(newParticipant.phone)) {
+      toast({
+        title: "Ogiltigt telefonnummer",
+        description: "Telefonnummer måste vara 6-20 tecken och får endast innehålla siffror, +, -, (), och mellanslag.",
         variant: "destructive"
       });
       return;

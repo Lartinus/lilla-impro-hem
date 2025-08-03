@@ -763,7 +763,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                       />
                     </div>
                     <div>
-                      <Label htmlFor="participantPhone">Telefon</Label>
+                      <Label htmlFor="participantPhone">Telefon *</Label>
                       <Input
                         id="participantPhone"
                         value={newParticipant.phone}
@@ -784,7 +784,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                     </Button>
                     <Button 
                       onClick={() => selectedCourse && handleAddParticipant(selectedCourse.table_name)}
-                      disabled={addParticipantMutation.isPending || !newParticipant.name.trim() || !newParticipant.email.trim()}
+                      disabled={addParticipantMutation.isPending || !newParticipant.name.trim() || !newParticipant.email.trim() || !newParticipant.phone.trim()}
                     >
                       {addParticipantMutation.isPending ? 'Lägger till...' : 'Lägg till'}
                     </Button>
