@@ -131,16 +131,16 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
                         </TableCell>
                         <TableCell>
                           {entry.offer_sent ? (
-                            <Badge variant="secondary" className="text-xs">
-                              📧 Erbjudande skickat
+                            <Badge variant="secondary" className="text-xs text-white">
+                              Erbjudande skickat
                               {entry.offer_sent_at && (
-                                <span className="block text-xs text-muted-foreground">
+                                <span className="block text-xs text-white/80">
                                   {format(new Date(entry.offer_sent_at), 'dd MMM HH:mm', { locale: sv })}
                                 </span>
                               )}
                             </Badge>
                           ) : (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs text-white">
                               Väntar
                             </Badge>
                           )}
@@ -265,16 +265,16 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
                           <span className="font-medium text-muted-foreground">Status:</span>
                           <div className="mt-1">
                             {entry.offer_sent ? (
-                              <Badge variant="secondary" className="text-xs">
-                                📧 Erbjudande skickat
+                              <Badge variant="secondary" className="text-xs text-white">
+                                Erbjudande skickat
                                 {entry.offer_sent_at && (
-                                  <span className="block text-xs text-muted-foreground mt-1">
+                                  <span className="block text-xs text-white/80 mt-1">
                                     {format(new Date(entry.offer_sent_at), 'dd MMM HH:mm', { locale: sv })}
                                   </span>
                                 )}
                               </Badge>
                             ) : (
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="outline" className="text-xs text-white">
                                 Väntar
                               </Badge>
                             )}
