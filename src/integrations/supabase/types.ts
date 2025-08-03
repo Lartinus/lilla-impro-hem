@@ -1148,6 +1148,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      add_to_waitlist: {
+        Args: {
+          course_instance_id_param: string
+          name_param: string
+          email_param: string
+          phone_param: string
+          message_param?: string
+        }
+        Returns: boolean
+      }
       admin_delete_participant: {
         Args: { table_name: string; participant_email: string }
         Returns: boolean
