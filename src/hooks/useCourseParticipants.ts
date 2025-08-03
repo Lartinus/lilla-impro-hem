@@ -99,28 +99,52 @@ export const useCourseParticipants = () => {
   // Add participant mutation
   const addParticipantMutation = useMutation({
     mutationFn: async ({ name, email, phone, tableName }: { name: string; email: string; phone: string; tableName: string }) => {
-      const { data, error } = await supabase.rpc('add_course_participant', {
-        table_name: tableName,
-        participant_name: name,
-        participant_email: email,
-        participant_phone: phone
+      console.log('🔄 Attempting to add participant:', { name, email, phone, tableName });
+      
+      // Use edge function for adding participant
+      const { data, error } = await supabase.functions.invoke('add-course-participant', {
+        body: {
+          table_name: tableName,
+          participant_name: name,
+          participant_email: email,
+          participant_phone: phone
+        }
       });
 
-      if (error) throw error;
+      console.log('📥 Add participant response:', { data, error });
+
+      if (error) {
+        console.error('❌ Edge function error:', error);
+        throw new Error(`Databasfel: ${error.message}`);
+      }
+      
+      if (!data?.success) {
+        throw new Error(data?.error || 'Deltagaren kunde inte läggas till');
+      }
       
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       toast({
         title: "Deltagare tillagd",
         description: "Deltagaren har lagts till i kursen."
       });
+      
+      // Add the new participant to the local state
+      const newParticipant: CourseParticipant = {
+        name: variables.name,
+        email: variables.email,
+        phone: variables.phone
+      };
+      setParticipants(prev => [...prev, newParticipant]);
+      
       // Reset form and close
       setNewParticipant({ name: '', email: '', phone: '' });
       setIsAddParticipantFormOpen(false);
       queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
     },
     onError: (error) => {
+      console.error('❌ Add participant error:', error);
       toast({
         title: "Fel",
         description: `Kunde inte lägga till deltagaren: ${error.message}`,
