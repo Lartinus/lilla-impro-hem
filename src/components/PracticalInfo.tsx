@@ -1,5 +1,4 @@
 import React from 'react';
-import { AlertTriangle } from 'lucide-react';
 
 interface PracticalInfoProps {
   sessions?: number;
@@ -113,15 +112,14 @@ export const PracticalInfo = ({
 
   return (
     <div className="mb-6">
-      <h2 className="mb-2">Praktisk information</h2>
-      
-      {/* Few spots warning - styled like ShowTag */}
+      {/* Few spots warning - positioned at top before heading, left-aligned, using design system colors */}
       {showFewSpotsWarning && (
-        <div className="mb-3 inline-flex items-center justify-center gap-2 w-[140px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-orange-500 border-orange-500 text-white">
-          <AlertTriangle className="w-3 h-3" />
+        <div className="mb-3 inline-flex items-center justify-center w-[120px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-primary border-primary text-white">
           Få platser kvar
         </div>
       )}
+      
+      <h2 className="course-dashed-line">Praktisk information</h2>
       
       <ul className="space-y-2">
         {items.map((item, index) => (
