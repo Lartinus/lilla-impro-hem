@@ -1231,6 +1231,14 @@ export type Database = {
         Args: { p_action: string; p_target_user_id?: string; p_details?: Json }
         Returns: undefined
       }
+      move_course_participant: {
+        Args: {
+          from_table_name: string
+          to_table_name: string
+          participant_email: string
+        }
+        Returns: boolean
+      }
       sync_email_contacts: {
         Args: Record<PropertyKey, never>
         Returns: number

@@ -21,7 +21,8 @@ import {
   UserPlus, 
   UserMinus,
   Users,
-  X
+  X,
+  ArrowRightLeft
 } from 'lucide-react';
 import { RepeatablePracticalInfo } from './RepeatablePracticalInfo';
 import { format } from 'date-fns';
@@ -205,8 +206,10 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     handleViewParticipants,
     handleDeleteParticipant,
     handleAddParticipant,
+    handleMoveParticipant,
     addParticipantMutation,
-    deleteParticipantMutation
+    deleteParticipantMutation,
+    moveParticipantMutation
   } = useCourseParticipants();
 
   const resetForm = () => {
@@ -806,32 +809,77 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                   <div className="border rounded-lg flex-1 overflow-hidden">
                     <div className="overflow-auto h-full">
                       <Table>
-                        <TableHeader className="sticky top-0 bg-background">
-                          <TableRow>
-                            <TableHead>Namn</TableHead>
-                            <TableHead>E-post</TableHead>
-                            <TableHead className="w-20">Åtgärder</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {participants.map((participant, index) => (
-                            <TableRow key={index}>
-                              <TableCell className="font-medium">{participant.name}</TableCell>
-                              <TableCell>{participant.email}</TableCell>
-                              <TableCell>
-                                <Button
-                                  variant="destructive"
-                                  size="sm"
-                                  onClick={() => selectedCourse && handleDeleteParticipant(participant.email, selectedCourse.table_name)}
-                                  disabled={deleteParticipantMutation.isPending}
-                                  className="p-2"
-                                >
-                                  <UserMinus className="w-3 h-3" />
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
+                         <TableHeader className="sticky top-0 bg-background">
+                           <TableRow>
+                             <TableHead>Namn</TableHead>
+                             <TableHead>E-post</TableHead>
+                             <TableHead className="w-32">Åtgärder</TableHead>
+                           </TableRow>
+                         </TableHeader>
+                         <TableBody>
+                           {participants.map((participant, index) => (
+                             <TableRow key={index}>
+                               <TableCell className="font-medium">{participant.name}</TableCell>
+                               <TableCell>{participant.email}</TableCell>
+                               <TableCell>
+                                 <div className="flex gap-1">
+                                   <Popover>
+                                     <PopoverTrigger asChild>
+                                       <Button
+                                         variant="outline"
+                                         size="sm"
+                                         disabled={moveParticipantMutation.isPending}
+                                         className="p-2"
+                                         title="Flytta till annan kurs"
+                                       >
+                                         <ArrowRightLeft className="w-3 h-3" />
+                                       </Button>
+                                     </PopoverTrigger>
+                                     <PopoverContent className="w-64">
+                                       <div className="space-y-2">
+                                         <h4 className="font-medium text-sm">Flytta deltagare</h4>
+                                         <p className="text-sm text-muted-foreground">
+                                           Välj kurs att flytta {participant.name} till:
+                                         </p>
+                                         <div className="space-y-2">
+                                           {sortedCourses
+                                             .filter(course => course.id !== selectedCourse?.id && !course.completed_at)
+                                             .map(course => (
+                                               <Button
+                                                 key={course.id}
+                                                 variant="outline"
+                                                 size="sm"
+                                                 className="w-full justify-start text-left"
+                                                 onClick={() => selectedCourse && handleMoveParticipant(
+                                                   participant.email,
+                                                   selectedCourse.table_name,
+                                                   course.table_name
+                                                 )}
+                                                 disabled={moveParticipantMutation.isPending}
+                                               >
+                                                 <div className="truncate">
+                                                   {course.course_title}
+                                                 </div>
+                                               </Button>
+                                             ))}
+                                         </div>
+                                       </div>
+                                     </PopoverContent>
+                                   </Popover>
+                                   <Button
+                                     variant="destructive"
+                                     size="sm"
+                                     onClick={() => selectedCourse && handleDeleteParticipant(participant.email, selectedCourse.table_name)}
+                                     disabled={deleteParticipantMutation.isPending}
+                                     className="p-2"
+                                   >
+                                     <UserMinus className="w-3 h-3" />
+                                   </Button>
+                                 </div>
+                               </TableCell>
+                             </TableRow>
+                           ))}
+                         </TableBody>
                       </Table>
                     </div>
                   </div>

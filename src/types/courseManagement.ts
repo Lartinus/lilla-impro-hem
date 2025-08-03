@@ -20,6 +20,7 @@ export interface CourseInstance {
   discount_price?: number;
   sort_order?: number;
   start_time?: string | null;
+  completed_at?: string | null;
 }
 
 export interface CourseWithBookings extends CourseInstance {

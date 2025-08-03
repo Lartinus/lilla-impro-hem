@@ -129,6 +129,35 @@ export const useCourseParticipants = () => {
     }
   });
 
+  // Move participant mutation
+  const moveParticipantMutation = useMutation({
+    mutationFn: async ({ email, fromTableName, toTableName }: { email: string; fromTableName: string; toTableName: string }) => {
+      const { data, error } = await supabase.rpc('move_course_participant', {
+        from_table_name: fromTableName,
+        to_table_name: toTableName,
+        participant_email: email
+      });
+
+      if (error) throw error;
+      
+      return data;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Deltagare flyttad",
+        description: "Deltagaren har flyttats till den nya kursen."
+      });
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte flytta deltagaren: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
   const handleDeleteParticipant = (email: string, tableName: string) => {
     if (confirm('Är du säker på att du vill radera denna deltagare från kursen?')) {
       deleteParticipantMutation.mutate({ email, tableName });
@@ -153,6 +182,12 @@ export const useCourseParticipants = () => {
     });
   };
 
+  const handleMoveParticipant = (email: string, fromTableName: string, toTableName: string) => {
+    if (confirm('Är du säker på att du vill flytta denna deltagare till en annan kurs?')) {
+      moveParticipantMutation.mutate({ email, fromTableName, toTableName });
+    }
+  };
+
   return {
     participants,
     setParticipants,
@@ -164,7 +199,9 @@ export const useCourseParticipants = () => {
     handleViewParticipants,
     handleDeleteParticipant,
     handleAddParticipant,
+    handleMoveParticipant,
     deleteParticipantMutation,
-    addParticipantMutation
+    addParticipantMutation,
+    moveParticipantMutation
   };
 };
