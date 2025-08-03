@@ -150,11 +150,22 @@ export const useCourseParticipants = () => {
     },
     onError: (error) => {
       console.error('❌ Add participant error:', error);
-      toast({
-        title: "Fel",
-        description: `Kunde inte lägga till deltagaren: ${error.message}`,
-        variant: "destructive"
-      });
+      
+      // Check for specific error types
+      const errorMessage = error.message;
+      if (errorMessage.includes('duplicate key') || errorMessage.includes('unique constraint') || errorMessage.includes('already exists')) {
+        toast({
+          title: "E-postadressen finns redan",
+          description: "En deltagare med denna e-postadress är redan anmäld till kursen.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Fel",
+          description: `Kunde inte lägga till deltagaren: ${error.message}`,
+          variant: "destructive"
+        });
+      }
     }
   });
 
@@ -209,6 +220,17 @@ export const useCourseParticipants = () => {
       toast({
         title: "Ogiltigt telefonnummer",
         description: "Telefonnummer måste vara 6-20 tecken och får endast innehålla siffror, +, -, (), och mellanslag.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check if email already exists in the current participants list
+    const emailExists = participants.some(p => p.email.toLowerCase() === newParticipant.email.toLowerCase());
+    if (emailExists) {
+      toast({
+        title: "E-postadressen finns redan",
+        description: "En deltagare med denna e-postadress är redan anmäld till kursen.",
         variant: "destructive"
       });
       return;
