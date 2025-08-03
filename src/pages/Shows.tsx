@@ -106,7 +106,7 @@ export default function Shows() {
           <OptimizedImage 
             src="/uploads/images/shows_2024.jpg" 
             alt="" 
-            className="w-full h-full object-cover object-center filter brightness-50"
+            className="w-full h-full object-cover object-center"
             priority={true}
             sizes="100vw"
           />
@@ -134,7 +134,7 @@ export default function Shows() {
         <OptimizedImage 
           src="/uploads/images/shows_2024.jpg" 
           alt="" 
-          className="w-full h-full object-cover object-center filter brightness-50"
+          className="w-full h-full object-cover object-center"
           priority={true}
           sizes="100vw"
         />

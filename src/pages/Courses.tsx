@@ -39,7 +39,7 @@ const Courses = () => {
         <OptimizedImage
           src="/uploads/images/kurser_LIT_2024.jpg"
           alt="Kurser på Lilla Improteatern"
-          className="w-full h-[360px] object-cover object-center filter brightness-50"
+          className="w-full h-[360px] object-cover object-center"
           priority={true}
           sizes="100vw"
         />
