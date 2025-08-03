@@ -28,6 +28,7 @@ const LazyBokaOss = React.lazy(() => import('@/pages/BokaOss'));
 const LazyShowDetails = React.lazy(() => import('@/pages/ShowDetails'));
 const LazyAdmin = React.lazy(() => import('@/pages/Admin'));
 const LazyTicketSuccess = React.lazy(() => import('@/pages/TicketPaymentSuccess'));
+const LazyCourseSuccess = React.lazy(() => import('@/pages/CoursePaymentSuccess'));
 const LazyPaymentPages = React.lazy(() => 
   Promise.all([
     import('@/pages/TicketPaymentSuccess'),
@@ -128,12 +129,22 @@ function App() {
                   } 
                 />
                 
-                 {/* Ticket confirmation route */}
+                {/* Ticket confirmation route */}
                 <Route 
                   path="/forestallningar/tack" 
                   element={
                     <Suspense fallback={null}>
                       <LazyTicketSuccess />
+                    </Suspense>
+                  } 
+                />
+                
+                {/* Course confirmation route */}
+                <Route 
+                  path="/kurser/tack" 
+                  element={
+                    <Suspense fallback={null}>
+                      <LazyCourseSuccess />
                     </Suspense>
                   } 
                 />
