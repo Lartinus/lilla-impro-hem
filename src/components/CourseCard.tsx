@@ -78,7 +78,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
   if (isHouseTeams) {
     finalButtonText = "Anmäl intresse";
   } else if (isSoldOut) {
-    finalButtonText = "Fullbokad!";
+    finalButtonText = "Fullbokad! Skriv upp dig på väntelista";
   }
   
   const buttonVariant = isHouseTeams ? "blue" : "default";
@@ -163,7 +163,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         
         
         {shouldShowButton && (
-          <CourseBookingForm 
+          <CourseBookingForm
             courseTitle={course.course_title}
             tableName={course.table_name}
             isAvailable={courseAvailability}
@@ -171,6 +171,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
             buttonText={finalButtonText}
             buttonVariant={buttonVariant}
             maxParticipants={course.maxParticipants}
+            isSoldOut={isSoldOut}
             courseInstance={course.price && course.price > 0 ? {
               id: course.id.toString(),
               course_title: course.course_title,

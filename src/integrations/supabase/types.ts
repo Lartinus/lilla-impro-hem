@@ -1286,6 +1286,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      remove_from_waitlist: {
+        Args: { course_instance_id_param: string; email_param: string }
+        Returns: boolean
+      }
       sync_email_contacts: {
         Args: Record<PropertyKey, never>
         Returns: number

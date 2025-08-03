@@ -24,6 +24,7 @@ import { BookingInformation } from '@/components/forms/BookingInformation';
 import { useCourseBooking } from '@/hooks/useCourseBooking';
 import { useIsMobile } from '@/hooks/use-mobile';
 import CoursePurchaseFlow from './CoursePurchaseFlow';
+import { WaitlistForm } from './WaitlistForm';
 
 interface CourseBookingFormProps {
   courseTitle: string;
@@ -42,6 +43,7 @@ interface CourseBookingFormProps {
     max_participants: number | null;
   };
   isPaidCourse?: boolean;
+  isSoldOut?: boolean;
 }
 
 const CourseBookingForm = ({ 
@@ -53,7 +55,8 @@ const CourseBookingForm = ({
   buttonVariant = 'default',
   maxParticipants,
   courseInstance,
-  isPaidCourse = false
+  isPaidCourse = false,
+  isSoldOut = false
 }: CourseBookingFormProps) => {
   const [open, setOpen] = useState(false);
   const { handleSubmit: submitBooking, isSubmitting } = useCourseBooking(tableName || courseTitle);
@@ -120,6 +123,22 @@ const CourseBookingForm = ({
 
   // Mobile-optimized form content
   const mobileFormContent = () => {
+    // Show waitlist form for sold out courses
+    if (isSoldOut && courseInstance) {
+      return (
+        <div className="flex flex-col h-full">
+          <div className="flex-1 overflow-y-auto p-4">
+            <WaitlistForm 
+              courseInstanceId={courseInstance.id} 
+              courseTitle={courseTitle} 
+              onClose={() => setOpen(false)} 
+              isMobile={true}
+            />
+          </div>
+        </div>
+      );
+    }
+
     // Show payment flow for paid courses
     if (isPaidCourse && courseInstance) {
       return (
@@ -183,6 +202,22 @@ const CourseBookingForm = ({
 
   // Desktop form content with ScrollArea
   const desktopFormContent = () => {
+    // Show waitlist form for sold out courses
+    if (isSoldOut && courseInstance) {
+      return (
+        <ScrollArea className="max-h-[60vh] lg:max-h-[65vh] px-1">
+          <div className="pr-3">
+            <WaitlistForm 
+              courseInstanceId={courseInstance.id} 
+              courseTitle={courseTitle} 
+              onClose={() => setOpen(false)} 
+              isMobile={false}
+            />
+          </div>
+        </ScrollArea>
+      );
+    }
+
     // Show payment flow for paid courses
     if (isPaidCourse && courseInstance) {
       return <CoursePurchaseFlow courseInstance={courseInstance} onClose={() => setOpen(false)} />;
@@ -240,7 +275,8 @@ const CourseBookingForm = ({
         <SheetContent side="bottom" className="h-[100vh] w-full p-0 flex flex-col overflow-hidden">
           <SheetHeader className="p-6 pb-4 flex-shrink-0 border-b border-gray-200">
             <SheetTitle className="text-left font-normal">
-              {isPaidCourse ? `Köp kursplats - ${courseTitle}` : 
+              {isSoldOut ? `Väntelista - ${courseTitle}` :
+               isPaidCourse ? `Köp kursplats - ${courseTitle}` : 
                isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : 
                `Anmäl dig till ${courseTitle}`}
             </SheetTitle>
@@ -262,7 +298,8 @@ const CourseBookingForm = ({
       <DialogContent className="sm:max-w-[600px] lg:max-w-[700px] max-h-[90vh] rounded-none overflow-y-auto flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle className="rounded-none font-normal">
-            {isPaidCourse ? `Köp kursplats - ${courseTitle}` : 
+            {isSoldOut ? `Väntelista - ${courseTitle}` :
+             isPaidCourse ? `Köp kursplats - ${courseTitle}` : 
              isHouseTeamsOrContinuation ? "Anmäl intresse - House Teams & fortsättning" : 
              `Anmäl dig till ${courseTitle}`}
           </DialogTitle>
