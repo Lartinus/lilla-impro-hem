@@ -15,7 +15,7 @@ interface CourseLeaderInfoProps {
 
 export default function CourseLeaderInfo({ courseLeaders }: CourseLeaderInfoProps) {
   return (
-    <div className="mb-6">
+    <div className="mb-6 mt-6">
       <h2 className="mb-2">Kursledare</h2>
       <div className="course-outline-red rounded-none p-4">
         <div className="space-y-6">
@@ -29,7 +29,7 @@ export default function CourseLeaderInfo({ courseLeaders }: CourseLeaderInfoProp
                 preferredSize="small"
               />
               <div className="flex-1 min-w-0">
-                <p className="font-bold text-sm">{courseLeader.name}</p>
+                <p className="font-bold text-sm mb-1">{courseLeader.name}</p>
                 <div
                   className="leading-relaxed break-words [&>p]:text-[14px] 4md:[&>p]:text-[14px]"
                   dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(courseLeader.bio) }}
