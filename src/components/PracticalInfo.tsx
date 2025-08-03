@@ -112,7 +112,7 @@ export const PracticalInfo = ({
 
   return (
     <div className="mb-6">
-      <h2 className="course-dashed-line">Praktisk information</h2>
+      <h2 className="mb-2">Praktisk information</h2>
       
       <ul className="space-y-2">
         {items.map((item, index) => (
