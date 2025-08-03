@@ -11,7 +11,6 @@ import { useResourceOptimization } from '@/hooks/useResourceOptimization';
 // Static imports for critical path
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
 import Index from '@/pages/Index';
 import About from '@/pages/About';
 import NotFound from '@/pages/NotFound';
@@ -53,10 +52,6 @@ const LazyNewsletterPages = React.lazy(() =>
   }))
 );
 
-// Loading fallback for lazy-loaded routes
-const LoadingFallback = ({ message = "Laddar..." }: { message?: string }) => (
-  <SubtleLoadingOverlay isVisible={true} message={message} />
-);
 
 function App() {
   // Phase 1 & 2 optimizations
@@ -107,7 +102,7 @@ function App() {
         <div className="min-h-screen flex flex-col bg-background">
           <Header />
           <main className="flex-1">
-          <Suspense fallback={<LoadingFallback />}>
+          <Suspense fallback={null}>
               <Routes>
                 {/* Critical routes - loaded immediately */}
                 <Route path="/" element={<Index />} />
@@ -120,7 +115,7 @@ function App() {
                 <Route 
                   path="/forestallningar" 
                   element={
-                    <Suspense fallback={<LoadingFallback message="Laddar föreställningar..." />}>
+                    <Suspense fallback={null}>
                       <LazyShows />
                     </Suspense>
                   } 
@@ -128,7 +123,7 @@ function App() {
                 <Route 
                   path="/kurser" 
                   element={
-                    <Suspense fallback={<LoadingFallback message="Laddar kurser..." />}>
+                    <Suspense fallback={null}>
                       <LazyCourses />
                     </Suspense>
                   } 
@@ -136,7 +131,7 @@ function App() {
                 <Route 
                   path="/lokal" 
                   element={
-                    <Suspense fallback={<LoadingFallback message="Laddar lokalinfo..." />}>
+                    <Suspense fallback={null}>
                       <LazyLokal />
                     </Suspense>
                   } 
@@ -144,7 +139,7 @@ function App() {
                 <Route 
                   path="/boka-oss" 
                   element={
-                    <Suspense fallback={<LoadingFallback message="Laddar bokningsformulär..." />}>
+                    <Suspense fallback={null}>
                       <LazyBokaOss />
                     </Suspense>
                   } 
@@ -152,7 +147,7 @@ function App() {
                 <Route 
                   path="/forestallningar/:slug" 
                   element={
-                    <Suspense fallback={<LoadingFallback message="Laddar föreställning..." />}>
+                    <Suspense fallback={null}>
                       <LazyShowDetails />
                     </Suspense>
                   } 
@@ -162,7 +157,7 @@ function App() {
                 <Route 
                   path="/admin/*" 
                   element={
-                    <Suspense fallback={<LoadingFallback message="Laddar administratörspanel..." />}>
+                    <Suspense fallback={null}>
                       <LazyAdmin />
                     </Suspense>
                   } 
@@ -172,7 +167,7 @@ function App() {
                 <Route 
                   path="/payment/*" 
                   element={
-                    <Suspense fallback={<LoadingFallback message="Laddar betalning..." />}>
+                    <Suspense fallback={null}>
                       <LazyPaymentPages />
                     </Suspense>
                   } 
@@ -182,7 +177,7 @@ function App() {
                 <Route 
                   path="/newsletter/*" 
                   element={
-                    <Suspense fallback={<LoadingFallback message="Laddar nyhetsbrev..." />}>
+                    <Suspense fallback={null}>
                       <LazyNewsletterPages />
                     </Suspense>
                   } 
@@ -192,7 +187,7 @@ function App() {
                 <Route 
                   path="/stripe-checkout" 
                   element={
-                    <Suspense fallback={<LoadingFallback message="Förbereder betalning..." />}>
+                    <Suspense fallback={null}>
                       <LazyStripeCheckout />
                     </Suspense>
                   } 
