@@ -11,12 +11,15 @@ import {
   ToggleRight,
   CheckCircle,
   RotateCcw,
-  Trash2
+  Trash2,
+  Clock
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { CourseWithBookings, Performer } from '@/types/courseManagement';
+import { useWaitlistManagement } from '@/hooks/useWaitlistManagement';
+import { WaitlistDialog } from '../WaitlistDialog';
 
 interface CourseCardProps {
   course: CourseWithBookings;
@@ -53,6 +56,9 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   canMoveDown,
   sortedCourses
 }) => {
+  // Get waitlist data for this course
+  const { waitlistCount, isLoadingCount } = useWaitlistManagement(course.id);
+
   // Find instructors by their IDs
   const instructor1 = course.instructor_id_1 
     ? performers?.find(p => p.id === course.instructor_id_1)
@@ -164,6 +170,23 @@ export const CourseCard: React.FC<CourseCardProps> = ({
               <Users className="w-3 h-3" />
               Deltagare
             </Button>
+
+            <WaitlistDialog
+              courseInstanceId={course.id}
+              courseTitle={course.course_title}
+              courseTableName={course.table_name}
+              waitlistCount={waitlistCount}
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1.5 text-xs"
+                disabled={isLoadingCount}
+              >
+                <Clock className="w-3 h-3" />
+                Väntelista {waitlistCount > 0 && `(${waitlistCount})`}
+              </Button>
+            </WaitlistDialog>
 
             <Button
               variant="outline"
