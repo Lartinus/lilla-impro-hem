@@ -839,36 +839,36 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                                          <ArrowRightLeft className="w-3 h-3" />
                                        </Button>
                                      </PopoverTrigger>
-                                     <PopoverContent className="w-64">
-                                       <div className="space-y-2">
-                                         <h4 className="font-medium text-sm">Flytta deltagare</h4>
-                                         <p className="text-sm text-muted-foreground">
-                                           Välj kurs att flytta {participant.name} till:
-                                         </p>
-                                         <div className="space-y-2">
-                                           {sortedCourses
-                                             .filter(course => course.id !== selectedCourse?.id && !course.completed_at)
-                                             .map(course => (
-                                               <Button
-                                                 key={course.id}
-                                                 variant="outline"
-                                                 size="sm"
-                                                 className="w-full justify-start text-left"
-                                                 onClick={() => selectedCourse && handleMoveParticipant(
-                                                   participant.email,
-                                                   selectedCourse.table_name,
-                                                   course.table_name
-                                                 )}
-                                                 disabled={moveParticipantMutation.isPending}
-                                               >
-                                                 <div className="truncate">
-                                                   {course.course_title}
-                                                 </div>
-                                               </Button>
-                                             ))}
-                                         </div>
-                                       </div>
-                                     </PopoverContent>
+                                      <PopoverContent className="w-64 bg-background border shadow-lg z-[100]">
+                                        <div className="space-y-2">
+                                          <h4 className="font-medium text-sm font-satoshi">Flytta deltagare</h4>
+                                          <p className="text-sm text-muted-foreground font-satoshi">
+                                            Välj kurs att flytta {participant.name} till:
+                                          </p>
+                                          <div className="space-y-2">
+                                            {sortedCourses
+                                              .filter(course => course.id !== selectedCourse?.id && !course.completed_at)
+                                              .map(course => (
+                                                <Button
+                                                  key={course.id}
+                                                  variant="outline"
+                                                  size="sm"
+                                                  className="w-full justify-start text-left font-satoshi"
+                                                  onClick={() => selectedCourse && handleMoveParticipant(
+                                                    participant.email,
+                                                    selectedCourse.table_name,
+                                                    course.table_name
+                                                  )}
+                                                  disabled={moveParticipantMutation.isPending}
+                                                >
+                                                  <div className="truncate">
+                                                    {course.course_title}
+                                                  </div>
+                                                </Button>
+                                              ))}
+                                          </div>
+                                        </div>
+                                      </PopoverContent>
                                    </Popover>
                                    <Button
                                      variant="destructive"
