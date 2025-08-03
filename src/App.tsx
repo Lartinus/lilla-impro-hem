@@ -1,6 +1,6 @@
 
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthProvider } from '@/components/auth/AuthProvider';
 // Removed performance monitoring hooks for better performance
@@ -59,125 +59,132 @@ const LazyNewsletterPages = React.lazy(() =>
 );
 
 
-function App() {
-  // Performance optimized - removed monitoring overhead
+function AppContent() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      {!isAdminRoute && <Header />}
+      <main className="flex-1">
+        <Suspense fallback={null}>
+          <Routes>
+            {/* Critical routes - loaded immediately */}
+            <Route path="/" element={<Index />} />
+            <Route path="/om-oss" element={<About />} />
+            
+            {/* Redirect for backward compatibility */}
+            <Route path="/shows" element={<Navigate to="/forestallningar" replace />} />
+            
+            {/* Lazy loaded routes with intelligent prefetching */}
+            <Route 
+              path="/forestallningar" 
+              element={
+                <Suspense fallback={<ShowsSkeleton />}>
+                  <LazyShows />
+                </Suspense>
+              } 
+            />
+            <Route 
+              path="/kurser" 
+              element={
+                <Suspense fallback={<CoursesSkeleton />}>
+                  <LazyCourses />
+                </Suspense>
+              } 
+            />
+            <Route 
+              path="/lokal" 
+              element={
+                <Suspense fallback={<LokalSkeleton />}>
+                  <LazyLokal />
+                </Suspense>
+              } 
+            />
+            <Route 
+              path="/boka-oss" 
+              element={
+                <Suspense fallback={<BokaOssSkeleton />}>
+                  <LazyBokaOss />
+                </Suspense>
+              } 
+            />
+            <Route 
+              path="/forestallningar/:slug" 
+              element={
+                <Suspense fallback={<ShowDetailsSkeleton />}>
+                  <LazyShowDetails />
+                </Suspense>
+              } 
+            />
+            
+            {/* Admin routes - heavily optimized */}
+            <Route 
+              path="/admin/*" 
+              element={
+                <Suspense fallback={<AdminSkeleton />}>
+                  <LazyAdmin />
+                </Suspense>
+              } 
+            />
+            
+            {/* Ticket confirmation route */}
+            <Route 
+              path="/forestallningar/tack" 
+              element={
+                <Suspense fallback={null}>
+                  <LazyTicketSuccess />
+                </Suspense>
+              } 
+            />
+            
+            {/* Course confirmation route */}
+            <Route 
+              path="/kurser/tack" 
+              element={
+                <Suspense fallback={null}>
+                  <LazyCourseSuccess />
+                </Suspense>
+              } 
+            />
+            
+            {/* Payment routes - grouped */}
+            <Route 
+              path="/payment/*" 
+              element={
+                <Suspense fallback={null}>
+                  <LazyPaymentPages />
+                </Suspense>
+              } 
+            />
+            
+            {/* Newsletter routes - grouped */}
+            <Route 
+              path="/newsletter/*" 
+              element={
+                <Suspense fallback={null}>
+                  <LazyNewsletterPages />
+                </Suspense>
+              } 
+            />
+            
+            
+            {/* Fallback */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </main>
+      <Footer />
+      <Toaster />
+    </div>
+  );
+}
+
+function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen flex flex-col bg-background">
-          <Header />
-          <main className="flex-1">
-          <Suspense fallback={null}>
-              <Routes>
-                {/* Critical routes - loaded immediately */}
-                <Route path="/" element={<Index />} />
-                <Route path="/om-oss" element={<About />} />
-                
-                {/* Redirect for backward compatibility */}
-                <Route path="/shows" element={<Navigate to="/forestallningar" replace />} />
-                
-                {/* Lazy loaded routes with intelligent prefetching */}
-                <Route 
-                  path="/forestallningar" 
-                  element={
-                    <Suspense fallback={<ShowsSkeleton />}>
-                      <LazyShows />
-                    </Suspense>
-                  } 
-                />
-                <Route 
-                  path="/kurser" 
-                  element={
-                    <Suspense fallback={<CoursesSkeleton />}>
-                      <LazyCourses />
-                    </Suspense>
-                  } 
-                />
-                <Route 
-                  path="/lokal" 
-                  element={
-                    <Suspense fallback={<LokalSkeleton />}>
-                      <LazyLokal />
-                    </Suspense>
-                  } 
-                />
-                <Route 
-                  path="/boka-oss" 
-                  element={
-                    <Suspense fallback={<BokaOssSkeleton />}>
-                      <LazyBokaOss />
-                    </Suspense>
-                  } 
-                />
-                <Route 
-                  path="/forestallningar/:slug" 
-                  element={
-                    <Suspense fallback={<ShowDetailsSkeleton />}>
-                      <LazyShowDetails />
-                    </Suspense>
-                  } 
-                />
-                
-                {/* Admin routes - heavily optimized */}
-                <Route 
-                  path="/admin/*" 
-                  element={
-                    <Suspense fallback={<AdminSkeleton />}>
-                      <LazyAdmin />
-                    </Suspense>
-                  } 
-                />
-                
-                {/* Ticket confirmation route */}
-                <Route 
-                  path="/forestallningar/tack" 
-                  element={
-                    <Suspense fallback={null}>
-                      <LazyTicketSuccess />
-                    </Suspense>
-                  } 
-                />
-                
-                {/* Course confirmation route */}
-                <Route 
-                  path="/kurser/tack" 
-                  element={
-                    <Suspense fallback={null}>
-                      <LazyCourseSuccess />
-                    </Suspense>
-                  } 
-                />
-                
-                {/* Payment routes - grouped */}
-                <Route 
-                  path="/payment/*" 
-                  element={
-                    <Suspense fallback={null}>
-                      <LazyPaymentPages />
-                    </Suspense>
-                  } 
-                />
-                
-                {/* Newsletter routes - grouped */}
-                <Route 
-                  path="/newsletter/*" 
-                  element={
-                    <Suspense fallback={null}>
-                      <LazyNewsletterPages />
-                    </Suspense>
-                  } 
-                />
-                
-                
-                {/* Fallback */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </main>
-          <Footer />
-        </div>
-        <Toaster />
+        <AppContent />
       </Router>
     </AuthProvider>
   );
