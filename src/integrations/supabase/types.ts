@@ -352,6 +352,63 @@ export type Database = {
         }
         Relationships: []
       }
+      course_offers: {
+        Row: {
+          course_instance_id: string
+          course_price: number
+          course_table_name: string
+          course_title: string
+          created_at: string
+          expires_at: string
+          id: string
+          offer_token: string
+          paid_at: string | null
+          status: string
+          stripe_session_id: string | null
+          updated_at: string
+          waitlist_email: string
+          waitlist_message: string | null
+          waitlist_name: string
+          waitlist_phone: string | null
+        }
+        Insert: {
+          course_instance_id: string
+          course_price: number
+          course_table_name: string
+          course_title: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          offer_token: string
+          paid_at?: string | null
+          status?: string
+          stripe_session_id?: string | null
+          updated_at?: string
+          waitlist_email: string
+          waitlist_message?: string | null
+          waitlist_name: string
+          waitlist_phone?: string | null
+        }
+        Update: {
+          course_instance_id?: string
+          course_price?: number
+          course_table_name?: string
+          course_title?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          offer_token?: string
+          paid_at?: string | null
+          status?: string
+          stripe_session_id?: string | null
+          updated_at?: string
+          waitlist_email?: string
+          waitlist_message?: string | null
+          waitlist_name?: string
+          waitlist_phone?: string | null
+        }
+        Relationships: []
+      }
       course_purchases: {
         Row: {
           buyer_address: string | null
@@ -1205,6 +1262,10 @@ export type Database = {
       drop_course_booking_table: {
         Args: { table_name: string }
         Returns: undefined
+      }
+      generate_offer_token: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       generate_ticket_code: {
         Args: Record<PropertyKey, never>

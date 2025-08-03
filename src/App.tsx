@@ -29,6 +29,7 @@ const LazyShowDetails = React.lazy(() => import('@/pages/ShowDetails'));
 const LazyAdmin = React.lazy(() => import('@/pages/Admin'));
 const LazyTicketSuccess = React.lazy(() => import('@/pages/TicketPaymentSuccess'));
 const LazyCourseSuccess = React.lazy(() => import('@/pages/CoursePaymentSuccess'));
+const LazyCourseOfferPayment = React.lazy(() => import('@/pages/CourseOfferPayment'));
 const LazyPaymentPages = React.lazy(() => 
   Promise.all([
     import('@/pages/TicketPaymentSuccess'),
@@ -144,6 +145,16 @@ function AppContent() {
               element={
                 <Suspense fallback={null}>
                   <LazyCourseSuccess />
+                </Suspense>
+              } 
+            />
+            
+            {/* Course offer payment route */}
+            <Route 
+              path="/course-offer-payment/:token" 
+              element={
+                <Suspense fallback={null}>
+                  <LazyCourseOfferPayment />
                 </Suspense>
               } 
             />

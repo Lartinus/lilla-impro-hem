@@ -5,8 +5,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Users, UserPlus, UserX, Clock } from 'lucide-react';
+import { Users, UserPlus, UserX, Clock, Mail } from 'lucide-react';
 import { useWaitlistManagement } from '@/hooks/useWaitlistManagement';
+import { useCourseOffers } from '@/hooks/useCourseOffers';
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
 
@@ -35,6 +36,21 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
     isMoving,
     isRemoving
   } = useWaitlistManagement(courseInstanceId);
+
+  const { sendCourseOffer, isSendingOffer } = useCourseOffers();
+
+  const handleSendOffer = async (entry: any) => {
+    const success = await sendCourseOffer({
+      courseInstanceId,
+      courseTitle,
+      courseTableName,
+      coursePrice,
+      waitlistEmail: entry.email,
+      waitlistName: entry.name,
+      waitlistPhone: entry.phone,
+      waitlistMessage: entry.message
+    });
+  };
 
   const handleMoveToParticipants = (email: string, name: string) => {
     moveFromWaitlist({
@@ -110,7 +126,17 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
                           {format(new Date(entry.created_at), 'dd MMM yyyy, HH:mm', { locale: sv })}
                         </TableCell>
                         <TableCell className="text-right">
-                          <div className="flex gap-2 justify-end">
+                          <div className="flex gap-1 justify-end flex-wrap">
+                            <Button
+                              size="sm"
+                              onClick={() => handleSendOffer(entry)}
+                              disabled={isSendingOffer}
+                              className="h-8"
+                            >
+                              <Mail className="h-4 w-4 mr-1" />
+                              {isSendingOffer ? 'Skickar...' : 'Erbjud plats'}
+                            </Button>
+
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <Button
@@ -120,15 +146,16 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
                                   className="h-8"
                                 >
                                   <UserPlus className="h-4 w-4 mr-1" />
-                                  Flytta till kurs
+                                  Flytta direkt
                                 </Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
                                   <AlertDialogTitle>Flytta till kurs</AlertDialogTitle>
                                   <AlertDialogDescription>
-                                    Är du säker på att du vill flytta <strong>{entry.name}</strong> från väntelistan till kursen? 
+                                    Är du säker på att du vill flytta <strong>{entry.name}</strong> direkt från väntelistan till kursen? 
                                     Personen kommer att läggas till som kursdeltagare och tas bort från väntelistan.
+                                    {coursePrice > 0 && " Detta kommer att öppna en betalningslänk."}
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
@@ -217,6 +244,16 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
                       </div>
 
                       <div className="flex flex-col gap-2 pt-2">
+                        <Button
+                          size="sm"
+                          onClick={() => handleSendOffer(entry)}
+                          disabled={isSendingOffer}
+                          className="w-full"
+                        >
+                          <Mail className="h-4 w-4 mr-2" />
+                          {isSendingOffer ? 'Skickar...' : 'Erbjud plats'}
+                        </Button>
+
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <Button
@@ -226,15 +263,16 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
                               className="w-full"
                             >
                               <UserPlus className="h-4 w-4 mr-2" />
-                              Flytta till kurs
+                              Flytta direkt till kurs
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
                               <AlertDialogTitle>Flytta till kurs</AlertDialogTitle>
                               <AlertDialogDescription>
-                                Är du säker på att du vill flytta <strong>{entry.name}</strong> från väntelistan till kursen? 
+                                Är du säker på att du vill flytta <strong>{entry.name}</strong> direkt från väntelistan till kursen? 
                                 Personen kommer att läggas till som kursdeltagare och tas bort från väntelistan.
+                                {coursePrice > 0 && " Detta kommer att öppna en betalningslänk."}
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
