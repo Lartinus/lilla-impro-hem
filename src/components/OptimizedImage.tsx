@@ -72,10 +72,10 @@ export default function OptimizedImage({
       blurDataUrl: ''
     };
 
-    // Generate responsive sources
-    const responsiveSources = responsive ? generateResponsiveImageSources(baseSrc) : null;
-    const optimizedUrl = getOptimizedImageUrl(baseSrc);
-    const sizesAttribute = sizes || generateSizesAttribute(layout);
+    // Use original src for now until optimized images exist
+    const responsiveSources = null;
+    const optimizedUrl = baseSrc; // Use original URL
+    const sizesAttribute = '';
     const placeholder = blurPlaceholder ? generateBlurPlaceholder(width, height) : '';
 
     return {
@@ -166,34 +166,23 @@ export default function OptimizedImage({
           style={{ filter: 'blur(10px)' }}
         />
       )}
-      <picture>
-        {avifSrcSet && (
-          <source srcSet={avifSrcSet} sizes={sizesAttr} type="image/avif" />
-        )}
-        {webpSrcSet && (
-          <source srcSet={webpSrcSet} sizes={sizesAttr} type="image/webp" />
-        )}
-        {fallbackSrcSet && (
-          <source srcSet={fallbackSrcSet} sizes={sizesAttr} />
-        )}
-        <img
-          src={imageUrl || originalSrc}
-          alt={alt}
-          className={`${className} ${showImage ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 will-change-[opacity]`}
-          loading={priority ? "eager" : "lazy"}
-          decoding="async"
-          fetchPriority={priority ? "high" : "auto"}
-          onLoad={handleLoad}
-          onError={handleError}
-          width={width}
-          height={height}
-          style={{ 
-            objectFit: 'cover',
-            width: '100%',
-            height: '100%'
-          }}
-        />
-      </picture>
+      <img
+        src={imageUrl || originalSrc}
+        alt={alt}
+        className={`${className} ${showImage ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 will-change-[opacity]`}
+        loading={priority ? "eager" : "lazy"}
+        decoding="async"
+        {...(priority && { fetchPriority: "high" })}
+        onLoad={handleLoad}
+        onError={handleError}
+        width={width}
+        height={height}
+        style={{ 
+          objectFit: 'cover',
+          width: '100%',
+          height: '100%'
+        }}
+      />
     </div>
   )
 }
