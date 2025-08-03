@@ -8,6 +8,7 @@ import { useShowTags } from '@/hooks/useShowTags';
 import ShowCardSimple from '@/components/ShowCardSimple';
 import ShowTag from '@/components/ShowTag';
 import MainCard from '@/components/MainCard';
+import OptimizedImage from '@/components/OptimizedImage';
 
 import SubtleLoadingOverlay from '@/components/SubtleLoadingOverlay';
 import { NewsletterSignupModal } from '@/components/NewsletterSignupModal';
@@ -102,10 +103,12 @@ export default function Shows() {
         <Header />
         {/* Hero Image */}
         <div className="h-[360px] relative overflow-hidden">
-          <img 
+          <OptimizedImage 
             src="/uploads/images/shows_2024.jpg" 
             alt="" 
             className="w-full h-full object-cover object-center filter brightness-50"
+            priority={true}
+            sizes="100vw"
           />
         </div>
         <div className="container mx-auto px-4 py-16">
@@ -128,10 +131,12 @@ export default function Shows() {
       
       {/* Hero Image */}
       <div className="h-[360px] relative overflow-hidden">
-        <img 
+        <OptimizedImage 
           src="/uploads/images/shows_2024.jpg" 
           alt="" 
           className="w-full h-full object-cover object-center filter brightness-50"
+          priority={true}
+          sizes="100vw"
         />
       </div>
       

@@ -7,6 +7,7 @@ import { InterestSignupSection } from '@/components/InterestSignupSection';
 import { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
+import OptimizedImage from '@/components/OptimizedImage';
 
 const Courses = () => {
   const [searchParams] = useSearchParams();
@@ -35,11 +36,12 @@ const Courses = () => {
 
       {/* Header-bild */}
       <div className="h-[360px] overflow-hidden">
-        <img
+        <OptimizedImage
           src="/uploads/images/kurser_LIT_2024.jpg"
           alt="Kurser på Lilla Improteatern"
-          className="w-full h-[360px] object-cover object-center"
-          style={{ filter: 'brightness(0.5)' }}
+          className="w-full h-[360px] object-cover object-center filter brightness-50"
+          priority={true}
+          sizes="100vw"
         />
       </div>
 

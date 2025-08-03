@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import OptimizedImage from '@/components/OptimizedImage';
 
 const Lokal = () => {
   useEffect(() => {
@@ -13,10 +14,12 @@ const Lokal = () => {
       
       {/* Hero Image */}
       <div className="relative w-full h-[360px] overflow-hidden">
-        <img
+        <OptimizedImage
           src="/uploads/images/sommar_LIT_2024.jpg"
           alt=""
           className="w-full h-full object-cover object-center"
+          priority={true}
+          sizes="100vw"
         />
       </div>
       

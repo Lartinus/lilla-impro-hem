@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CorporateInquiryForm from '@/components/CorporateInquiryForm';
 import PrivateInquiryForm from '@/components/PrivateInquiryForm';
+import OptimizedImage from '@/components/OptimizedImage';
 
 export default function AnlitaOss() {
   useEffect(() => {
@@ -15,10 +16,12 @@ export default function AnlitaOss() {
       
       {/* Hero Image */}
       <div className="h-[360px] relative overflow-hidden">
-        <img 
+        <OptimizedImage 
           src="/uploads/images/shows_2024.jpg" 
           alt="" 
           className="w-full h-full object-cover object-center filter brightness-50"
+          priority={true}
+          sizes="100vw"
         />
       </div>
       
