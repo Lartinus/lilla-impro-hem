@@ -31,14 +31,14 @@ export default function Header() {
           }`}
         >
           <OptimizedImage 
-            src="/Logo1.svg" 
+            src="/logo/Logo1_new.svg" 
             alt="LIT Logo" 
             className="w-10 h-10 absolute top-[0px] left-0 transition-opacity duration-300 group-hover:opacity-0"
             priority={true}
             sizes="32px"
           />
           <OptimizedImage 
-            src="/Logo2.svg" 
+            src="/logo/Logo2_new.svg" 
             alt="LIT Logo Hover" 
             className="w-10 h-10 absolute -top-[10px] left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             priority={true}
