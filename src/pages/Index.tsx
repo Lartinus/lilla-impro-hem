@@ -1,59 +1,83 @@
-import { useEffect } from 'react'
-import Header from '@/components/Header'
-import ServiceBoxes from '@/components/ServiceBoxes'
-import ContentOverlay from '@/components/ContentOverlay'
-import OptimizedImage from '@/components/OptimizedImage'
-import { ArrowDown } from 'lucide-react'
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { ReactComponent as Logo1 } from '@/logo/Logo1_new.svg';
+import { ReactComponent as Logo2 } from '@/logo/Logo2_new.svg';
+import ServiceBoxes from '@/components/ServiceBoxes';
+import ContentOverlay from '@/components/ContentOverlay';
+import OptimizedImage from '@/components/OptimizedImage';
+import { ArrowDown } from 'lucide-react';
 
-export default function Index() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+const navItems = [
+  { to: '/',           label: 'Hem' },
+  { to: '/kurser',     label: 'Kurser' },
+  { to: '/forestallningar', label: 'Föreställningar' },
+  { to: '/boka-oss',   label: 'Boka oss' },
+  { to: '/lokal',      label: 'Lokal' },
+  { to: '/om-oss',     label: 'Om oss & kontakt' },
+];
+
+export default function Header() {
+  const [open, setOpen] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+  const { pathname } = useLocation();
+
   return (
-    <div className="relative min-h-screen">
-      <Header />
+    <header className="fixed inset-x-0 top-0 z-50 bg-primary-red text-primary-foreground">
+      <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-[85px]">
+        {/* Hover-animera inline SVG för pixelperfekt overlay */}
+        <Link
+          to="/"
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+          className={`hidden md:block relative w-16 h-16 group ${isHovering ? 'animate-spin-360' : 'animate-spin-reverse'}`}
+        >
+          {/* Båda SVG:erna använder identisk viewBox och fyller containern */}
+          <Logo1 className="absolute inset-0 w-full h-full transition-opacity duration-300 group-hover:opacity-0" />
+          <Logo2 className="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        </Link>
 
-      {/* Hero image with text overlay */}
-      <div className="relative">
-        {/* Hero image */}
-        <div className="relative w-full h-[50vh] overflow-hidden">
-          <OptimizedImage
-            src="/uploads/images/Rosenqvist-6315.jpg"
-            alt="Lilla Improteatern hero image"
-            className="w-full h-full object-cover"
-            priority={true}
-            sizes="100vw"
-          />
-          
-          {/* Dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/50" />
-          
-          {/* Text overlay - positioned in lower area */}
-          <div className="absolute bottom-[5%] left-1/2 transform -translate-x-1/2 px-4 w-full max-w-[90vw] sm:max-w-[500px]">
-            <h3 className="font-rajdhani text-[16px] sm:text-[18px] md:text-[20px] text-center mb-6" style={{ color: 'rgb(var(--white))' }}>
-              Vi är en plats för dig som vill lära dig,<br />
-              utöva och uppleva Improv&nbsp;Comedy.
-            </h3>
+        {/* Site title centrerad på desktop, vänster på mobil */}
+        <Link
+          to="/"
+          className="font-tanker text-[28px] text-primary-foreground md:absolute md:left-1/2 md:transform md:-translate-x-1/2"
+        >
+          LILLA IMPROTEATERN
+        </Link>
 
-            {/* Arrow visible on both mobile and desktop */}
-            <div className="flex justify-center">
-              <ArrowDown
-                size={24}
-                strokeWidth={2}
-                className="animate-bounce"
-                style={{ color: 'rgb(var(--white))' }}
-              />
-            </div>
-          </div>
-        </div>
+        {/* Hamburger-meny */}
+        <button
+          onClick={() => setOpen(o => !o)}
+          aria-label={open ? 'Stäng meny' : 'Öppna meny'}
+          className={`w-10 h-10 relative flex flex-col items-center justify-center p-0 ml-auto hamburger-menu ${open ? 'is-open' : ''}`}
+        >
+          <span className="hamburger-line top"></span>
+          <span className="hamburger-line middle"></span>
+          <span className="hamburger-line bottom"></span>
+        </button>
       </div>
 
-      {/* White section with ServiceBoxes */}
-      <div className="bg-white py-16 md:py-20 rounded-t-lg md:rounded-t-none">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <ServiceBoxes />
+      {/* Öppen meny */}
+      {open && (
+        <div className="fixed inset-x-0 top-[85px] z-40 bg-primary-red text-primary-foreground main-nav is-open">
+          <nav className="flex flex-col items-end pr-6 lg:pr-8 space-y-2 pb-6 pt-4">
+            {navItems.map(({ to, label }) => {
+              const isActive = pathname === to;
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  onClick={() => setOpen(false)}
+                  className={`font-tanker uppercase text-2xl lg:text-3xl transition-colors ${
+                    isActive ? 'text-primary-foreground' : 'text-primary-foreground hover:text-white'
+                  }`}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+          </nav>
         </div>
-      </div>
-    </div>
-  )
+      )}
+    </header>
+  );
 }
