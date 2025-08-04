@@ -32,9 +32,9 @@ export default function Header() {
         >
           {/* Båda SVG:erna ligger i public/logo */}
                     <OptimizedImage
-            src="/logo/Logo1_new.svg"
-            alt="LIT Logo"
-            className="absolute inset-0 w-full h-full object-contain object-center transition-opacity duration-300 group-hover:opacity-0"
+            src="/logo/Logo2_new.svg"
+            alt="LIT Logo Hover"
+            className="absolute inset-0 w-full h-full object-contain object-center opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             priority
           />
           <OptimizedImage
