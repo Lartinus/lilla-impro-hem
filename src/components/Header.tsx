@@ -40,7 +40,7 @@ export default function Header() {
           <OptimizedImage 
             src="/logo/Logo2_new.svg" 
             alt="LIT Logo Hover" 
-            className="w-10 h-10 absolute -top-[10px] left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            className="w-10 h-10 absolute top-[0px] left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             priority={true}
             sizes="32px"
           />
