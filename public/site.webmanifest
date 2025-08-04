@@ -4,34 +4,39 @@
   "description": "Lilla Improteatern är en teater i Stockholm som fokuserar på Improv Comedy",
   "icons": [
     {
-      "src": "/FaviconRed.svg",
+      "src": "/favicon/16/LIT_FAVICON16px.png",
       "sizes": "16x16",
-      "type": "image/svg+xml"
+      "type": "image/png"
     },
     {
-      "src": "/FaviconRed.svg", 
+      "src": "/favicon/32/LIT_FAVICON32px.png", 
       "sizes": "32x32",
-      "type": "image/svg+xml"
+      "type": "image/png"
     },
     {
-      "src": "/FaviconRed.svg",
-      "sizes": "144x144",
-      "type": "image/svg+xml"
+      "src": "/favicon/48/LIT_FAVICON48px.png",
+      "sizes": "48x48",
+      "type": "image/png"
     },
     {
-      "src": "/FaviconRed.svg",
+      "src": "/favicon/96/LIT_FAVICON96px.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon/180/LIT_FAVICON180px.png",
       "sizes": "180x180",
-      "type": "image/svg+xml"
+      "type": "image/png"
     },
     {
-      "src": "/FaviconRed.svg",
+      "src": "/favicon/192/LIT_FAVICON192px.png",
       "sizes": "192x192",
-      "type": "image/svg+xml"
+      "type": "image/png"
     },
     {
-      "src": "/FaviconRed.svg",
+      "src": "/favicon/512/LIT_FAVICON512px.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
