@@ -232,18 +232,7 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
           </Button>
         );
       case 'groups':
-        return (
-          <div className="flex gap-2">
-            <Button onClick={() => console.log('Add contacts')} size="sm" variant="outline">
-              <UserPlus className="w-4 h-4 mr-2" />
-              Lägg till kontakter
-            </Button>
-            <Button onClick={() => console.log('Create group')} size="sm">
-              <Plus className="w-4 h-4 mr-2" />
-              Ny grupp
-            </Button>
-          </div>
-        );
+        return null; // Moved action buttons to EmailGroupsManager component
       default:
         return null;
     }
