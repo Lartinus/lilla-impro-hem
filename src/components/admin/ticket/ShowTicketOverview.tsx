@@ -69,15 +69,6 @@ export const ShowTicketOverview = () => {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Ticket className="h-5 w-5" />
-            Föreställningar med biljettförsäljning
-          </CardTitle>
-          <CardDescription>
-            {shows?.length || 0} föreställningar med intern biljettförsäljning
-          </CardDescription>
-        </CardHeader>
         <CardContent>
           {shows && shows.length > 0 ? (
             <div className="space-y-4">
