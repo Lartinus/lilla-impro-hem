@@ -35,14 +35,14 @@ export default function Header() {
             alt="LIT Logo" 
             className="w-12 h-12 absolute top-0 left-0 transition-opacity duration-300 group-hover:opacity-0"
             priority={true}
-            sizes="42px"
+            sizes="32px"
           />
           <OptimizedImage 
             src="/Logo2.svg" 
             alt="LIT Logo Hover" 
             className="w-12 h-12 absolute -top-6 left-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             priority={true}
-            sizes="38px"
+            sizes="28px"
           />
         </Link>
 
