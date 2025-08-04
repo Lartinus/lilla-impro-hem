@@ -216,6 +216,7 @@ const AdminDashboard = () => {
           {/* Main Content */}
           <main className="flex-1 p-4 md:p-6 overflow-auto min-w-0">
             <div className="max-w-full">
+              <h2 className="text-2xl font-bold mb-6">Lilla Improteatern</h2>
               {activeSection === 'overview' ? (
                 <div className="space-y-6">
                   <div>
