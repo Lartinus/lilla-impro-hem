@@ -219,6 +219,9 @@ export function EmailGroupsManager({
   return (
     <div className="space-y-6">
       <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Email-grupper</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-4">
           {/* Action buttons on separate row, left-aligned */}
           <div className="flex flex-col sm:flex-row gap-2">
