@@ -141,7 +141,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailHtml = createUnifiedEmailTemplate(emailSubject, emailContent);
     
     const emailResponse = await resend.emails.send({
-      from: "Lilla Improteatern <onboarding@resend.dev>",
+      from: "Lilla Improteatern <noreply@improteatern.se>",
       to: [cleanEmail],
       subject: emailSubject,
       html: emailHtml,
@@ -153,7 +153,7 @@ const handler = async (req: Request): Promise<Response> => {
     await logSentEmail({
       recipientEmail: cleanEmail,
       recipientName: cleanName,
-      senderEmail: "Lilla Improteatern <onboarding@resend.dev>",
+      senderEmail: "Lilla Improteatern <noreply@improteatern.se>",
       subject: emailSubject,
       htmlContent: emailHtml,
       emailType: "newsletter_confirmation",
