@@ -36,6 +36,13 @@ const AUTOMATIC_EMAIL_TYPES = [
     dbName: 'AUTO: course_confirmation'
   },
   {
+    key: 'course_offer',
+    name: 'Kurserbjudande',
+    description: 'Skickas när någon får ett kurserbjudande från väntelistan',
+    variables: ['NAMN', 'KURSTITEL', 'ORDINARIE_PRIS', 'STUDENTPRIS', 'BETALNINGSLÄNK'],
+    dbName: 'AUTO: course_offer'
+  },
+  {
     key: 'interest_confirmation',
     name: 'Intresse bekräftelse',
     description: 'Skickas när någon anmäler intresse',
@@ -184,6 +191,21 @@ Visa denna QR-kod vid entrén`;
       };
       
       // Replace variables (same as send-course-confirmation)
+      Object.entries(mockVariables).forEach(([key, value]) => {
+        const regex = new RegExp(`\\{${key}\\}`, 'gi');
+        processedContent = processedContent.replace(regex, value);
+      });
+      
+    } else if (templateType?.key === 'course_offer') {
+      mockVariables = {
+        NAMN: 'Anna Andersson',
+        KURSTITEL: 'Nivå 1 - Improv Comedy',
+        ORDINARIE_PRIS: '2800',
+        STUDENTPRIS: '2200',
+        BETALNINGSLÄNK: 'https://improteatern.se/kurs-erbjudande-betalning/exempel123'
+      };
+      
+      // Replace variables (same as send-course-offer)
       Object.entries(mockVariables).forEach(([key, value]) => {
         const regex = new RegExp(`\\{${key}\\}`, 'gi');
         processedContent = processedContent.replace(regex, value);

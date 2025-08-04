@@ -130,20 +130,22 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
                           {format(new Date(entry.created_at), 'dd MMM yyyy, HH:mm', { locale: sv })}
                         </TableCell>
                         <TableCell>
-                          {entry.offer_sent ? (
-                            <Badge variant="secondary" className="text-xs text-white">
-                              Erbjudande skickat
-                              {entry.offer_sent_at && (
-                                <span className="block text-xs text-white/80">
-                                  {format(new Date(entry.offer_sent_at), 'dd MMM HH:mm', { locale: sv })}
-                                </span>
-                              )}
-                            </Badge>
-                          ) : (
-                            <Badge variant="outline" className="text-xs text-white">
-                              Väntar
-                            </Badge>
-                          )}
+                          <div className="flex flex-col gap-1">
+                            {entry.offer_sent ? (
+                              <Badge variant="secondary" className="text-xs text-white w-fit">
+                                Erbjudande skickat
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-xs text-white w-fit">
+                                Väntar
+                              </Badge>
+                            )}
+                            {entry.offer_sent && entry.offer_sent_at && (
+                              <span className="text-xs text-white/80">
+                                {format(new Date(entry.offer_sent_at), 'dd MMM HH:mm', { locale: sv })}
+                              </span>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex gap-1 justify-end flex-wrap">
@@ -263,18 +265,20 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
                         </div>
                         <div>
                           <span className="font-medium text-muted-foreground">Status:</span>
-                          <div className="mt-1">
+                          <div className="mt-1 space-y-2">
                             {entry.offer_sent ? (
-                              <Badge variant="secondary" className="text-xs text-white">
-                                Erbjudande skickat
+                              <>
+                                <Badge variant="secondary" className="text-xs text-white w-fit">
+                                  Erbjudande skickat
+                                </Badge>
                                 {entry.offer_sent_at && (
-                                  <span className="block text-xs text-white/80 mt-1">
+                                  <div className="text-xs text-white/80">
                                     {format(new Date(entry.offer_sent_at), 'dd MMM HH:mm', { locale: sv })}
-                                  </span>
+                                  </div>
                                 )}
-                              </Badge>
+                              </>
                             ) : (
-                              <Badge variant="outline" className="text-xs text-white">
+                              <Badge variant="outline" className="text-xs text-white w-fit">
                                 Väntar
                               </Badge>
                             )}
