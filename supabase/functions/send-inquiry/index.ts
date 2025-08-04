@@ -85,129 +85,28 @@ const handler = async (req: Request): Promise<Response> => {
       ? `Ny företagsförfrågan från ${inquiryData.company || inquiryData.name}`
       : `Ny privatförfrågan från ${inquiryData.name}`;
 
-    // Create notification email using clean design
-    function createNotificationEmail(subject: string, inquiryData: any) {
-      return `
-        <!DOCTYPE html>
-        <html lang="sv" style="margin: 0; padding: 0;">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>${subject}</title>
-        </head>
-        <body style="
-          margin: 0;
-          padding: 0;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-          background-color: #f8f9fa;
-          line-height: 1.6;
-          color: #333333;
-        ">
-          <!-- Container -->
-          <div style="
-            max-width: 600px;
-            margin: 40px auto;
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-          ">
-            <!-- Header -->
-            <div style="
-              background-color: #1a1a1a;
-              color: #ffffff;
-              padding: 32px;
-              text-align: center;
-            ">
-              <h1 style="
-                font-size: 24px;
-                font-weight: 400;
-                margin: 0;
-                letter-spacing: -0.025em;
-              ">${subject}</h1>
-              <p style="
-                margin: 8px 0 0 0;
-                opacity: 0.8;
-                font-size: 14px;
-              ">${new Date().toLocaleDateString('sv-SE')}</p>
-            </div>
-            
-            <!-- Content -->
-            <div style="padding: 32px;">
-              <!-- Contact Details -->
-              <div style="
-                background-color: #f8f9fa;
-                border-radius: 8px;
-                padding: 24px;
-                margin-bottom: 24px;
-              ">
-                <h3 style="
-                  font-size: 16px;
-                  font-weight: 500;
-                  margin: 0 0 16px 0;
-                  color: #1a1a1a;
-                ">Kontaktuppgifter</h3>
-                
-                <div style="
-                  display: grid;
-                  gap: 12px;
-                  font-size: 14px;
-                ">
-                  <div>
-                    <strong style="color: #666;">Namn:</strong> ${inquiryData.name}
-                  </div>
-                  <div>
-                    <strong style="color: #666;">E-post:</strong> ${inquiryData.email}
-                  </div>
-                  ${inquiryData.phone ? `<div><strong style="color: #666;">Telefon:</strong> ${inquiryData.phone}</div>` : ''}
-                  ${inquiryData.company ? `<div><strong style="color: #666;">Företag:</strong> ${inquiryData.company}</div>` : ''}
-                  ${inquiryData.occasion ? `<div><strong style="color: #666;">Tillfälle:</strong> ${inquiryData.occasion}</div>` : ''}
-                  <div>
-                    <strong style="color: #666;">Typ:</strong> ${inquiryData.type === 'corporate' ? 'Företag' : 'Privat'}
-                  </div>
-                </div>
-              </div>
+    // Create notification content using markdown format
+    const notificationMarkdown = `
+H2: Kontaktuppgifter
 
-              <!-- Requirements -->
-              <div>
-                <h3 style="
-                  font-size: 16px;
-                  font-weight: 500;
-                  margin: 0 0 12px 0;
-                  color: #1a1a1a;
-                ">Krav och önskemål</h3>
-                <div style="
-                  background-color: #f8f9fa;
-                  border-radius: 8px;
-                  padding: 20px;
-                  border-left: 4px solid #1a1a1a;
-                  font-size: 14px;
-                  line-height: 1.6;
-                  white-space: pre-wrap;
-                ">${inquiryData.requirements}</div>
-              </div>
-            </div>
+**Namn:** ${inquiryData.name}
+**E-post:** ${inquiryData.email}
+${inquiryData.phone ? `**Telefon:** ${inquiryData.phone}\n` : ''}${inquiryData.company ? `**Företag:** ${inquiryData.company}\n` : ''}${inquiryData.occasion ? `**Tillfälle:** ${inquiryData.occasion}\n` : ''}**Typ:** ${inquiryData.type === 'corporate' ? 'Företag' : 'Privat'}
 
-            <!-- Footer -->
-            <div style="
-              background-color: #f8f9fa;
-              padding: 20px;
-              text-align: center;
-              border-top: 1px solid #e9ecef;
-            ">
-              <p style="
-                font-size: 12px;
-                color: #666;
-                margin: 0;
-              ">Logga in på adminpanelen för att hantera förfrågan</p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `;
-    }
+H2: Krav och önskemål
 
-    const notificationContent = createNotificationEmail(notificationSubject, inquiryData);
+${inquiryData.requirements}
+
+---
+
+Logga in på adminpanelen för att hantera förfrågan
+    `.trim();
+
+    // Create notification content using unified template
+    const notificationContent = createUnifiedEmailTemplate(
+      notificationSubject,
+      notificationMarkdown
+    );
 
     await resend.emails.send({
       from: "Lilla Improteatern <noreply@improteatern.se>",
