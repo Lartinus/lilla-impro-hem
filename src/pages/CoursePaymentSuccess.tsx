@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { CheckCircle2, ArrowLeft, Mail, Calendar, User, MapPin } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 
 interface CourseDetails {
@@ -12,27 +13,87 @@ interface CourseDetails {
   totalAmount: number;
   paymentStatus: string;
   created_at: string;
+  isFromOffer?: boolean;
 }
 
 const CoursePaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const [courseDetails, setCourseDetails] = useState<CourseDetails | null>(null);
+  const [isProcessing, setIsProcessing] = useState(true);
   const sessionId = searchParams.get('session_id');
 
   useEffect(() => {
-    // In a real implementation, you would fetch course details using the session_id
-    // For now, we'll show a generic success message
-    if (sessionId) {
-      // Simulate fetching data
-      setCourseDetails({
-        courseTitle: "Kursbokning genomförd",
-        buyerName: "Deltagare",
-        buyerEmail: "",
-        totalAmount: 0,
-        paymentStatus: "paid",
-        created_at: new Date().toISOString()
-      });
-    }
+    const handlePaymentSuccess = async () => {
+      if (!sessionId) return;
+
+      try {
+        // Get course purchase details
+        const { data: purchase } = await supabase
+          .from('course_purchases')
+          .select('*')
+          .eq('stripe_session_id', sessionId)
+          .single();
+
+        if (purchase) {
+          setCourseDetails({
+            courseTitle: purchase.course_title,
+            buyerName: purchase.buyer_name,
+            buyerEmail: purchase.buyer_email,
+            totalAmount: purchase.total_amount,
+            paymentStatus: purchase.payment_status,
+            created_at: purchase.created_at
+          });
+
+          // Check if this was from a course offer and handle backup processing
+          const { data: offer } = await supabase
+            .from('course_offers')
+            .select('*')
+            .eq('stripe_session_id', sessionId)
+            .single();
+
+          if (offer && offer.status !== 'paid') {
+            console.log('Processing course offer payment manually...');
+            
+            // Add to course table if not already done
+            if (purchase.course_table_name) {
+              await supabase.rpc('insert_course_booking', {
+                table_name: purchase.course_table_name,
+                booking_name: purchase.buyer_name,
+                booking_phone: purchase.buyer_phone || '',
+                booking_email: purchase.buyer_email,
+                booking_address: purchase.buyer_address || '',
+                booking_postal_code: purchase.buyer_postal_code || '',
+                booking_city: purchase.buyer_city || '',
+                booking_message: purchase.buyer_message || ''
+              });
+            }
+
+            // Remove from waitlist
+            await supabase.rpc('remove_from_waitlist', {
+              course_instance_id_param: offer.course_instance_id,
+              email_param: offer.waitlist_email
+            });
+
+            // Update offer status
+            await supabase
+              .from('course_offers')
+              .update({ 
+                status: 'paid',
+                paid_at: new Date().toISOString()
+              })
+              .eq('stripe_session_id', sessionId);
+
+            setCourseDetails(prev => prev ? { ...prev, isFromOffer: true } : null);
+          }
+        }
+      } catch (error) {
+        console.error('Error processing payment success:', error);
+      } finally {
+        setIsProcessing(false);
+      }
+    };
+
+    handlePaymentSuccess();
   }, [sessionId]);
 
   return (

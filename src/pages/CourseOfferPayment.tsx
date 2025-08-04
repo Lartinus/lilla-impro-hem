@@ -12,6 +12,7 @@ interface CourseOffer {
   id: string;
   course_instance_id: string;
   course_title: string;
+  course_table_name: string;
   course_price: number;
   course_discount_price: number;
   waitlist_name: string;
@@ -45,7 +46,7 @@ const CourseOfferPayment = () => {
       // First get the course offer
       const { data: offerData, error: offerError } = await supabase
         .from('course_offers')
-        .select('id, course_instance_id, course_title, course_price, course_discount_price, waitlist_name, waitlist_email, expires_at, status')
+        .select('id, course_instance_id, course_title, course_table_name, course_price, course_discount_price, waitlist_name, waitlist_email, expires_at, status')
         .eq('offer_token', token)
         .eq('status', 'sent')
         .gt('expires_at', new Date().toISOString())
@@ -87,7 +88,7 @@ const CourseOfferPayment = () => {
         body: {
           courseInstanceId: offer.course_instance_id,
           courseTitle: offer.course_title,
-          courseTableName: '',
+          courseTableName: offer.course_table_name,
           price: offer.course_price,
           discountPrice: offer.course_discount_price,
           useDiscountPrice: selectedPrice === 'discount',
