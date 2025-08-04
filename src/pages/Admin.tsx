@@ -182,9 +182,9 @@ const AdminDashboard = () => {
         <div className="flex-1 flex flex-col min-w-0">
           {/* Header */}
           <header className="sticky top-0 z-50 h-16 flex items-center justify-between bg-white px-4 md:px-6 shrink-0">
-            <div className="flex items-center gap-4 min-w-0">
+            <div className="flex items-center gap-4 min-w-0 h-full">
               <SidebarTrigger className="md:hidden shrink-0" />
-              <h2 className="text-xl font-bold">Lilla Improteatern</h2>
+              <h2 className="text-xl font-bold flex items-center h-full">Lilla Improteatern</h2>
             </div>
             <div className="flex items-center gap-2 md:gap-3 shrink-0">
               <Button 
