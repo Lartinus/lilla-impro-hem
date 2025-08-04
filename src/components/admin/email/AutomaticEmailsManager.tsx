@@ -288,12 +288,12 @@ Visa denna QR-kod vid entrén`;
           return (
             <Card key={emailType.key}>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <div className="flex-1">
                     <CardTitle className="text-lg">{emailType.name}</CardTitle>
-                    <CardDescription>{emailType.description}</CardDescription>
+                    <CardDescription className="text-sm">{emailType.description}</CardDescription>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 self-end sm:self-auto">
                     {existingTemplate && (
                       <Button
                         variant="outline"
