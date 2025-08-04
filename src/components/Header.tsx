@@ -14,15 +14,21 @@ const navItems = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const { pathname } = useLocation();
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-primary-red text-primary-foreground">
       <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-[85px]">
-        {/* Hover-animera logo med CSS-klasser */}
+        {/* Hover-animera logo med rotation */}
         <Link
           to="/"
-          className="hidden md:block relative w-16 h-16 group"
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+          className={
+            `hidden md:block relative w-16 h-16 group ` +
+            `${isHovering ? 'animate-spin-360' : 'animate-spin-reverse'}`
+          }
         >
           {/* Original logo */}
           <OptimizedImage
