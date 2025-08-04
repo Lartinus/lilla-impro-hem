@@ -43,7 +43,6 @@ function VenueRow({ venue, onEdit, onToggleActive, onDelete }: {
       <TableCell className="font-medium">{venue.name}</TableCell>
       <TableCell>
         <div className="flex items-center gap-1">
-          <MapPin className="w-4 h-4 text-muted-foreground" />
           {venue.address || '-'}
         </div>
       </TableCell>
@@ -269,7 +268,7 @@ export const VenueManagement = () => {
                     <h4 className="font-medium">{venue.name}</h4>
                     {venue.address && (
                       <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                        <MapPin className="w-4 h-4 md:hidden" />
+                        <MapPin className="w-4 h-4" />
                         {venue.address}
                       </div>
                     )}
@@ -338,7 +337,6 @@ export const VenueManagement = () => {
         )
       ) : (
         <div className="text-center py-12">
-          <MapPin className="mx-auto h-16 w-16 text-muted-foreground mb-6" />
           <h3 className="text-xl font-semibold mb-3">Inga platser</h3>
           <p className="text-muted-foreground max-w-md mx-auto">
             Lägg till din första plats för att komma igång.
@@ -377,7 +375,7 @@ export const VenueManagement = () => {
                 id="address"
                 value={newVenue.address}
                 onChange={(e) => setNewVenue(prev => ({ ...prev, address: e.target.value }))}
-                placeholder="Götgatan 15, Stockholm"
+                placeholder="Improgatan 1, Stockholm"
               />
             </div>
 
