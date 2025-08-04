@@ -24,9 +24,7 @@ export default function Header() {
           to="/"
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
-          className={`hidden md:block relative w-16 h-[85px] overflow-visible group ${hidden md:block relative w-16 h-[85px] overflow-visible ${
-            isHovering ? 'animate-spin-360' : 'animate-spin-reverse'
-          }`}
+          className={`hidden md:block relative w-16 h-[85px] overflow-visible group ${isHovering ? 'animate-spin-360' : 'animate-spin-reverse'}`}
         >
           {/* Original logo */}
           <OptimizedImage
