@@ -280,7 +280,7 @@ export type Database = {
           },
         ]
       }
-      course_niv__2___improv_comedy__l_ngform_1753659988035: {
+      course_niv__2___improv_comedy__l_ngform_1754330903758: {
         Row: {
           address: string | null
           city: string | null
