@@ -30,7 +30,7 @@ export default function Header() {
         >
           {/* Original logo */}
           <OptimizedImage
-            src="/logo/Logo1_new.svg"
+            src="/logo/Logo1.svg"
             alt="LIT Logo"
             className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 group-hover:opacity-0"
             style={{ objectPosition: '0 0' }}
@@ -38,7 +38,7 @@ export default function Header() {
           />
           {/* Hover-logo */}
           <OptimizedImage
-            src="/logo/Logo2_new.svg"
+            src="/logo/Logo2.svg"
             alt="LIT Logo Hover"
             className="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             style={{ objectPosition: '0 0' }}
