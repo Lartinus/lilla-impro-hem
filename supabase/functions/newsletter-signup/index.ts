@@ -105,7 +105,7 @@ const handler = async (req: Request): Promise<Response> => {
     const confirmationUrl = `https://improteatern.se/nyhetsbrev-bekraftelse?token=${confirmationToken}`;
     
     // Import the unified template
-    const { createUnifiedEmailTemplate } = await import("../_shared/unified-email-template.ts");
+    const { createUnifiedEmailTemplate } = await import("../_shared/email-template.ts");
     
     // Create confirmation email using unified design
     function createConfirmationEmail(confirmationUrl: string, name: string, email: string) {
