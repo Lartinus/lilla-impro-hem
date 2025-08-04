@@ -41,7 +41,7 @@ export default function ServiceBoxes() {
         <Link
           key={idx}
           to={svc.link}
-          className="group flex flex-col bg-[#E7E7E7] overflow-hidden transition-transform duration-300 w-full hover:shadow-lg cursor-pointer"
+          className="group flex flex-col bg-[#E7E7E7] overflow-hidden transition-transform duration-300 w-full cursor-pointer"
         >
           {/* Bild‐sektion = halva höjden */}
           <div className="relative h-[200px] lg:h-[250px] overflow-hidden aspect-[4/3]">
