@@ -184,6 +184,7 @@ const AdminDashboard = () => {
           <header className="sticky top-0 z-50 h-16 flex items-center justify-between bg-white px-4 md:px-6 shrink-0">
             <div className="flex items-center gap-4 min-w-0">
               <SidebarTrigger className="md:hidden shrink-0" />
+              <h2 className="text-xl font-bold">Lilla Improteatern</h2>
             </div>
             <div className="flex items-center gap-2 md:gap-3 shrink-0">
               <Button 
@@ -216,7 +217,6 @@ const AdminDashboard = () => {
           {/* Main Content */}
           <main className="flex-1 p-4 md:p-6 overflow-auto min-w-0">
             <div className="max-w-full">
-              <h2 className="text-2xl font-bold mb-6">Lilla Improteatern</h2>
               {activeSection === 'overview' ? (
                 <div className="space-y-6">
                   <div>
