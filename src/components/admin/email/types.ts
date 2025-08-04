@@ -34,5 +34,5 @@ export interface GroupMember {
 }
 
 export interface EmailManagementProps {
-  activeTab?: 'send' | 'templates' | 'groups' | 'contacts' | 'automatic';
+  activeTab?: 'send' | 'templates' | 'groups' | 'contacts' | 'automatic' | 'sent';
 }

@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { supabase } from "../_shared/supabase.ts";
+import { logSentEmail } from "../_shared/email-logger.ts";
 import { createUnifiedEmailTemplate } from "../_shared/email-template.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
@@ -318,13 +319,40 @@ const handler = async (req: Request): Promise<Response> => {
 
         const results = await Promise.allSettled(emailPromises);
         
-        results.forEach((result, index) => {
+        results.forEach(async (result, index) => {
+          const recipient = batch[index];
           if (result.status === 'fulfilled') {
             totalSent++;
-            console.log(`Email sent successfully to ${batch[index].email}`);
+            console.log(`Email sent successfully to ${recipient.email}`);
+            
+            // Log successful email
+            await logSentEmail({
+              recipientEmail: recipient.email,
+              recipientName: recipient.name,
+              subject: subject,
+              content: content,
+              htmlContent: htmlContent,
+              emailType: 'bulk',
+              sourceFunction: 'send-bulk-email',
+              resendId: result.value?.id,
+              status: 'sent'
+            });
           } else {
-            console.error(`Failed to send email to ${batch[index].email}:`, result.reason);
-            errors.push(`${batch[index].email}: ${result.reason}`);
+            console.error(`Failed to send email to ${recipient.email}:`, result.reason);
+            errors.push(`${recipient.email}: ${result.reason}`);
+            
+            // Log failed email
+            await logSentEmail({
+              recipientEmail: recipient.email,
+              recipientName: recipient.name,
+              subject: subject,
+              content: content,
+              htmlContent: htmlContent,
+              emailType: 'bulk',
+              sourceFunction: 'send-bulk-email',
+              status: 'failed',
+              errorMessage: String(result.reason)
+            });
           }
         });
 

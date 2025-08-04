@@ -6,6 +6,7 @@ import { EmailTemplatesManager } from './EmailTemplatesManager';
 import { EmailGroupsManager } from './EmailGroupsManager';
 import { EmailContactsManager } from './EmailContactsManager';
 import { AutomaticEmailsManager } from './AutomaticEmailsManager';
+import { SentEmailsManager } from './SentEmailsManager';
 import { ContactActivitiesDialog } from './ContactActivitiesDialog';
 import { CourseImportDialog } from './CourseImportDialog';
 import { GroupMembersDialog } from './GroupMembersDialog';
@@ -200,6 +201,9 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
       case 'automatic':
         return <AutomaticEmailsManager />;
       
+      case 'sent':
+        return <SentEmailsManager />;
+      
       default:
         return null;
     }
@@ -217,6 +221,8 @@ export function EmailManagement({ activeTab = 'send' }: EmailManagementProps) {
         return 'Kontakter';
       case 'automatic':
         return 'Automatiska mejl';
+      case 'sent':
+        return 'Skickade email';
       default:
         return 'Email-hantering';
     }

@@ -164,6 +164,8 @@ const AdminDashboard = () => {
         return <EmailManagement activeTab="contacts" />;
       case 'email-automatic':
         return <EmailManagement activeTab="automatic" />;
+      case 'email-sent':
+        return <EmailManagement activeTab="sent" />;
       default:
         return null;
     }

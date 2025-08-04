@@ -104,6 +104,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         { id: 'email-groups', title: 'Email-grupper', icon: Users },
         { id: 'email-contacts', title: 'Kontakter', icon: UserCircle },
         { id: 'email-automatic', title: 'Automatiska mejl', icon: Settings },
+        { id: 'email-sent', title: 'Skickade email', icon: Archive },
       ]
     },
     {

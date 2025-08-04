@@ -926,6 +926,57 @@ export type Database = {
         }
         Relationships: []
       }
+      sent_emails: {
+        Row: {
+          content: string | null
+          created_at: string
+          email_type: string
+          error_message: string | null
+          html_content: string | null
+          id: string
+          recipient_email: string
+          recipient_name: string | null
+          resend_id: string | null
+          sender_email: string
+          sent_at: string
+          source_function: string
+          status: string
+          subject: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          email_type: string
+          error_message?: string | null
+          html_content?: string | null
+          id?: string
+          recipient_email: string
+          recipient_name?: string | null
+          resend_id?: string | null
+          sender_email?: string
+          sent_at?: string
+          source_function: string
+          status?: string
+          subject: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          email_type?: string
+          error_message?: string | null
+          html_content?: string | null
+          id?: string
+          recipient_email?: string
+          recipient_name?: string | null
+          resend_id?: string | null
+          sender_email?: string
+          sent_at?: string
+          source_function?: string
+          status?: string
+          subject?: string
+        }
+        Relationships: []
+      }
       show_performers: {
         Row: {
           actor_id: string
