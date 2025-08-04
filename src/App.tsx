@@ -45,19 +45,8 @@ const LazyPaymentPages = React.lazy(() =>
     )
   }))
 );
-const LazyNewsletterPages = React.lazy(() =>
-  Promise.all([
-    import('@/pages/NewsletterConfirmation'),
-    import('@/pages/Unsubscribe'),
-  ]).then(([confirmation, unsubscribe]) => ({
-    default: () => (
-      <Routes>
-        <Route path="/newsletter-confirmation" element={<confirmation.default />} />
-        <Route path="/unsubscribe" element={<unsubscribe.default />} />
-      </Routes>
-    )
-  }))
-);
+const LazyNewsletterConfirmation = React.lazy(() => import('@/pages/NewsletterConfirmation'));
+const LazyUnsubscribe = React.lazy(() => import('@/pages/Unsubscribe'));
 
 
 function AppContent() {
@@ -169,12 +158,22 @@ function AppContent() {
               } 
             />
             
-            {/* Newsletter routes - grouped */}
+            {/* Newsletter confirmation route */}
             <Route 
-              path="/newsletter/*" 
+              path="/nyhetsbrev-bekraftelse" 
               element={
                 <Suspense fallback={null}>
-                  <LazyNewsletterPages />
+                  <LazyNewsletterConfirmation />
+                </Suspense>
+              } 
+            />
+            
+            {/* Newsletter unsubscribe route */}
+            <Route 
+              path="/unsubscribe" 
+              element={
+                <Suspense fallback={null}>
+                  <LazyUnsubscribe />
                 </Suspense>
               } 
             />
