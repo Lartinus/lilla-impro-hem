@@ -172,7 +172,7 @@ export default function OptimizedImage({
         className={`${className} ${showImage ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 will-change-[opacity]`}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
-        {...(priority && { fetchPriority: "high" })}
+        {...(priority && { fetchpriority: "high" })}
         onLoad={handleLoad}
         onError={handleError}
         width={width}
