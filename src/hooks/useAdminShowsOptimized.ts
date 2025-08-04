@@ -67,8 +67,8 @@ export const useAdminShowCards = (showCompleted: boolean = false) => {
             name,
             color
           )
-        `)
-        .eq('is_active', true);
+        `);
+        // Note: For admin view, we don't filter by is_active to allow editing of hidden shows
 
       if (showCompleted) {
         query = query.lt('show_date', new Date().toISOString().split('T')[0])
