@@ -38,9 +38,10 @@ export default function ServiceBoxes() {
   return (
     <div className="grid grid-cols-1 min-[690px]:grid-cols-3 gap-[15px] justify-items-center max-w-[930px] mx-auto">
       {services.map((svc, idx) => (
-        <div
+        <Link
           key={idx}
-          className="group flex flex-col bg-[#E7E7E7] overflow-hidden transition-transform duration-300 w-full"
+          to={svc.link}
+          className="group flex flex-col bg-[#E7E7E7] overflow-hidden transition-transform duration-300 w-full hover:shadow-lg cursor-pointer"
         >
           {/* Bild‐sektion = halva höjden */}
           <div className="relative h-[200px] lg:h-[250px] overflow-hidden aspect-[4/3]">
@@ -67,22 +68,13 @@ export default function ServiceBoxes() {
               </p>
             </div>
             <div className="mt-4 mx-[10px]">
-              {svc.link.startsWith('/') ? (
-                <Button asChild variant="homepage" size="homepage">
-                  <Link to={svc.link} className="flex justify-between items-center w-full">
-                    <span className="leading-[1.0]">{svc.cta}</span>
-                    <span className="text-2xl font-bold">→</span>
-                  </Link>
-                </Button>
-              ) : (
-                <Button variant="homepage" size="homepage" className="flex justify-between items-center w-full">
-                  <span className="leading-[1.0]">{svc.cta}</span>
-                  <span className="text-2xl font-bold">→</span>
-                </Button>
-              )}
+              <Button variant="homepage" size="homepage" className="flex justify-between items-center w-full pointer-events-none">
+                <span className="leading-[1.0]">{svc.cta}</span>
+                <span className="text-2xl font-bold">→</span>
+              </Button>
             </div>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   )
