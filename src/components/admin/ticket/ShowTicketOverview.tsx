@@ -17,18 +17,32 @@ interface Show {
   sold_tickets: number;
 }
 
-export const ShowTicketOverview = () => {
+interface ShowTicketOverviewProps {
+  showCompleted?: boolean;
+}
+
+export const ShowTicketOverview = ({ showCompleted = false }: ShowTicketOverviewProps) => {
   // Fetch shows with ticket sales data
   const { data: shows, isLoading } = useQuery({
-    queryKey: ['admin-shows-tickets'],
+    queryKey: ['admin-shows-tickets', showCompleted],
     queryFn: async (): Promise<Show[]> => {
-      // First get all shows with max_tickets set
-      const { data: showsData, error: showsError } = await supabase
+      const today = new Date().toISOString().split('T')[0];
+      
+      // First get all shows with max_tickets set, filtered by completion status
+      let query = supabase
         .from('admin_shows')
         .select('id, title, slug, show_date, show_time, max_tickets')
         .not('max_tickets', 'is', null)
-        .gt('max_tickets', 0)
-        .order('show_date', { ascending: true });
+        .gt('max_tickets', 0);
+
+      if (showCompleted) {
+        query = query.lt('show_date', today);
+      } else {
+        query = query.gte('show_date', today);
+      }
+
+      const { data: showsData, error: showsError } = await query
+        .order('show_date', { ascending: showCompleted ? false : true });
 
       if (showsError) throw showsError;
 
@@ -64,8 +78,15 @@ export const ShowTicketOverview = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold">Biljettförsäljning</h2>
-        <p className="text-muted-foreground">Översikt över biljettförsäljning per föreställning</p>
+        <h2 className="text-2xl font-bold">
+          {showCompleted ? 'Genomförda föreställningar' : 'Aktiva föreställningar'}
+        </h2>
+        <p className="text-muted-foreground">
+          {showCompleted 
+            ? 'Biljettförsäljning för genomförda föreställningar' 
+            : 'Översikt över biljettförsäljning per föreställning'
+          }
+        </p>
       </div>
 
       <Card>
@@ -180,7 +201,10 @@ export const ShowTicketOverview = () => {
             </div>
           ) : (
             <div className="text-center py-8 text-muted-foreground">
-              Inga föreställningar med intern biljettförsäljning hittades
+              {showCompleted 
+                ? 'Inga genomförda föreställningar med intern biljettförsäljning hittades'
+                : 'Inga aktiva föreställningar med intern biljettförsäljning hittades'
+              }
             </div>
           )}
         </CardContent>
