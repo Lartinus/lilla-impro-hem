@@ -238,17 +238,23 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Send emails in batches to avoid rate limits
-    const batchSize = 10;
+    // Send emails in batches to avoid rate limits (Resend API limit compliance)
+    const batchSize = 5;
     const batches = [];
     for (let i = 0; i < emailRecipients.length; i += batchSize) {
       batches.push(emailRecipients.slice(i, i + batchSize));
     }
 
+    console.log(`Processing ${emailRecipients.length} recipients in ${batches.length} batches of ${batchSize} emails`);
+    
     let totalSent = 0;
     let errors = [];
+    const startTime = Date.now();
 
-    for (const batch of batches) {
+    for (let i = 0; i < batches.length; i++) {
+      const batch = batches[i];
+      const batchStartTime = Date.now();
+      console.log(`Processing batch ${i + 1}/${batches.length} with ${batch.length} recipients...`);
       try {
         const emailPromises = batch.map(async (recipient) => {
           // Determine what content and subject to use
@@ -356,16 +362,23 @@ const handler = async (req: Request): Promise<Response> => {
           }
         });
 
-        // Small delay between batches to respect rate limits
-        if (batches.indexOf(batch) < batches.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 1000));
+        const batchDuration = Date.now() - batchStartTime;
+        console.log(`Batch ${i + 1} completed in ${batchDuration}ms. Successfully sent: ${batch.filter((_, idx) => results[idx].status === 'fulfilled').length}/${batch.length} emails`);
+
+        // Extended delay between batches to respect Resend rate limits (10 seconds)
+        if (i < batches.length - 1) {
+          console.log(`Waiting 10 seconds before processing next batch (${batches.length - i - 1} batches remaining)...`);
+          await new Promise(resolve => setTimeout(resolve, 10000));
         }
 
       } catch (batchError) {
-        console.error('Batch error:', batchError);
-        errors.push(`Batch error: ${batchError.message}`);
+        console.error(`Batch ${i + 1} error:`, batchError);
+        errors.push(`Batch ${i + 1} error: ${batchError.message}`);
       }
     }
+
+    const totalDuration = Date.now() - startTime;
+    console.log(`All batches completed in ${Math.round(totalDuration / 1000)}s. Total processing time for ${emailRecipients.length} recipients.`);
 
     console.log(`Bulk email completed. Sent: ${totalSent}, Errors: ${errors.length}`);
 
