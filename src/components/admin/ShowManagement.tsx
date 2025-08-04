@@ -48,7 +48,7 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
     isLoading: isLoadingSupporting 
   } = useOptimizedShowData(showDialog);
   
-  const { deleteShow, duplicateShow, updateShow } = useShowManagementMutations();
+  const { deleteShow, duplicateShow, updateShow, updateFullShow, createShow } = useShowManagementMutations();
 
   // Convert ShowCardData to AdminShowWithPerformers for compatibility
   const convertToAdminShow = (show: any): AdminShowWithPerformers => {
@@ -195,7 +195,8 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
                 showTags={showTags || []}
                 onClose={handleCloseDialog}
                 isLoading={isLoadingSupporting}
-                updateShow={updateShow}
+                updateFullShow={updateFullShow}
+                createShow={createShow}
               />
             )}
           </DialogContent>
@@ -349,7 +350,8 @@ interface ShowFormWrapperProps {
   showTags: any[];
   onClose: () => void;
   isLoading: boolean;
-  updateShow: any;
+  updateFullShow: any;
+  createShow: any;
 }
 
 const ShowFormWrapper = ({ 
@@ -360,7 +362,8 @@ const ShowFormWrapper = ({
   showTags, 
   onClose, 
   isLoading,
-  updateShow
+  updateFullShow,
+  createShow
 }: ShowFormWrapperProps) => {
   const [newShow, setNewShow] = useState<NewShowForm>(() => {
     if (initialShow) {
@@ -414,14 +417,19 @@ const ShowFormWrapper = ({
     setIsSaving(true);
     try {
       if (initialShow) {
-        // Update existing show
-        await updateShow.mutateAsync({
+        // Update existing show with full data including performers
+        await updateFullShow.mutateAsync({
           id: initialShow.id,
-          data: newShow
+          showData: newShow
         });
         toast.success('Föreställning uppdaterad');
       } else {
-        // Create new show - you'll need to add this mutation
+        // Create new show with performers
+        const showsLength = 0; // Use 0 for new shows as sort order will be handled by the mutation
+        await createShow.mutateAsync({
+          showData: newShow,
+          showsLength
+        });
         toast.success('Föreställning skapad');
       }
       onClose();
