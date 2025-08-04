@@ -188,7 +188,7 @@ const AdminDashboard = () => {
                 <Settings className="w-3 h-3 mr-1" />
                 Admin
               </Badge>
-              <h2 className="pt-3 font-bold">Lilla Improteatern</h2>
+              <h2 className="pt-3 font-bold md:text-base lg:text-lg">Lilla Improteatern</h2>
             </div>
             <div className="flex items-center gap-2 md:gap-3 shrink-0">
               <Button 
