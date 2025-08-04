@@ -268,8 +268,8 @@ export const VenueManagement = () => {
                     </div>
                     <h4 className="font-medium">{venue.name}</h4>
                     {venue.address && (
-                      <div className="flex items-center gap-1 text-sm md:hidden text-muted-foreground mt-1">
-                        <MapPin className="w-4 h-4" />
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                        <MapPin className="w-4 h-4 md:hidden" />
                         {venue.address}
                       </div>
                     )}
