@@ -181,7 +181,7 @@ const AdminDashboard = () => {
         
         <div className="flex-1 flex flex-col min-w-0">
           {/* Header */}
-          <header className="sticky top-0 z-50 h-16 flex items-center course-card-gray justify-between bg- px-4 md:px-6 shrink-0">
+          <header className="sticky top-0 z-50 h-16 flex items-center justify-between bg-course-card-gray px-4 md:px-6 shrink-0">
             <div className="flex items-center gap-4 min-w-0">
               <SidebarTrigger className="md:hidden shrink-0" />
               <Badge variant="secondary" className="text-xs flex items-center font-satoshi hidden sm:flex">
