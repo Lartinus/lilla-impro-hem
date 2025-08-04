@@ -31,7 +31,7 @@ export default function Header() {
           className={`hidden md:block relative w-16 h-16 group ${isHovering ? 'animate-spin-360' : 'animate-spin-reverse'}`}
         >
           <svg
-            className="absolute inset-0 w-full h-full`
+            className="absolute inset-0 w-full h-full"
             viewBox="0 0 300 240"
             preserveAspectRatio="xMinYMin meet"
             xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +48,7 @@ export default function Header() {
         {/* Sidtitel */}
         <Link
           to="/"
-          className="font-tanker text-[28px] text-primary-foreground md:absolute md:left-1/2 md:-translate-x-1/2"
+          className="font-tanker text-[28px] text-primary-foreground md:absolute md:left-1/2 md:transform md:-translate-x-1/2"
         >
           LILLA IMPROTEATERN
         </Link>
