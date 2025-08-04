@@ -26,23 +26,23 @@ export default function Header() {
           to="/"
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
-          className={`hidden md:block group relative w-14 h-14 overflow-visible ${
+          className={`hidden md:block group relative w-20 h-20 overflow-visible ${
             isHovering ? 'animate-spin-360' : 'animate-spin-reverse'
           }`}
         >
           <OptimizedImage 
             src="/Logo1.svg" 
             alt="LIT Logo" 
-            className="w-10 h-10 absolute top-2 left-2 transition-opacity duration-300 group-hover:opacity-0"
+            className="w-16 h-16 absolute top-2 left-2 transition-opacity duration-300 group-hover:opacity-0"
             priority={true}
-            sizes="40px"
+            sizes="64px"
           />
           <OptimizedImage 
             src="/Logo2.svg" 
             alt="LIT Logo Hover" 
-            className="w-10 h-10 absolute top-2 left-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            className="w-16 h-16 absolute top-2 left-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             priority={true}
-            sizes="40px"
+            sizes="64px"
           />
         </Link>
 
