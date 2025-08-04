@@ -42,6 +42,13 @@ export const WaitlistDialog: React.FC<WaitlistDialogProps> = ({
   const { sendCourseOffer, isSendingOffer } = useCourseOffers();
 
   const handleSendOffer = async (entry: any) => {
+    // Add confirmation dialog
+    const confirmed = confirm(
+      `Är du säker på att du vill skicka ett kurserbjudande till ${entry.name} (${entry.email})?\n\nPersonen kommer att få ett mejl med en betalningslänk för kursen "${courseTitle}".`
+    );
+    
+    if (!confirmed) return;
+    
     const success = await sendCourseOffer({
       courseInstanceId,
       courseTitle,

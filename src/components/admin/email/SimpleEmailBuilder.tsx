@@ -121,6 +121,23 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts, emailTemplates 
       return;
     }
 
+    // Calculate recipient count for confirmation
+    let recipientCount = 0;
+    if (selectedRecipients === 'all') {
+      recipientCount = emailContacts.length;
+    } else {
+      recipientCount = selectedGroupMembers.length;
+    }
+
+    const groupName = selectedRecipients === 'all' ? 'Alla kontakter' : emailGroups.find(g => g.id === selectedRecipients)?.name || 'Okänd grupp';
+
+    // Add confirmation dialog
+    const confirmed = confirm(
+      `Är du säker på att du vill skicka det här mejlet?\n\nÄmne: "${subject}"\nMottagare: ${groupName} (${recipientCount} personer)\n\nMejlet kan inte ångras efter att det skickats.`
+    );
+    
+    if (!confirmed) return;
+
     setIsLoading(true);
 
     try {
