@@ -102,10 +102,13 @@ serve(async (req) => {
             .single();
 
           // Add to course table after successful payment
+          // Use phone from course offer if available, otherwise use default
+          const phoneToUse = coursePurchase.buyer_phone || (courseOffer ? courseOffer.waitlist_phone : '') || '000000';
+          
           const { error: insertError } = await supabase.rpc('insert_course_booking', {
             table_name: coursePurchase.course_table_name,
             booking_name: coursePurchase.buyer_name,
-            booking_phone: coursePurchase.buyer_phone,
+            booking_phone: phoneToUse,
             booking_email: coursePurchase.buyer_email,
             booking_address: coursePurchase.buyer_address || '',
             booking_postal_code: coursePurchase.buyer_postal_code || '',
@@ -145,9 +148,8 @@ serve(async (req) => {
             }
           }
 
-          // Only send course confirmation email if NOT from a course offer
-          // (course offers already send confirmation emails from the offer management)
-          if (!courseOffer) {
+          // Send course confirmation email for all successful course bookings
+          if (!insertError) {
             console.log('Sending course confirmation email to:', coursePurchase.buyer_email);
             await fetch(`${supabaseUrl}/functions/v1/send-course-confirmation`, {
               method: 'POST',
@@ -158,13 +160,11 @@ serve(async (req) => {
               body: JSON.stringify({
                 email: coursePurchase.buyer_email,
                 name: coursePurchase.buyer_name,
-                phone: coursePurchase.buyer_phone,
+                phone: phoneToUse,
                 courseTitle: coursePurchase.course_title,
                 isAvailable: true
               }),
             });
-          } else {
-            console.log('Skipping email - this was a course offer (email already sent)');
           }
         } else {
           console.log('No course purchase found for session:', sessionId);
