@@ -252,6 +252,17 @@ Visa denna QR-kod vid entrén`;
         const regex = new RegExp(`\\{${key}\\}`, 'gi');
         processedContent = processedContent.replace(regex, value);
       });
+    } else if (templateType?.key === 'newsletter_confirmation') {
+      mockVariables = {
+        NAMN: 'Anna Andersson',
+        BEKRÄFTELSELÄNK: 'https://improteatern.se/nyhetsbrev-bekraftelse?token=exempel123'
+      };
+      
+      // Replace variables (same as newsletter-signup)
+      Object.entries(mockVariables).forEach(([key, value]) => {
+        const regex = new RegExp(`\\{${key}\\}`, 'gi');
+        processedContent = processedContent.replace(regex, value);
+      });
     }
     
     // Replace QR code placeholder with mock QR code

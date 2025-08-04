@@ -108,41 +108,37 @@ const handler = async (req: Request): Promise<Response> => {
     const { createUnifiedEmailTemplate } = await import("../_shared/email-template.ts");
     const { logSentEmail } = await import("../_shared/email-logger.ts");
     
-    // Create confirmation email using unified design
-    function createConfirmationEmail(confirmationUrl: string, name: string, email: string) {
-      const content = `H1: Bekräfta din prenumeration
-
-Hej ${name}!
-
-Tack för att du vill prenumerera på vårt nyhetsbrev! För att bekräfta din registrering, klicka på knappen nedan:
-
-<div style="text-align: center; margin: 24px 0;">
-  <a href="${confirmationUrl}" style="
-    display: inline-block;
-    background-color: #dc2626;
-    color: #ffffff;
-    padding: 14px 28px;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 16px;
-  ">Bekräfta prenumeration</a>
-</div>
-
-H2: Om knappen inte fungerar
-
-Kopiera denna länk till din webbläsare:
-${confirmationUrl}
-
-**Viktigt:** Denna bekräftelselänk är giltig i 24 timmar. Om du inte bekräftar inom denna tid behöver du registrera dig igen.
-
-Om du inte begärde denna prenumeration kan du ignorera detta meddelande.`;
-
-      return createUnifiedEmailTemplate("Bekräfta din prenumeration", content);
+    // Get email template from database
+    const { data: template, error: templateError } = await supabase
+      .from('email_templates')
+      .select('subject, content')
+      .eq('name', 'AUTO: newsletter_confirmation')
+      .eq('is_active', true)
+      .single();
+    
+    if (templateError) {
+      console.error('Error fetching email template:', templateError);
+      throw new Error('Newsletter confirmation template not found');
     }
     
-    const emailHtml = createConfirmationEmail(confirmationUrl, cleanName, cleanEmail);
-    const emailSubject = "Bekräfta din prenumeration på vårt nyhetsbrev";
+    // Replace variables in template content
+    let emailContent = template.content;
+    let emailSubject = template.subject;
+    
+    const variables = {
+      NAMN: cleanName,
+      BEKRÄFTELSELÄNK: confirmationUrl
+    };
+    
+    // Replace variables in both subject and content
+    Object.entries(variables).forEach(([key, value]) => {
+      const regex = new RegExp(`\\{${key}\\}`, 'gi');
+      emailContent = emailContent.replace(regex, value);
+      emailSubject = emailSubject.replace(regex, value);
+    });
+    
+    // Create unified email HTML
+    const emailHtml = createUnifiedEmailTemplate(emailSubject, emailContent);
     
     const emailResponse = await resend.emails.send({
       from: "Lilla Improteatern <onboarding@resend.dev>",
