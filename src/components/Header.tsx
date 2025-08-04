@@ -26,7 +26,7 @@ export default function Header() {
           to="/"
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
-          className={`hidden md:block group relative w-12 h-20 overflow-visible ${
+          className={`hidden md:block group relative w-16 h-24 overflow-visible ${
             isHovering ? 'animate-spin-360' : 'animate-spin-reverse'
           }`}
         >
