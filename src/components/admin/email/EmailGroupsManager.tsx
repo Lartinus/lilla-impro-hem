@@ -142,9 +142,27 @@ export function EmailGroupsManager({
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Tillgängliga grupper</CardTitle>
+          <CardTitle className="text-lg">Email-grupper</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          {/* Action buttons on separate row, left-aligned */}
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button 
+              onClick={() => handleEditGroup()}
+              className="w-fit"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Ny grupp
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => setShowAddContactsDialog(true)}
+              className="w-fit"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Lägg till kontakter
+            </Button>
+          </div>
           {groupsLoading ? (
             <div className="text-center py-4">Laddar grupper...</div>
           ) : emailGroups.length === 0 ? (
