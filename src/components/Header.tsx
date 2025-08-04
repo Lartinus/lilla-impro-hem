@@ -24,20 +24,20 @@ export default function Header() {
           to="/"
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
-          className={`hidden md:block relative w-16 h-[85px] overflow-visible group ${isHovering ? 'animate-spin-360' : 'animate-spin-reverse'}`}
+          className={`hidden md:block relative w-16 h-16 group ${isHovering ? 'animate-spin-360' : 'animate-spin-reverse'}`}
         >
           {/* Original logo */}
           <OptimizedImage
             src="/logo/Logo1_new.svg"
             alt="LIT Logo"
-            className="absolute top-[10px] left-0 w-10 h-10 transition-opacity duration-300 group-hover:opacity-0"
+            className="absolute inset-0 w-full h-full object-contain object-left-top transition-opacity duration-300 group-hover:opacity-0"
             priority
           />
           {/* Hover-logo */}
           <OptimizedImage
             src="/logo/Logo2_new.svg"
             alt="LIT Logo Hover"
-            className="absolute top-[10px] left-0 w-10 h-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            className="absolute inset-0 w-full h-full object-contain object-left-top opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             priority
           />
         </Link>
