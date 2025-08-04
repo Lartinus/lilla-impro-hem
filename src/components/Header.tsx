@@ -30,22 +30,19 @@ export default function Header() {
           onMouseLeave={() => setIsHovering(false)}
           className={`hidden md:block relative w-16 h-16 group ${isHovering ? 'animate-spin-360' : 'animate-spin-reverse'}`}
         >
-          <svg
-            className="absolute inset-0 w-full h-full"
-            viewBox="0 0 300 240"
-            preserveAspectRatio="xMinYMin meet"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {/* Vänster öga */}
-            <path d={leftRightPath} fill="#fff" />
-            {/* Höger öga */}
-            <path d={leftRightPath} fill="#fff" transform="translate(150,0)" />
-            {/* Mittpelare eller streck */}
-            <path d={isHovering ? centerPathHover : centerPathNormal} fill="#fff" />
-          </svg>
+          <img
+            src="/logo/logo1.svg"
+            alt="LIT Logo"
+            className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 group-hover:opacity-0"
+          />
+          <img
+            src="/logo/logo2.svg"
+            alt="LIT Logo Hover"
+            className="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          />
         </Link>
 
-        {/* Sidtitel */}
+        {/* Sidtitel*/ */}
         <Link
           to="/"
           className="font-tanker text-[28px] text-primary-foreground md:absolute md:left-1/2 md:transform md:-translate-x-1/2"
