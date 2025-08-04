@@ -14,31 +14,28 @@ const navItems = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
   const { pathname } = useLocation();
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-primary-red text-primary-foreground">
       <div className="container mx-auto px-6 lg:px-8 flex items-center justify-between h-[85px]">
-        {/* Hover-animera logo med pixelperfekt overlay */}
+        {/* Hover-animera logo med CSS-klasser */}
         <Link
           to="/"
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
-          className={`hidden md:block relative w-16 h-16 group ${isHovering ? 'animate-spin-360' : 'animate-spin-reverse'}`}
+          className="hidden md:block relative w-16 h-16 group"
         >
           {/* Original logo */}
           <OptimizedImage
             src="/logo/Logo1_new.svg"
             alt="LIT Logo"
-            className="absolute inset-0 w-full h-full object-contain object-center transition-opacity duration-300 ${isHovering ? 'opacity-0' : 'opacity-100'}"
+            className="absolute inset-0 w-full h-full object-contain object-center transition-opacity duration-300 group-hover:opacity-0"
             priority
           />
           {/* Hover-logo */}
           <OptimizedImage
             src="/logo/Logo2_new.svg"
             alt="LIT Logo Hover"
-            className="absolute inset-0 w-full h-full object-contain object-center transition-opacity duration-300 ${isHovering ? 'opacity-100' : 'opacity-0'}"
+            className="absolute inset-0 w-full h-full object-contain object-center opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             priority
           />
         </Link>
@@ -74,7 +71,9 @@ export default function Header() {
                   key={to}
                   to={to}
                   onClick={() => setOpen(false)}
-                  className={`font-tanker uppercase text-2xl lg:text-3xl transition-colors ${isActive ? 'text-primary-foreground' : 'text-primary-foreground hover:text-white'}`}
+                  className={`font-tanker uppercase text-2xl lg:text-3xl transition-colors ${
+                    isActive ? 'text-primary-foreground' : 'text-primary-foreground hover:text-white'
+                  }`}
                 >
                   {label}
                 </Link>
