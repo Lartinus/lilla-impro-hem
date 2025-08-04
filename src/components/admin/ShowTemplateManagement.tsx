@@ -191,11 +191,12 @@ const ShowTemplateManagement = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold">Föreställningsmallar</h2>
-          <p className="text-muted-foreground">Hantera mallar för föreställningar</p>
-        </div>
+      <div>
+        <h2 className="text-2xl font-bold">Föreställningsmallar</h2>
+        <p className="text-muted-foreground">Hantera mallar för föreställningar</p>
+      </div>
+      
+      <div>
         <Button onClick={() => setIsCreating(true)} className="flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Ny mall
