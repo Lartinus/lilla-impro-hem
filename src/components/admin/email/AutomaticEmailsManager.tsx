@@ -62,6 +62,13 @@ const AUTOMATIC_EMAIL_TYPES = [
     description: 'Skickas när någon gör en privatförfrågan',
     variables: ['NAMN', 'TILLFÄLLE'],
     dbName: 'AUTO: private_inquiry'
+  },
+  {
+    key: 'newsletter_confirmation',
+    name: 'Nyhetsbrevbekräftelse',
+    description: 'Skickas när någon anmäler sig till nyhetsbrevet',
+    variables: ['NAMN', 'BEKRÄFTELSELÄNK'],
+    dbName: 'AUTO: newsletter_confirmation'
   }
 ];
 
