@@ -15,10 +15,7 @@ export default function Header() {
   const [isHovering, setIsHovering] = useState(false);
   const { pathname } = useLocation();
 
-  // SVG-paths
-  const leftRightPath = "M109.26,164.16c0,47.84-13.59,65.1-54.63,65.1S0,211.99,0,164.16v-87.75C0,28.86,13.59,11.31,54.63,11.31s54.63,17.55,54.63,65.1v87.75h0ZM231.48,173.79c0,11.32,4.53,15.85,14.44,15.85s14.44-4.53,14.44-15.85v-105.58c0-12.45-4.53-17.27-14.44-17.27s-14.44,4.81-14.44,17.27v105.58h0Z";
-  const centerPathNormal = "M169.88,10.47v219.65c0,8.21-2.26,10.47-10.47,10.47h-18.12c-8.21,0-10.47-2.26-10.47-10.47V10.47c0-8.21,2.26-10.47,10.47-10.47h18.12c8.21,0,10.47,2.26,10.47,10.47Z";
-  const centerPathHover = "M0,220h140v5H0z";
+
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-primary-red text-primary-foreground">
@@ -31,12 +28,12 @@ export default function Header() {
           className={`hidden md:block relative w-10 h-10 group ${isHovering ? 'animate-spin-360' : 'animate-spin-reverse'}`}
         >
           <img
-            src="/logo/logo1.svg"
+            src="/logo/Logo1.svg"
             alt="LIT Logo"
             className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 group-hover:opacity-0"
           />
           <img
-            src="/logo/logo2.svg"
+            src="/logo/Logo2.svg"
             alt="LIT Logo Hover"
             className="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           />
