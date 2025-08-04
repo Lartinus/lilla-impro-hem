@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import OptimizedImage from '@/components/OptimizedImage';
-import { ArrowDown } from 'lucide-react';
 
 const navItems = [
   { to: '/',           label: 'Hem' },
@@ -25,23 +24,22 @@ export default function Header() {
           to="/"
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
-          className={
-            `hidden md:block relative w-16 h-16 group ` +
-            `${isHovering ? 'animate-spin-360' : 'animate-spin-reverse'}`
-          }
+          className={`hidden md:block relative w-16 h-[85px] overflow-visible ${
+            isHovering ? 'animate-spin-360' : 'animate-spin-reverse'
+          }`}
         >
           {/* Original logo */}
           <OptimizedImage
             src="/logo/Logo1_new.svg"
             alt="LIT Logo"
-            className="absolute inset-0 w-full h-full object-contain object-center transition-opacity duration-300 group-hover:opacity-0"
+            className="absolute top-[10px] left-0 w-10 h-10 transition-opacity duration-300 group-hover:opacity-0"
             priority
           />
           {/* Hover-logo */}
           <OptimizedImage
             src="/logo/Logo2_new.svg"
             alt="LIT Logo Hover"
-            className="absolute inset-0 w-full h-full object-contain object-center opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            className="absolute top-[10px] left-0 w-10 h-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             priority
           />
         </Link>
