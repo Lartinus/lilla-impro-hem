@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Ticket } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Ticket, Search } from 'lucide-react';
 import { format } from 'date-fns';
 import { TicketSalesOverview } from './TicketSalesOverview';
 
@@ -22,6 +23,7 @@ interface ShowTicketOverviewProps {
 }
 
 export const ShowTicketOverview = ({ showCompleted = false }: ShowTicketOverviewProps) => {
+  const [searchTerm, setSearchTerm] = useState('');
   // Fetch shows with ticket sales data
   const { data: shows, isLoading } = useQuery({
     queryKey: ['admin-shows-tickets', showCompleted],
@@ -71,6 +73,14 @@ export const ShowTicketOverview = ({ showCompleted = false }: ShowTicketOverview
     },
   });
 
+  // Filter shows based on search term
+  const filteredShows = useMemo(() => {
+    if (!shows || !searchTerm.trim()) return shows;
+    return shows.filter(show => 
+      show.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [shows, searchTerm]);
+
   if (isLoading) {
     return <div>Laddar biljettöversikt...</div>;
   }
@@ -89,9 +99,21 @@ export const ShowTicketOverview = ({ showCompleted = false }: ShowTicketOverview
         </p>
       </div>
 
+      <div className="mb-4">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Sök föreställning..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+      </div>
+
       <Card>
         <CardContent>
-          {shows && shows.length > 0 ? (
+          {filteredShows && filteredShows.length > 0 ? (
             <div className="space-y-4">
               {/* Desktop Table */}
               <div className="hidden lg:block overflow-x-auto">
@@ -106,7 +128,7 @@ export const ShowTicketOverview = ({ showCompleted = false }: ShowTicketOverview
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {shows.map((show) => {
+                    {filteredShows.map((show) => {
                       const salesPercentage = show.max_tickets > 0 
                         ? ((show.sold_tickets || 0) / show.max_tickets * 100).toFixed(1)
                         : '0';
@@ -147,7 +169,7 @@ export const ShowTicketOverview = ({ showCompleted = false }: ShowTicketOverview
 
               {/* Mobile Cards */}
               <div className="lg:hidden space-y-4">
-                {shows.map((show) => {
+                {filteredShows.map((show) => {
                   const salesPercentage = show.max_tickets > 0 
                     ? ((show.sold_tickets || 0) / show.max_tickets * 100).toFixed(1)
                     : '0';
@@ -201,10 +223,13 @@ export const ShowTicketOverview = ({ showCompleted = false }: ShowTicketOverview
             </div>
           ) : (
             <div className="text-center py-8 text-muted-foreground">
-              {showCompleted 
-                ? 'Inga genomförda föreställningar med intern biljettförsäljning hittades'
-                : 'Inga aktiva föreställningar med intern biljettförsäljning hittades'
-              }
+              {searchTerm.trim() ? (
+                `Inga föreställningar matchade sökningen "${searchTerm}"`
+              ) : (
+                showCompleted 
+                  ? 'Inga genomförda föreställningar med intern biljettförsäljning hittades'
+                  : 'Inga aktiva föreställningar med intern biljettförsäljning hittades'
+              )}
             </div>
           )}
         </CardContent>
