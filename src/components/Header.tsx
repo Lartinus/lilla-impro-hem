@@ -51,7 +51,7 @@ export default function Header() {
         <button
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Stäng meny' : 'Öppna meny'}
-          className={`w-10 h-10 relative flex flex-col justify-center items-center ml-auto hamburger-menu ${open ? 'is-open' : ''}`}
+          className={`w-9 h-9 relative flex flex-col justify-center items-center ml-auto hamburger-menu ${open ? 'is-open' : ''}`}
         >
           <span className="hamburger-line top" />
           <span className="hamburger-line middle" />
