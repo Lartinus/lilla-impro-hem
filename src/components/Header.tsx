@@ -42,7 +42,7 @@ export default function Header() {
           />
         </Link>
 
-        {/* Sidtitel*/ */}
+        {/* Sidtitel */}
         <Link
           to="/"
           className="font-tanker text-[28px] text-primary-foreground md:absolute md:left-1/2 md:transform md:-translate-x-1/2"
