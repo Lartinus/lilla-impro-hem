@@ -185,7 +185,7 @@ function AppContent() {
           </Routes>
         </Suspense>
       </main>
-      <Footer />
+      {!isAdminRoute && <Footer />}
       <Toaster />
     </div>
   );
