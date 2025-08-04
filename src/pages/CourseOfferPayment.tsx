@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 
 interface CourseOffer {
   id: string;
+  course_instance_id: string;
   course_title: string;
   course_price: number;
   course_discount_price: number;
@@ -17,6 +18,7 @@ interface CourseOffer {
   waitlist_email: string;
   expires_at: string;
   status: string;
+  start_date?: string;
 }
 
 const CourseOfferPayment = () => {
@@ -40,20 +42,31 @@ const CourseOfferPayment = () => {
 
   const fetchOffer = async () => {
     try {
-      const { data, error } = await supabase
+      // First get the course offer
+      const { data: offerData, error: offerError } = await supabase
         .from('course_offers')
-        .select('id, course_title, course_price, course_discount_price, waitlist_name, waitlist_email, expires_at, status')
+        .select('id, course_instance_id, course_title, course_price, course_discount_price, waitlist_name, waitlist_email, expires_at, status')
         .eq('offer_token', token)
         .eq('status', 'sent')
         .gt('expires_at', new Date().toISOString())
         .single();
 
-      if (error || !data) {
+      if (offerError || !offerData) {
         setError('Erbjudandet har gått ut eller finns inte längre');
         return;
       }
 
-      setOffer(data);
+      // Then get the course start date
+      const { data: instanceData } = await supabase
+        .from('course_instances')
+        .select('start_date')
+        .eq('id', offerData.course_instance_id)
+        .single();
+
+      setOffer({
+        ...offerData,
+        start_date: instanceData?.start_date
+      });
     } catch (err) {
       console.error('Error fetching offer:', err);
       setError('Kunde inte ladda erbjudandet');
@@ -72,7 +85,7 @@ const CourseOfferPayment = () => {
       // Create Stripe checkout session for the course offer
       const { data, error } = await supabase.functions.invoke('create-course-checkout', {
         body: {
-          courseInstanceId: offer.id,
+          courseInstanceId: offer.course_instance_id,
           courseTitle: offer.course_title,
           courseTableName: '',
           price: offer.course_price,
@@ -146,8 +159,8 @@ const CourseOfferPayment = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-lg">
-        <CardHeader>
-          <CardTitle>Du har erbjudits en plats!</CardTitle>
+        <CardHeader className="pb-4">
+          <h2 className="text-2xl font-bold pt-4">Du har erbjudits en plats!</h2>
           <CardDescription>
             Säkra din plats i kursen genom att betala nedan
           </CardDescription>
@@ -155,7 +168,16 @@ const CourseOfferPayment = () => {
         <CardContent className="space-y-6">
           <div>
             <h3 className="font-semibold text-lg mb-2">{offer.course_title}</h3>
-            <p className="text-muted-foreground">Hej {offer.waitlist_name}!</p>
+            {offer.start_date && (
+              <p className="text-muted-foreground">
+                Kursen börjar: {new Date(offer.start_date).toLocaleDateString('sv-SE', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </p>
+            )}
           </div>
 
           <div className="bg-muted p-4 rounded-lg space-y-4">
