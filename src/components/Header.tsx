@@ -31,12 +31,12 @@ export default function Header() {
           className={`hidden md:block relative w-16 h-16 group ${isHovering ? 'animate-spin-360' : 'animate-spin-reverse'}`}
         >
           <img
-            src="/logo/logo1.svg"
+            src="/logo/Logo1.svg"
             alt="LIT Logo"
             className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 group-hover:opacity-0"
           />
           <img
-            src="/logo/logo2.svg"
+            src="/logo/Logo2.svg"
             alt="LIT Logo Hover"
             className="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           />
