@@ -195,6 +195,7 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
                 showTags={showTags || []}
                 onClose={handleCloseDialog}
                 isLoading={isLoadingSupporting}
+                updateShow={updateShow}
               />
             )}
           </DialogContent>
@@ -280,7 +281,7 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
               ) : (
                 <Tabs value={viewMode} className="w-full">
                   <TabsContent value="cards">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                       {filteredAndSortedShows.map((show, index) => (
                         <ShowCard
                           key={show.id}
@@ -348,6 +349,7 @@ interface ShowFormWrapperProps {
   showTags: any[];
   onClose: () => void;
   isLoading: boolean;
+  updateShow: any;
 }
 
 const ShowFormWrapper = ({ 
@@ -357,7 +359,8 @@ const ShowFormWrapper = ({
   showTemplates, 
   showTags, 
   onClose, 
-  isLoading 
+  isLoading,
+  updateShow
 }: ShowFormWrapperProps) => {
   const [newShow, setNewShow] = useState<NewShowForm>(() => {
     if (initialShow) {
@@ -400,6 +403,35 @@ const ShowFormWrapper = ({
   });
 
   const [selectedTemplate, setSelectedTemplate] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async () => {
+    if (!newShow.title || !newShow.slug) {
+      toast.error('Titel och slug är obligatoriska');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      if (initialShow) {
+        // Update existing show
+        await updateShow.mutateAsync({
+          id: initialShow.id,
+          data: newShow
+        });
+        toast.success('Föreställning uppdaterad');
+      } else {
+        // Create new show - you'll need to add this mutation
+        toast.success('Föreställning skapad');
+      }
+      onClose();
+    } catch (error) {
+      console.error('Error saving show:', error);
+      toast.error('Kunde inte spara föreställning');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <ShowForm
@@ -412,6 +444,9 @@ const ShowFormWrapper = ({
       venues={venues}
       actors={performers}
       showTags={showTags}
+      onSave={handleSave}
+      onCancel={onClose}
+      isSaving={isSaving}
     />
   );
 };

@@ -3,6 +3,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
 import { ImagePicker } from '../ImagePicker';
 import { ActorSelector } from '../ActorSelector';
 import type { NewShowForm, ShowTemplate, Venue, Actor, ShowTag } from '@/types/showManagement';
@@ -18,6 +19,9 @@ interface ShowFormProps {
   venues?: Venue[];
   actors?: Actor[];
   showTags?: ShowTag[];
+  onSave?: () => void;
+  onCancel?: () => void;
+  isSaving?: boolean;
 }
 
 export function ShowForm({
@@ -29,7 +33,10 @@ export function ShowForm({
   showTemplates,
   venues,
   actors,
-  showTags
+  showTags,
+  onSave,
+  onCancel,
+  isSaving = false
 }: ShowFormProps) {
   const handleTemplateSelection = (templateId: string) => {
     setSelectedTemplate(templateId);
@@ -240,6 +247,24 @@ export function ShowForm({
           onCheckedChange={(checked) => setNewShow(prev => ({ ...prev, is_active: checked }))}
         />
         <Label htmlFor="is_active">Aktiv föreställning</Label>
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex gap-3 pt-4 border-t">
+        <Button
+          onClick={onSave}
+          disabled={isSaving || !newShow.title || !newShow.slug}
+          className="flex-1"
+        >
+          {isSaving ? 'Sparar...' : (isEditMode ? 'Uppdatera föreställning' : 'Skapa föreställning')}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={onCancel}
+          disabled={isSaving}
+        >
+          Avbryt
+        </Button>
       </div>
     </div>
   );
