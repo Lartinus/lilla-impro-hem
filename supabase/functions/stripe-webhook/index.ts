@@ -1,4 +1,3 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -95,6 +94,13 @@ serve(async (req) => {
         if (coursePurchase) {
           console.log('Found course purchase, adding to course table:', coursePurchase.course_table_name);
           
+          // Check if this is from a course offer (waitlist)
+          const { data: courseOffer } = await supabase
+            .from('course_offers')
+            .select('*')
+            .eq('stripe_session_id', sessionId)
+            .single();
+
           // Add to course table after successful payment
           const { error: insertError } = await supabase.rpc('insert_course_booking', {
             table_name: coursePurchase.course_table_name,
@@ -111,24 +117,55 @@ serve(async (req) => {
             console.error('Error inserting course booking:', insertError);
           } else {
             console.log('Successfully added participant to course table');
+            
+            // If this was from a course offer, remove from waitlist and update offer status
+            if (courseOffer) {
+              console.log('This was a course offer payment, removing from waitlist');
+              
+              // Remove from waitlist
+              const { error: removeError } = await supabase.rpc('remove_from_waitlist', {
+                course_instance_id_param: courseOffer.course_instance_id,
+                email_param: courseOffer.waitlist_email
+              });
+
+              if (removeError) {
+                console.error('Error removing from waitlist:', removeError);
+              } else {
+                console.log('Successfully removed from waitlist');
+              }
+
+              // Update offer status to paid
+              await supabase
+                .from('course_offers')
+                .update({ 
+                  status: 'paid',
+                  paid_at: new Date().toISOString()
+                })
+                .eq('stripe_session_id', sessionId);
+            }
           }
 
-          // Send course confirmation email
-          console.log('Sending course confirmation email to:', coursePurchase.buyer_email);
-          await fetch(`${supabaseUrl}/functions/v1/send-course-confirmation`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${supabaseKey}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              email: coursePurchase.buyer_email,
-              name: coursePurchase.buyer_name,
-              phone: coursePurchase.buyer_phone,
-              courseTitle: coursePurchase.course_title,
-              isAvailable: true
-            }),
-          });
+          // Only send course confirmation email if NOT from a course offer
+          // (course offers already send confirmation emails from the offer management)
+          if (!courseOffer) {
+            console.log('Sending course confirmation email to:', coursePurchase.buyer_email);
+            await fetch(`${supabaseUrl}/functions/v1/send-course-confirmation`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${supabaseKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                email: coursePurchase.buyer_email,
+                name: coursePurchase.buyer_name,
+                phone: coursePurchase.buyer_phone,
+                courseTitle: coursePurchase.course_title,
+                isAvailable: true
+              }),
+            });
+          } else {
+            console.log('Skipping email - this was a course offer (email already sent)');
+          }
         } else {
           console.log('No course purchase found for session:', sessionId);
         }
