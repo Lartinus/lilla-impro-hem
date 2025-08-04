@@ -53,12 +53,6 @@ const About = () => {
                 <p>Lilla Improteatern drivs av tre personer med en gemensam kärlek till Improv Comedy. Vi vill skapa en plats där både hantverket och gemenskapen får stå i centrum. Vi kommer från olika håll men möttes i impron och i viljan att bygga något nytt tillsammans.</p>
               </div>
 
-              {/* Kontaktuppgifter */}
-              <div className="space-y-4">
-                <h2>Mejla oss på</h2>
-                <p><a href="mailto:kontakt@improteatern.se" className="text-theatre-primary hover:text-theatre-secondary transition-colors">kontakt@improteatern.se</a></p>
-              </div>
-
               {/* Personerna bakom */}
               <PerformersSection performers={performers} title="Produktionsteam" />
             </div>
