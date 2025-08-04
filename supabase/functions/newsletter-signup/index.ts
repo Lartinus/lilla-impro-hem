@@ -104,8 +104,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Send confirmation email
     const confirmationUrl = `https://improteatern.se/nyhetsbrev-bekraftelse?token=${confirmationToken}`;
     
-    // Import the unified template
+    // Import the unified template and email logger
     const { createUnifiedEmailTemplate } = await import("../_shared/email-template.ts");
+    const { logSentEmail } = await import("../_shared/email-logger.ts");
     
     // Create confirmation email using unified design
     function createConfirmationEmail(confirmationUrl: string, name: string, email: string) {
@@ -140,14 +141,30 @@ Om du inte begärde denna prenumeration kan du ignorera detta meddelande.`;
       return createUnifiedEmailTemplate("Bekräfta din prenumeration", content);
     }
     
+    const emailHtml = createConfirmationEmail(confirmationUrl, cleanName, cleanEmail);
+    const emailSubject = "Bekräfta din prenumeration på vårt nyhetsbrev";
+    
     const emailResponse = await resend.emails.send({
       from: "Lilla Improteatern <onboarding@resend.dev>",
       to: [cleanEmail],
-      subject: "Bekräfta din prenumeration på vårt nyhetsbrev",
-      html: createConfirmationEmail(confirmationUrl, cleanName, cleanEmail),
+      subject: emailSubject,
+      html: emailHtml,
     });
 
     console.log("Confirmation email sent:", emailResponse);
+
+    // Log the sent email to the database
+    await logSentEmail({
+      recipientEmail: cleanEmail,
+      recipientName: cleanName,
+      senderEmail: "Lilla Improteatern <onboarding@resend.dev>",
+      subject: emailSubject,
+      htmlContent: emailHtml,
+      emailType: "newsletter_confirmation",
+      sourceFunction: "newsletter-signup",
+      resendId: emailResponse.data?.id,
+      status: "sent"
+    });
 
     return new Response(
       JSON.stringify({ 
