@@ -297,7 +297,7 @@ export const useCourseManagementMutations = (
           sessions: courseData.sessions,
           hours_per_session: courseData.hoursPerSession,
           sort_order: nextSortOrder,
-          is_active: true
+          is_active: false
         })
         .select()
         .single();
