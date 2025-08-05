@@ -100,8 +100,15 @@ export const TicketScanning = () => {
     <div className="min-h-screen bg-background">
       <div className="container pt-24 mx-auto p-6 max-w-2xl">
         <div className="mb-8">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Badge variant={userRole === 'admin' ? 'default' : 'secondary'} className="text-xs">
+              {userRole === 'admin' ? 'Admin' : 'Staff'}
+            </Badge>
+            <span>•</span>
+            <span>{user.email}</span>
+          </div>
           <div className="flex justify-between items-center mb-2">
-            <h1 className="text-2xl font-bold flex items-center gap-2">
+            <h1 className="text-2xl flex items-center gap-2">
               <Scan className="h-7 w-7" />
               Biljettscanning
             </h1>
@@ -110,18 +117,9 @@ export const TicketScanning = () => {
               Logga ut
             </Button>
           </div>
-          
           <p className="text-muted-foreground mb-4">
             Scanna QR-koder eller markera manuellt i listan
           </p>
-          
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Badge variant={userRole === 'admin' ? 'default' : 'secondary'} className="text-xs">
-              {userRole === 'admin' ? 'Admin' : 'Staff'}
-            </Badge>
-            <span>•</span>
-            <span>{user.email}</span>
-          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'scanner' | 'list')}>
