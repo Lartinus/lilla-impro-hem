@@ -105,8 +105,8 @@ export const TicketScanning = () => {
               {userRole === 'admin' ? 'Admin' : 'Staff'}
             </Badge>
             <span>{user.email}</span>
-            <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs h-fit">
-              <LogOut className="h-2 w-3 mr-1" />
+            <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs">
+              <LogOut className="h-1 w-3" />
               Logga ut
             </Button>
           </div>
