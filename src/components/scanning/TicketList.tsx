@@ -57,7 +57,7 @@ export const TicketList: React.FC = () => {
   // Get unique shows for filter
   const shows = React.useMemo(() => {
     const uniqueShows = tickets.reduce((acc, ticket) => {
-      const showKey = `${ticket.show_title}-${ticket.show_date}`;
+      const showKey = `${ticket.show_title}|||${ticket.show_date}`;
       if (!acc.some(show => show.key === showKey)) {
         acc.push({
           key: showKey,
@@ -80,7 +80,7 @@ export const TicketList: React.FC = () => {
     let filtered = tickets;
 
     // Show filter - must have a show selected
-    const [showTitle, showDate] = selectedShow.split('-');
+    const [showTitle, showDate] = selectedShow.split('|||');
     filtered = filtered.filter(ticket =>
       ticket.show_title === showTitle && ticket.show_date === showDate
     );
