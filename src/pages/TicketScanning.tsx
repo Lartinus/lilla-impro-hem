@@ -98,7 +98,7 @@ export const TicketScanning = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container pt-24 mx-auto p-6 max-w-2xl">
+      <div className="container pt-6 mx-auto p-6 max-w-2xl">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Badge variant={userRole === 'admin' ? 'default' : 'secondary'} className="text-xs">
