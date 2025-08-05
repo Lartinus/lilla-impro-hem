@@ -53,10 +53,11 @@ const LazyUnsubscribe = React.lazy(() => import('@/pages/Unsubscribe'));
 function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isScanRoute = location.pathname === '/scan';
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      {!isAdminRoute && <Header />}
+      {!isAdminRoute && !isScanRoute && <Header />}
       <main className="flex-1">
         <Suspense fallback={null}>
           <Routes>
