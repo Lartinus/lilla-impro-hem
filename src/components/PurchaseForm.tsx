@@ -106,9 +106,9 @@ const PurchaseForm = ({
     finalTotal = baseTotal - discountAmount;
   }
 
-  // Validate discount code only once when component mounts or discount code changes
+  // Only validate when component mounts if there's already a discount code
   useEffect(() => {
-    if (discountCode && !discountValidation.isCalculated) {
+    if (discountCode && discountCode.trim()) {
       validateDiscountCode(discountCode, baseTotal);
     }
   }, [discountCode]);

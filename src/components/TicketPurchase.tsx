@@ -20,13 +20,23 @@ const TicketPurchase = ({
   const [ticketCount, setTicketCount] = useState(1);
   const [discountTickets, setDiscountTickets] = useState(0);
   const [discountCode, setDiscountCode] = useState('');
+  const [appliedDiscountCode, setAppliedDiscountCode] = useState('');
+
+  const handleApplyDiscountCode = () => {
+    setAppliedDiscountCode(discountCode.trim());
+  };
+
+  const handleRemoveDiscountCode = () => {
+    setDiscountCode('');
+    setAppliedDiscountCode('');
+  };
 
   const handlePurchase = () => {
     if (ticketCount === 0 && discountTickets === 0) return;
     onPurchase({
       regularTickets: ticketCount,
       discountTickets: discountTickets,
-      discountCode: discountCode
+      discountCode: appliedDiscountCode
     });
   };
 
@@ -55,13 +65,36 @@ const TicketPurchase = ({
               <ChevronRight size={12} className="text-form-text-muted" />
             </button>
           </div>
-          <div className="w-32 border border-black bg-transparent">
-            <Input
-              placeholder="Ev. rabattkod"
-              value={discountCode}
-              onChange={(e) => setDiscountCode(e.target.value)}
-              className="rounded-none border-0 text-form-text text-sm h-8 focus:border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder-form-placeholder"
-            />
+          <div className="flex items-center space-x-2">
+            <div className="w-32 border border-black bg-transparent">
+              <Input
+                placeholder="Ev. rabattkod"
+                value={discountCode}
+                onChange={(e) => setDiscountCode(e.target.value)}
+                className="rounded-none border-0 text-form-text text-sm h-8 focus:border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder-form-placeholder"
+                disabled={!!appliedDiscountCode}
+              />
+            </div>
+            {discountCode.trim() && !appliedDiscountCode && (
+              <Button
+                onClick={handleApplyDiscountCode}
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs rounded-none border-black"
+              >
+                Tillämpa
+              </Button>
+            )}
+            {appliedDiscountCode && (
+              <Button
+                onClick={handleRemoveDiscountCode}
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs rounded-none border-red-600 text-red-600 hover:bg-red-50"
+              >
+                Ta bort
+              </Button>
+            )}
           </div>
         </div>
       </div>
