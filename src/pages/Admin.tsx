@@ -25,6 +25,8 @@ import { DiscountCodeManagement } from '@/components/admin/DiscountCodeManagemen
 import { ImageManagement } from '@/components/admin/ImageManagement';
 import EmailManagement from '@/components/admin/EmailManagement';
 import { UserManagement } from '@/components/admin/UserManagement';
+import { AdminShowsOverview } from '@/components/admin/AdminShowsOverview';
+import { AdminCoursesOverview } from '@/components/admin/AdminCoursesOverview';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -257,6 +259,12 @@ const AdminDashboard = () => {
                         </div>
                       </CardContent>
                     </Card>
+                  </div>
+
+                  {/* Shows and Courses Overview */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <AdminShowsOverview />
+                    <AdminCoursesOverview />
                   </div>
                 </div>
               ) : (
