@@ -63,7 +63,7 @@ function AppContent() {
             {/* Critical routes - loaded immediately */}
             <Route path="/" element={<Index />} />
             <Route path="/om-oss" element={<About />} />
-            <Route path="/scanning" element={<TicketScanning />} />
+            <Route path="/scan" element={<TicketScanning />} />
             
             {/* Redirect for backward compatibility */}
             <Route path="/shows" element={<Navigate to="/forestallningar" replace />} />
