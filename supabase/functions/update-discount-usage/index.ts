@@ -37,7 +37,8 @@ serve(async (req) => {
       })
       .eq('code', code.toUpperCase())
       .eq('is_active', true)
-      .select();
+      .select()
+      .single();
 
     if (error) {
       console.error('Error updating discount code usage:', error);
@@ -52,7 +53,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       success: true,
-      data: data?.[0] || null
+      data: data || null
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });

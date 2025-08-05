@@ -97,3 +97,9 @@ verify_jwt = false
 
 [functions.add-course-participant]
 verify_jwt = true
+
+[functions.validate-discount-code]
+verify_jwt = false
+
+[functions.update-discount-usage]
+verify_jwt = false
