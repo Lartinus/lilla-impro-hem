@@ -201,12 +201,11 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanSuccess }) => {
       </Card>
 
       <Card className="p-4">
-        <h3 className="font-semibold mb-2">Tips för bäst resultat:</h3>
+        <h3 className="font-semibold mb-2">Tips för bäst resultat</h3>
         <ul className="text-sm text-muted-foreground space-y-1">
-          <li>• Håll telefonen stabilt</li>
-          <li>• Se till att QR-koden är tydligt synlig</li>
-          <li>• Undvik reflex från ljus</li>
-          <li>• Scanna en QR-kod i taget</li>
+          <li>Håll telefonen stabilt</li>
+          <li>Höj ljusstyrkan på mobilen om den har svårt att scanna</li>
+          <li>Undvik reflex från ljus</li>
         </ul>
       </Card>
     </div>
