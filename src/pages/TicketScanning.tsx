@@ -112,11 +112,11 @@ export const TicketScanning = () => {
               Biljettscanning
             </h1>
             <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs">
-              <LogOut className="h-3 w-3 mr-1" />
+              <LogOut className="h-2 w-3 mr-1" />
               Logga ut
             </Button>
           </div>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-muted-foreground text-xs mb-4">
             Scanna QR-koder eller markera manuellt i listan
           </p>
         </div>
