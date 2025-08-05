@@ -129,7 +129,7 @@ Biljettkod: ${purchase.ticket_code}
 
 [QR_CODE_PLACEHOLDER]
 
-Visa denna QR-kod vid entrén`;
+Visa denna QR-kod vid entrén. Om ni köpt flera biljetter och sällskapet kommer vi olika tider använder alla samma QR-kod.`;
 
     // Create styled email using unified template (let it handle all formatting)
     const htmlContent = createUnifiedEmailTemplate(
