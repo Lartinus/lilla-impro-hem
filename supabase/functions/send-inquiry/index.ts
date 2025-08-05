@@ -3,6 +3,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { createUnifiedEmailTemplate } from '../_shared/email-template.ts';
+import { convertMarkdownToHtml } from '../_shared/markdownHelpers.ts';
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -87,13 +88,13 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Create notification content using markdown format
     const notificationMarkdown = `
-H2: Kontaktuppgifter
+## Kontaktuppgifter
 
-**Namn:** ${inquiryData.name}
-**E-post:** ${inquiryData.email}
-${inquiryData.phone ? `**Telefon:** ${inquiryData.phone}\n` : ''}${inquiryData.company ? `**Företag:** ${inquiryData.company}\n` : ''}${inquiryData.occasion ? `**Tillfälle:** ${inquiryData.occasion}\n` : ''}**Typ:** ${inquiryData.type === 'corporate' ? 'Företag' : 'Privat'}
+**Namn:** ${inquiryData.name}  
+**E-post:** ${inquiryData.email}  
+${inquiryData.phone ? `**Telefon:** ${inquiryData.phone}  \n` : ''}${inquiryData.company ? `**Företag:** ${inquiryData.company}  \n` : ''}${inquiryData.occasion ? `**Tillfälle:** ${inquiryData.occasion}  \n` : ''}**Typ:** ${inquiryData.type === 'corporate' ? 'Företag' : 'Privat'}
 
-H2: Krav och önskemål
+## Krav och önskemål
 
 ${inquiryData.requirements}
 
@@ -102,10 +103,10 @@ ${inquiryData.requirements}
 Logga in på adminpanelen för att hantera förfrågan
     `.trim();
 
-    // Create notification content using unified template
+    // Convert markdown to HTML and create notification content
     const notificationContent = createUnifiedEmailTemplate(
       notificationSubject,
-      notificationMarkdown
+      convertMarkdownToHtml(notificationMarkdown)
     );
 
     await resend.emails.send({
