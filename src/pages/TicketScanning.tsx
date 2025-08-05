@@ -53,7 +53,7 @@ export const TicketScanning = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-4 max-w-2xl">
+      <div className="container mt-6 mx-auto p-4 max-w-2xl">
         <div className="mb-6">
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Scan className="h-8 w-8" />
