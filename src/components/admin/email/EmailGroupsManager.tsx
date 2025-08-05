@@ -217,10 +217,10 @@ export function EmailGroupsManager({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Email-grupper</CardTitle>
+          <CardTitle className="text-lg">Hantera mottagare av email</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Action buttons on separate row, left-aligned */}
