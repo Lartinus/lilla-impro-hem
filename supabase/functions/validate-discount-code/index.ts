@@ -78,9 +78,10 @@ serve(async (req) => {
       });
     }
 
-    // Calculate discount amount
+    // Calculate discount amount - preserve exact decimals
     let discountAmount = 0;
     if (discountCode.discount_type === 'percentage') {
+      // Use exact calculation without rounding
       discountAmount = totalAmount * (discountCode.discount_amount / 100);
     } else if (discountCode.discount_type === 'fixed') {
       discountAmount = Math.min(discountCode.discount_amount, totalAmount);
