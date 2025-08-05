@@ -196,7 +196,7 @@ const PurchaseForm = ({
         )}
         {discountValidation.valid && discountAmount > 0 && (
           <p className="text-green-600">
-            Rabatt ({discountCode}): -{discountAmount}kr
+            Rabatt ({discountCode}): -{discountAmount.toFixed(2).replace(/\.?0+$/, '')}kr
           </p>
         )}
         {discountValidation.error && (

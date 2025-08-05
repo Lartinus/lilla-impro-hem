@@ -144,7 +144,7 @@ const TicketPurchase = ({
           <div className="mt-2">
             {discountValidation.valid ? (
               <div className="text-green-600 text-sm">
-                ✓ Rabattkod applicerad: -{discountValidation.discountAmount}kr
+                ✓ Rabattkod applicerad: -{discountValidation.discountAmount.toFixed(2).replace(/\.?0+$/, '')}kr
               </div>
             ) : discountValidation.error ? (
               <div className="text-red-600 text-sm">
