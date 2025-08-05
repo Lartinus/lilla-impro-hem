@@ -369,7 +369,6 @@ export const TicketList: React.FC = () => {
                       {/* Basic Info */}
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
-                          <Mail className="h-4 w-4 text-muted-foreground" />
                           <div>
                             <div className="font-medium">{ticket.buyer_name}</div>
                             <div className="text-sm text-muted-foreground">{ticket.buyer_email}</div>
@@ -378,7 +377,6 @@ export const TicketList: React.FC = () => {
                         
                          {ticket.buyer_phone && (
                            <div className="flex items-center gap-2">
-                             <Phone className="h-4 w-4 text-muted-foreground" />
                              <div className="text-sm">{ticket.buyer_phone}</div>
                            </div>
                          )}
