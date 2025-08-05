@@ -106,14 +106,9 @@ export const TicketScanning = () => {
             </Badge>
             <span>{user.email}</span>
             <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs">
-              <LogOut
-                size={12}
-                strokeWidth={2}
-                style={{ width: 12, height: 12 }}
-              />
+              <LogOut className="h-1 w-3" />
               Logga ut
             </Button>
-
           </div>
           <div className="flex justify-between items-center mt-4 mb-2">
             <h1 className="text-2xl flex items-center gap-2">
