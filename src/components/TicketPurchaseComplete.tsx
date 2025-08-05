@@ -10,7 +10,7 @@ import TicketCountdown from './TicketCountdown';
 import SoldOut from './SoldOut';
 
 interface TicketPurchaseCompleteProps {
-  onPurchase: (data: { regularTickets: number; discountTickets: number; discountCode: string }) => void;
+  onPurchase: (data: { regularTickets: number; discountTickets: number; discountCode: string; discountValidation?: { valid: boolean; discountAmount: number; error?: string } }) => void;
   ticketPrice?: number;
   discountPrice?: number;
   totalTickets: number; // Now required - no fallback
@@ -31,7 +31,12 @@ const TicketPurchaseComplete = ({
   showLocation
 }: TicketPurchaseCompleteProps) => {
   const [currentStep, setCurrentStep] = useState<'purchase' | 'form'>('purchase');
-  const [ticketData, setTicketData] = useState({
+  const [ticketData, setTicketData] = useState<{
+    regularTickets: number;
+    discountTickets: number;
+    discountCode: string;
+    discountValidation?: { valid: boolean; discountAmount: number; error?: string };
+  }>({
     regularTickets: 0,
     discountTickets: 0,
     discountCode: ''
@@ -69,7 +74,7 @@ const TicketPurchaseComplete = ({
   console.log(`  - hasActiveBooking: ${hasActiveBooking}`);
   console.log(`  - Calculation: ${totalTickets} total - sold - booked = ${availableTickets} available`);
 
-  const handleTicketPurchase = async (data: { regularTickets: number; discountTickets: number; discountCode: string }) => {
+  const handleTicketPurchase = async (data: { regularTickets: number; discountTickets: number; discountCode: string; discountValidation?: { valid: boolean; discountAmount: number; error?: string } }) => {
     try {
       console.log('🎫 Starting ticket purchase process...');
       console.log(`  - Regular tickets: ${data.regularTickets}`);
@@ -110,7 +115,8 @@ const TicketPurchaseComplete = ({
     setTicketData({
       regularTickets: 0,
       discountTickets: 0,
-      discountCode: ''
+      discountCode: '',
+      discountValidation: undefined
     });
   };
 
@@ -125,7 +131,8 @@ const TicketPurchaseComplete = ({
     setTicketData({
       regularTickets: 0,
       discountTickets: 0,
-      discountCode: ''
+      discountCode: '',
+      discountValidation: undefined
     });
   };
 
@@ -138,6 +145,7 @@ const TicketPurchaseComplete = ({
           ticketCount={ticketData.regularTickets}
           discountTickets={ticketData.discountTickets}
           discountCode={ticketData.discountCode}
+          discountValidation={ticketData.discountValidation}
           showTitle={showTitle}
           showSlug={showSlug}
           showDate={showDate}

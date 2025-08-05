@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface TicketPurchaseProps {
-  onPurchase: (data: { regularTickets: number; discountTickets: number; discountCode: string }) => void;
+  onPurchase: (data: { regularTickets: number; discountTickets: number; discountCode: string; discountValidation?: { valid: boolean; discountAmount: number; error?: string } }) => void;
   ticketPrice?: number;
   discountPrice?: number;
   availableTickets?: number;
@@ -21,14 +22,56 @@ const TicketPurchase = ({
   const [discountTickets, setDiscountTickets] = useState(0);
   const [discountCode, setDiscountCode] = useState('');
   const [appliedDiscountCode, setAppliedDiscountCode] = useState('');
+  const [discountValidation, setDiscountValidation] = useState<{
+    valid: boolean;
+    discountAmount: number;
+    error?: string;
+  }>({ valid: false, discountAmount: 0 });
+  const [isValidating, setIsValidating] = useState(false);
 
-  const handleApplyDiscountCode = () => {
+  const validateDiscountCode = async (code: string) => {
+    const baseTotal = (ticketCount * ticketPrice) + (discountTickets * discountPrice);
+    setIsValidating(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('validate-discount-code', {
+        body: { code: code.trim(), totalAmount: baseTotal }
+      });
+
+      if (error) {
+        setDiscountValidation({ valid: false, discountAmount: 0, error: 'Fel vid validering' });
+        return;
+      }
+
+      if (data.valid) {
+        setDiscountValidation({ 
+          valid: true, 
+          discountAmount: data.discountAmount
+        });
+      } else {
+        setDiscountValidation({ 
+          valid: false, 
+          discountAmount: 0, 
+          error: data.error || 'Ogiltig rabattkod'
+        });
+      }
+    } catch (err) {
+      console.error('Error validating discount code:', err);
+      setDiscountValidation({ valid: false, discountAmount: 0, error: 'Fel vid validering' });
+    } finally {
+      setIsValidating(false);
+    }
+  };
+
+  const handleApplyDiscountCode = async () => {
+    await validateDiscountCode(discountCode.trim());
     setAppliedDiscountCode(discountCode.trim());
   };
 
   const handleRemoveDiscountCode = () => {
     setDiscountCode('');
     setAppliedDiscountCode('');
+    setDiscountValidation({ valid: false, discountAmount: 0 });
   };
 
   const handlePurchase = () => {
@@ -36,7 +79,8 @@ const TicketPurchase = ({
     onPurchase({
       regularTickets: ticketCount,
       discountTickets: discountTickets,
-      discountCode: appliedDiscountCode
+      discountCode: appliedDiscountCode,
+      discountValidation: appliedDiscountCode ? discountValidation : undefined
     });
   };
 
@@ -78,9 +122,10 @@ const TicketPurchase = ({
             {discountCode.trim() && !appliedDiscountCode && (
               <Button
                 onClick={handleApplyDiscountCode}
+                disabled={isValidating}
                 className="h-8 px-3 py-2 text-sm rounded-none border border-black bg-transparent text-form-text hover:bg-gray-50 focus-visible:ring-0 focus-visible:ring-offset-0 whitespace-nowrap font-normal"
               >
-                Tillämpa
+                {isValidating ? 'Validerar...' : 'Tillämpa'}
               </Button>
             )}
             {appliedDiscountCode && (
@@ -93,6 +138,21 @@ const TicketPurchase = ({
             )}
           </div>
         </div>
+        
+        {/* Discount validation feedback */}
+        {appliedDiscountCode && (
+          <div className="mt-2">
+            {discountValidation.valid ? (
+              <div className="text-green-600 text-sm">
+                ✓ Rabattkod applicerad: -{discountValidation.discountAmount}kr
+              </div>
+            ) : discountValidation.error ? (
+              <div className="text-red-600 text-sm">
+                ✗ {discountValidation.error}
+              </div>
+            ) : null}
+          </div>
+        )}
       </div>
 
       <div className="mb-4">

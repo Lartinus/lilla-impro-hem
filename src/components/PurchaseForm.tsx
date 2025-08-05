@@ -7,6 +7,7 @@ interface PurchaseFormProps {
   ticketCount: number;
   discountTickets: number;
   discountCode: string;
+  discountValidation?: { valid: boolean; discountAmount: number; error?: string };
   showTitle: string;
   showSlug: string;
   showDate: string;
@@ -20,7 +21,8 @@ interface PurchaseFormProps {
 const PurchaseForm = ({ 
   ticketCount, 
   discountTickets, 
-  discountCode, 
+  discountCode,
+  discountValidation: preValidatedDiscount,
   showTitle,
   showSlug,
   showDate,
@@ -52,50 +54,8 @@ const PurchaseForm = ({
   const discountTotal = discountTickets * discountPrice;
   const baseTotal = regularTotal + discountTotal;
   
-  // State for dynamic discount - initialize once with the discount code
-  const [discountValidation, setDiscountValidation] = useState<{
-    valid: boolean;
-    discountAmount: number;
-    error?: string;
-    isCalculated: boolean;
-  }>({ valid: false, discountAmount: 0, isCalculated: false });
-
-  // Validate discount code when it changes
-  const validateDiscountCode = async (code: string, total: number) => {
-    if (!code.trim()) {
-      setDiscountValidation({ valid: false, discountAmount: 0, isCalculated: true });
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase.functions.invoke('validate-discount-code', {
-        body: { code: code.trim(), totalAmount: total }
-      });
-
-      if (error) {
-        setDiscountValidation({ valid: false, discountAmount: 0, error: 'Fel vid validering', isCalculated: true });
-        return;
-      }
-
-      if (data.valid) {
-        setDiscountValidation({ 
-          valid: true, 
-          discountAmount: data.discountAmount,
-          isCalculated: true
-        });
-      } else {
-        setDiscountValidation({ 
-          valid: false, 
-          discountAmount: 0, 
-          error: data.error || 'Ogiltig rabattkod',
-          isCalculated: true
-        });
-      }
-    } catch (err) {
-      console.error('Error validating discount code:', err);
-      setDiscountValidation({ valid: false, discountAmount: 0, error: 'Fel vid validering', isCalculated: true });
-    }
-  };
+  // Use pre-validated discount data or default values
+  const discountValidation = preValidatedDiscount || { valid: false, discountAmount: 0 };
 
   // Calculate final total with discount
   let finalTotal = baseTotal;
@@ -105,13 +65,6 @@ const PurchaseForm = ({
     discountAmount = discountValidation.discountAmount;
     finalTotal = baseTotal - discountAmount;
   }
-
-  // Only validate when component mounts if there's already a discount code
-  useEffect(() => {
-    if (discountCode && discountCode.trim()) {
-      validateDiscountCode(discountCode, baseTotal);
-    }
-  }, [discountCode]);
 
   // Calculate VAT (moms) using correct formula: [totalpris] - ([totalpris]/1,06)
   const vatAmount = finalTotal - (finalTotal / 1.06);
