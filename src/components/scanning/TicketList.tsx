@@ -8,7 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { Users, Search, Filter, Ticket, Calendar } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ResponsiveTable, ResponsiveTableContent } from '@/components/ui/responsive-table';
+import { Users, Search, Filter, Ticket, Calendar, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
@@ -30,7 +32,7 @@ interface TicketPurchase {
 
 export const TicketList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedShow, setSelectedShow] = useState<string>('all');
+  const [selectedShow, setSelectedShow] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const queryClient = useQueryClient();
 
@@ -70,21 +72,22 @@ export const TicketList: React.FC = () => {
 
   // Filter tickets
   const filteredTickets = React.useMemo(() => {
+    // Don't filter if no show is selected
+    if (!selectedShow) return [];
+    
     let filtered = tickets;
+
+    // Show filter - must have a show selected
+    const [showTitle, showDate] = selectedShow.split('-');
+    filtered = filtered.filter(ticket =>
+      ticket.show_title === showTitle && ticket.show_date === showDate
+    );
 
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(ticket =>
         ticket.buyer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         ticket.buyer_email.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Show filter
-    if (selectedShow !== 'all') {
-      const [showTitle, showDate] = selectedShow.split('-');
-      filtered = filtered.filter(ticket =>
-        ticket.show_title === showTitle && ticket.show_date === showDate
       );
     }
 
@@ -107,14 +110,18 @@ export const TicketList: React.FC = () => {
       .filter(t => t.scanned_status)
       .reduce((sum, t) => sum + t.regular_tickets + t.discount_tickets, 0);
 
+    // Get selected show info
+    const selectedShowInfo = selectedShow ? shows.find(show => show.key === selectedShow) : null;
+
     return {
       scannedPurchases: scannedCount,
       totalPurchases: totalCount,
       scannedTickets,
       totalTickets,
-      percentage: totalCount > 0 ? Math.round((scannedCount / totalCount) * 100) : 0
+      percentage: totalCount > 0 ? Math.round((scannedCount / totalCount) * 100) : 0,
+      selectedShow: selectedShowInfo
     };
-  }, [filteredTickets]);
+  }, [filteredTickets, selectedShow, shows]);
 
   // Toggle scan status mutation
   const toggleScanMutation = useMutation({
@@ -158,30 +165,35 @@ export const TicketList: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Statistics */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Inscanningsöversikt
-          </h3>
-          <Badge variant="outline">
-            {stats.scannedPurchases}/{stats.totalPurchases}
-          </Badge>
-        </div>
-        
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>Inscannade köp</span>
-            <span className="font-medium">{stats.scannedPurchases} av {stats.totalPurchases}</span>
+      {/* Statistics - only show when a show is selected */}
+      {selectedShow && (
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Inscanningsöversikt - {stats.selectedShow?.title}
+            </h3>
+            <Badge variant="outline">
+              {stats.scannedPurchases}/{stats.totalPurchases}
+            </Badge>
           </div>
-          <Progress value={stats.percentage} className="h-2" />
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Inscannade biljetter: {stats.scannedTickets}/{stats.totalTickets}</span>
-            <span>{stats.percentage}%</span>
+          
+          <div className="space-y-2">
+            <div className="text-sm text-muted-foreground mb-2">
+              {format(new Date(stats.selectedShow?.date || ''), 'd MMMM yyyy', { locale: sv })}
+            </div>
+            <div className="flex justify-between text-sm">
+              <span>Inscannade köp</span>
+              <span className="font-medium">{stats.scannedPurchases} av {stats.totalPurchases}</span>
+            </div>
+            <Progress value={stats.percentage} className="h-2" />
+            <div className="flex justify-between text-sm text-muted-foreground">
+              <span>Inscannade biljetter: {stats.scannedTickets}/{stats.totalTickets}</span>
+              <span>{stats.percentage}%</span>
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      )}
 
       {/* Filters */}
       <Card className="p-6">
@@ -208,7 +220,6 @@ export const TicketList: React.FC = () => {
                   <SelectValue placeholder="Välj föreställning" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Alla föreställningar</SelectItem>
                   {shows.map(show => (
                     <SelectItem key={show.key} value={show.key}>
                       {show.display}
@@ -232,56 +243,113 @@ export const TicketList: React.FC = () => {
         </div>
       </Card>
 
-      {/* Ticket List */}
-      <div className="space-y-4">
-        {filteredTickets.length === 0 ? (
-          <Card className="p-8 text-center">
-            <Ticket className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
-            <p className="text-muted-foreground">
-              {tickets.length === 0 ? 'Inga biljetter hittades' : 'Inga biljetter matchar filtren'}
-            </p>
-          </Card>
-        ) : (
-          filteredTickets.map((ticket) => (
-            <Card key={ticket.id} className="p-5">
-              <div className="flex items-center gap-3">
-                <Checkbox
-                  checked={ticket.scanned_status}
-                  onCheckedChange={() => handleToggleScan(ticket)}
-                  disabled={toggleScanMutation.isPending}
-                />
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <h4 className="font-medium truncate">{ticket.buyer_name}</h4>
-                    <Badge variant={ticket.scanned_status ? 'default' : 'secondary'} className="ml-2">
-                      {ticket.scanned_status ? 'Scannad' : 'Väntande'}
-                    </Badge>
-                  </div>
-                  
-                  <div className="text-sm text-muted-foreground space-y-1">
-                    <p className="truncate">{ticket.buyer_email}</p>
-                    <div className="flex items-center gap-4">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {ticket.show_title}
-                      </span>
-                      <span>
-                        {ticket.regular_tickets + ticket.discount_tickets} biljetter
-                      </span>
-                    </div>
-                    {ticket.scanned_at && (
-                      <p className="text-xs">
-                        Scannad: {format(new Date(ticket.scanned_at), 'HH:mm dd/MM', { locale: sv })}
-                      </p>
-                    )}
-                  </div>
-                </div>
+      {/* Show selection prompt */}
+      {!selectedShow && (
+        <Card className="p-8 text-center">
+          <AlertCircle className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
+          <h3 className="font-semibold mb-2">Välj en föreställning</h3>
+          <p className="text-muted-foreground">
+            Du måste först välja en föreställning för att se inscanningsöversikten och biljettlistan.
+          </p>
+        </Card>
+      )}
+
+      {/* Ticket List - Table view */}
+      {selectedShow && (
+        <Card className="p-6">
+          {filteredTickets.length === 0 ? (
+            <div className="text-center py-8">
+              <Ticket className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
+              <p className="text-muted-foreground">
+                Inga biljetter matchar filtren för denna föreställning
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Desktop table view */}
+              <div className="hidden md:block">
+                <ResponsiveTable>
+                  <ResponsiveTableContent>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-12">Status</TableHead>
+                        <TableHead>Namn</TableHead>
+                        <TableHead>E-post</TableHead>
+                        <TableHead className="text-center">Biljetter</TableHead>
+                        <TableHead className="text-center">Status</TableHead>
+                        <TableHead>Scannad</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredTickets.map((ticket) => (
+                        <TableRow key={ticket.id}>
+                          <TableCell>
+                            <Checkbox
+                              checked={ticket.scanned_status}
+                              onCheckedChange={() => handleToggleScan(ticket)}
+                              disabled={toggleScanMutation.isPending}
+                            />
+                          </TableCell>
+                          <TableCell className="font-medium">{ticket.buyer_name}</TableCell>
+                          <TableCell className="text-muted-foreground">{ticket.buyer_email}</TableCell>
+                          <TableCell className="text-center">
+                            {ticket.regular_tickets + ticket.discount_tickets}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <Badge variant={ticket.scanned_status ? 'default' : 'secondary'}>
+                              {ticket.scanned_status ? 'Scannad' : 'Väntande'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {ticket.scanned_at ? 
+                              format(new Date(ticket.scanned_at), 'HH:mm dd/MM', { locale: sv }) : 
+                              '-'
+                            }
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </ResponsiveTableContent>
+                </ResponsiveTable>
               </div>
-            </Card>
-          ))
-        )}
-      </div>
+
+              {/* Mobile compact cards */}
+              <div className="md:hidden space-y-3">
+                {filteredTickets.map((ticket) => (
+                  <div key={ticket.id} className="border rounded-lg p-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <Checkbox
+                        checked={ticket.scanned_status}
+                        onCheckedChange={() => handleToggleScan(ticket)}
+                        disabled={toggleScanMutation.isPending}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium truncate">{ticket.buyer_name}</h4>
+                          <Badge variant={ticket.scanned_status ? 'default' : 'secondary'} className="ml-2">
+                            {ticket.scanned_status ? 'Scannad' : 'Väntande'}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-sm text-muted-foreground space-y-1">
+                      <p className="truncate">{ticket.buyer_email}</p>
+                      <div className="flex items-center justify-between">
+                        <span>{ticket.regular_tickets + ticket.discount_tickets} biljetter</span>
+                        {ticket.scanned_at && (
+                          <span className="text-xs">
+                            {format(new Date(ticket.scanned_at), 'HH:mm dd/MM', { locale: sv })}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </Card>
+      )}
     </div>
   );
 };
