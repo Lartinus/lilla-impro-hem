@@ -130,6 +130,42 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpda
         <h2 className="text-xl font-semibold">Biljettinformation</h2>
       </div>
 
+      {/* Scanning Actions - Moved to top */}
+      {scanningStep === 'initial' && !isFullyScanned && (
+        <Card className="p-6">
+          <div className="text-center space-y-4">
+            <h3 className="text-xl font-semibold">Har alla kommit?</h3>
+            <p className="text-muted-foreground">
+              {totalTickets} {totalTickets === 1 ? 'person' : 'personer'} köpte biljetter
+              {isPartiallyScanned && `, ${remainingTickets} ${remainingTickets === 1 ? 'person' : 'personer'} kvar`}
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <Button 
+                onClick={() => handlePartialScan(remainingTickets)}
+                disabled={isUpdating}
+                size="lg"
+                className="h-16 text-sm px-2"
+              >
+                <Check className="h-5 w-5 mr-1" />
+                <span className="break-words">Ja, alla är här</span>
+              </Button>
+              <Button 
+                onClick={() => {
+                  setScanningStep('partial-input');
+                  setPartialTicketCount(Math.min(remainingTickets, 1));
+                }}
+                variant="outline"
+                size="lg"
+                className="h-16 text-sm px-2"
+              >
+                <User className="h-5 w-5 mr-1" />
+                <span className="break-words">Nej, bara några</span>
+              </Button>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {isPartiallyScanned && (
         <Alert>
           <AlertTriangle className="h-4 w-4" />
@@ -242,41 +278,6 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpda
         )}
       </Card>
 
-      {/* Scanning Actions */}
-      {scanningStep === 'initial' && !isFullyScanned && (
-        <Card className="p-6">
-          <div className="text-center space-y-4">
-            <h3 className="text-xl font-semibold">Har alla kommit?</h3>
-            <p className="text-muted-foreground">
-              {totalTickets} {totalTickets === 1 ? 'person' : 'personer'} köpte biljetter
-              {isPartiallyScanned && `, ${remainingTickets} ${remainingTickets === 1 ? 'person' : 'personer'} kvar`}
-            </p>
-            <div className="grid grid-cols-2 gap-3">
-              <Button 
-                onClick={() => handlePartialScan(remainingTickets)}
-                disabled={isUpdating}
-                size="lg"
-                className="h-16"
-              >
-                <Check className="h-5 w-5 mr-2" />
-                {isUpdating ? 'Scannar...' : 'Ja, alla är här'}
-              </Button>
-              <Button 
-                onClick={() => {
-                  setScanningStep('partial-input');
-                  setPartialTicketCount(Math.min(remainingTickets, 1));
-                }}
-                variant="outline"
-                size="lg"
-                className="h-16"
-              >
-                <User className="h-5 w-5 mr-2" />
-                Nej, bara några
-              </Button>
-            </div>
-          </div>
-        </Card>
-      )}
 
       {scanningStep === 'partial-input' && (
         <Card className="p-6">
