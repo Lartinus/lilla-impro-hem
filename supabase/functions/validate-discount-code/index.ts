@@ -81,7 +81,7 @@ serve(async (req) => {
     // Calculate discount amount
     let discountAmount = 0;
     if (discountCode.discount_type === 'percentage') {
-      discountAmount = Math.round(totalAmount * (discountCode.discount_amount / 100));
+      discountAmount = totalAmount * (discountCode.discount_amount / 100);
     } else if (discountCode.discount_type === 'fixed') {
       discountAmount = Math.min(discountCode.discount_amount, totalAmount);
     }
