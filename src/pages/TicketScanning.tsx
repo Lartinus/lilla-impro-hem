@@ -100,7 +100,7 @@ export const TicketScanning = () => {
     <div className="min-h-screen bg-background">
       <div className="container pt-24 mx-auto p-6 max-w-2xl">
         <div className="mb-8">
-          <div className="flex justify-between items-start mb-6">
+          <div className="flex justify-between items-start">
             <div>
               <h1 className="text-2xl font-bold flex items-center gap-2 mb-2">
                 <Scan className="h-7 w-7" />
@@ -110,15 +110,19 @@ export const TicketScanning = () => {
                 Scanna QR-koder eller markera manuellt i listan
               </p>
             </div>
-            <div className="flex flex-col items-end space-y-2">
+            
+            <div className="flex flex-col items-end space-y-2 mt-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Badge variant={userRole === 'admin' ? 'default' : 'secondary'} className="text-xs">
+                  {userRole === 'admin' ? 'Admin' : 'Staff'}
+                </Badge>
+                <span>•</span>
+                <span>{user.email}</span>
+              </div>
               <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs">
                 <LogOut className="h-3 w-3 mr-1" />
                 Logga ut
               </Button>
-              <Badge variant={userRole === 'admin' ? 'default' : 'secondary'} className="text-xs">
-                {userRole === 'admin' ? 'Admin' : 'Staff'}
-              </Badge>
-              <p className="text-xs text-muted-foreground text-right">{user.email}</p>
             </div>
           </div>
         </div>
