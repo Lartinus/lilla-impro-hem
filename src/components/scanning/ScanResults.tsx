@@ -166,6 +166,60 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpda
         </Card>
       )}
 
+      {/* Hur många kom just nu section - moved to top */}
+      {scanningStep === 'partial-input' && (
+        <Card className="p-6">
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-center">
+              Hur många kom just nu?
+            </h3>
+            <div className="text-center text-muted-foreground">
+              {remainingTickets} {remainingTickets === 1 ? 'person' : 'personer'} kvar att scanna
+            </div>
+            
+            <div className="flex items-center justify-center space-x-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPartialTicketCount(Math.max(1, partialTicketCount - 1))}
+                disabled={partialTicketCount <= 1}
+              >
+                -
+              </Button>
+              <div className="text-2xl font-bold min-w-[3rem] text-center">
+                {partialTicketCount}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPartialTicketCount(Math.min(remainingTickets, partialTicketCount + 1))}
+                disabled={partialTicketCount >= remainingTickets}
+              >
+                +
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                onClick={() => handlePartialScan(partialTicketCount)}
+                disabled={isUpdating}
+                className="w-full text-sm px-2"
+              >
+                <Check className="h-4 w-4 mr-1" />
+                <span className="break-words">{isUpdating ? 'Scannar...' : 'Scanna in'}</span>
+              </Button>
+              <Button
+                onClick={() => setScanningStep('initial')}
+                variant="outline"
+                className="w-full text-sm px-2"
+              >
+                <span className="break-words">Tillbaka</span>
+              </Button>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {isPartiallyScanned && (
         <Alert>
           <AlertTriangle className="h-4 w-4" />
@@ -279,59 +333,6 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpda
       </Card>
 
 
-      {scanningStep === 'partial-input' && (
-        <Card className="p-6">
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-center">
-              Hur många kom just nu?
-            </h3>
-            <div className="text-center text-muted-foreground">
-              {remainingTickets} {remainingTickets === 1 ? 'person' : 'personer'} kvar att scanna
-            </div>
-            
-            <div className="flex items-center justify-center space-x-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPartialTicketCount(Math.max(1, partialTicketCount - 1))}
-                disabled={partialTicketCount <= 1}
-              >
-                -
-              </Button>
-              <div className="text-2xl font-bold min-w-[3rem] text-center">
-                {partialTicketCount}
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPartialTicketCount(Math.min(remainingTickets, partialTicketCount + 1))}
-                disabled={partialTicketCount >= remainingTickets}
-              >
-                +
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                onClick={() => handlePartialScan(partialTicketCount)}
-                disabled={isUpdating}
-                className="w-full"
-              >
-                <Check className="h-4 w-4 mr-2" />
-                {isUpdating ? 'Scannar...' : 'Scanna in'}
-              </Button>
-              <Button
-                onClick={() => setScanningStep('initial')}
-                variant="outline"
-                className="w-full"
-              >
-                Tillbaka
-              </Button>
-            </div>
-          </div>
-        </Card>
-      )}
-
       {/* Admin Actions */}
       {(isPartiallyScanned || isFullyScanned) && (
         <div className="grid grid-cols-2 gap-3">
@@ -339,13 +340,13 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpda
             onClick={handleResetScan}
             disabled={isUpdating}
             variant="destructive"
-            className="w-full"
+            className="w-full text-xs px-2"
           >
-            <X className="h-4 w-4 mr-2" />
-            {isUpdating ? 'Återställer...' : 'Återställ scanning'}
+            <X className="h-4 w-4 mr-1" />
+            <span className="break-words">{isUpdating ? 'Återställer...' : 'Återställ scanning'}</span>
           </Button>
-          <Button variant="outline" onClick={onBack} className="w-full">
-            Tillbaka till scanner
+          <Button variant="outline" onClick={onBack} className="w-full text-xs px-2">
+            <span className="break-words">Tillbaka till scanner</span>
           </Button>
         </div>
       )}
