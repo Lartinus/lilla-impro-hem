@@ -11,7 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ResponsiveTable, ResponsiveTableContent } from '@/components/ui/responsive-table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Users, Search, Filter, Ticket, Calendar, AlertCircle, Edit, Eye, Phone, Mail, MapPin, MessageSquare } from 'lucide-react';
+import { Users, Search, Filter, Ticket, Calendar, AlertCircle, Edit, Eye, Phone, Mail, MapPin, MessageSquare, Plus, Minus } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
@@ -39,6 +39,7 @@ export const TicketList: React.FC = () => {
   const [selectedShow, setSelectedShow] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
+  const [adjustingTicketId, setAdjustingTicketId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   // Fetch all paid ticket purchases
@@ -154,11 +155,49 @@ export const TicketList: React.FC = () => {
     }
   });
 
+  // Partial scan adjustment mutation
+  const adjustPartialScanMutation = useMutation({
+    mutationFn: async ({ ticketId, scannedTickets }: { ticketId: string; scannedTickets: number }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase.rpc('update_partial_ticket_scan', {
+        ticket_id_param: ticketId,
+        scanned_tickets_param: scannedTickets,
+        admin_user_id_param: user.id
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      toast.success('Biljettantal uppdaterat');
+      queryClient.invalidateQueries({ queryKey: ['ticket-purchases-for-scanning'] });
+    },
+    onError: (error) => {
+      console.error('Error adjusting ticket count:', error);
+      toast.error('Fel vid justering av biljettantal');
+    }
+  });
+
   const handleToggleScan = (ticket: TicketPurchase) => {
     toggleScanMutation.mutate({
       ticketId: ticket.id,
       scanned: !ticket.scanned_status
     });
+  };
+
+  const handleAdjustScannedTickets = (ticket: TicketPurchase, change: number) => {
+    const currentScanned = ticket.scanned_tickets || 0;
+    const totalTickets = ticket.regular_tickets + ticket.discount_tickets;
+    const newScannedCount = Math.max(0, Math.min(totalTickets, currentScanned + change));
+    
+    if (newScannedCount !== currentScanned) {
+      adjustPartialScanMutation.mutate({
+        ticketId: ticket.id,
+        scannedTickets: change
+      });
+    }
   };
 
   if (isLoading) {
@@ -301,7 +340,6 @@ export const TicketList: React.FC = () => {
                           }`} />
                           <div className="flex-1 min-w-0">
                             <div className="font-medium truncate">{ticket.buyer_name}</div>
-                            <div className="text-sm text-muted-foreground truncate">{ticket.buyer_email}</div>
                           </div>
                         </div>
                         
@@ -367,25 +405,87 @@ export const TicketList: React.FC = () => {
                           </Badge>
                         </div>
                         
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span>Antal biljetter:</span>
-                            <span className="font-medium">{ticket.regular_tickets + ticket.discount_tickets}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span>Inscannade:</span>
-                            <span className="font-medium">{ticket.scanned_tickets || 0}</span>
-                          </div>
-                          {ticket.scanned_at && (
-                            <div className="flex justify-between text-sm">
-                              <span>Senast scannad:</span>
-                              <span className="font-medium">
-                                {format(new Date(ticket.scanned_at), 'HH:mm dd/MM', { locale: sv })}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
+                         <div className="space-y-2">
+                           <div className="flex justify-between text-sm">
+                             <span>Antal biljetter:</span>
+                             <span className="font-medium">{ticket.regular_tickets + ticket.discount_tickets}</span>
+                           </div>
+                           <div className="flex justify-between items-center text-sm">
+                             <span>Inscannade:</span>
+                             <div className="flex items-center gap-2">
+                               <Button
+                                 size="sm"
+                                 variant="outline"
+                                 className="h-6 w-6 p-0"
+                                 onClick={(e) => {
+                                   e.stopPropagation();
+                                   handleAdjustScannedTickets(ticket, -1);
+                                 }}
+                                 disabled={adjustPartialScanMutation.isPending || (ticket.scanned_tickets || 0) <= 0}
+                               >
+                                 <Minus className="h-3 w-3" />
+                               </Button>
+                               <span className="font-medium w-8 text-center">{ticket.scanned_tickets || 0}</span>
+                               <Button
+                                 size="sm"
+                                 variant="outline"
+                                 className="h-6 w-6 p-0"
+                                 onClick={(e) => {
+                                   e.stopPropagation();
+                                   handleAdjustScannedTickets(ticket, 1);
+                                 }}
+                                 disabled={adjustPartialScanMutation.isPending || (ticket.scanned_tickets || 0) >= (ticket.regular_tickets + ticket.discount_tickets)}
+                               >
+                                 <Plus className="h-3 w-3" />
+                               </Button>
+                             </div>
+                           </div>
+                           {ticket.scanned_at && (
+                             <div className="flex justify-between text-sm">
+                               <span>Senast scannad:</span>
+                               <span className="font-medium">
+                                 {format(new Date(ticket.scanned_at), 'HH:mm dd/MM', { locale: sv })}
+                               </span>
+                             </div>
+                           )}
+                         </div>
+                       </div>
+
+                       {/* Ticket Adjustment Controls */}
+                       {!ticket.scanned_status && (
+                         <div className="border rounded-lg p-3 bg-blue-50/50">
+                           <div className="text-sm font-medium mb-2">Justera antal inscannade</div>
+                           <div className="flex items-center justify-center gap-3">
+                             <Button
+                               size="sm"
+                               variant="outline"
+                               onClick={(e) => {
+                                 e.stopPropagation();
+                                 handleAdjustScannedTickets(ticket, -1);
+                               }}
+                               disabled={adjustPartialScanMutation.isPending || (ticket.scanned_tickets || 0) <= 0}
+                             >
+                               <Minus className="h-4 w-4 mr-1" />
+                               -1 person
+                             </Button>
+                             <span className="text-sm font-medium">
+                               {ticket.scanned_tickets || 0} av {ticket.regular_tickets + ticket.discount_tickets}
+                             </span>
+                             <Button
+                               size="sm" 
+                               variant="outline"
+                               onClick={(e) => {
+                                 e.stopPropagation();
+                                 handleAdjustScannedTickets(ticket, 1);
+                               }}
+                               disabled={adjustPartialScanMutation.isPending || (ticket.scanned_tickets || 0) >= (ticket.regular_tickets + ticket.discount_tickets)}
+                             >
+                               <Plus className="h-4 w-4 mr-1" />
+                               +1 person
+                             </Button>
+                           </div>
+                         </div>
+                        )}
 
                       {/* Action Buttons */}
                       <div className="flex gap-2">
