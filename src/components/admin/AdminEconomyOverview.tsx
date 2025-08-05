@@ -41,15 +41,17 @@ export const AdminEconomyOverview = () => {
       if (courseError) throw courseError;
 
       // Calculate TICKET revenue excluding 6% VAT (föreställningar)
+      // total_amount is now stored in öre, so convert to SEK first
       const ticketRevenueWithVAT = (ticketPurchases || []).reduce(
-        (sum, purchase) => sum + (purchase.total_amount || 0),
+        (sum, purchase) => sum + ((purchase.total_amount || 0) / 100),
         0
       );
       const ticketRevenue = ticketRevenueWithVAT > 0 ? Math.round(ticketRevenueWithVAT / 1.06) : 0;
 
       // Calculate COURSE revenue excluding 25% VAT (kurser)
+      // total_amount is stored in öre, so convert to SEK first
       const courseRevenueWithVAT = (coursePurchases || []).reduce(
-        (sum, purchase) => sum + (purchase.total_amount || 0),
+        (sum, purchase) => sum + ((purchase.total_amount || 0) / 100),
         0
       );
       const courseRevenue = courseRevenueWithVAT > 0 ? Math.round(courseRevenueWithVAT / 1.25) : 0;
@@ -70,7 +72,7 @@ export const AdminEconomyOverview = () => {
       currency: 'SEK',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(amount / 100); // Convert from öre to kronor
+    }).format(amount); // Amount is already in SEK
   };
 
   if (isLoading) {

@@ -72,7 +72,7 @@ serve(async (req) => {
           buyer_phone: buyerPhone,
           regular_tickets: regularTickets,
           discount_tickets: discountTickets,
-          total_amount: totalAmount,
+        total_amount: totalAmount * 100, // Store in öre
           discount_code: discountCode || null,
           ticket_code: ticketCode,
           qr_data: qrData,
@@ -98,7 +98,7 @@ serve(async (req) => {
             buyer_phone: buyerPhone,
             regular_tickets: regularTickets,
             discount_tickets: discountTickets,
-            total_amount: totalAmount,
+            total_amount: totalAmount * 100, // Store in öre
             discount_code: discountCode || null,
             ticket_code: ticketCode,
             qr_data: qrData,
@@ -158,7 +158,7 @@ serve(async (req) => {
         buyer_phone: buyerPhone,
         regular_tickets: regularTickets,
         discount_tickets: discountTickets,
-        total_amount: totalAmount,
+        total_amount: totalAmount * 100, // Store in öre
         discount_code: discountCode || null,
         ticket_code: ticketCode,
         qr_data: qrData,
