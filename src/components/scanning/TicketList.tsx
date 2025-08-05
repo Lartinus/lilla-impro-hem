@@ -186,7 +186,7 @@ export const TicketList: React.FC = () => {
       {/* Filters */}
       <Card className="p-6">
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-sm font-medium">
+          <div className="flex items-center gap-2 text-xs font-medium">
             <Filter className="h-4 w-4" />
             Filter och sök
           </div>
