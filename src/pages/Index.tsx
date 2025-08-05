@@ -3,12 +3,32 @@ import Header from '@/components/Header'
 import ServiceBoxes from '@/components/ServiceBoxes'
 import ContentOverlay from '@/components/ContentOverlay'
 import OptimizedImage from '@/components/OptimizedImage'
+import IndexSkeleton from '@/components/skeletons/IndexSkeleton'
+import { useImagePreloader } from '@/hooks/useImagePreloader'
 import { ArrowDown } from 'lucide-react'
 
+// All images that need to be loaded on the homepage
+const HOMEPAGE_IMAGES = [
+  '/uploads/images/Rosenqvist-6315.jpg', // Hero image
+  '/uploads/images/Improvision2024.jpg',    // Service box 1
+  '/uploads/images/kurser_LIT_2024.jpg',    // Service box 2
+  '/uploads/images/corporate_LIT_2024.jpg'  // Service box 3
+]
+
 export default function Index() {
+  const { isLoaded } = useImagePreloader(HOMEPAGE_IMAGES, { 
+    priority: true, 
+    timeout: 3000 // Show content after 3 seconds even if images aren't loaded
+  })
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Show skeleton while images are loading
+  if (!isLoaded) {
+    return <IndexSkeleton />
+  }
   return (
     <div className="relative min-h-screen">
       <Header />
