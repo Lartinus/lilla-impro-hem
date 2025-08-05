@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ResponsiveTable, ResponsiveTableContent } from '@/components/ui/responsive-table';
-import { Users, Search, Filter, Ticket, Calendar, AlertCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Users, Search, Filter, Ticket, Calendar, AlertCircle, Edit, Eye, Phone, Mail, MapPin, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
@@ -22,6 +23,7 @@ interface TicketPurchase {
   show_location: string;
   buyer_name: string;
   buyer_email: string;
+  buyer_phone: string;
   regular_tickets: number;
   discount_tickets: number;
   total_amount: number;
@@ -36,6 +38,7 @@ export const TicketList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedShow, setSelectedShow] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   // Fetch all paid ticket purchases
@@ -166,8 +169,44 @@ export const TicketList: React.FC = () => {
     );
   }
 
+  const selectedTicket = selectedTicketId ? filteredTickets.find(t => t.id === selectedTicketId) : null;
+
   return (
     <div className="space-y-6">
+      {/* Show Selection Card */}
+      <Card className="p-6">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <Calendar className="h-4 w-4" />
+            Välj föreställning
+          </div>
+          
+          <Select value={selectedShow} onValueChange={setSelectedShow}>
+            <SelectTrigger>
+              <SelectValue placeholder="Välj föreställning att scanna för" />
+            </SelectTrigger>
+            <SelectContent>
+              {shows.map(show => (
+                <SelectItem key={show.key} value={show.key}>
+                  {show.display}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </Card>
+
+      {/* Show selection prompt */}
+      {!selectedShow && (
+        <Card className="p-8 text-center">
+          <AlertCircle className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
+          <h3 className="font-semibold mb-2">Välj en föreställning</h3>
+          <p className="text-muted-foreground">
+            Du måste först välja en föreställning för att se inscanningsöversikten och biljettlistan.
+          </p>
+        </Card>
+      )}
+
       {/* Statistics - only show when a show is selected */}
       {selectedShow && (
         <Card className="p-6">
@@ -198,39 +237,26 @@ export const TicketList: React.FC = () => {
         </Card>
       )}
 
-      {/* Filters */}
-      <Card className="p-6">
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 text-sm font-medium">
-            <Filter className="h-4 w-4" />
-            Filter och sök
-          </div>
-          
-          <div className="grid grid-cols-1 gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Sök på namn eller e-post..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+      {/* Search and Filter */}
+      {selectedShow && (
+        <Card className="p-6">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <Filter className="h-4 w-4" />
+              Sök och filtrera
             </div>
             
-            <div className="grid grid-cols-2 gap-2">
-              <Select value={selectedShow} onValueChange={setSelectedShow}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Välj föreställning" />
-                </SelectTrigger>
-                <SelectContent>
-                  {shows.map(show => (
-                    <SelectItem key={show.key} value={show.key}>
-                      {show.display}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
+            <div className="grid grid-cols-1 gap-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Sök på namn eller e-post..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger>
                   <SelectValue placeholder="Status" />
@@ -244,21 +270,10 @@ export const TicketList: React.FC = () => {
               </Select>
             </div>
           </div>
-        </div>
-      </Card>
-
-      {/* Show selection prompt */}
-      {!selectedShow && (
-        <Card className="p-8 text-center">
-          <AlertCircle className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
-          <h3 className="font-semibold mb-2">Välj en föreställning</h3>
-          <p className="text-muted-foreground">
-            Du måste först välja en föreställning för att se inscanningsöversikten och biljettlistan.
-          </p>
         </Card>
       )}
 
-      {/* Ticket List - Table view */}
+      {/* Compact Ticket List */}
       {selectedShow && (
         <Card className="p-6">
           {filteredTickets.length === 0 ? (
@@ -269,98 +284,127 @@ export const TicketList: React.FC = () => {
               </p>
             </div>
           ) : (
-            <>
-              {/* Desktop table view */}
-              <div className="hidden md:block">
-                <ResponsiveTable>
-                  <ResponsiveTableContent>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Namn</TableHead>
-                        <TableHead>E-post</TableHead>
-                        <TableHead className="text-center">Biljetter</TableHead>
-                        <TableHead className="text-center">Inscannat</TableHead>
-                        <TableHead>Senast uppdaterad</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredTickets.map((ticket) => (
-                        <TableRow key={ticket.id}>
-                          <TableCell className="font-medium">{ticket.buyer_name}</TableCell>
-                          <TableCell className="text-muted-foreground">{ticket.buyer_email}</TableCell>
-                          <TableCell className="text-center">
-                            {ticket.regular_tickets + ticket.discount_tickets}
-                          </TableCell>
-                          <TableCell className="text-center">
-                            <div className="flex items-center justify-center gap-2">
-                              <div className={`w-3 h-3 rounded-full ${
-                                ticket.scanned_status ? 'bg-green-500' : 
-                                ticket.partial_scan ? 'bg-yellow-500' : 'bg-gray-300'
-                              }`} />
-                              <span className="text-sm font-medium">
-                                {ticket.scanned_tickets || 0}/{ticket.regular_tickets + ticket.discount_tickets}
-                              </span>
-                              <Badge variant={
-                                ticket.scanned_status ? 'default' : 
-                                ticket.partial_scan ? 'secondary' : 'outline'
-                              }>
-                                {ticket.scanned_status ? 'Alla' : 
-                                 ticket.partial_scan ? 'Delvis' : 'Ingen'}
-                              </Badge>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-sm text-muted-foreground">
-                            {ticket.scanned_at ? 
-                              format(new Date(ticket.scanned_at), 'HH:mm dd/MM', { locale: sv }) : 
-                              '-'
-                            }
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </ResponsiveTableContent>
-                </ResponsiveTable>
+            <div className="space-y-2">
+              <div className="text-sm font-medium mb-3">
+                {filteredTickets.length} biljetter
               </div>
-
-              {/* Mobile compact cards */}
-              <div className="md:hidden space-y-3">
-                {filteredTickets.map((ticket) => (
-                <div key={ticket.id} className="border rounded-lg p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-medium truncate">{ticket.buyer_name}</h4>
+              
+              {filteredTickets.map((ticket) => (
+                <Dialog key={ticket.id}>
+                  <DialogTrigger asChild>
+                    <div className="border rounded-lg p-3 hover:bg-muted/50 cursor-pointer transition-colors">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                            ticket.scanned_status ? 'bg-green-500' : 
+                            ticket.partial_scan ? 'bg-yellow-500' : 'bg-gray-300'
+                          }`} />
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium truncate">{ticket.buyer_name}</div>
+                            <div className="text-sm text-muted-foreground truncate">{ticket.buyer_email}</div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <span className="text-sm font-medium">
+                            {ticket.scanned_tickets || 0}/{ticket.regular_tickets + ticket.discount_tickets}
+                          </span>
                           <Badge variant={
                             ticket.scanned_status ? 'default' : 
                             ticket.partial_scan ? 'secondary' : 'outline'
-                          } className="ml-2">
+                          } className="text-xs">
+                            {ticket.scanned_status ? 'Alla' : 
+                             ticket.partial_scan ? 'Delvis' : 'Ingen'}
+                          </Badge>
+                          <Eye className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </div>
+                    </div>
+                  </DialogTrigger>
+                  
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2">
+                        <Ticket className="h-5 w-5" />
+                        Biljettinformation
+                      </DialogTitle>
+                    </DialogHeader>
+                    
+                    <div className="space-y-4">
+                      {/* Basic Info */}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-4 w-4 text-muted-foreground" />
+                          <div>
+                            <div className="font-medium">{ticket.buyer_name}</div>
+                            <div className="text-sm text-muted-foreground">{ticket.buyer_email}</div>
+                          </div>
+                        </div>
+                        
+                        {ticket.buyer_phone && (
+                          <div className="flex items-center gap-2">
+                            <Phone className="h-4 w-4 text-muted-foreground" />
+                            <div className="text-sm">{ticket.buyer_phone}</div>
+                          </div>
+                        )}
+                        
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          <div className="text-sm">{ticket.show_location}</div>
+                        </div>
+                      </div>
+
+                      {/* Ticket Status */}
+                      <div className="border rounded-lg p-3 bg-muted/30">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium">Inscanningsstatus</span>
+                          <Badge variant={
+                            ticket.scanned_status ? 'default' : 
+                            ticket.partial_scan ? 'secondary' : 'outline'
+                          }>
                             {ticket.scanned_status ? 'Alla här' : 
                              ticket.partial_scan ? 'Delvis här' : 'Ingen här'}
                           </Badge>
                         </div>
-                      </div>
-                    </div>
-                    <div className="text-sm text-muted-foreground space-y-1">
-                      <p className="truncate">{ticket.buyer_email}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-3 h-3 rounded-full ${
-                            ticket.scanned_status ? 'bg-green-500' : 
-                            ticket.partial_scan ? 'bg-yellow-500' : 'bg-gray-300'
-                          }`} />
-                          <span>{ticket.scanned_tickets || 0} av {ticket.regular_tickets + ticket.discount_tickets} personer</span>
+                        
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span>Antal biljetter:</span>
+                            <span className="font-medium">{ticket.regular_tickets + ticket.discount_tickets}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Inscannade:</span>
+                            <span className="font-medium">{ticket.scanned_tickets || 0}</span>
+                          </div>
+                          {ticket.scanned_at && (
+                            <div className="flex justify-between text-sm">
+                              <span>Senast scannad:</span>
+                              <span className="font-medium">
+                                {format(new Date(ticket.scanned_at), 'HH:mm dd/MM', { locale: sv })}
+                              </span>
+                            </div>
+                          )}
                         </div>
-                        {ticket.scanned_at && (
-                          <span className="text-xs">
-                            {format(new Date(ticket.scanned_at), 'HH:mm dd/MM', { locale: sv })}
-                          </span>
-                        )}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-2">
+                        <Button 
+                          onClick={() => handleToggleScan(ticket)}
+                          variant={ticket.scanned_status ? "destructive" : "default"}
+                          size="sm"
+                          className="flex-1"
+                          disabled={toggleScanMutation.isPending}
+                        >
+                          <Edit className="h-4 w-4 mr-2" />
+                          {ticket.scanned_status ? 'Återställ scanning' : 'Markera som scannad'}
+                        </Button>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </>
+                  </DialogContent>
+                </Dialog>
+              ))}
+            </div>
           )}
         </Card>
       )}
