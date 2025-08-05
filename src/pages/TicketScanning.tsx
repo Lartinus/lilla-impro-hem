@@ -109,7 +109,7 @@ export const TicketScanning = () => {
               <LogOut
                 size={12}
                 strokeWidth={2}
-                style={{ width: 8, height: 8 }}
+                style={{ width: 12, height: 12 }}
               />
               Logga ut
             </Button>
