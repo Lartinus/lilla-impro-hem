@@ -111,59 +111,41 @@ export const AdminEconomyOverview = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Ticket Revenue */}
-          <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-md">
-                <Ticket className="w-4 h-4 text-primary" />
-              </div>
-              <div>
-                <h4 className="font-medium text-sm">Föreställningar</h4>
-                <p className="text-xs text-muted-foreground">Biljettintäkter (exkl. 6% moms)</p>
-              </div>
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Ticket className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium">Föreställningar</span>
             </div>
-            <div className="text-right">
-              <div className="font-semibold text-lg">
-                {formatCurrency(economyData.ticketRevenue)}
-              </div>
+            <div className="text-xl md:text-2xl font-bold mb-1 font-satoshi">
+              {formatCurrency(economyData.ticketRevenue)}
             </div>
+            <p className="text-xs md:text-sm text-muted-foreground">Biljettintäkter (exkl. 6% moms)</p>
           </div>
 
           {/* Course Revenue */}
-          <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-md">
-                <GraduationCap className="w-4 h-4 text-primary" />
-              </div>
-              <div>
-                <h4 className="font-medium text-sm">Kurser</h4>
-                <p className="text-xs text-muted-foreground">Intäkter från kursbokningar (exkl. 25% moms)</p>
-              </div>
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <GraduationCap className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium">Kurser</span>
             </div>
-            <div className="text-right">
-              <div className="font-semibold text-lg">
-                {formatCurrency(economyData.courseRevenue)}
-              </div>
+            <div className="text-xl md:text-2xl font-bold mb-1 font-satoshi">
+              {formatCurrency(economyData.courseRevenue)}
             </div>
+            <p className="text-xs md:text-sm text-muted-foreground">Kursintäkter (exkl. 25% moms)</p>
           </div>
 
           {/* Total Revenue */}
-          <div className="flex items-center justify-between p-4 bg-primary/5 rounded-lg border-2 border-primary/20">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/20 rounded-md">
-                <TrendingUp className="w-4 h-4 text-primary" />
-              </div>
-              <div>
-                <h4 className="font-medium text-sm">Total inkomst</h4>
-                <p className="text-xs text-muted-foreground">Samtliga intäkter exkl. moms</p>
-              </div>
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <TrendingUp className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium">Total inkomst</span>
             </div>
-            <div className="text-right">
-              <div className="font-bold text-xl text-primary">
-                {formatCurrency(economyData.totalRevenue)}
-              </div>
+            <div className="text-xl md:text-2xl font-bold mb-1 font-satoshi text-primary">
+              {formatCurrency(economyData.totalRevenue)}
             </div>
+            <p className="text-xs md:text-sm text-muted-foreground">Samtliga intäkter exkl. moms</p>
           </div>
         </div>
       </CardContent>
