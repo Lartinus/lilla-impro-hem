@@ -14,19 +14,27 @@ export const AdminEconomyOverview = () => {
   const { data: economyData, isLoading } = useQuery({
     queryKey: ['admin-economy-overview'],
     queryFn: async (): Promise<EconomyData> => {
-      // Fetch paid ticket purchases
+      // Calculate date 12 months ago
+      const twelveMonthsAgo = new Date();
+      twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+      const twelveMonthsAgoISO = twelveMonthsAgo.toISOString();
+
+      // Fetch paid ticket purchases from last 12 months, excluding refunds
       const { data: ticketPurchases, error: ticketError } = await supabase
         .from('ticket_purchases')
-        .select('total_amount')
-        .eq('payment_status', 'paid');
+        .select('total_amount, refund_status')
+        .eq('payment_status', 'paid')
+        .gte('created_at', twelveMonthsAgoISO)
+        .neq('refund_status', 'refunded');
 
       if (ticketError) throw ticketError;
 
-      // Fetch paid course purchases
+      // Fetch paid course purchases from last 12 months
       const { data: coursePurchases, error: courseError } = await supabase
         .from('course_purchases')
         .select('total_amount')
-        .eq('payment_status', 'paid');
+        .eq('payment_status', 'paid')
+        .gte('created_at', twelveMonthsAgoISO);
 
       if (courseError) throw courseError;
 
