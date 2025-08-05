@@ -456,7 +456,7 @@ export const TicketList: React.FC = () => {
                                disabled={adjustPartialScanMutation.isPending || (ticket.scanned_tickets || 0) <= 0}
                              >
                                <Minus className="h-4 w-4 mr-1" />
-                               -1 person
+                               1 person
                              </Button>
                              <span className="text-sm font-medium">
                                {ticket.scanned_tickets || 0} av {ticket.regular_tickets + ticket.discount_tickets}
@@ -471,7 +471,7 @@ export const TicketList: React.FC = () => {
                                disabled={adjustPartialScanMutation.isPending || (ticket.scanned_tickets || 0) >= (ticket.regular_tickets + ticket.discount_tickets)}
                              >
                                <Plus className="h-4 w-4 mr-1" />
-                               +1 person
+                               1 person
                              </Button>
                            </div>
                          </div>
