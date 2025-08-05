@@ -1136,6 +1136,9 @@ export type Database = {
           refund_reason: string | null
           refund_status: string | null
           regular_tickets: number
+          scanned_at: string | null
+          scanned_by: string | null
+          scanned_status: boolean
           show_date: string
           show_location: string
           show_slug: string
@@ -1159,6 +1162,9 @@ export type Database = {
           refund_reason?: string | null
           refund_status?: string | null
           regular_tickets?: number
+          scanned_at?: string | null
+          scanned_by?: string | null
+          scanned_status?: boolean
           show_date: string
           show_location: string
           show_slug: string
@@ -1182,6 +1188,9 @@ export type Database = {
           refund_reason?: string | null
           refund_status?: string | null
           regular_tickets?: number
+          scanned_at?: string | null
+          scanned_by?: string | null
+          scanned_status?: boolean
           show_date?: string
           show_location?: string
           show_slug?: string
@@ -1359,6 +1368,23 @@ export type Database = {
           name: string
         }[]
       }
+      get_ticket_by_qr: {
+        Args: { qr_data_param: string }
+        Returns: {
+          id: string
+          show_title: string
+          show_date: string
+          show_location: string
+          buyer_name: string
+          buyer_email: string
+          regular_tickets: number
+          discount_tickets: number
+          total_amount: number
+          scanned_status: boolean
+          scanned_at: string
+          payment_status: string
+        }[]
+      }
       get_waitlist_count: {
         Args: { course_instance_id_param: string }
         Returns: number
@@ -1417,6 +1443,14 @@ export type Database = {
       }
       table_exists: {
         Args: { table_name: string }
+        Returns: boolean
+      }
+      update_ticket_scan_status: {
+        Args: {
+          ticket_id_param: string
+          scanned_param: boolean
+          admin_user_id_param: string
+        }
         Returns: boolean
       }
     }
