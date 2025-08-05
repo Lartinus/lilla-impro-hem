@@ -27,6 +27,7 @@ import EmailManagement from '@/components/admin/EmailManagement';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { AdminShowsOverview } from '@/components/admin/AdminShowsOverview';
 import { AdminCoursesOverview } from '@/components/admin/AdminCoursesOverview';
+import { AdminEconomyOverview } from '@/components/admin/AdminEconomyOverview';
 
 const AdminDashboard = () => {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -266,6 +267,9 @@ const AdminDashboard = () => {
                     <AdminShowsOverview />
                     <AdminCoursesOverview />
                   </div>
+
+                  {/* Economy Overview - Full Width */}
+                  <AdminEconomyOverview />
                 </div>
               ) : (
                 <div className="w-full max-w-full overflow-hidden">
