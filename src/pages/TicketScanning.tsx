@@ -111,14 +111,14 @@ export const TicketScanning = () => {
               </p>
             </div>
             <div className="flex flex-col items-end space-y-2">
-              <Badge variant={userRole === 'admin' ? 'default' : 'secondary'} className="text-xs">
-                {userRole === 'admin' ? 'Admin' : 'Staff'}
-              </Badge>
-              <p className="text-xs text-muted-foreground text-right">{user.email}</p>
               <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs">
                 <LogOut className="h-3 w-3 mr-1" />
                 Logga ut
               </Button>
+              <Badge variant={userRole === 'admin' ? 'default' : 'secondary'} className="text-xs">
+                {userRole === 'admin' ? 'Admin' : 'Staff'}
+              </Badge>
+              <p className="text-xs text-muted-foreground text-right">{user.email}</p>
             </div>
           </div>
         </div>
