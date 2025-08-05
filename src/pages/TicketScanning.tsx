@@ -2,20 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Navigate } from 'react-router-dom';
 import { useUserRole } from '@/hooks/useUserRole';
+import { useAuth } from '@/components/auth/AuthProvider';
 import { QRScanner } from '@/components/scanning/QRScanner';
 import { ScanResults } from '@/components/scanning/ScanResults';
 import { TicketList } from '@/components/scanning/TicketList';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
-import { Camera, List, Scan } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import AuthModal from '@/components/auth/AuthModal';
+import { Camera, List, Scan, LogOut, User } from 'lucide-react';
 
 export const TicketScanning = () => {
   const isMobile = useIsMobile();
-  const { data: userRole, isLoading } = useUserRole();
+  const { user, signOut } = useAuth();
+  const { data: userRole, isLoading: roleLoading } = useUserRole();
   const [activeTab, setActiveTab] = useState<'scanner' | 'list'>('scanner');
   const [scannedTicket, setScannedTicket] = useState<any>(null);
 
-  // Redirect if not mobile/tablet or not admin
+  // Redirect if not mobile/tablet
   if (!isMobile) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
@@ -30,7 +35,27 @@ export const TicketScanning = () => {
     );
   }
 
-  if (isLoading) {
+  // Show login form if not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="p-8 text-center max-w-md">
+          <Scan className="h-16 w-16 mx-auto mb-4 text-primary" />
+          <h1 className="text-2xl font-bold mb-2">Biljettscanning</h1>
+          <p className="text-muted-foreground mb-6">
+            Du måste vara inloggad för att komma åt biljettscanningen.
+          </p>
+          <AuthModal onSuccess={() => window.location.reload()}>
+            <Button size="lg" className="w-full">
+              Logga in
+            </Button>
+          </AuthModal>
+        </Card>
+      </div>
+    );
+  }
+
+  if (roleLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -38,8 +63,28 @@ export const TicketScanning = () => {
     );
   }
 
-  if (userRole !== 'admin') {
-    return <Navigate to="/" replace />;
+  // Check if user has required role (admin or staff)
+  if (userRole !== 'admin' && userRole !== 'staff') {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="p-8 text-center max-w-md">
+          <User className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+          <h1 className="text-2xl font-bold mb-2">Ingen behörighet</h1>
+          <p className="text-muted-foreground mb-4">
+            Du har inte behörighet att komma åt biljettscanningen. Kontakta en administratör för att få 'staff' eller 'admin' behörighet.
+          </p>
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              Inloggad som: {user.email}
+            </p>
+            <Button variant="outline" onClick={() => signOut()} className="w-full">
+              <LogOut className="h-4 w-4 mr-2" />
+              Logga ut
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
   }
 
   const handleScanSuccess = (ticket: any) => {
@@ -55,13 +100,29 @@ export const TicketScanning = () => {
     <div className="min-h-screen bg-background">
       <div className="container mt-10 mx-auto p-4 max-w-2xl">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Scan className="h-8 w-8" />
-            Biljettscanning
-          </h1>
-          <p className="text-muted-foreground">
-            Scanna QR-koder eller markera manuellt i listan
-          </p>
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h1 className="text-3xl font-bold flex items-center gap-2">
+                <Scan className="h-8 w-8" />
+                Biljettscanning
+              </h1>
+              <p className="text-muted-foreground">
+                Scanna QR-koder eller markera manuellt i listan
+              </p>
+            </div>
+            <div className="text-right">
+              <div className="flex items-center gap-2 mb-2">
+                <Badge variant={userRole === 'admin' ? 'default' : 'secondary'}>
+                  {userRole === 'admin' ? 'Admin' : 'Staff'}
+                </Badge>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">{user.email}</p>
+              <Button variant="outline" size="sm" onClick={() => signOut()}>
+                <LogOut className="h-4 w-4 mr-1" />
+                Logga ut
+              </Button>
+            </div>
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'scanner' | 'list')}>
