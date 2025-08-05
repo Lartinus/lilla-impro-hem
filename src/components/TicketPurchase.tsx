@@ -78,9 +78,7 @@ const TicketPurchase = ({
             {discountCode.trim() && !appliedDiscountCode && (
               <Button
                 onClick={handleApplyDiscountCode}
-                variant="outline"
-                size="sm"
-                className="h-8 text-xs rounded-none border-black"
+                className="h-8 text-xs rounded-none border border-black bg-transparent text-form-text hover:bg-gray-50 focus-visible:ring-0 focus-visible:ring-offset-0"
               >
                 Tillämpa
               </Button>
@@ -88,9 +86,7 @@ const TicketPurchase = ({
             {appliedDiscountCode && (
               <Button
                 onClick={handleRemoveDiscountCode}
-                variant="outline"
-                size="sm"
-                className="h-8 text-xs rounded-none border-red-600 text-red-600 hover:bg-red-50"
+                className="h-8 text-xs rounded-none border border-red-600 bg-transparent text-red-600 hover:bg-red-50 focus-visible:ring-0 focus-visible:ring-offset-0"
               >
                 Ta bort
               </Button>
