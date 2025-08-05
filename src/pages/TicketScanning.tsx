@@ -105,7 +105,7 @@ export const TicketScanning = () => {
               <Scan className="h-7 w-7" />
               Biljettscanning
             </h1>
-            <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs h-fit">
+            <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs">
               <LogOut className="h-3 w-3 mr-1" />
               Logga ut
             </Button>
