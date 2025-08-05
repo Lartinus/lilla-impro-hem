@@ -61,8 +61,9 @@ export default function Header() {
 
       {/* Mobilmeny */}
       {open && (
-        <div className="fixed inset-x-0 top-[85px] z-40 bg-primary-red text-primary-foreground main-nav is-open">
-          <nav className="flex flex-col items-end pr-6 lg:pr-8 space-y-2 pb-6 pt-4">
+        <div className="fixed left-0 right-0 top-[85px] z-40 bg-primary-red text-primary-foreground main-nav is-open">
+          <div className="container mx-auto px-6 lg:px-8">
+            <nav className="flex flex-col items-end space-y-2 pb-6 pt-4">
             {navItems.map(({ to, label }) => {
               const isActive = pathname === to;
               return (
@@ -78,7 +79,8 @@ export default function Header() {
                 </Link>
               );
             })}
-          </nav>
+            </nav>
+          </div>
         </div>
       )}
     </header>
