@@ -2,18 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Navigate } from 'react-router-dom';
 import { useUserRole } from '@/hooks/useUserRole';
+import { useAuth } from '@/components/auth/AuthProvider';
 import { QRScanner } from '@/components/scanning/QRScanner';
 import { ScanResults } from '@/components/scanning/ScanResults';
 import { TicketList } from '@/components/scanning/TicketList';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
-import { Camera, List, Scan } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Camera, List, Scan, LogOut, User } from 'lucide-react';
+import AuthModal from '@/components/auth/AuthModal';
 
 export const TicketScanning = () => {
   const isMobile = useIsMobile();
+  const { user, signOut } = useAuth();
   const { data: userRole, isLoading } = useUserRole();
   const [activeTab, setActiveTab] = useState<'scanner' | 'list'>('scanner');
   const [scannedTicket, setScannedTicket] = useState<any>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Redirect if not mobile/tablet or not admin
   if (!isMobile) {
@@ -38,8 +43,42 @@ export const TicketScanning = () => {
     );
   }
 
-  if (userRole !== 'admin') {
-    return <Navigate to="/" replace />;
+  // Show login if not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="p-8 text-center max-w-md">
+          <Scan className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+          <h1 className="text-2xl font-bold mb-2">Inloggning krävs</h1>
+          <p className="text-muted-foreground mb-6">
+            Du måste logga in för att komma åt biljettscanningen.
+          </p>
+          <AuthModal onSuccess={() => window.location.reload()}>
+            <Button className="w-full">
+              Logga in
+            </Button>
+          </AuthModal>
+        </Card>
+      </div>
+    );
+  }
+
+  // Check if user has required role (admin or staff)
+  if (userRole && userRole !== 'admin' && userRole !== 'staff') {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="p-8 text-center max-w-md">
+          <User className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+          <h1 className="text-2xl font-bold mb-2">Otillräcklig behörighet</h1>
+          <p className="text-muted-foreground mb-6">
+            Du behöver admin- eller personalbehörighet för att komma åt biljettscanningen.
+          </p>
+          <Button onClick={() => signOut()} variant="outline" className="w-full">
+            Logga ut
+          </Button>
+        </Card>
+      </div>
+    );
   }
 
   const handleScanSuccess = (ticket: any) => {
@@ -55,13 +94,25 @@ export const TicketScanning = () => {
     <div className="min-h-screen bg-background">
       <div className="container mt-6 mx-auto p-4 max-w-2xl">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Scan className="h-8 w-8" />
-            Biljettscanning
-          </h1>
-          <p className="text-muted-foreground">
-            Scanna QR-koder eller markera manuellt i listan
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold flex items-center gap-2">
+                <Scan className="h-8 w-8" />
+                Biljettscanning
+              </h1>
+              <p className="text-muted-foreground">
+                Scanna QR-koder eller markera manuellt i listan
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="text-sm text-muted-foreground">
+                {userRole === 'admin' ? 'Admin' : 'Personal'}: {user?.email}
+              </div>
+              <Button onClick={() => signOut()} variant="outline" size="sm">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'scanner' | 'list')}>

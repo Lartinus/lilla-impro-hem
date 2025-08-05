@@ -20,7 +20,7 @@ interface User {
 export const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [actionType, setActionType] = useState<'approve' | 'remove' | 'kick'>('approve');
+  const [actionType, setActionType] = useState<'approve' | 'remove' | 'kick' | 'add-staff' | 'remove-staff'>('approve');
   const queryClient = useQueryClient();
 
   // Fetch all users with their roles
@@ -66,6 +66,35 @@ export const UserManagement = () => {
     }
   });
 
+  // Add staff role
+  const addStaffMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      const { error } = await supabase
+        .from('user_roles')
+        .insert({
+          user_id: userId,
+          role: 'staff'
+        });
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Personal godkänd",
+        description: "Användaren har nu personalbehörighet.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      setShowConfirmDialog(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte godkänna personal: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
   // Remove admin role
   const removeAdminMutation = useMutation({
     mutationFn: async (userId: string) => {
@@ -89,6 +118,34 @@ export const UserManagement = () => {
       toast({
         title: "Fel",
         description: `Kunde inte ta bort administratörsbehörighet: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Remove staff role
+  const removeStaffMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      const { error } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId)
+        .eq('role', 'staff');
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Personalbehörighet borttagen",
+        description: "Användaren är inte längre personal.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      setShowConfirmDialog(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte ta bort personalbehörighet: ${error.message}`,
         variant: "destructive"
       });
     }
@@ -119,7 +176,7 @@ export const UserManagement = () => {
     }
   });
 
-  const handleAction = (user: User, action: 'approve' | 'remove' | 'kick') => {
+  const handleAction = (user: User, action: 'approve' | 'remove' | 'kick' | 'add-staff' | 'remove-staff') => {
     setSelectedUser(user);
     setActionType(action);
     setShowConfirmDialog(true);
@@ -134,6 +191,12 @@ export const UserManagement = () => {
         break;
       case 'remove':
         removeAdminMutation.mutate(selectedUser.id);
+        break;
+      case 'add-staff':
+        addStaffMutation.mutate(selectedUser.id);
+        break;
+      case 'remove-staff':
+        removeStaffMutation.mutate(selectedUser.id);
         break;
       case 'kick':
         kickUserMutation.mutate(selectedUser.id);
@@ -158,6 +221,10 @@ export const UserManagement = () => {
         return 'godkänna som administratör';
       case 'remove':
         return 'ta bort administratörsbehörighet för';
+      case 'add-staff':
+        return 'godkänna som personal';
+      case 'remove-staff':
+        return 'ta bort personalbehörighet för';
       case 'kick':
         return 'kasta ut';
     }
@@ -173,7 +240,8 @@ export const UserManagement = () => {
 
   const pendingUsers = users?.filter(user => !user.role) || [];
   const adminUsers = users?.filter(user => user.role === 'admin') || [];
-  const regularUsers = users?.filter(user => user.role && user.role !== 'admin') || [];
+  const staffUsers = users?.filter(user => user.role === 'staff') || [];
+  const regularUsers = users?.filter(user => user.role && user.role !== 'admin' && user.role !== 'staff') || [];
 
   return (
     <div className="space-y-6">
@@ -218,6 +286,14 @@ export const UserManagement = () => {
                         className="w-full sm:w-auto"
                       >
                         Godkänn som admin
+                      </Button>
+                      <Button
+                        onClick={() => handleAction(user, 'add-staff')}
+                        variant="outline"
+                        size="sm"
+                        className="w-full sm:w-auto"
+                      >
+                        Godkänn som personal
                       </Button>
                       <Button
                         onClick={() => handleAction(user, 'kick')}
@@ -292,6 +368,72 @@ export const UserManagement = () => {
         </CardContent>
       </Card>
 
+      {/* Staff Users */}
+      {staffUsers.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5" />
+              Personal ({staffUsers.length})
+            </CardTitle>
+            <CardDescription>
+              Användare med personalbehörighet (kan scanna biljetter)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {staffUsers.map((user) => (
+                <div key={user.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <ShieldCheck className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{user.email}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Registrerad: {new Date(user.created_at).toLocaleDateString('sv-SE')}
+                        {user.email_confirmed_at && (
+                          <span className="ml-2">• Bekräftad: {new Date(user.email_confirmed_at).toLocaleDateString('sv-SE')}</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                    {getRoleBadge(user.role)}
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                      <Button
+                        onClick={() => handleAction(user, 'approve')}
+                        variant="outline"
+                        size="sm"
+                        className="w-full sm:w-auto"
+                      >
+                        Gör till admin
+                      </Button>
+                      <Button
+                        onClick={() => handleAction(user, 'remove-staff')}
+                        variant="outline"
+                        size="sm"
+                        className="w-full sm:w-auto"
+                      >
+                        Ta bort personal
+                      </Button>
+                      <Button
+                        onClick={() => handleAction(user, 'kick')}
+                        variant="destructive"
+                        size="sm"
+                        className="w-full sm:w-auto"
+                      >
+                        Kasta ut
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Regular Users */}
       {regularUsers.length > 0 && (
         <Card>
@@ -324,14 +466,24 @@ export const UserManagement = () => {
                   </div>
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                     {getRoleBadge(user.role)}
-                    <Button
-                      onClick={() => handleAction(user, 'kick')}
-                      variant="destructive"
-                      size="sm"
-                      className="w-full sm:w-auto"
-                    >
-                      Kasta ut
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                      <Button
+                        onClick={() => handleAction(user, 'add-staff')}
+                        variant="outline"
+                        size="sm"
+                        className="w-full sm:w-auto"
+                      >
+                        Gör till personal
+                      </Button>
+                      <Button
+                        onClick={() => handleAction(user, 'kick')}
+                        variant="destructive"
+                        size="sm"
+                        className="w-full sm:w-auto"
+                      >
+                        Kasta ut
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -362,6 +514,8 @@ export const UserManagement = () => {
             >
               {actionType === 'approve' && 'Godkänn'}
               {actionType === 'remove' && 'Ta bort behörighet'}
+              {actionType === 'add-staff' && 'Godkänn'}
+              {actionType === 'remove-staff' && 'Ta bort behörighet'}
               {actionType === 'kick' && 'Kasta ut'}
             </AlertDialogAction>
           </AlertDialogFooter>
