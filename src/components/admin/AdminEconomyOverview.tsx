@@ -19,17 +19,17 @@ export const AdminEconomyOverview = () => {
       twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
       const twelveMonthsAgoISO = twelveMonthsAgo.toISOString();
 
-      // Fetch paid ticket purchases from last 12 months, excluding refunds
+      // Fetch TICKET PURCHASES from last 12 months, excluding refunds
       const { data: ticketPurchases, error: ticketError } = await supabase
         .from('ticket_purchases')
         .select('total_amount, refund_status')
         .eq('payment_status', 'paid')
         .gte('created_at', twelveMonthsAgoISO)
-        .neq('refund_status', 'refunded');
+        .or('refund_status.is.null,refund_status.neq.refunded');
 
       if (ticketError) throw ticketError;
 
-      // Fetch paid course purchases from last 12 months
+      // Fetch COURSE PURCHASES from last 12 months
       const { data: coursePurchases, error: courseError } = await supabase
         .from('course_purchases')
         .select('total_amount')
@@ -38,19 +38,19 @@ export const AdminEconomyOverview = () => {
 
       if (courseError) throw courseError;
 
-      // Calculate ticket revenue excluding 6% VAT
+      // Calculate TICKET revenue excluding 6% VAT (föreställningar)
       const ticketRevenueWithVAT = (ticketPurchases || []).reduce(
         (sum, purchase) => sum + (purchase.total_amount || 0),
         0
       );
-      const ticketRevenue = Math.round(ticketRevenueWithVAT / 1.06); // Remove 6% VAT
+      const ticketRevenue = ticketRevenueWithVAT > 0 ? Math.round(ticketRevenueWithVAT / 1.06) : 0;
 
-      // Calculate course revenue excluding 25% VAT
+      // Calculate COURSE revenue excluding 25% VAT (kurser)
       const courseRevenueWithVAT = (coursePurchases || []).reduce(
         (sum, purchase) => sum + (purchase.total_amount || 0),
         0
       );
-      const courseRevenue = Math.round(courseRevenueWithVAT / 1.25); // Remove 25% VAT
+      const courseRevenue = courseRevenueWithVAT > 0 ? Math.round(courseRevenueWithVAT / 1.25) : 0;
 
       const totalRevenue = ticketRevenue + courseRevenue;
 
