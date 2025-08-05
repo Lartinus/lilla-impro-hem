@@ -98,7 +98,7 @@ export const TicketScanning = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container pt-16 mx-auto p-6 max-w-2xl">
+      <div className="container pt-24 mx-auto p-6 max-w-2xl">
         <div className="mb-8">
           <div className="flex justify-between items-start mb-6">
             <div>
