@@ -15,10 +15,14 @@ interface ScanResultsProps {
   onUpdate: () => void;
 }
 
+type ScanningStep = 'initial' | 'partial-input' | 'completed';
+
 export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpdate }) => {
   const [isUpdating, setIsUpdating] = useState(false);
+  const [scanningStep, setScanningStep] = useState<ScanningStep>('initial');
+  const [partialTicketCount, setPartialTicketCount] = useState(1);
 
-  const handleUpdateScanStatus = async (scanned: boolean) => {
+  const handlePartialScan = async (ticketCount: number) => {
     try {
       setIsUpdating(true);
       
@@ -28,9 +32,9 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpda
         return;
       }
 
-      const { data, error } = await supabase.rpc('update_ticket_scan_status', {
+      const { data, error } = await supabase.rpc('update_partial_ticket_scan', {
         ticket_id_param: ticket.id,
-        scanned_param: scanned,
+        scanned_tickets_param: ticketCount,
         admin_user_id_param: user.id
       });
 
@@ -45,7 +49,53 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpda
         return;
       }
 
-      toast.success(scanned ? 'Biljett markerad som scannad' : 'Scanning återställd');
+      const remainingTickets = totalTickets - (ticket.scanned_tickets || 0) - ticketCount;
+      if (remainingTickets > 0) {
+        toast.success(`${ticketCount} av ${totalTickets} personer scannade in`);
+      } else {
+        toast.success('Alla personer har kommit!');
+      }
+      
+      onUpdate();
+      onBack();
+      
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Ett oväntat fel inträffade');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleResetScan = async () => {
+    try {
+      setIsUpdating(true);
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('Du måste vara inloggad');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('ticket_purchases')
+        .update({
+          scanned_tickets: 0,
+          scanned_status: false,
+          partial_scan: false,
+          scanned_at: null,
+          scanned_by: null,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', ticket.id);
+
+      if (error) {
+        console.error('Error resetting scan:', error);
+        toast.error('Fel vid återställning av scanning');
+        return;
+      }
+
+      toast.success('Scanning återställd');
       onUpdate();
       onBack();
       
@@ -66,6 +116,10 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpda
   };
 
   const totalTickets = ticket.regular_tickets + ticket.discount_tickets;
+  const scannedTickets = ticket.scanned_tickets || 0;
+  const remainingTickets = totalTickets - scannedTickets;
+  const isPartiallyScanned = ticket.partial_scan || false;
+  const isFullyScanned = ticket.scanned_status || false;
 
   return (
     <div className="space-y-4">
@@ -76,12 +130,25 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpda
         <h2 className="text-xl font-semibold">Biljettinformation</h2>
       </div>
 
-      {ticket.scanned_status && (
+      {isPartiallyScanned && (
         <Alert>
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            Denna biljett har redan scannats in {ticket.scanned_at && 
-              `(${format(new Date(ticket.scanned_at), 'HH:mm dd/MM', { locale: sv })})`
+            {scannedTickets} av {totalTickets} personer har kommit 
+            {ticket.scanned_at && 
+              ` (senast ${format(new Date(ticket.scanned_at), 'HH:mm dd/MM', { locale: sv })})`
+            }
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {isFullyScanned && !isPartiallyScanned && (
+        <Alert>
+          <Check className="h-4 w-4" />
+          <AlertDescription>
+            Alla {totalTickets} personer har kommit
+            {ticket.scanned_at && 
+              ` (${format(new Date(ticket.scanned_at), 'HH:mm dd/MM', { locale: sv })})`
             }
           </AlertDescription>
         </Alert>
@@ -151,50 +218,142 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpda
       <Card className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className={`w-3 h-3 rounded-full ${ticket.scanned_status ? 'bg-green-500' : 'bg-gray-300'}`} />
+            <div className={`w-3 h-3 rounded-full ${
+              isFullyScanned ? 'bg-green-500' : 
+              isPartiallyScanned ? 'bg-yellow-500' : 'bg-gray-300'
+            }`} />
             <span className="font-medium">
-              {ticket.scanned_status ? 'Inscannad' : 'Ej scannad'}
+              {scannedTickets} av {totalTickets} personer
             </span>
           </div>
-          <Badge variant={ticket.scanned_status ? 'default' : 'secondary'}>
-            {ticket.scanned_status ? 'Scannad' : 'Väntande'}
+          <Badge variant={
+            isFullyScanned ? 'default' : 
+            isPartiallyScanned ? 'secondary' : 'outline'
+          }>
+            {isFullyScanned ? 'Alla här' : 
+             isPartiallyScanned ? 'Delvis här' : 'Ingen här'}
           </Badge>
         </div>
         
         {ticket.scanned_at && (
           <p className="text-sm text-muted-foreground mt-2">
-            Scannad: {format(new Date(ticket.scanned_at), 'HH:mm dd MMMM yyyy', { locale: sv })}
+            Senast uppdaterad: {format(new Date(ticket.scanned_at), 'HH:mm dd MMMM yyyy', { locale: sv })}
           </p>
         )}
       </Card>
 
-      {/* Action Buttons */}
-      <div className="grid grid-cols-2 gap-3">
-        {!ticket.scanned_status ? (
+      {/* Scanning Actions */}
+      {scanningStep === 'initial' && !isFullyScanned && (
+        <Card className="p-6">
+          <div className="text-center space-y-4">
+            <h3 className="text-xl font-semibold">Har alla kommit?</h3>
+            <p className="text-muted-foreground">
+              {totalTickets} {totalTickets === 1 ? 'person' : 'personer'} köpte biljetter
+              {isPartiallyScanned && `, ${remainingTickets} ${remainingTickets === 1 ? 'person' : 'personer'} kvar`}
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <Button 
+                onClick={() => handlePartialScan(remainingTickets)}
+                disabled={isUpdating}
+                size="lg"
+                className="h-16"
+              >
+                <Check className="h-5 w-5 mr-2" />
+                {isUpdating ? 'Scannar...' : 'Ja, alla är här'}
+              </Button>
+              <Button 
+                onClick={() => {
+                  setScanningStep('partial-input');
+                  setPartialTicketCount(Math.min(remainingTickets, 1));
+                }}
+                variant="outline"
+                size="lg"
+                className="h-16"
+              >
+                <User className="h-5 w-5 mr-2" />
+                Nej, bara några
+              </Button>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {scanningStep === 'partial-input' && (
+        <Card className="p-6">
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-center">
+              Hur många kom just nu?
+            </h3>
+            <div className="text-center text-muted-foreground">
+              {remainingTickets} {remainingTickets === 1 ? 'person' : 'personer'} kvar att scanna
+            </div>
+            
+            <div className="flex items-center justify-center space-x-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPartialTicketCount(Math.max(1, partialTicketCount - 1))}
+                disabled={partialTicketCount <= 1}
+              >
+                -
+              </Button>
+              <div className="text-2xl font-bold min-w-[3rem] text-center">
+                {partialTicketCount}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPartialTicketCount(Math.min(remainingTickets, partialTicketCount + 1))}
+                disabled={partialTicketCount >= remainingTickets}
+              >
+                +
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                onClick={() => handlePartialScan(partialTicketCount)}
+                disabled={isUpdating}
+                className="w-full"
+              >
+                <Check className="h-4 w-4 mr-2" />
+                {isUpdating ? 'Scannar...' : 'Scanna in'}
+              </Button>
+              <Button
+                onClick={() => setScanningStep('initial')}
+                variant="outline"
+                className="w-full"
+              >
+                Tillbaka
+              </Button>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Admin Actions */}
+      {(isPartiallyScanned || isFullyScanned) && (
+        <div className="grid grid-cols-2 gap-3">
           <Button 
-            onClick={() => handleUpdateScanStatus(true)}
-            disabled={isUpdating}
-            className="w-full"
-          >
-            <Check className="h-4 w-4 mr-2" />
-            {isUpdating ? 'Uppdaterar...' : 'Markera som scannad'}
-          </Button>
-        ) : (
-          <Button 
-            onClick={() => handleUpdateScanStatus(false)}
+            onClick={handleResetScan}
             disabled={isUpdating}
             variant="destructive"
             className="w-full"
           >
             <X className="h-4 w-4 mr-2" />
-            {isUpdating ? 'Uppdaterar...' : 'Ta bort scanning'}
+            {isUpdating ? 'Återställer...' : 'Återställ scanning'}
           </Button>
-        )}
-        
+          <Button variant="outline" onClick={onBack} className="w-full">
+            Tillbaka till scanner
+          </Button>
+        </div>
+      )}
+
+      {!isPartiallyScanned && !isFullyScanned && scanningStep === 'initial' && (
         <Button variant="outline" onClick={onBack} className="w-full">
           Tillbaka till scanner
         </Button>
-      </div>
+      )}
     </div>
   );
 };

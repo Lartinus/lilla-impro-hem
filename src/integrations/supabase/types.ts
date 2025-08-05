@@ -1166,6 +1166,7 @@ export type Database = {
           discount_code: string | null
           discount_tickets: number
           id: string
+          partial_scan: boolean | null
           payment_status: string
           qr_data: string
           refund_date: string | null
@@ -1175,6 +1176,7 @@ export type Database = {
           scanned_at: string | null
           scanned_by: string | null
           scanned_status: boolean
+          scanned_tickets: number | null
           show_date: string
           show_location: string
           show_slug: string
@@ -1192,6 +1194,7 @@ export type Database = {
           discount_code?: string | null
           discount_tickets?: number
           id?: string
+          partial_scan?: boolean | null
           payment_status?: string
           qr_data: string
           refund_date?: string | null
@@ -1201,6 +1204,7 @@ export type Database = {
           scanned_at?: string | null
           scanned_by?: string | null
           scanned_status?: boolean
+          scanned_tickets?: number | null
           show_date: string
           show_location: string
           show_slug: string
@@ -1218,6 +1222,7 @@ export type Database = {
           discount_code?: string | null
           discount_tickets?: number
           id?: string
+          partial_scan?: boolean | null
           payment_status?: string
           qr_data?: string
           refund_date?: string | null
@@ -1227,6 +1232,7 @@ export type Database = {
           scanned_at?: string | null
           scanned_by?: string | null
           scanned_status?: boolean
+          scanned_tickets?: number | null
           show_date?: string
           show_location?: string
           show_slug?: string
@@ -1419,6 +1425,8 @@ export type Database = {
           scanned_status: boolean
           scanned_at: string
           payment_status: string
+          scanned_tickets: number
+          partial_scan: boolean
         }[]
       }
       get_waitlist_count: {
@@ -1479,6 +1487,14 @@ export type Database = {
       }
       table_exists: {
         Args: { table_name: string }
+        Returns: boolean
+      }
+      update_partial_ticket_scan: {
+        Args: {
+          ticket_id_param: string
+          scanned_tickets_param: number
+          admin_user_id_param: string
+        }
         Returns: boolean
       }
       update_ticket_scan_status: {

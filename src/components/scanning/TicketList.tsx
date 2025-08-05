@@ -27,6 +27,8 @@ interface TicketPurchase {
   total_amount: number;
   scanned_status: boolean;
   scanned_at: string | null;
+  scanned_tickets: number;
+  partial_scan: boolean;
   payment_status: string;
 }
 
@@ -95,7 +97,9 @@ export const TicketList: React.FC = () => {
     if (statusFilter === 'scanned') {
       filtered = filtered.filter(ticket => ticket.scanned_status);
     } else if (statusFilter === 'not-scanned') {
-      filtered = filtered.filter(ticket => !ticket.scanned_status);
+      filtered = filtered.filter(ticket => !ticket.scanned_status && !ticket.partial_scan);
+    } else if (statusFilter === 'partial') {
+      filtered = filtered.filter(ticket => ticket.partial_scan);
     }
 
     return filtered;
@@ -107,8 +111,7 @@ export const TicketList: React.FC = () => {
     const totalCount = filteredTickets.length;
     const totalTickets = filteredTickets.reduce((sum, t) => sum + t.regular_tickets + t.discount_tickets, 0);
     const scannedTickets = filteredTickets
-      .filter(t => t.scanned_status)
-      .reduce((sum, t) => sum + t.regular_tickets + t.discount_tickets, 0);
+      .reduce((sum, t) => sum + (t.scanned_tickets || 0), 0);
 
     // Get selected show info
     const selectedShowInfo = selectedShow ? shows.find(show => show.key === selectedShow) : null;
@@ -234,8 +237,9 @@ export const TicketList: React.FC = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Alla</SelectItem>
-                  <SelectItem value="scanned">Inscannade</SelectItem>
-                  <SelectItem value="not-scanned">Ej scannade</SelectItem>
+                  <SelectItem value="scanned">Alla här</SelectItem>
+                  <SelectItem value="partial">Delvis här</SelectItem>
+                  <SelectItem value="not-scanned">Ingen här</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -272,33 +276,38 @@ export const TicketList: React.FC = () => {
                   <ResponsiveTableContent>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-12">Status</TableHead>
                         <TableHead>Namn</TableHead>
                         <TableHead>E-post</TableHead>
                         <TableHead className="text-center">Biljetter</TableHead>
-                        <TableHead className="text-center">Status</TableHead>
-                        <TableHead>Scannad</TableHead>
+                        <TableHead className="text-center">Inscannat</TableHead>
+                        <TableHead>Senast uppdaterad</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredTickets.map((ticket) => (
                         <TableRow key={ticket.id}>
-                          <TableCell>
-                            <Checkbox
-                              checked={ticket.scanned_status}
-                              onCheckedChange={() => handleToggleScan(ticket)}
-                              disabled={toggleScanMutation.isPending}
-                            />
-                          </TableCell>
                           <TableCell className="font-medium">{ticket.buyer_name}</TableCell>
                           <TableCell className="text-muted-foreground">{ticket.buyer_email}</TableCell>
                           <TableCell className="text-center">
                             {ticket.regular_tickets + ticket.discount_tickets}
                           </TableCell>
                           <TableCell className="text-center">
-                            <Badge variant={ticket.scanned_status ? 'default' : 'secondary'}>
-                              {ticket.scanned_status ? 'Scannad' : 'Väntande'}
-                            </Badge>
+                            <div className="flex items-center justify-center gap-2">
+                              <div className={`w-3 h-3 rounded-full ${
+                                ticket.scanned_status ? 'bg-green-500' : 
+                                ticket.partial_scan ? 'bg-yellow-500' : 'bg-gray-300'
+                              }`} />
+                              <span className="text-sm font-medium">
+                                {ticket.scanned_tickets || 0}/{ticket.regular_tickets + ticket.discount_tickets}
+                              </span>
+                              <Badge variant={
+                                ticket.scanned_status ? 'default' : 
+                                ticket.partial_scan ? 'secondary' : 'outline'
+                              }>
+                                {ticket.scanned_status ? 'Alla' : 
+                                 ticket.partial_scan ? 'Delvis' : 'Ingen'}
+                              </Badge>
+                            </div>
                           </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
                             {ticket.scanned_at ? 
@@ -316,18 +325,17 @@ export const TicketList: React.FC = () => {
               {/* Mobile compact cards */}
               <div className="md:hidden space-y-3">
                 {filteredTickets.map((ticket) => (
-                  <div key={ticket.id} className="border rounded-lg p-4">
+                <div key={ticket.id} className="border rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-2">
-                      <Checkbox
-                        checked={ticket.scanned_status}
-                        onCheckedChange={() => handleToggleScan(ticket)}
-                        disabled={toggleScanMutation.isPending}
-                      />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <h4 className="font-medium truncate">{ticket.buyer_name}</h4>
-                          <Badge variant={ticket.scanned_status ? 'default' : 'secondary'} className="ml-2">
-                            {ticket.scanned_status ? 'Scannad' : 'Väntande'}
+                          <Badge variant={
+                            ticket.scanned_status ? 'default' : 
+                            ticket.partial_scan ? 'secondary' : 'outline'
+                          } className="ml-2">
+                            {ticket.scanned_status ? 'Alla här' : 
+                             ticket.partial_scan ? 'Delvis här' : 'Ingen här'}
                           </Badge>
                         </div>
                       </div>
@@ -335,7 +343,13 @@ export const TicketList: React.FC = () => {
                     <div className="text-sm text-muted-foreground space-y-1">
                       <p className="truncate">{ticket.buyer_email}</p>
                       <div className="flex items-center justify-between">
-                        <span>{ticket.regular_tickets + ticket.discount_tickets} biljetter</span>
+                        <div className="flex items-center gap-2">
+                          <div className={`w-3 h-3 rounded-full ${
+                            ticket.scanned_status ? 'bg-green-500' : 
+                            ticket.partial_scan ? 'bg-yellow-500' : 'bg-gray-300'
+                          }`} />
+                          <span>{ticket.scanned_tickets || 0} av {ticket.regular_tickets + ticket.discount_tickets} personer</span>
+                        </div>
                         {ticket.scanned_at && (
                           <span className="text-xs">
                             {format(new Date(ticket.scanned_at), 'HH:mm dd/MM', { locale: sv })}
