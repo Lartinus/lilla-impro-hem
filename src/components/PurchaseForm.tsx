@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
@@ -50,14 +50,63 @@ const PurchaseForm = ({
   // Calculate total with show prices
   const regularTotal = ticketCount * ticketPrice;
   const discountTotal = discountTickets * discountPrice;
-  let finalTotal = regularTotal + discountTotal;
+  const baseTotal = regularTotal + discountTotal;
   
-  // Apply discount code logic if needed (example: 10% off with "RABATT10")
+  // State for dynamic discount
+  const [discountValidation, setDiscountValidation] = useState<{
+    valid: boolean;
+    discountAmount: number;
+    error?: string;
+  }>({ valid: false, discountAmount: 0 });
+
+  // Validate discount code when it changes
+  const validateDiscountCode = async (code: string, total: number) => {
+    if (!code.trim()) {
+      setDiscountValidation({ valid: false, discountAmount: 0 });
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('validate-discount-code', {
+        body: { code: code.trim(), totalAmount: total }
+      });
+
+      if (error) {
+        setDiscountValidation({ valid: false, discountAmount: 0, error: 'Fel vid validering' });
+        return;
+      }
+
+      if (data.valid) {
+        setDiscountValidation({ 
+          valid: true, 
+          discountAmount: data.discountAmount 
+        });
+      } else {
+        setDiscountValidation({ 
+          valid: false, 
+          discountAmount: 0, 
+          error: data.error || 'Ogiltig rabattkod' 
+        });
+      }
+    } catch (err) {
+      console.error('Error validating discount code:', err);
+      setDiscountValidation({ valid: false, discountAmount: 0, error: 'Fel vid validering' });
+    }
+  };
+
+  // Calculate final total with discount
+  let finalTotal = baseTotal;
   let discountAmount = 0;
-  if (discountCode.toLowerCase() === 'rabatt10') {
-    discountAmount = Math.round(finalTotal * 0.1);
-    finalTotal = finalTotal - discountAmount;
+  
+  if (discountValidation.valid) {
+    discountAmount = discountValidation.discountAmount;
+    finalTotal = baseTotal - discountAmount;
   }
+
+  // Validate discount code when component mounts or code changes
+  useEffect(() => {
+    validateDiscountCode(discountCode, baseTotal);
+  }, [discountCode, baseTotal]);
 
   // Calculate VAT (moms) using correct formula: [totalpris] - ([totalpris]/1,06)
   const vatAmount = finalTotal - (finalTotal / 1.06);
@@ -187,9 +236,14 @@ const PurchaseForm = ({
             Rabatterade biljetter: {discountTickets} × {discountPrice}kr = {discountTotal}kr
           </p>
         )}
-        {discountAmount > 0 && (
-          <p>
+        {discountValidation.valid && discountAmount > 0 && (
+          <p className="text-green-600">
             Rabatt ({discountCode}): -{discountAmount}kr
+          </p>
+        )}
+        {discountValidation.error && (
+          <p className="text-red-600 text-sm">
+            {discountValidation.error}
           </p>
         )}
         <p className="font-bold text-base mt-2">

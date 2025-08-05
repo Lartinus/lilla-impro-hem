@@ -54,6 +54,19 @@ serve(async (req) => {
 
       if (ticketPurchase) {
         console.log('Found ticket purchase, sending confirmation email');
+        
+        // Update discount code usage if discount was applied
+        if (ticketPurchase.discount_code) {
+          try {
+            await supabase.functions.invoke('update-discount-usage', {
+              body: { code: ticketPurchase.discount_code }
+            });
+            console.log(`Updated usage for discount code: ${ticketPurchase.discount_code}`);
+          } catch (error) {
+            console.error('Error updating discount code usage:', error);
+          }
+        }
+        
         // Send ticket confirmation email
         const emailResponse = await fetch(`${supabaseUrl}/functions/v1/send-ticket-confirmation`, {
           method: 'POST',

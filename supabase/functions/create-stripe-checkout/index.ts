@@ -40,9 +40,22 @@ serve(async (req) => {
     const discountTotal = discountTickets * discountPrice;
     let totalAmount = regularTotal + discountTotal;
     
-    // Apply discount code
-    if (discountCode?.toLowerCase() === 'rabatt10') {
-      totalAmount = Math.round(totalAmount * 0.9);
+    // Apply discount code if provided
+    if (discountCode?.trim()) {
+      try {
+        const { data: validationResult } = await supabase.functions.invoke('validate-discount-code', {
+          body: { code: discountCode.trim(), totalAmount }
+        });
+
+        if (validationResult?.valid) {
+          totalAmount = totalAmount - validationResult.discountAmount;
+          console.log(`Applied discount: ${discountCode}, amount: ${validationResult.discountAmount}`);
+        } else {
+          console.log(`Invalid discount code: ${discountCode}`);
+        }
+      } catch (error) {
+        console.error('Error validating discount code:', error);
+      }
     }
 
     // Generate unique ticket code and QR data
@@ -83,6 +96,17 @@ serve(async (req) => {
       if (dbError) {
         console.error('Database error:', dbError);
         throw new Error('Failed to store free ticket');
+      }
+
+      // Update discount code usage if valid discount was applied
+      if (discountCode?.trim()) {
+        try {
+          await supabase.functions.invoke('update-discount-usage', {
+            body: { code: discountCode.trim() }
+          });
+        } catch (error) {
+          console.error('Error updating discount usage:', error);
+        }
       }
 
       // Send confirmation email for free tickets
@@ -170,6 +194,8 @@ serve(async (req) => {
       console.error('Database error:', dbError);
       throw new Error('Failed to store purchase');
     }
+
+    // Note: Discount code usage will be updated via stripe-webhook when payment is confirmed
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
