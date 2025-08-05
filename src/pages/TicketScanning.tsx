@@ -105,16 +105,16 @@ export const TicketScanning = () => {
               {userRole === 'admin' ? 'Admin' : 'Staff'}
             </Badge>
             <span>{user.email}</span>
+            <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs">
+              <LogOut className="h-2 w-3 mr-1" />
+              Logga ut
+            </Button>
           </div>
           <div className="flex justify-between items-center mt-4 mb-2">
             <h1 className="text-2xl flex items-center gap-2">
               <Scan className="h-7 w-7" />
               Biljettscanning
             </h1>
-            <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs">
-              <LogOut className="h-2 w-3 mr-1" />
-              Logga ut
-            </Button>
           </div>
           <p className="text-muted-foreground text-xs mb-4">
             Scanna QR-koder eller markera manuellt i listan
