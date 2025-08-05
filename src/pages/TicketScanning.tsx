@@ -98,12 +98,12 @@ export const TicketScanning = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mt-10 mx-auto p-4 max-w-2xl">
-        <div className="mb-6">
-          <div className="flex justify-between items-start mb-4">
+      <div className="container pt-16 mx-auto p-6 max-w-2xl">
+        <div className="mb-8">
+          <div className="flex justify-between items-start mb-6">
             <div>
-              <h1 className="text-3xl font-bold flex items-center gap-2">
-                <Scan className="h-8 w-8" />
+              <h1 className="text-2xl font-bold flex items-center gap-2 mb-2">
+                <Scan className="h-7 w-7" />
                 Biljettscanning
               </h1>
               <p className="text-muted-foreground">
@@ -126,7 +126,7 @@ export const TicketScanning = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'scanner' | 'list')}>
-          <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="scanner" className="flex items-center gap-2">
               <Camera className="h-4 w-4" />
               Scanner

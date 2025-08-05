@@ -157,9 +157,9 @@ export const TicketList: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Statistics */}
-      <Card className="p-4">
+      <Card className="p-6">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold flex items-center gap-2">
             <Users className="h-5 w-5" />
@@ -184,7 +184,7 @@ export const TicketList: React.FC = () => {
       </Card>
 
       {/* Filters */}
-      <Card className="p-4">
+      <Card className="p-6">
         <div className="space-y-3">
           <div className="flex items-center gap-2 text-sm font-medium">
             <Filter className="h-4 w-4" />
@@ -233,9 +233,9 @@ export const TicketList: React.FC = () => {
       </Card>
 
       {/* Ticket List */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {filteredTickets.length === 0 ? (
-          <Card className="p-6 text-center">
+          <Card className="p-8 text-center">
             <Ticket className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
             <p className="text-muted-foreground">
               {tickets.length === 0 ? 'Inga biljetter hittades' : 'Inga biljetter matchar filtren'}
@@ -243,7 +243,7 @@ export const TicketList: React.FC = () => {
           </Card>
         ) : (
           filteredTickets.map((ticket) => (
-            <Card key={ticket.id} className="p-4">
+            <Card key={ticket.id} className="p-5">
               <div className="flex items-center gap-3">
                 <Checkbox
                   checked={ticket.scanned_status}

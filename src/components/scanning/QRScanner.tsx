@@ -133,7 +133,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanSuccess }) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {error && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
@@ -178,9 +178,9 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanSuccess }) => {
           )}
         </div>
         
-        <div className="p-4 space-y-3">
+        <div className="p-6 space-y-4">
           <div className="text-center">
-            <p className="text-sm text-muted-foreground mb-3">
+            <p className="text-sm text-muted-foreground mb-4">
               Placera QR-koden inom ramen för att scanna
             </p>
           </div>
@@ -200,9 +200,9 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScanSuccess }) => {
         </div>
       </Card>
 
-      <Card className="p-4">
-        <h3 className="font-semibold mb-2">Tips för bäst resultat</h3>
-        <ul className="text-sm text-muted-foreground space-y-1">
+      <Card className="p-6">
+        <h3 className="font-semibold mb-3">Tips för bäst resultat</h3>
+        <ul className="text-sm text-muted-foreground space-y-2">
           <li>Håll telefonen stabilt</li>
           <li>Höj ljusstyrkan på mobilen om den har svårt att scanna</li>
           <li>Undvik reflex från ljus</li>
