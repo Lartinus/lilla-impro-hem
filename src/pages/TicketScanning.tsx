@@ -107,7 +107,7 @@ export const TicketScanning = () => {
             <span>{user.email}</span>
             <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs">
               <LogOut
-                size={12}            // sätter ikonstorleken
+                size={8}            // sätter ikonstorleken
                 strokeWidth={2}       // ev. justera linjetjockleken
                 className="mr-1"      // marginal - vill du finjustera
               />
