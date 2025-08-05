@@ -100,18 +100,18 @@ export const TicketScanning = () => {
     <div className="min-h-screen bg-background">
       <div className="container pt-24 mx-auto p-6 max-w-2xl">
         <div className="mb-8">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-2xl font-bold flex items-center gap-2 mb-2">
-                <Scan className="h-7 w-7" />
-                Biljettscanning
-              </h1>
-              <p className="text-muted-foreground">
-                Scanna QR-koder eller markera manuellt i listan
-              </p>
-            </div>
-            
-            <div className="flex flex-col items-end space-y-2 mt-4">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold flex items-center gap-2 mb-2">
+              <Scan className="h-7 w-7" />
+              Biljettscanning
+            </h1>
+            <p className="text-muted-foreground">
+              Scanna QR-koder eller markera manuellt i listan
+            </p>
+          </div>
+          
+          <div className="flex justify-end">
+            <div className="flex flex-col items-end space-y-2">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Badge variant={userRole === 'admin' ? 'default' : 'secondary'} className="text-xs">
                   {userRole === 'admin' ? 'Admin' : 'Staff'}
