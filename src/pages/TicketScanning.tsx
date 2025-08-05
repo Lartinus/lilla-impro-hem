@@ -106,7 +106,7 @@ export const TicketScanning = () => {
             </Badge>
             <span>{user.email}</span>
           </div>
-          <div className="flex justify-between items-center mt-2 mb-2">
+          <div className="flex justify-between items-center mt-4 mb-2">
             <h1 className="text-2xl flex items-center gap-2">
               <Scan className="h-7 w-7" />
               Biljettscanning
