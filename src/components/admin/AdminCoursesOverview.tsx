@@ -20,6 +20,8 @@ interface Course {
 export const AdminCoursesOverview = () => {
   const { data: courses, isLoading } = useQuery({
     queryKey: ['admin-courses-overview'],
+    staleTime: 30 * 1000, // 30 seconds
+    refetchInterval: 60 * 1000, // 1 minute
     queryFn: async (): Promise<Course[]> => {
       const today = new Date().toISOString().split('T')[0];
       

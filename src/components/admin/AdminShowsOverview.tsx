@@ -20,13 +20,15 @@ interface Show {
 export const AdminShowsOverview = () => {
   const { data: shows, isLoading } = useQuery({
     queryKey: ['admin-shows-overview'],
+    staleTime: 30 * 1000, // 30 seconds
+    refetchInterval: 60 * 1000, // 1 minute
     queryFn: async (): Promise<Show[]> => {
       const today = new Date().toISOString().split('T')[0];
       
       // Get upcoming shows
       const { data: showsData, error: showsError } = await supabase
         .from('admin_shows')
-        .select('id, title, show_date, show_time, venue, max_tickets')
+        .select('id, title, slug, show_date, show_time, venue, max_tickets')
         .gte('show_date', today)
         .eq('is_active', true)
         .not('max_tickets', 'is', null)
@@ -42,7 +44,7 @@ export const AdminShowsOverview = () => {
           const { data: tickets } = await supabase
             .from('ticket_purchases')
             .select('regular_tickets, discount_tickets')
-            .eq('show_slug', show.title.toLowerCase().replace(/\s+/g, '-'))
+            .eq('show_slug', show.slug)
             .eq('payment_status', 'paid');
 
           const soldTickets = tickets?.reduce(

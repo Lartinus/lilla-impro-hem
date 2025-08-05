@@ -13,6 +13,8 @@ interface EconomyData {
 export const AdminEconomyOverview = () => {
   const { data: economyData, isLoading } = useQuery({
     queryKey: ['admin-economy-overview'],
+    staleTime: 30 * 1000, // 30 seconds
+    refetchInterval: 60 * 1000, // 1 minute
     queryFn: async (): Promise<EconomyData> => {
       // Calculate date 12 months ago
       const twelveMonthsAgo = new Date();
