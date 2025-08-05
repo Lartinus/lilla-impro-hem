@@ -73,7 +73,7 @@ export const TicketList: React.FC = () => {
       return acc;
     }, [] as any[]);
     
-    return uniqueShows.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return uniqueShows.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, [tickets]);
 
   // Filter tickets
@@ -101,9 +101,9 @@ export const TicketList: React.FC = () => {
     if (statusFilter === 'scanned') {
       filtered = filtered.filter(ticket => ticket.scanned_status);
     } else if (statusFilter === 'not-scanned') {
-      filtered = filtered.filter(ticket => !ticket.scanned_status && !ticket.partial_scan);
+      filtered = filtered.filter(ticket => !ticket.scanned_status && (ticket.scanned_tickets || 0) === 0);
     } else if (statusFilter === 'partial') {
-      filtered = filtered.filter(ticket => ticket.partial_scan);
+      filtered = filtered.filter(ticket => !ticket.scanned_status && (ticket.scanned_tickets || 0) > 0);
     }
 
     return filtered;
@@ -254,9 +254,6 @@ export const TicketList: React.FC = () => {
               <Users className="h-5 w-5" />
               Inscanningsöversikt - {stats.selectedShow?.title}
             </h3>
-            <Badge variant="outline">
-              {stats.scannedPurchases}/{stats.totalPurchases}
-            </Badge>
           </div>
           
           <div className="space-y-2">
@@ -336,7 +333,7 @@ export const TicketList: React.FC = () => {
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
                             ticket.scanned_status ? 'bg-green-500' : 
-                            ticket.partial_scan ? 'bg-yellow-500' : 'bg-gray-300'
+                            (ticket.scanned_tickets || 0) > 0 ? 'bg-yellow-500' : 'bg-gray-300'
                           }`} />
                           <div className="flex-1 min-w-0">
                             <div className="font-medium truncate">{ticket.buyer_name}</div>
@@ -349,10 +346,10 @@ export const TicketList: React.FC = () => {
                           </span>
                           <Badge variant={
                             ticket.scanned_status ? 'default' : 
-                            ticket.partial_scan ? 'secondary' : 'outline'
+                            (ticket.scanned_tickets || 0) > 0 ? 'secondary' : 'outline'
                           } className="text-xs">
                             {ticket.scanned_status ? 'Alla' : 
-                             ticket.partial_scan ? 'Delvis' : 'Ingen'}
+                             (ticket.scanned_tickets || 0) > 0 ? 'Delvis' : 'Ingen'}
                           </Badge>
                           <Eye className="h-4 w-4 text-muted-foreground" />
                         </div>
@@ -379,29 +376,24 @@ export const TicketList: React.FC = () => {
                           </div>
                         </div>
                         
-                        {ticket.buyer_phone && (
-                          <div className="flex items-center gap-2">
-                            <Phone className="h-4 w-4 text-muted-foreground" />
-                            <div className="text-sm">{ticket.buyer_phone}</div>
-                          </div>
-                        )}
-                        
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-muted-foreground" />
-                          <div className="text-sm">{ticket.show_location}</div>
-                        </div>
-                      </div>
+                         {ticket.buyer_phone && (
+                           <div className="flex items-center gap-2">
+                             <Phone className="h-4 w-4 text-muted-foreground" />
+                             <div className="text-sm">{ticket.buyer_phone}</div>
+                           </div>
+                         )}
+                       </div>
 
-                      {/* Ticket Status */}
+                       {/* Ticket Status */}
                       <div className="border rounded-lg p-3 bg-muted/30">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-sm font-medium">Inscanningsstatus</span>
                           <Badge variant={
                             ticket.scanned_status ? 'default' : 
-                            ticket.partial_scan ? 'secondary' : 'outline'
+                            (ticket.scanned_tickets || 0) > 0 ? 'secondary' : 'outline'
                           }>
                             {ticket.scanned_status ? 'Alla här' : 
-                             ticket.partial_scan ? 'Delvis här' : 'Ingen här'}
+                             (ticket.scanned_tickets || 0) > 0 ? 'Delvis här' : 'Ingen här'}
                           </Badge>
                         </div>
                         
