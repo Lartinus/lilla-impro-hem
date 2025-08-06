@@ -1,0 +1,2 @@
+-- Upload logo file to Supabase storage
+-- This is handled manually in the Supabase dashboard or through the client
