@@ -268,10 +268,4 @@
   font-style: normal;
 }
 
-@font-face {
-  font-family: 'Rajdhani';
-  src: url('./Rajdhani-Variable.woff2') format('woff2');
-  font-weight: 300 700;
-  font-display: swap;
-  font-style: normal;
-}
+/* Rajdhani will be loaded from Google Fonts */
