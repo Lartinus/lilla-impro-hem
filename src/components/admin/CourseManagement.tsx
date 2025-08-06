@@ -938,9 +938,12 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
         onOpenChange={(open) => setEditParticipantDialog({ open, participant: null })}
         participant={editParticipantDialog.participant}
         onSave={(oldEmail, newData) => {
+          console.log('🔧 CourseManagement onSave called', { oldEmail, newData, selectedCourse });
           if (selectedCourse) {
             handleUpdateParticipant(selectedCourse.table_name, oldEmail, newData);
             setEditParticipantDialog({ open: false, participant: null });
+          } else {
+            console.error('❌ No selectedCourse available for update');
           }
         }}
         isLoading={updateParticipantMutation?.isPending || false}
