@@ -136,11 +136,10 @@ const TicketPurchase = ({
 
       {/* Discount code section */}
       <div className="mb-4">
-        <div className="font-medium text-content-primary mb-3">Rabattkod</div>
+        <div className="font-medium text-content-primary mb-3">Ev. rabattkod</div>
         <div className="flex items-center space-x-2">
           <div className="w-40 border border-black bg-transparent">
             <Input
-              placeholder="Rabattkod"
               value={discountCode}
               onChange={(e) => setDiscountCode(e.target.value)}
               className="rounded-none border-0 text-form-text h-10 focus:border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder-form-placeholder text-base"
