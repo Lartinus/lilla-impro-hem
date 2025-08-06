@@ -22,7 +22,9 @@ import {
   UserMinus,
   Users,
   X,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Edit,
+  Mail
 } from 'lucide-react';
 import { RepeatablePracticalInfo } from './RepeatablePracticalInfo';
 import { format } from 'date-fns';
@@ -35,7 +37,8 @@ import {
   SortField,
   SortDirection,
   CourseTemplate,
-  Performer
+  Performer,
+  CourseParticipant
 } from '@/types/courseManagement';
 import { getTemplateData } from '@/utils/courseTemplateHelpers';
 import { handleSort as handleSortUtil, sortCourses, exportParticipants } from '@/utils/courseTableUtils';
@@ -46,6 +49,7 @@ import { useCourseParticipants } from '@/hooks/useCourseParticipants';
 import { MobileCourseCard } from './course/MobileCourseCard';
 import { CourseRow } from './course/CourseRow';
 import { CourseCard } from './course/CourseCard';
+import { EditParticipantDialog } from './EditParticipantDialog';
 
 export const CourseManagement = ({ showCompleted = false }: { showCompleted?: boolean }) => {
   const [sortField, setSortField] = useState<SortField>('sort_order');
@@ -55,6 +59,10 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
   const [editingCourse, setEditingCourse] = useState<CourseWithBookings | null>(null);
   const [isParticipantsDialogOpen, setIsParticipantsDialogOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<CourseWithBookings | null>(null);
+  const [editParticipantDialog, setEditParticipantDialog] = useState<{
+    open: boolean;
+    participant: CourseParticipant | null;
+  }>({ open: false, participant: null });
   const [newCourse, setNewCourse] = useState<NewCourseForm>({
     courseType: '',
     customName: '',
@@ -207,9 +215,13 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     handleDeleteParticipant,
     handleAddParticipant,
     handleMoveParticipant,
+    handleUpdateParticipant,
+    handleResendConfirmation,
     addParticipantMutation,
     deleteParticipantMutation,
-    moveParticipantMutation
+    moveParticipantMutation,
+    updateParticipantMutation,
+    resendConfirmationMutation
   } = useCourseParticipants();
 
   const resetForm = () => {
@@ -817,7 +829,8 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                             <TableRow>
                               <TableHead className="font-satoshi">Namn</TableHead>
                               <TableHead className="font-satoshi">E-post</TableHead>
-                              <TableHead className="w-48 font-satoshi">Åtgärder</TableHead>
+                              <TableHead className="font-satoshi">Telefon</TableHead>
+                              <TableHead className="w-64 font-satoshi">Åtgärder</TableHead>
                             </TableRow>
                           </TableHeader>
                          <TableBody>
@@ -825,8 +838,32 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                              <TableRow key={index}>
                                <TableCell className="font-medium">{participant.name}</TableCell>
                                <TableCell>{participant.email}</TableCell>
+                               <TableCell>{participant.phone}</TableCell>
                                <TableCell>
                                  <div className="flex gap-1">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => setEditParticipantDialog({ open: true, participant })}
+                                      className="p-2"
+                                      title="Redigera deltagare"
+                                    >
+                                      <Edit className="w-3 h-3" />
+                                    </Button>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => selectedCourse && handleResendConfirmation(
+                                        participant.email,
+                                        participant.name,
+                                        selectedCourse.course_title,
+                                        selectedCourse.table_name
+                                      )}
+                                      className="p-2"
+                                      title="Skicka bekräftelse igen"
+                                    >
+                                      <Mail className="w-3 h-3" />
+                                    </Button>
                                    <Popover>
                                      <PopoverTrigger asChild>
                                        <Button
@@ -876,6 +913,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                                      onClick={() => selectedCourse && handleDeleteParticipant(participant.email, selectedCourse.table_name)}
                                      disabled={deleteParticipantMutation.isPending}
                                      className="p-2"
+                                     title="Radera deltagare"
                                    >
                                      <UserMinus className="w-3 h-3" />
                                    </Button>
@@ -893,6 +931,20 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Participant Dialog */}
+      <EditParticipantDialog
+        open={editParticipantDialog.open}
+        onOpenChange={(open) => setEditParticipantDialog({ open, participant: null })}
+        participant={editParticipantDialog.participant}
+        onSave={(oldEmail, newData) => {
+          if (selectedCourse) {
+            handleUpdateParticipant(selectedCourse.table_name, oldEmail, newData);
+            setEditParticipantDialog({ open: false, participant: null });
+          }
+        }}
+        isLoading={updateParticipantMutation?.isPending || false}
+      />
     </div>
   );
 };

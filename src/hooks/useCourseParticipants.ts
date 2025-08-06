@@ -250,6 +250,107 @@ export const useCourseParticipants = () => {
     }
   };
 
+  // Update participant mutation
+  const updateParticipantMutation = useMutation({
+    mutationFn: async ({ tableName, oldEmail, newData }: { 
+      tableName: string; 
+      oldEmail: string; 
+      newData: { name: string; email: string; phone: string } 
+    }) => {
+      const { data, error } = await supabase.functions.invoke('update-course-participant', {
+        body: {
+          table_name: tableName,
+          old_email: oldEmail,
+          new_name: newData.name,
+          new_email: newData.email,
+          new_phone: newData.phone
+        }
+      });
+
+      if (error) {
+        throw new Error(`Edge function fel: ${error.message}`);
+      }
+      
+      if (!data?.success) {
+        throw new Error(data?.error || 'Deltagaren kunde inte uppdateras');
+      }
+      
+      return data;
+    },
+    onSuccess: (data, variables) => {
+      toast({
+        title: "Deltagare uppdaterad",
+        description: "Deltagarens information har uppdaterats."
+      });
+      
+      // Update the participant in local state
+      setParticipants(prev => prev.map(p => 
+        p.email === variables.oldEmail 
+          ? { ...p, ...variables.newData }
+          : p
+      ));
+      
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte uppdatera deltagaren: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Resend confirmation mutation
+  const resendConfirmationMutation = useMutation({
+    mutationFn: async ({ email, name, courseTitle, tableName }: { 
+      email: string; 
+      name: string; 
+      courseTitle: string; 
+      tableName: string 
+    }) => {
+      const { data, error } = await supabase.functions.invoke('resend-course-confirmation', {
+        body: {
+          participant_email: email,
+          participant_name: name,
+          course_title: courseTitle,
+          course_table_name: tableName
+        }
+      });
+
+      if (error) {
+        throw new Error(`Edge function fel: ${error.message}`);
+      }
+      
+      if (!data?.success) {
+        throw new Error(data?.error || 'Kunde inte skicka bekräftelse');
+      }
+      
+      return data;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Bekräftelse skickad",
+        description: "Kursbekräftelsen har skickats till deltagaren."
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte skicka bekräftelse: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
+  const handleUpdateParticipant = (tableName: string, oldEmail: string, newData: { name: string; email: string; phone: string }) => {
+    updateParticipantMutation.mutate({ tableName, oldEmail, newData });
+  };
+
+  const handleResendConfirmation = (email: string, name: string, courseTitle: string, tableName: string) => {
+    resendConfirmationMutation.mutate({ email, name, courseTitle, tableName });
+  };
+
   return {
     participants,
     setParticipants,
@@ -262,8 +363,12 @@ export const useCourseParticipants = () => {
     handleDeleteParticipant,
     handleAddParticipant,
     handleMoveParticipant,
+    handleUpdateParticipant,
+    handleResendConfirmation,
     deleteParticipantMutation,
     addParticipantMutation,
-    moveParticipantMutation
+    moveParticipantMutation,
+    updateParticipantMutation,
+    resendConfirmationMutation
   };
 };

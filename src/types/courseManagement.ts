@@ -30,7 +30,7 @@ export interface CourseWithBookings extends CourseInstance {
 export interface CourseParticipant {
   email: string;
   name: string;
-  phone?: string;
+  phone: string;
 }
 
 export type SortField = 'course_title' | 'start_date' | 'bookingCount' | 'sort_order';
