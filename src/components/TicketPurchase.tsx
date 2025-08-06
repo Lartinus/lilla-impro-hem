@@ -104,7 +104,7 @@ const TicketPurchase = ({
             <button
               onClick={() => setTicketCount(ticketCount + 1)}
               className="h-8 w-6 flex items-center justify-center hover:bg-gray-100 focus:outline-none"
-              disabled={ticketCount + discountTickets >= availableTickets}
+              disabled={ticketCount + discountTickets >= availableTickets || ticketCount + discountTickets >= 12}
             >
               <ChevronRight size={12} className="text-form-text-muted" />
             </button>
@@ -175,7 +175,7 @@ const TicketPurchase = ({
           <button
             onClick={() => setDiscountTickets(discountTickets + 1)}
             className="h-8 w-6 flex items-center justify-center hover:bg-gray-100 focus:outline-none"
-            disabled={ticketCount + discountTickets >= availableTickets}
+            disabled={ticketCount + discountTickets >= availableTickets || ticketCount + discountTickets >= 12}
           >
             <ChevronRight size={12} className="text-form-text-muted" />
           </button>
