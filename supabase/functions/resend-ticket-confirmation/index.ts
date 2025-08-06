@@ -122,13 +122,11 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     // Create the final HTML content using the unified template
-    const finalHtmlContent = createUnifiedEmailTemplate({
-      title: template.title || 'Biljettbekräftelse',
-      content: content,
-      backgroundImage: template.background_image,
-      titleSize: template.title_size || '32',
-      imagePosition: template.image_position || 'top'
-    });
+    const finalHtmlContent = createUnifiedEmailTemplate(
+      template.title || 'Biljettbekräftelse',
+      content,
+      template.background_image
+    );
 
     // Inject QR code into the final content
     const htmlWithQR = finalHtmlContent.replace(
