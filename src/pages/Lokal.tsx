@@ -30,8 +30,8 @@ const Lokal = () => {
               {/* Lokal-info */}
               <div className="space-y-4">
                 <h1>Ett community med egen scen</h1>
-                <p>Vår verksamhet är under uppbyggnad. Ambitionen är att skapa ett levande och generöst community där improvisatörer, publik och grupper får mötas. Här finns det rum för kurser, workshops, egna ensembler och gästande grupper och improvisatörer att spela.</p>
-                <p>Att skaffe en egen lokal är en viktig del av detta.</p>
+                <p>Vår verksamhet är under uppbyggnad. Ambitionen är att skapa ett levande och generöst community där improvisatörer, publik och grupper får mötas. Här finns det rum för kurser, workshops, egna ensembler och gästande grupper att spela.</p>
+                <p>Att skaffa en egen lokal är en viktig del av detta.</p>
               </div>
 
               {/* Kontakt för lokal */}
