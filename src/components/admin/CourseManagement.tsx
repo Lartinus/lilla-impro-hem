@@ -50,6 +50,7 @@ import { MobileCourseCard } from './course/MobileCourseCard';
 import { CourseRow } from './course/CourseRow';
 import { CourseCard } from './course/CourseCard';
 import { EditParticipantDialog } from './EditParticipantDialog';
+import { ResendConfirmationDialog } from './ResendConfirmationDialog';
 
 export const CourseManagement = ({ showCompleted = false }: { showCompleted?: boolean }) => {
   const [sortField, setSortField] = useState<SortField>('sort_order');
@@ -209,6 +210,8 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     isLoadingParticipants,
     isAddParticipantFormOpen,
     setIsAddParticipantFormOpen,
+    resendConfirmationDialog,
+    setResendConfirmationDialog,
     newParticipant,
     setNewParticipant,
     handleViewParticipants,
@@ -217,6 +220,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     handleMoveParticipant,
     handleUpdateParticipant,
     handleResendConfirmation,
+    confirmResendConfirmation,
     addParticipantMutation,
     deleteParticipantMutation,
     moveParticipantMutation,
@@ -947,6 +951,15 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
           }
         }}
         isLoading={updateParticipantMutation?.isPending || false}
+      />
+
+      {/* Resend Confirmation Dialog */}
+      <ResendConfirmationDialog
+        open={resendConfirmationDialog.open}
+        onOpenChange={(open) => setResendConfirmationDialog(prev => ({ ...prev, open }))}
+        participant={resendConfirmationDialog.participant}
+        onConfirm={confirmResendConfirmation}
+        isLoading={resendConfirmationMutation.isPending}
       />
     </div>
   );

@@ -31,6 +31,8 @@ export interface CourseParticipant {
   email: string;
   name: string;
   phone: string;
+  resend_count?: number;
+  last_resent_at?: string;
 }
 
 export type SortField = 'course_title' | 'start_date' | 'bookingCount' | 'sort_order';

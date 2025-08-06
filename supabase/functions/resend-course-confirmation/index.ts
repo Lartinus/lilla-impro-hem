@@ -76,12 +76,22 @@ serve(async (req) => {
       )
     }
 
+    // Update resend tracking
+    const { data: trackingData, error: trackingError } = await supabase.functions.invoke('update-resend-tracking', {
+      body: {
+        table_name: course_table_name,
+        participant_email: participant_email
+      }
+    })
+
     console.log('Successfully resent course confirmation email to:', participant_email)
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: 'Kursbekräftelse skickad' 
+        message: 'Kursbekräftelse skickad',
+        resend_count: trackingData?.resend_count,
+        last_resent_at: trackingData?.last_resent_at
       }),
       { 
         status: 200, 

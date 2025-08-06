@@ -8,6 +8,17 @@ export const useCourseParticipants = () => {
   const [participants, setParticipants] = useState<CourseParticipant[]>([]);
   const [isLoadingParticipants, setIsLoadingParticipants] = useState(false);
   const [isAddParticipantFormOpen, setIsAddParticipantFormOpen] = useState(false);
+  const [resendConfirmationDialog, setResendConfirmationDialog] = useState<{
+    open: boolean;
+    participant: CourseParticipant | null;
+    courseName: string;
+    tableName: string;
+  }>({
+    open: false,
+    participant: null,
+    courseName: '',
+    tableName: ''
+  });
   const [newParticipant, setNewParticipant] = useState({
     name: '',
     email: '',
@@ -330,11 +341,21 @@ export const useCourseParticipants = () => {
       
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Bekräftelse skickad",
-        description: "Kursbekräftelsen har skickats till deltagaren."
+        description: `Kursbekräftelsen har skickats till deltagaren.${data.resend_count ? ` (Skickat ${data.resend_count} gånger)` : ''}`
       });
+      
+      // Update participant data with new resend info
+      setParticipants(prev => prev.map(p => 
+        p.email === resendConfirmationDialog.participant?.email 
+          ? { ...p, resend_count: data.resend_count, last_resent_at: data.last_resent_at }
+          : p
+      ));
+      
+      // Close dialog
+      setResendConfirmationDialog({ open: false, participant: null, courseName: '', tableName: '' });
     },
     onError: (error) => {
       toast({
@@ -351,7 +372,24 @@ export const useCourseParticipants = () => {
   };
 
   const handleResendConfirmation = (email: string, name: string, courseTitle: string, tableName: string) => {
-    resendConfirmationMutation.mutate({ email, name, courseTitle, tableName });
+    const participant = participants.find(p => p.email === email);
+    setResendConfirmationDialog({
+      open: true,
+      participant: participant || { email, name, phone: '' },
+      courseName: courseTitle,
+      tableName: tableName
+    });
+  };
+
+  const confirmResendConfirmation = () => {
+    if (resendConfirmationDialog.participant) {
+      resendConfirmationMutation.mutate({
+        email: resendConfirmationDialog.participant.email,
+        name: resendConfirmationDialog.participant.name,
+        courseTitle: resendConfirmationDialog.courseName,
+        tableName: resendConfirmationDialog.tableName
+      });
+    }
   };
 
   return {
@@ -360,6 +398,8 @@ export const useCourseParticipants = () => {
     isLoadingParticipants,
     isAddParticipantFormOpen,
     setIsAddParticipantFormOpen,
+    resendConfirmationDialog,
+    setResendConfirmationDialog,
     newParticipant,
     setNewParticipant,
     handleViewParticipants,
@@ -368,6 +408,7 @@ export const useCourseParticipants = () => {
     handleMoveParticipant,
     handleUpdateParticipant,
     handleResendConfirmation,
+    confirmResendConfirmation,
     deleteParticipantMutation,
     addParticipantMutation,
     moveParticipantMutation,

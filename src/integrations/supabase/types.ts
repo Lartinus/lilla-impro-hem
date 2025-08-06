@@ -1352,6 +1352,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      add_resend_tracking_to_course_table: {
+        Args: { table_name: string }
+        Returns: undefined
+      }
       add_to_waitlist: {
         Args: {
           course_instance_id_param: string

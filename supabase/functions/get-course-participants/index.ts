@@ -34,7 +34,7 @@ serve(async (req) => {
     try {
       const { data, error } = await supabase
         .from(table_name)
-        .select('email, name, phone, created_at')
+        .select('email, name, phone, created_at, resend_count, last_resent_at')
         .order('created_at', { ascending: true })
 
       if (error) {
