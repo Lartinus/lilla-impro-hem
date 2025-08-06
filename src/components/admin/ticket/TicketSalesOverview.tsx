@@ -179,7 +179,7 @@ export const TicketSalesOverview = ({ showSlug, showTitle, maxTickets }: TicketS
       sale.discount_tickets,
       sale.regular_tickets + sale.discount_tickets,
       (sale.total_amount / 100).toFixed(2),
-      (sale.total_amount / 1.25 / 100).toFixed(2), // Assuming 25% VAT
+      (sale.total_amount / 1.06 / 100).toFixed(2)
       sale.discount_code || '',
       sale.payment_status === 'paid' ? 'Betald' : 'Återbetald',
       sale.refund_status === 'processed' ? 'Återbetald' : 'Ej återbetald',
@@ -209,7 +209,7 @@ export const TicketSalesOverview = ({ showSlug, showTitle, maxTickets }: TicketS
   const totalTickets = ticketSales?.reduce((sum, sale) => 
     sale.payment_status === 'paid' && sale.refund_status !== 'processed' ? sum + sale.regular_tickets + sale.discount_tickets : sum, 0) || 0;
   const totalPurchases = ticketSales?.filter(sale => sale.payment_status === 'paid' && sale.refund_status !== 'processed').length || 0;
-  const revenueExcludingVAT = totalRevenue / 1.25; // Assuming 25% VAT
+  const revenueExcludingVAT = totalRevenue / 1.06;
 
   return (
     <>
