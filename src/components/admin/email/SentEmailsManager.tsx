@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
-import { Mail, Trash2, Search, Filter, CheckSquare, Square } from 'lucide-react';
+import { Mail, Trash2, Search, Filter, CheckSquare, Square, Eye } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useSentEmails, useDeleteSentEmail, useDeleteMultipleSentEmails, type SentEmail } from '@/hooks/useSentEmails';
+import { SentEmailPreviewDialog } from './SentEmailPreviewDialog';
 
 const emailTypeLabels: Record<string, string> = {
   'bulk': 'Masskicks',
@@ -32,6 +33,8 @@ export const SentEmailsManager = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedEmails, setSelectedEmails] = useState<Set<string>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
+  const [previewEmail, setPreviewEmail] = useState<SentEmail | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const { data: sentEmails = [], isLoading } = useSentEmails();
   const deleteEmail = useDeleteSentEmail();
@@ -76,6 +79,11 @@ export const SentEmailsManager = () => {
     await deleteMultipleEmails.mutateAsync(Array.from(selectedEmails));
     setSelectedEmails(new Set());
     setSelectAll(false);
+  };
+
+  const handleViewEmail = (email: SentEmail) => {
+    setPreviewEmail(email);
+    setIsPreviewOpen(true);
   };
 
   const getStatusBadgeVariant = (status: string) => {
@@ -210,7 +218,7 @@ export const SentEmailsManager = () => {
                   <TableHead className="hidden sm:table-cell">Status</TableHead>
                   <TableHead>Ämne</TableHead>
                   <TableHead className="hidden lg:table-cell">Datum</TableHead>
-                  <TableHead className="w-12"></TableHead>
+                  <TableHead className="w-24"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -269,29 +277,40 @@ export const SentEmailsManager = () => {
                       {format(new Date(email.sent_at), 'dd MMM yyyy HH:mm', { locale: sv })}
                     </TableCell>
                     <TableCell>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Bekräfta radering</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Är du säker på att du vill radera detta email? Denna åtgärd kan inte ångras.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Avbryt</AlertDialogCancel>
-                            <AlertDialogAction 
-                              onClick={() => deleteEmail.mutate(email.id)}
-                            >
-                              Radera
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                      <div className="flex gap-1">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleViewEmail(email)}
+                          title="Visa email"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Radera email">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Bekräfta radering</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Är du säker på att du vill radera detta email? Denna åtgärd kan inte ångras.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => deleteEmail.mutate(email.id)}
+                              >
+                                Radera
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -309,6 +328,12 @@ export const SentEmailsManager = () => {
           </div>
         </CardContent>
       </Card>
+
+      <SentEmailPreviewDialog
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        email={previewEmail}
+      />
     </div>
   );
 };
