@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { supabase } from "../_shared/supabase.ts";
 import { createUnifiedEmailTemplate } from "../_shared/email-template.ts";
+import { logSentEmail } from "../_shared/email-logger.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -139,6 +140,19 @@ const handler = async (req: Request): Promise<Response> => {
         { name: 'interest', value: interestTitle.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() },
         { name: 'template', value: template.name }
       ]
+    });
+
+    // Log the sent email
+    await logSentEmail({
+      recipientEmail: email,
+      recipientName: name,
+      subject: personalizedSubject,
+      content: processedContent,
+      htmlContent: htmlContent,
+      emailType: "interest_confirmation",
+      sourceFunction: "send-interest-confirmation",
+      resendId: emailResponse.data?.id,
+      status: "sent"
     });
 
     console.log("Interest confirmation email sent successfully:", emailResponse);

@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { Resend } from "npm:resend@2.0.0";
 import { createUnifiedEmailTemplate } from "../_shared/email-template.ts";
+import { logSentEmail } from "../_shared/email-logger.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -149,29 +150,40 @@ Välkommen!
       emailContent
     );
 
-    const { error: emailError } = await resend.emails.send({
+    const emailResponse = await resend.emails.send({
       from: 'Improteatern <noreply@improteatern.se>',
       to: [requestData.waitlistEmail],
       subject: emailSubject,
       html: htmlContent,
     });
 
-    if (!emailError) {
-      // Mark waitlist entry as having received offer
-      await supabaseAdmin
-        .from('course_waitlist')
-        .update({
-          offer_sent: true,
-          offer_sent_at: new Date().toISOString()
-        })
-        .eq('course_instance_id', requestData.courseInstanceId)
-        .eq('email', requestData.waitlistEmail);
+    if (emailResponse.error) {
+      console.error('Email send error:', emailResponse.error);
+      throw new Error(`Failed to send email: ${emailResponse.error.message}`);
     }
 
-    if (emailError) {
-      console.error('Email send error:', emailError);
-      throw new Error(`Failed to send email: ${emailError.message}`);
-    }
+    // Log the sent email
+    await logSentEmail({
+      recipientEmail: requestData.waitlistEmail,
+      recipientName: requestData.waitlistName,
+      subject: emailSubject,
+      content: emailContent,
+      htmlContent: htmlContent,
+      emailType: "course_offer",
+      sourceFunction: "send-course-offer",
+      resendId: emailResponse.data?.id,
+      status: "sent"
+    });
+
+    // Mark waitlist entry as having received offer
+    await supabaseAdmin
+      .from('course_waitlist')
+      .update({
+        offer_sent: true,
+        offer_sent_at: new Date().toISOString()
+      })
+      .eq('course_instance_id', requestData.courseInstanceId)
+      .eq('email', requestData.waitlistEmail);
 
     console.log('Course offer email sent successfully');
 

@@ -2,6 +2,7 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { supabase } from "../_shared/supabase.ts";
 import { createUnifiedEmailTemplate } from "../_shared/email-template.ts";
+import { logSentEmail } from "../_shared/email-logger.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -167,6 +168,21 @@ Visa denna QR-kod vid entrén. Om ni köpt flera biljetter och sällskapet komme
       throw new Error(`Failed to send email: ${errorText}`);
     }
 
+    const emailResult = await emailResponse.json();
+
+    // Log the sent email
+    await logSentEmail({
+      recipientEmail: purchase.buyer_email,
+      recipientName: purchase.buyer_name,
+      subject: personalizedSubject,
+      content: contentWithTicketInfo,
+      htmlContent: htmlContent,
+      emailType: "ticket_confirmation",
+      sourceFunction: "send-ticket-confirmation",
+      resendId: emailResult.id,
+      status: "sent"
+    });
+
     console.log('Ticket confirmation email sent successfully using template:', template.name);
 
     return new Response(JSON.stringify({ success: true }), {
@@ -305,6 +321,20 @@ async function sendFallbackTicketEmail(purchase: any, resendApiKey: string) {
     console.error('Email sending failed:', errorText);
     throw new Error(`Failed to send email: ${errorText}`);
   }
+
+  const emailResult = await emailResponse.json();
+
+  // Log the fallback email
+  await logSentEmail({
+    recipientEmail: purchase.buyer_email,
+    recipientName: purchase.buyer_name,
+    subject: `Din biljett - ${purchase.show_title}`,
+    htmlContent: emailHtml,
+    emailType: "ticket_confirmation_fallback",
+    sourceFunction: "send-ticket-confirmation",
+    resendId: emailResult.id,
+    status: "sent"
+  });
 
   console.log('Ticket confirmation email sent successfully (fallback)');
 

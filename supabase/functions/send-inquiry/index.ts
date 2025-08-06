@@ -4,6 +4,7 @@ import { Resend } from "npm:resend@2.0.0";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { createUnifiedEmailTemplate } from '../_shared/email-template.ts';
 import { convertMarkdownToHtml } from '../_shared/markdownHelpers.ts';
+import { logSentEmail } from '../_shared/email-logger.ts';
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -109,7 +110,7 @@ Logga in på adminpanelen för att hantera förfrågan
       convertMarkdownToHtml(notificationMarkdown)
     );
 
-    await resend.emails.send({
+    const notificationResponse = await resend.emails.send({
       from: "Lilla Improteatern <noreply@improteatern.se>",
       to: ["kontakt@improteatern.se"],
       subject: notificationSubject,
@@ -118,6 +119,18 @@ Logga in på adminpanelen för att hantera förfrågan
         { name: 'type', value: 'inquiry-notification' },
         { name: 'inquiry_type', value: inquiryData.type }
       ]
+    });
+
+    // Log notification email
+    await logSentEmail({
+      recipientEmail: "kontakt@improteatern.se",
+      recipientName: "Kontakt",
+      subject: notificationSubject,
+      htmlContent: notificationContent,
+      emailType: "inquiry_notification",
+      sourceFunction: "send-inquiry",
+      resendId: notificationResponse.data?.id,
+      status: "sent"
     });
 
     // Get email template from database
@@ -169,7 +182,7 @@ Logga in på adminpanelen för att hantera förfrågan
       personalizedContent
     ).replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(inquiryData.email)}`);
 
-    await resend.emails.send({
+    const confirmationResponse = await resend.emails.send({
       from: "Lilla Improteatern <noreply@improteatern.se>",
       to: [inquiryData.email],
       subject: personalizedSubject,
@@ -178,6 +191,18 @@ Logga in på adminpanelen för att hantera förfrågan
         { name: 'type', value: 'inquiry-confirmation' },
         { name: 'inquiry_type', value: inquiryData.type }
       ]
+    });
+
+    // Log confirmation email
+    await logSentEmail({
+      recipientEmail: inquiryData.email,
+      recipientName: inquiryData.name,
+      subject: personalizedSubject,
+      htmlContent: confirmationContent,
+      emailType: "inquiry_confirmation",
+      sourceFunction: "send-inquiry",
+      resendId: confirmationResponse.data?.id,
+      status: "sent"
     });
 
     console.log('All emails sent successfully');

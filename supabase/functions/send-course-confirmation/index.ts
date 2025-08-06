@@ -3,6 +3,7 @@ import { Resend } from "npm:resend@2.0.0";
 import { supabase } from "../_shared/supabase.ts";
 import { ConfirmationEmailRequest } from "./types.ts";
 import { createUnifiedEmailTemplate } from "../_shared/email-template.ts";
+import { logSentEmail } from "../_shared/email-logger.ts";
 
 // Utility function to process markdown with variables
 function convertMarkdownToHtmlWithVariables(
@@ -165,6 +166,19 @@ const handler = async (req: Request): Promise<Response> => {
       ]
     });
 
+    // Log the sent email
+    await logSentEmail({
+      recipientEmail: email,
+      recipientName: name,
+      subject: personalizedSubject,
+      content: processedContent,
+      htmlContent: htmlContent,
+      emailType: "course_confirmation",
+      sourceFunction: "send-course-confirmation",
+      resendId: emailResponse.data?.id,
+      status: "sent"
+    });
+
     console.log("Email sent successfully:", emailResponse);
 
     return new Response(JSON.stringify(emailResponse), {
@@ -230,13 +244,28 @@ Lilla Improteatern`;
   const textWithBreaks = emailContent.replace(/\n/g, '<br>');
   const htmlContent = createUnifiedEmailTemplate(subject, textWithBreaks);
 
-  return await resend.emails.send({
+  const emailResponse = await resend.emails.send({
     from: "Lilla Improteatern <noreply@improteatern.se>",
     to: [email],
     subject: subject,
     html: htmlContent,
     tags: [{ name: 'type', value: 'course_confirmation_fallback' }]
   });
+
+  // Log the fallback email
+  await logSentEmail({
+    recipientEmail: email,
+    recipientName: name,
+    subject: subject,
+    content: emailContent,
+    htmlContent: htmlContent,
+    emailType: "course_confirmation_fallback",
+    sourceFunction: "send-course-confirmation",
+    resendId: emailResponse.data?.id,
+    status: "sent"
+  });
+
+  return emailResponse;
 }
 
 serve(handler);
