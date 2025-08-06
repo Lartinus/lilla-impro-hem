@@ -138,7 +138,7 @@ const TicketPurchase = ({
       <div className="mb-4">
         <div className="font-medium text-content-primary mb-3">Ev. rabattkod</div>
         <div className="flex items-center space-x-2">
-          <div className="w-40 border border-black bg-transparent">
+          <div className="w-24 border border-black bg-transparent">
             <Input
               value={discountCode}
               onChange={(e) => setDiscountCode(e.target.value)}
