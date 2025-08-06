@@ -56,8 +56,9 @@ serve(async (req) => {
         name: participant_name,
         email: participant_email,
         courseTitle: course_title,
-        startDate: courseStartDate,
-        startTime: courseStartTime
+        courseStartDate: courseStartDate,
+        courseStartTime: courseStartTime,
+        courseTableName: course_table_name
       }
     })
 

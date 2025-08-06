@@ -39,7 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, courseTitle, isAvailable, courseStartDate, courseStartTime }: ConfirmationEmailRequest = await req.json();
+    const { name, email, courseTitle, isAvailable, courseStartDate, courseStartTime, courseTableName }: ConfirmationEmailRequest = await req.json();
 
     console.log(`Processing course confirmation for ${email} - course: ${courseTitle}`);
     console.log('Request data:', { name, email, courseTitle, isAvailable, courseStartDate, courseStartTime });
@@ -93,12 +93,20 @@ const handler = async (req: Request): Promise<Response> => {
     
     if (!courseStartDate || !courseStartTime) {
       console.log('Fetching course information from database...');
-      const { data: courseInstance, error: courseError } = await supabase
+      
+      // If we have a specific table name, use that to find the course instance
+      let courseQuery = supabase
         .from('course_instances')
         .select('start_date, start_time')
-        .eq('course_title', courseTitle)
-        .eq('is_active', true)
-        .single();
+        .eq('is_active', true);
+      
+      if (courseTableName) {
+        courseQuery = courseQuery.eq('table_name', courseTableName);
+      } else {
+        courseQuery = courseQuery.eq('course_title', courseTitle);
+      }
+      
+      const { data: courseInstance, error: courseError } = await courseQuery.single();
       
       if (courseInstance && !courseError) {
         finalStartDate = finalStartDate || courseInstance.start_date;

@@ -5,4 +5,5 @@ export interface ConfirmationEmailRequest {
   isAvailable: boolean;
   courseStartDate?: string;
   courseStartTime?: string;
+  courseTableName?: string;
 }
