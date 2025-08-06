@@ -89,53 +89,72 @@ const handler = async (req: Request): Promise<Response> => {
       console.log('Contact creation failed (continuing with email):', contactError.message);
     }
 
-    // Replace template variables
+    // Replace template variables (using same format as original send-ticket-confirmation)
     const variables = {
-      buyer_name: purchase.buyer_name,
-      show_title: purchase.show_title,
-      show_date: purchase.show_date,
-      show_location: purchase.show_location,
-      total_tickets: purchase.regular_tickets + purchase.discount_tickets,
-      ticket_code: purchase.ticket_code,
-      qr_data: purchase.qr_data
+      NAMN: purchase.buyer_name,
+      FORESTALLNING: purchase.show_title,
+      DATUM: purchase.show_date,
+      BILJETTKOD: purchase.ticket_code
     };
 
     let subject = template.subject;
     let content = template.content;
 
-    // Replace variables in subject and content
+    // Replace variables in subject and content (using single curly braces)
     Object.entries(variables).forEach(([key, value]) => {
-      const placeholder = `{{${key}}}`;
-      subject = subject.replace(new RegExp(placeholder, 'g'), String(value));
-      content = content.replace(new RegExp(placeholder, 'g'), String(value));
+      const regex = new RegExp(`\\{${key}\\}`, 'gi');
+      subject = subject.replace(regex, String(value));
+      content = content.replace(regex, String(value));
     });
 
     // Generate QR code URL
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(purchase.qr_data)}`;
     
-    // Format show date and time for display
-    const showDate = new Date(purchase.show_date).toLocaleDateString('sv-SE', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    // Format date and time properly
+    let formattedDate = purchase.show_date;
+    let formattedTime = '';
+    
+    try {
+      const showDateTime = new Date(purchase.show_date);
+      formattedDate = showDateTime.toLocaleDateString('sv-SE', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      formattedTime = showDateTime.toLocaleTimeString('sv-SE', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+    }
+
+    // Add ticket details to the content before template processing (same as original function)
+    const contentWithTicketInfo = content + `
+
+H2: Dina biljettdetaljer
+
+Datum: ${formattedDate}
+Tid: ${formattedTime}
+Plats: ${purchase.show_location}
+Biljetter: ${purchase.regular_tickets + purchase.discount_tickets} st
+Biljettkod: ${purchase.ticket_code}
+
+[QR_CODE_PLACEHOLDER]
+
+Visa denna QR-kod vid entrén. Om ni köpt flera biljetter och sällskapet kommer vi olika tider använder alla samma QR-kod.`;
 
     // Create the final HTML content using the unified template
     const finalHtmlContent = createUnifiedEmailTemplate(
-      template.title || 'Biljettbekräftelse',
-      content,
+      subject,
+      contentWithTicketInfo,
       template.background_image
     );
 
-    // Inject QR code into the final content
-    const htmlWithQR = finalHtmlContent.replace(
-      '{{qr_code}}',
-      `<div style="text-align: center; margin: 20px 0;">
-        <img src="${qrCodeUrl}" alt="QR kod för biljett" style="max-width: 200px; height: auto;" />
-        <p style="margin-top: 10px; font-size: 14px; color: #666;">Visa denna QR-kod vid entrén</p>
-      </div>`
-    );
+    // Inject QR code and unsubscribe URL into the final content
+    const htmlWithQR = finalHtmlContent
+      .replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(purchase.buyer_email)}`)
+      .replace('[QR_CODE_PLACEHOLDER]', `<div style="margin: 20px 0;"><img src="${qrCodeUrl}" alt="QR Code" style="max-width: 200px; display: block;"></div>`);
 
     // Send email
     const emailResponse = await resend.emails.send({
