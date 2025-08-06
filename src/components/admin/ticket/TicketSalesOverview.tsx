@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Eye, Trash2, RotateCcw, Download } from 'lucide-react';
+import { Eye, Trash2, RotateCcw, Download, Edit, Send } from 'lucide-react';
+import { EditTicketPurchaseDialog } from './EditTicketPurchaseDialog';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -23,6 +24,9 @@ interface TicketSale {
   created_at: string;
   refund_status: string;
   discount_code: string | null;
+  show_title: string;
+  resend_count?: number;
+  last_resent_at?: string;
 }
 
 interface TicketSalesOverviewProps {
@@ -33,6 +37,9 @@ interface TicketSalesOverviewProps {
 
 export const TicketSalesOverview = ({ showSlug, showTitle, maxTickets }: TicketSalesOverviewProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [editingTicket, setEditingTicket] = useState<TicketSale | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [resendingTicketId, setResendingTicketId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   // Fetch ticket sales for the show
@@ -93,6 +100,53 @@ export const TicketSalesOverview = ({ showSlug, showTitle, maxTickets }: TicketS
       console.error('Error marking as refunded:', error);
       toast.error('Kunde inte markera som återbetalat');
     }
+  };
+
+  // Function to resend ticket confirmation
+  const resendTicketConfirmation = async (ticketSale: TicketSale) => {
+    try {
+      setResendingTicketId(ticketSale.id);
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('Inte inloggad');
+      }
+
+      const { data, error } = await supabase.functions.invoke('resend-ticket-confirmation', {
+        body: {
+          ticketId: ticketSale.id,
+          adminUserId: user.id
+        }
+      });
+
+      if (error) throw error;
+
+      queryClient.invalidateQueries({ queryKey: ['ticket-sales', showSlug] });
+      toast.success(`Biljettbekräftelse skickad till ${ticketSale.buyer_email}`);
+    } catch (error: any) {
+      console.error('Error resending ticket confirmation:', error);
+      toast.error(error.message || 'Kunde inte skicka om biljettbekräftelsen');
+    } finally {
+      setResendingTicketId(null);
+    }
+  };
+
+  // Function to open edit dialog
+  const openEditDialog = (ticketSale: TicketSale) => {
+    setEditingTicket(ticketSale);
+    setIsEditDialogOpen(true);
+  };
+
+  // Function to close edit dialog
+  const closeEditDialog = () => {
+    setEditingTicket(null);
+    setIsEditDialogOpen(false);
+  };
+
+  // Function to handle successful update
+  const handleTicketUpdate = () => {
+    queryClient.invalidateQueries({ queryKey: ['ticket-sales', showSlug] });
+    queryClient.invalidateQueries({ queryKey: ['admin-shows-tickets'] });
   };
 
   // Function to export as CSV
@@ -223,7 +277,7 @@ export const TicketSalesOverview = ({ showSlug, showTitle, maxTickets }: TicketS
                       <TableHead className="min-w-[100px] hidden md:table-cell">Rabatt</TableHead>
                       <TableHead className="min-w-[80px]">Status</TableHead>
                       <TableHead className="min-w-[120px] hidden lg:table-cell">Köpdatum</TableHead>
-                      <TableHead className="min-w-[140px]">Åtgärder</TableHead>
+                      <TableHead className="min-w-[200px]">Åtgärder</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -282,11 +336,37 @@ export const TicketSalesOverview = ({ showSlug, showTitle, maxTickets }: TicketS
                           {format(new Date(sale.created_at), 'yyyy-MM-dd HH:mm')}
                         </TableCell>
                         <TableCell>
-                          <div className="flex gap-2">
+                          <div className="flex gap-1 flex-wrap">
+                            {/* Edit button */}
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => openEditDialog(sale)}
+                              title="Redigera kontaktuppgifter"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+
+                            {/* Resend button */}
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => resendTicketConfirmation(sale)}
+                              disabled={resendingTicketId === sale.id || (sale.resend_count && sale.resend_count >= 5)}
+                              title={
+                                sale.resend_count && sale.resend_count >= 5 
+                                  ? "Maxgräns nådd (5 omskickningar)" 
+                                  : "Skicka om biljettbekräftelse"
+                              }
+                            >
+                              <Send className="h-4 w-4" />
+                              {resendingTicketId === sale.id && <span className="ml-1">...</span>}
+                            </Button>
+
                             {sale.payment_status === 'paid' && sale.refund_status !== 'processed' && (
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                  <Button variant="outline" size="sm">
+                                  <Button variant="outline" size="sm" title="Markera som återbetald">
                                     <RotateCcw className="h-4 w-4" />
                                   </Button>
                                 </AlertDialogTrigger>
@@ -294,7 +374,7 @@ export const TicketSalesOverview = ({ showSlug, showTitle, maxTickets }: TicketS
                                   <AlertDialogHeader>
                                     <AlertDialogTitle>Markera som återbetald</AlertDialogTitle>
                                      <AlertDialogDescription>
-                                       Är du säker på att du vill markera detta biljettköp som återbetalt? 
+                                       Är du säker på att du vill markera detta biljettköp som återbetald? 
                                        Detta kommer att lägga tillbaka {sale.regular_tickets + sale.discount_tickets} biljett(er) till tillgängliga biljetter.
                                      </AlertDialogDescription>
                                   </AlertDialogHeader>
@@ -313,7 +393,7 @@ export const TicketSalesOverview = ({ showSlug, showTitle, maxTickets }: TicketS
                             
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
+                                <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" title="Ta bort biljettköp">
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
                               </AlertDialogTrigger>
@@ -338,6 +418,18 @@ export const TicketSalesOverview = ({ showSlug, showTitle, maxTickets }: TicketS
                               </AlertDialogContent>
                             </AlertDialog>
                           </div>
+                          
+                          {/* Resend indicator */}
+                          {sale.resend_count > 0 && (
+                            <div className="text-xs text-muted-foreground mt-1">
+                              Omskickad {sale.resend_count}x
+                              {sale.last_resent_at && (
+                                <div className="text-orange-600">
+                                  {new Date(sale.last_resent_at).toLocaleDateString('sv-SE')}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -352,6 +444,13 @@ export const TicketSalesOverview = ({ showSlug, showTitle, maxTickets }: TicketS
           </div>
         </DialogContent>
       </Dialog>
+
+      <EditTicketPurchaseDialog
+        ticket={editingTicket}
+        isOpen={isEditDialogOpen}
+        onClose={closeEditDialog}
+        onUpdate={handleTicketUpdate}
+      />
     </>
   );
 };

@@ -1166,6 +1166,7 @@ export type Database = {
           discount_code: string | null
           discount_tickets: number
           id: string
+          last_resent_at: string | null
           partial_scan: boolean | null
           payment_status: string
           qr_data: string
@@ -1173,6 +1174,7 @@ export type Database = {
           refund_reason: string | null
           refund_status: string | null
           regular_tickets: number
+          resend_count: number
           scanned_at: string | null
           scanned_by: string | null
           scanned_status: boolean
@@ -1185,6 +1187,7 @@ export type Database = {
           ticket_code: string
           total_amount: number
           updated_at: string
+          updated_by: string | null
         }
         Insert: {
           buyer_email: string
@@ -1194,6 +1197,7 @@ export type Database = {
           discount_code?: string | null
           discount_tickets?: number
           id?: string
+          last_resent_at?: string | null
           partial_scan?: boolean | null
           payment_status?: string
           qr_data: string
@@ -1201,6 +1205,7 @@ export type Database = {
           refund_reason?: string | null
           refund_status?: string | null
           regular_tickets?: number
+          resend_count?: number
           scanned_at?: string | null
           scanned_by?: string | null
           scanned_status?: boolean
@@ -1213,6 +1218,7 @@ export type Database = {
           ticket_code: string
           total_amount: number
           updated_at?: string
+          updated_by?: string | null
         }
         Update: {
           buyer_email?: string
@@ -1222,6 +1228,7 @@ export type Database = {
           discount_code?: string | null
           discount_tickets?: number
           id?: string
+          last_resent_at?: string | null
           partial_scan?: boolean | null
           payment_status?: string
           qr_data?: string
@@ -1229,6 +1236,7 @@ export type Database = {
           refund_reason?: string | null
           refund_status?: string | null
           regular_tickets?: number
+          resend_count?: number
           scanned_at?: string | null
           scanned_by?: string | null
           scanned_status?: boolean
@@ -1241,6 +1249,7 @@ export type Database = {
           ticket_code?: string
           total_amount?: number
           updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -1495,6 +1504,20 @@ export type Database = {
           scanned_tickets_param: number
           admin_user_id_param: string
         }
+        Returns: boolean
+      }
+      update_ticket_contact_details: {
+        Args: {
+          ticket_id_param: string
+          new_buyer_name: string
+          new_buyer_email: string
+          new_buyer_phone: string
+          admin_user_id_param: string
+        }
+        Returns: boolean
+      }
+      update_ticket_resend_tracking: {
+        Args: { ticket_id_param: string; admin_user_id_param: string }
         Returns: boolean
       }
       update_ticket_scan_status: {
