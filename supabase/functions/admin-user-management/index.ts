@@ -11,7 +11,7 @@ interface UserWithRole {
   email: string;
   created_at: string;
   email_confirmed_at?: string;
-  role?: 'admin' | 'staff' | 'user' | null;
+  role?: 'superadmin' | 'admin' | 'staff' | 'user' | null;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -50,14 +50,14 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('Unauthorized');
     }
 
-    // Check if user has admin role
+    // Check if user has admin or superadmin role
     const { data: userRole, error: roleError } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
       .single();
 
-    if (roleError || userRole?.role !== 'admin') {
+    if (roleError || !['admin', 'superadmin'].includes(userRole?.role || '')) {
       throw new Error('Admin access required');
     }
 

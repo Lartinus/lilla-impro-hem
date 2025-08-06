@@ -63,8 +63,8 @@ export const TicketScanning = () => {
     );
   }
 
-  // Check if user has required role (admin or staff)
-  if (userRole !== 'admin' && userRole !== 'staff') {
+  // Check if user has required role (admin, staff, or superadmin)
+  if (!['admin', 'staff', 'superadmin'].includes(userRole || '')) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="p-8 text-center max-w-md">

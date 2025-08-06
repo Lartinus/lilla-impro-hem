@@ -14,13 +14,13 @@ interface User {
   email: string;
   created_at: string;
   email_confirmed_at?: string;
-  role?: 'admin' | 'staff' | 'user' | null;
+  role?: 'superadmin' | 'admin' | 'staff' | 'user' | null;
 }
 
 export const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [actionType, setActionType] = useState<'approve' | 'remove' | 'kick' | 'add-staff' | 'remove-staff'>('approve');
+  const [actionType, setActionType] = useState<'approve' | 'remove' | 'kick' | 'add-staff' | 'remove-staff' | 'demote-to-staff'>('approve');
   const queryClient = useQueryClient();
 
   // Fetch all users with their roles
@@ -151,6 +151,45 @@ export const UserManagement = () => {
     }
   });
 
+  // Demote admin to staff
+  const demoteToStaffMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      // Remove admin role
+      const { error: removeError } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId)
+        .eq('role', 'admin');
+
+      if (removeError) throw removeError;
+
+      // Add staff role
+      const { error: addError } = await supabase
+        .from('user_roles')
+        .insert({
+          user_id: userId,
+          role: 'staff'
+        });
+
+      if (addError) throw addError;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Användare nedgraderad",
+        description: "Admin har ändrats till staff.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      setShowConfirmDialog(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Fel",
+        description: `Kunde inte ändra till staff: ${error.message}`,
+        variant: "destructive"
+      });
+    }
+  });
+
   // Kick user (delete from auth.users)
   const kickUserMutation = useMutation({
     mutationFn: async (userId: string) => {
@@ -176,7 +215,7 @@ export const UserManagement = () => {
     }
   });
 
-  const handleAction = (user: User, action: 'approve' | 'remove' | 'kick' | 'add-staff' | 'remove-staff') => {
+  const handleAction = (user: User, action: 'approve' | 'remove' | 'kick' | 'add-staff' | 'remove-staff' | 'demote-to-staff') => {
     setSelectedUser(user);
     setActionType(action);
     setShowConfirmDialog(true);
@@ -198,6 +237,9 @@ export const UserManagement = () => {
       case 'remove-staff':
         removeStaffMutation.mutate(selectedUser.id);
         break;
+      case 'demote-to-staff':
+        demoteToStaffMutation.mutate(selectedUser.id);
+        break;
       case 'kick':
         kickUserMutation.mutate(selectedUser.id);
         break;
@@ -206,6 +248,8 @@ export const UserManagement = () => {
 
   const getRoleBadge = (role: string | null | undefined) => {
     switch (role) {
+      case 'superadmin':
+        return <Badge className="bg-purple-100 text-purple-800 border-purple-200"><Shield className="w-3 h-3 mr-1" />Superadmin</Badge>;
       case 'admin':
         return <Badge className="bg-red-100 text-red-800 border-red-200"><Shield className="w-3 h-3 mr-1" />Admin</Badge>;
       case 'staff':
@@ -225,6 +269,8 @@ export const UserManagement = () => {
         return 'godkänna som personal';
       case 'remove-staff':
         return 'ta bort personalbehörighet för';
+      case 'demote-to-staff':
+        return 'ändra från admin till staff för';
       case 'kick':
         return 'kasta ut';
     }
@@ -239,9 +285,10 @@ export const UserManagement = () => {
   }
 
   const pendingUsers = users?.filter(user => !user.role) || [];
+  const superadminUsers = users?.filter(user => user.role === 'superadmin') || [];
   const adminUsers = users?.filter(user => user.role === 'admin') || [];
   const staffUsers = users?.filter(user => user.role === 'staff') || [];
-  const regularUsers = users?.filter(user => user.role && user.role !== 'admin' && user.role !== 'staff') || [];
+  const regularUsers = users?.filter(user => user.role && !['superadmin', 'admin', 'staff'].includes(user.role)) || [];
 
   return (
     <div className="space-y-6">
@@ -312,6 +359,49 @@ export const UserManagement = () => {
         </Card>
       )}
 
+      {/* Superadministrators */}
+      {superadminUsers.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-purple-600" />
+              Superadministratörer ({superadminUsers.length})
+            </CardTitle>
+            <CardDescription>
+              Överordnade administratörer som inte kan tas bort
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {superadminUsers.map((user) => (
+                <div key={user.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                      <Shield className="w-4 h-4 text-purple-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{user.email}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Registrerad: {new Date(user.created_at).toLocaleDateString('sv-SE')}
+                        {user.email_confirmed_at && (
+                          <span className="ml-2">• Bekräftad: {new Date(user.email_confirmed_at).toLocaleDateString('sv-SE')}</span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                    {getRoleBadge(user.role)}
+                    <div className="text-sm text-muted-foreground">
+                      Skyddad
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Current Administrators */}
       <Card>
         <CardHeader>
@@ -344,6 +434,14 @@ export const UserManagement = () => {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                   {getRoleBadge(user.role)}
                   <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <Button
+                      onClick={() => handleAction(user, 'demote-to-staff')}
+                      variant="outline"
+                      size="sm"
+                      className="w-full sm:w-auto"
+                    >
+                      Ändra till staff
+                    </Button>
                     <Button
                       onClick={() => handleAction(user, 'remove')}
                       variant="outline"
