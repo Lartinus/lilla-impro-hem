@@ -249,22 +249,21 @@
   font-style: normal;
 }
 
-/* Unified font families for easier usage */
+/* Optimized Variable Fonts - Primary definitions */
 @font-face {
   font-family: 'Satoshi';
   src: url('./Satoshi-Variable.woff2') format('woff2');
   font-weight: 300 900;
-  font-display: swap;
+  font-display: fallback;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Tanker';
   src: url('./Tanker-Regular.woff2') format('woff2'),
-       url('./Tanker-Regular.woff') format('woff'),
-       url('./Tanker-Regular.ttf') format('truetype');
+       url('./Tanker-Regular.woff') format('woff');
   font-weight: 400;
-  font-display: swap;
+  font-display: fallback;
   font-style: normal;
 }
 
@@ -272,6 +271,6 @@
   font-family: 'Rajdhani';
   src: url('./Rajdhani-Variable.woff2') format('woff2');
   font-weight: 300 700;
-  font-display: swap;
+  font-display: fallback;
   font-style: normal;
 }

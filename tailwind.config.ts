@@ -20,18 +20,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        tanker: ['Tanker', 'Tanker-Regular', 'Impact', 'Arial Black', 'sans-serif'],
-        satoshi: ['Satoshi', 'Satoshi-Variable', 'Inter', 'sans-serif'],
-        rajdhani: ['Rajdhani', 'Rajdhani-Variable', 'Arial', 'sans-serif'],
-        // Support for specific font weights
-        'satoshi-light': ['Satoshi-Light', 'Satoshi', 'Inter', 'sans-serif'],
-        'satoshi-medium': ['Satoshi-Medium', 'Satoshi', 'Inter', 'sans-serif'],
-        'satoshi-bold': ['Satoshi-Bold', 'Satoshi', 'Inter', 'sans-serif'],
-        'satoshi-black': ['Satoshi-Black', 'Satoshi', 'Inter', 'sans-serif'],
-        'rajdhani-light': ['Rajdhani-Light', 'Rajdhani', 'Arial', 'sans-serif'],
-        'rajdhani-medium': ['Rajdhani-Medium', 'Rajdhani', 'Arial', 'sans-serif'],
-        'rajdhani-semibold': ['Rajdhani-SemiBold', 'Rajdhani', 'Arial', 'sans-serif'],
-        'rajdhani-bold': ['Rajdhani-Bold', 'Rajdhani', 'Arial', 'sans-serif'],
+        tanker: ['Tanker', 'Impact', 'Arial Black', 'sans-serif'],
+        satoshi: ['Satoshi', 'Inter', 'system-ui', 'sans-serif'],
+        rajdhani: ['Rajdhani', 'Arial', 'Helvetica', 'sans-serif'],
       },
       fontSize: {
         'base-mobile': '18px',
