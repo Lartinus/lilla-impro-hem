@@ -63,9 +63,14 @@ serve(async (req) => {
       )
     }
 
-    // Check if table exists
-    const { data: tableExists } = await supabase.rpc('table_exists', { table_name })
-    if (!tableExists) {
+    // Check if table exists by trying to query it directly
+    const { data: tableCheck, error: tableError } = await supabase
+      .from(table_name)
+      .select('id')
+      .limit(1)
+
+    if (tableError && tableError.code === 'PGRST116') {
+      console.error('Table does not exist:', table_name, tableError)
       return new Response(
         JSON.stringify({ 
           success: false, 
