@@ -82,7 +82,7 @@ const CoursePurchaseFlow = ({ courseInstance, onClose }: CoursePurchaseFlowProps
               <BookingInformation maxParticipants={courseInstance.max_participants} />
 
               {/* Price selection */}
-              <div className="border-t pt-4 space-y-4">
+              <div className="border-t pt-4 space-y-4 pb-6">
                 <h3 className="font-medium">Välj pris</h3>
                 
                 <div className="space-y-3">
