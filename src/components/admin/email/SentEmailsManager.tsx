@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
-import { Mail, Trash2, Search, Filter, CheckSquare, Square } from 'lucide-react';
+import { Mail, Trash2, Search, Filter, CheckSquare, Square, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useSentEmails, useDeleteSentEmail, useDeleteMultipleSentEmails, type SentEmail } from '@/hooks/useSentEmails';
 
 const emailTypeLabels: Record<string, string> = {
@@ -75,6 +77,14 @@ export const SentEmailsManager = () => {
     await deleteMultipleEmails.mutateAsync(Array.from(selectedEmails));
     setSelectedEmails(new Set());
     setSelectAll(false);
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'sent': return <CheckCircle className="h-3 w-3 text-green-600" />;
+      case 'failed': return <XCircle className="h-3 w-3 text-red-600" />;
+      default: return <Clock className="h-3 w-3 text-yellow-600" />;
+    }
   };
 
   const getStatusBadgeVariant = (status: string) => {
@@ -172,97 +182,120 @@ export const SentEmailsManager = () => {
         </CardContent>
       </Card>
 
-      {/* Email List */}
+      {/* Email Table */}
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Mail className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Mail className="h-4 w-4" />
               {filteredEmails.length} email
             </CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleSelectAll}
-              className="flex items-center gap-2"
-            >
-              {selectAll ? <CheckSquare className="h-4 w-4" /> : <Square className="h-4 w-4" />}
-              Markera alla
-            </Button>
+            <Checkbox
+              checked={selectAll}
+              onCheckedChange={handleSelectAll}
+              className="h-4 w-4"
+            />
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {filteredEmails.map((email) => (
-              <div
-                key={email.id}
-                className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50"
-              >
-                <button
-                  onClick={() => handleSelectEmail(email.id)}
-                  className="flex-shrink-0"
-                >
-                  {selectedEmails.has(email.id) ? 
-                    <CheckSquare className="h-4 w-4 text-primary" /> : 
-                    <Square className="h-4 w-4" />
-                  }
-                </button>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="font-medium text-sm truncate">
-                      {email.recipient_name || email.recipient_email}
-                    </p>
-                    <Badge variant={getTypeBadgeVariant(email.email_type)} className="text-xs">
-                      {emailTypeLabels[email.email_type] || email.email_type}
-                    </Badge>
-                    <Badge variant={getStatusBadgeVariant(email.status)} className="text-xs">
-                      {statusLabels[email.status] || email.status}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground truncate mb-1">
-                    {email.subject}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {format(new Date(email.sent_at), 'dd MMM yyyy HH:mm', { locale: sv })}
-                  </p>
-                </div>
-                
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Bekräfta radering</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Är du säker på att du vill radera detta email? Denna åtgärd kan inte ångras.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Avbryt</AlertDialogCancel>
-                      <AlertDialogAction 
-                        onClick={() => deleteEmail.mutate(email.id)}
-                      >
-                        Radera
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            ))}
-            
-            {filteredEmails.length === 0 && (
-              <div className="text-center py-8 text-muted-foreground">
-                {searchTerm || typeFilter !== 'all' || statusFilter !== 'all' 
-                  ? 'Inga email matchar dina filter'
-                  : 'Inga skickade email ännu'
-                }
-              </div>
-            )}
-          </div>
+        <CardContent className="p-0">
+          {filteredEmails.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              {searchTerm || typeFilter !== 'all' || statusFilter !== 'all' 
+                ? 'Inga email matchar dina filter'
+                : 'Inga skickade email ännu'
+              }
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="w-12"></TableHead>
+                    <TableHead className="w-8"></TableHead>
+                    <TableHead className="min-w-[200px]">Mottagare</TableHead>
+                    <TableHead className="min-w-[120px]">Typ</TableHead>
+                    <TableHead className="min-w-[300px]">Ämne</TableHead>
+                    <TableHead className="min-w-[120px]">Datum</TableHead>
+                    <TableHead className="w-16"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredEmails.map((email) => (
+                    <TableRow key={email.id} className="hover:bg-muted/30">
+                      <TableCell className="py-2">
+                        <Checkbox
+                          checked={selectedEmails.has(email.id)}
+                          onCheckedChange={() => handleSelectEmail(email.id)}
+                          className="h-4 w-4"
+                        />
+                      </TableCell>
+                      <TableCell className="py-2">
+                        {getStatusIcon(email.status)}
+                      </TableCell>
+                      <TableCell className="py-2">
+                        <div className="min-w-0">
+                          <div className="font-medium text-sm truncate">
+                            {email.recipient_name || email.recipient_email}
+                          </div>
+                          {email.recipient_name && (
+                            <div className="text-xs text-muted-foreground truncate">
+                              {email.recipient_email}
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-2">
+                        <Badge 
+                          variant={getTypeBadgeVariant(email.email_type)} 
+                          className="text-xs px-2 py-0.5"
+                        >
+                          {emailTypeLabels[email.email_type] || email.email_type}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="py-2">
+                        <div className="text-sm truncate max-w-[300px]" title={email.subject}>
+                          {email.subject}
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-2">
+                        <div className="text-xs text-muted-foreground">
+                          {format(new Date(email.sent_at), 'dd MMM yyyy', { locale: sv })}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {format(new Date(email.sent_at), 'HH:mm', { locale: sv })}
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-2">
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Bekräfta radering</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Är du säker på att du vill radera detta email? Denna åtgärd kan inte ångras.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => deleteEmail.mutate(email.id)}
+                              >
+                                Radera
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
