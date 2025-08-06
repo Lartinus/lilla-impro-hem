@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
+import { formatPrice } from '@/lib/utils';
 
 interface CourseStripeCheckoutProps {
   courseInstanceId: string;
@@ -107,7 +108,7 @@ const CourseStripeCheckout = ({
           <div><strong>Namn:</strong> {buyerName}</div>
           <div><strong>E-post:</strong> {buyerEmail}</div>
           <div><strong>Telefon:</strong> {buyerPhone}</div>
-          <div><strong>Pris:</strong> {totalAmount} kr ({priceType})</div>
+          <div><strong>Pris:</strong> {formatPrice(totalAmount)} ({priceType})</div>
         </div>
         <p className="text-sm text-gray-600 mt-4">
           Du kommer att omdirigeras till Stripe för säker betalning.

@@ -71,11 +71,12 @@ serve(async (req) => {
       apiVersion: "2023-10-16",
     });
 
-    // Calculate total amount based on price type
-    const totalAmount = useDiscountPrice ? discountPrice : price;
+    // Calculate total amount based on price type (prices are now in öre)
+    const totalAmountInOre = useDiscountPrice ? discountPrice : price;
+    const totalAmountInSEK = totalAmountInOre / 100; // Convert to SEK for Stripe
     const priceType = useDiscountPrice ? "Studentpris" : "Ordinarie pris";
 
-    console.log('Creating session with amount:', totalAmount, 'type:', priceType);
+    console.log('Creating session with amount:', totalAmountInSEK, 'SEK (', totalAmountInOre, 'öre) type:', priceType);
 
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
@@ -87,7 +88,7 @@ serve(async (req) => {
               name: `${courseTitle} - ${priceType}`,
               description: `Kursbokining för ${courseTitle}`,
             },
-            unit_amount: totalAmount * 100, // Convert to öre
+            unit_amount: totalAmountInOre, // Already in öre
           },
           quantity: 1,
         },
@@ -107,7 +108,7 @@ serve(async (req) => {
       course_instance_id: courseInstanceId,
       course_title: courseTitle,
       course_table_name: courseTableName,
-      total_amount: totalAmount,
+      total_amount: totalAmountInOre,
       buyer_name: buyerName,
       buyer_email: buyerEmail,
       buyer_phone: buyerPhone,

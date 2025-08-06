@@ -10,6 +10,7 @@ import { BookingFormFields, formSchema } from '@/components/forms/BookingFormFie
 import { BookingInformation } from '@/components/forms/BookingInformation';
 import { useIsMobile } from '@/hooks/use-mobile';
 import CourseStripeCheckout from './CourseStripeCheckout';
+import { formatPrice } from '@/lib/utils';
 
 interface CoursePurchaseFlowProps {
   courseInstance: {
@@ -95,7 +96,7 @@ const CoursePurchaseFlow = ({ courseInstance, onClose }: CoursePurchaseFlowProps
                         <div className="font-medium">Ordinarie pris</div>
                         <div className="text-sm text-gray-600">För alla deltagare</div>
                       </div>
-                      <div className="font-bold text-lg">{courseInstance.price} kr</div>
+                      <div className="font-bold text-lg">{formatPrice(courseInstance.price)}</div>
                     </div>
                   </div>
 
@@ -108,7 +109,7 @@ const CoursePurchaseFlow = ({ courseInstance, onClose }: CoursePurchaseFlowProps
                         <div className="font-medium">Student/pensionär/kursare</div>
                         <div className="text-sm text-gray-600">Rabatterat pris</div>
                       </div>
-                      <div className="font-bold text-lg">{courseInstance.discount_price} kr</div>
+                      <div className="font-bold text-lg">{formatPrice(courseInstance.discount_price)}</div>
                     </div>
                   </div>
                 </div>
@@ -156,7 +157,7 @@ const CoursePurchaseFlow = ({ courseInstance, onClose }: CoursePurchaseFlowProps
                       <div className="font-medium">Ordinarie pris</div>
                       <div className="text-sm text-gray-600">För alla deltagare</div>
                     </div>
-                    <div className="font-bold text-lg">{courseInstance.price} kr</div>
+                    <div className="font-bold text-lg">{formatPrice(courseInstance.price)}</div>
                   </div>
                 </div>
 
@@ -169,7 +170,7 @@ const CoursePurchaseFlow = ({ courseInstance, onClose }: CoursePurchaseFlowProps
                       <div className="font-medium">Student/pensionär/kursare</div>
                       <div className="text-sm text-gray-600">Rabatterat pris</div>
                     </div>
-                    <div className="font-bold text-lg">{courseInstance.discount_price} kr</div>
+                    <div className="font-bold text-lg">{formatPrice(courseInstance.discount_price)}</div>
                   </div>
                 </div>
               </div>

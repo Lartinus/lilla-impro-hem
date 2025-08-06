@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
+import { formatPrice } from '@/lib/utils';
 
 interface ScanResultsProps {
   ticket: any;
@@ -297,7 +298,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpda
             <div className="mt-3 pt-3 border-t">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Totalt belopp:</span>
-                <span className="font-semibold">{(ticket.total_amount / 100).toFixed(0)} kr</span>
+                <span className="font-semibold">{formatPrice(ticket.total_amount)}</span>
               </div>
             </div>
           </div>

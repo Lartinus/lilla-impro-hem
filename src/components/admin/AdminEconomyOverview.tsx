@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, Ticket, GraduationCap, TrendingUp } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
 
 interface EconomyData {
   ticketRevenue: number;
@@ -41,20 +42,22 @@ export const AdminEconomyOverview = () => {
       if (courseError) throw courseError;
 
       // Calculate TICKET revenue excluding 6% VAT (föreställningar)
-      // total_amount is now stored in öre, so convert to SEK first
-      const ticketRevenueWithVAT = (ticketPurchases || []).reduce(
-        (sum, purchase) => sum + ((purchase.total_amount || 0) / 100),
+      // total_amount is stored in öre
+      const ticketRevenueWithVATInOre = (ticketPurchases || []).reduce(
+        (sum, purchase) => sum + (purchase.total_amount || 0),
         0
       );
-      const ticketRevenue = ticketRevenueWithVAT > 0 ? Math.round(ticketRevenueWithVAT / 1.06) : 0;
+      const ticketRevenueInOre = ticketRevenueWithVATInOre > 0 ? Math.round(ticketRevenueWithVATInOre / 1.06) : 0;
+      const ticketRevenue = Math.round(ticketRevenueInOre / 100); // Convert to SEK for display
 
       // Calculate COURSE revenue excluding 25% VAT (kurser)
-      // total_amount is stored in öre, so convert to SEK first
-      const courseRevenueWithVAT = (coursePurchases || []).reduce(
-        (sum, purchase) => sum + ((purchase.total_amount || 0) / 100),
+      // total_amount is now stored in öre (after migration)
+      const courseRevenueWithVATInOre = (coursePurchases || []).reduce(
+        (sum, purchase) => sum + (purchase.total_amount || 0),
         0
       );
-      const courseRevenue = courseRevenueWithVAT > 0 ? Math.round(courseRevenueWithVAT / 1.25) : 0;
+      const courseRevenueInOre = courseRevenueWithVATInOre > 0 ? Math.round(courseRevenueWithVATInOre / 1.25) : 0;
+      const courseRevenue = Math.round(courseRevenueInOre / 100); // Convert to SEK for display
 
       const totalRevenue = ticketRevenue + courseRevenue;
 
@@ -66,14 +69,7 @@ export const AdminEconomyOverview = () => {
     },
   });
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('sv-SE', {
-      style: 'currency',
-      currency: 'SEK',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount); // Amount is already in SEK
-  };
+  // formatCurrency utility function is now imported from utils
 
   if (isLoading) {
     return (
@@ -131,7 +127,7 @@ export const AdminEconomyOverview = () => {
               <span className="text-sm font-medium">Föreställningar</span>
             </div>
             <div className="text-xl md:text-2xl font-bold mb-1 font-satoshi">
-              {formatCurrency(economyData.ticketRevenue)}
+              {formatCurrency(economyData.ticketRevenue * 100)}
             </div>
             <p className="text-xs md:text-sm text-muted-foreground">Biljettintäkter (exkl. 6% moms)</p>
           </div>
@@ -143,7 +139,7 @@ export const AdminEconomyOverview = () => {
               <span className="text-sm font-medium">Kurser</span>
             </div>
             <div className="text-xl md:text-2xl font-bold mb-1 font-satoshi">
-              {formatCurrency(economyData.courseRevenue)}
+              {formatCurrency(economyData.courseRevenue * 100)}
             </div>
             <p className="text-xs md:text-sm text-muted-foreground">Kursintäkter (exkl. 25% moms)</p>
           </div>
@@ -155,7 +151,7 @@ export const AdminEconomyOverview = () => {
               <span className="text-sm font-medium">Total inkomst</span>
             </div>
             <div className="text-xl md:text-2xl font-bold mb-1 font-satoshi text-primary">
-              {formatCurrency(economyData.totalRevenue)}
+              {formatCurrency(economyData.totalRevenue * 100)}
             </div>
             <p className="text-xs md:text-sm text-muted-foreground">Samtliga intäkter exkl. moms</p>
           </div>

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { formatPrice } from '@/lib/utils';
 
 interface TicketPurchase {
   id: string;
@@ -94,7 +95,7 @@ export const useTicketManagement = () => {
         ticket.buyer_phone,
         (ticket.regular_tickets + ticket.discount_tickets).toString(),
         ticket.ticket_code,
-        `${(ticket.total_amount / 100).toFixed(0)} kr`,
+        formatPrice(ticket.total_amount),
         new Date(ticket.created_at).toLocaleDateString('sv-SE')
       ]);
       
