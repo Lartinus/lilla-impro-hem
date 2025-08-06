@@ -114,7 +114,7 @@ const TicketPurchase = ({
         {/* Discount code section - separate row on mobile */}
         <div className="mt-3 space-y-2">
           <div className="flex items-center space-x-2">
-            <div className="flex-1 min-w-0 border border-black bg-transparent">
+            <div className="w-40 border border-black bg-transparent">
               <Input
                 placeholder="Ev. rabattkod"
                 value={discountCode}
