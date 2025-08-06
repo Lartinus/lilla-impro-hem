@@ -20,9 +20,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        tanker: ['Tanker', 'Impact', 'Arial Black', 'sans-serif'],
-        satoshi: ['Satoshi', 'Inter', 'system-ui', 'sans-serif'],
-        rajdhani: ['Rajdhani', 'Arial', 'Helvetica', 'sans-serif'],
+        tanker: ['Tanker', 'sans-serif'],
+        rajdhani: ['Rajdhani', 'sans-serif'],
+        satoshi: ['Satoshi', 'sans-serif'],
       },
       fontSize: {
         'base-mobile': '18px',

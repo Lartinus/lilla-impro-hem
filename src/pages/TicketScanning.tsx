@@ -26,7 +26,7 @@ export const TicketScanning = () => {
       <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="p-8 text-center max-w-md">
           <Camera className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-          <h1 className="text-2xl mb-2">Endast för mobila enheter</h1>
+          <h1 className="text-2xl font-bold mb-2">Endast för mobila enheter</h1>
           <p className="text-muted-foreground">
             Biljettscanningen är endast tillgänglig på mobil och tablet för att kunna använda kameran.
           </p>
@@ -41,7 +41,7 @@ export const TicketScanning = () => {
       <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="p-8 text-center max-w-md">
           <Scan className="h-16 w-16 mx-auto mb-4 text-primary" />
-          <h1 className="text-2xl mb-2">Biljettscanning</h1>
+          <h1 className="text-2xl font-bold mb-2">Biljettscanning</h1>
           <p className="text-muted-foreground mb-6">
             Du måste vara inloggad för att komma åt biljettscanningen.
           </p>
@@ -69,7 +69,7 @@ export const TicketScanning = () => {
       <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="p-8 text-center max-w-md">
           <User className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-          <h1 className="text-2xl mb-2">Ingen behörighet</h1>
+          <h1 className="text-2xl font-bold mb-2">Ingen behörighet</h1>
           <p className="text-muted-foreground mb-4">
             Du har inte behörighet att komma åt biljettscanningen. Kontakta en administratör för att få 'staff' eller 'admin' behörighet.
           </p>

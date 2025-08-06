@@ -50,7 +50,7 @@ export default function Index() {
           
           {/* Text overlay - positioned in lower area */}
           <div className="absolute bottom-[5%] left-1/2 transform -translate-x-1/2 px-4 w-full max-w-[90vw] sm:max-w-[500px]">
-            <h3 className="font-rajdhani text-[16px] sm:text-[18px] md:text-[20px] text-white text-center mb-6 font-medium">
+            <h3 className="font-rajdhani text-[16px] sm:text-[18px] md:text-[20px] text-center mb-6" style={{ color: 'rgb(var(--white))' }}>
               Vi är en plats för dig som vill lära dig,<br />
               utöva och uppleva Improv&nbsp;Comedy.
             </h3>
@@ -61,7 +61,7 @@ export default function Index() {
                 size={24}
                 strokeWidth={2}
                 className="animate-bounce"
-                style={{ color: 'white' }}
+                style={{ color: 'rgb(var(--white))' }}
               />
             </div>
           </div>

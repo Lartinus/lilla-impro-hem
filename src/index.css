@@ -71,6 +71,7 @@
 
 /* Body & text rendering */
 body {
+  font-family: 'Satoshi', sans-serif;
   background-color: rgb(var(--background));
   color:            rgb(var(--foreground));
   line-height:      1.5;
@@ -101,8 +102,8 @@ h2 {
 
 h3 {
   font-family:    'Rajdhani', sans-serif;
-  font-weight:    400;
   font-size:      16px;
+  font-weight:    550;
   color:          rgb(var(--text-black));
   margin-bottom:  8px;
   line-height:    1.1;
