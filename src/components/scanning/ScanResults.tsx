@@ -297,7 +297,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ ticket, onBack, onUpda
             <div className="mt-3 pt-3 border-t">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Totalt belopp:</span>
-                <span className="font-semibold">{ticket.total_amount} kr</span>
+                <span className="font-semibold">{(ticket.total_amount / 100).toFixed(0)} kr</span>
               </div>
             </div>
           </div>

@@ -94,7 +94,7 @@ export const useTicketManagement = () => {
         ticket.buyer_phone,
         (ticket.regular_tickets + ticket.discount_tickets).toString(),
         ticket.ticket_code,
-        `${ticket.total_amount} kr`,
+        `${(ticket.total_amount / 100).toFixed(0)} kr`,
         new Date(ticket.created_at).toLocaleDateString('sv-SE')
       ]);
       
