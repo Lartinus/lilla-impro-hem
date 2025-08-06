@@ -89,7 +89,7 @@ const TicketPurchase = ({
       <h2 className="text-content-primary mb-4">Köp biljetter</h2>
       
       <div className="mb-4 flex flex-col md:flex-row md:gap-2">
-        <div className="mb-4 md:mb-0 flex-1">
+        <div className="mb-4 md:mb-0 flex-shrink-0">
           <div className="font-medium text-content-primary mb-3">Pris {ticketPrice}kr</div>
           <div className="flex items-center space-x-4">
             <div className="relative w-24 border border-black bg-transparent flex items-center">
@@ -113,7 +113,7 @@ const TicketPurchase = ({
           </div>
         </div>
 
-        <div className="flex-1">
+        <div className="flex-shrink-0">
           <div className="font-medium text-content-primary mb-3">Student/pensionär/kursare {discountPrice}kr</div>
           <div className="relative w-24 border border-black bg-transparent flex items-center">
             <button
