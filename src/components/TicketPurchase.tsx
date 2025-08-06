@@ -104,12 +104,59 @@ const TicketPurchase = ({
             <button
               onClick={() => setTicketCount(ticketCount + 1)}
               className="h-8 w-6 flex items-center justify-center hover:bg-gray-100 focus:outline-none"
-              disabled={ticketCount + discountTickets >= availableTickets || ticketCount + discountTickets >= 12}
+              disabled={ticketCount + discountTickets >= availableTickets}
             >
               <ChevronRight size={12} className="text-form-text-muted" />
             </button>
           </div>
         </div>
+        
+        {/* Discount code section - separate row on mobile */}
+        <div className="mt-3 space-y-2">
+          <div className="flex items-center space-x-2">
+            <div className="w-24 border border-black bg-transparent">
+              <Input
+                value={discountCode}
+                onChange={(e) => setDiscountCode(e.target.value)}
+                className="rounded-none border-0 text-form-text h-10 focus:border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder-form-placeholder text-base"
+                style={{ fontSize: '16px' }}
+                disabled={!!appliedDiscountCode}
+              />
+            </div>
+            {discountCode.trim() && !appliedDiscountCode && (
+              <Button
+                onClick={handleApplyDiscountCode}
+                disabled={isValidating}
+                className="h-10 px-4 text-base rounded-none border border-black bg-transparent text-form-text hover:bg-gray-50 focus-visible:ring-0 focus-visible:ring-offset-0 whitespace-nowrap font-normal flex-shrink-0"
+              >
+                {isValidating ? 'Validerar...' : 'Tillämpa'}
+              </Button>
+            )}
+            {appliedDiscountCode && (
+              <Button
+                onClick={handleRemoveDiscountCode}
+                className="h-10 px-4 text-base rounded-none border border-red-600 bg-transparent text-red-600 hover:bg-red-50 focus-visible:ring-0 focus-visible:ring-offset-0 whitespace-nowrap font-normal flex-shrink-0"
+              >
+                Ta bort
+              </Button>
+            )}
+          </div>
+        </div>
+        
+        {/* Discount validation feedback */}
+        {appliedDiscountCode && (
+          <div className="mt-2">
+            {discountValidation.valid ? (
+              <div className="text-green-600 text-sm">
+                ✓ Rabattkod applicerad: -{discountValidation.discountAmount.toFixed(2).replace(/\.?0+$/, '')}kr
+              </div>
+            ) : discountValidation.error ? (
+              <div className="text-red-600 text-sm">
+                ✗ {discountValidation.error}
+              </div>
+            ) : null}
+          </div>
+        )}
       </div>
 
       <div className="mb-4">
@@ -127,60 +174,11 @@ const TicketPurchase = ({
           <button
             onClick={() => setDiscountTickets(discountTickets + 1)}
             className="h-8 w-6 flex items-center justify-center hover:bg-gray-100 focus:outline-none"
-            disabled={ticketCount + discountTickets >= availableTickets || ticketCount + discountTickets >= 12}
+            disabled={ticketCount + discountTickets >= availableTickets}
           >
             <ChevronRight size={12} className="text-form-text-muted" />
           </button>
         </div>
-      </div>
-
-      {/* Discount code section */}
-      <div className="mb-4">
-        <div className="font-medium text-content-primary mb-3">Rabattkod</div>
-        <div className="flex items-center space-x-2">
-          <div className="w-40 border border-black bg-transparent">
-            <Input
-              placeholder="Rabattkod"
-              value={discountCode}
-              onChange={(e) => setDiscountCode(e.target.value)}
-              className="rounded-none border-0 text-form-text h-10 focus:border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent placeholder-form-placeholder text-base"
-              style={{ fontSize: '16px' }}
-              disabled={!!appliedDiscountCode}
-            />
-          </div>
-          {discountCode.trim() && !appliedDiscountCode && (
-            <Button
-              onClick={handleApplyDiscountCode}
-              disabled={isValidating}
-              className="h-10 px-4 text-base rounded-none border border-black bg-transparent text-form-text hover:bg-gray-50 focus-visible:ring-0 focus-visible:ring-offset-0 whitespace-nowrap font-normal flex-shrink-0"
-            >
-              {isValidating ? 'Validerar...' : 'Tillämpa'}
-            </Button>
-          )}
-          {appliedDiscountCode && (
-            <Button
-              onClick={handleRemoveDiscountCode}
-              className="h-10 px-4 text-base rounded-none border border-red-600 bg-transparent text-red-600 hover:bg-red-50 focus-visible:ring-0 focus-visible:ring-offset-0 whitespace-nowrap font-normal flex-shrink-0"
-            >
-              Ta bort
-            </Button>
-          )}
-        </div>
-        
-        {/* Discount validation feedback */}
-        {appliedDiscountCode && (
-          <div className="mt-2">
-            {discountValidation.valid ? (
-              <div className="text-green-600 text-sm">
-                ✓ Rabattkod applicerad: -{discountValidation.discountAmount.toFixed(2).replace(/\.?0+$/, '')}kr
-              </div>
-            ) : discountValidation.error ? (
-              <div className="text-red-600 text-sm">
-                ✗ {discountValidation.error}
-              </div>
-            ) : null}
-          </div>
-        )}
       </div>
 
       {availableTickets <= 20 && (
