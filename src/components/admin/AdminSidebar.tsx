@@ -114,6 +114,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       type: 'single' as const
     },
     {
+      id: 'stripe',
+      title: 'Stripe-inställningar',
+      icon: CreditCard,
+      type: 'single' as const
+    },
+    {
       id: 'users',
       title: 'Användare',
       icon: Users,

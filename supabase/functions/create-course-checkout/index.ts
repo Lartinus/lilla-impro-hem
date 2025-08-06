@@ -18,6 +18,21 @@ serve(async (req) => {
     console.log('Request method:', req.method);
     console.log('Request headers:', Object.fromEntries(req.headers.entries()));
 
+    // Get Stripe mode from settings
+    const { data: settingsData, error: settingsError } = await supabase
+      .from('settings')
+      .select('value')
+      .eq('key', 'stripe_mode')
+      .single();
+    
+    if (settingsError) {
+      console.error('Error fetching stripe mode:', settingsError);
+      throw new Error('Failed to get payment configuration');
+    }
+    
+    const stripeMode = settingsData.value || 'test';
+    console.log('💳 Stripe mode:', stripeMode);
+
     const body = await req.json();
     const {
       courseInstanceId,
@@ -39,11 +54,14 @@ serve(async (req) => {
     console.log('Request body received:', body);
     console.log('Creating course checkout for:', courseTitle);
     
-    // Check if Stripe secret key exists
-    const stripeSecretKey = Deno.env.get("STRIPE_SECRETKEY_TEST");
+    // Get appropriate Stripe key based on mode
+    const stripeSecretKey = stripeMode === 'live' 
+      ? Deno.env.get('STRIPE_SECRETKEY_LIVE')
+      : Deno.env.get('STRIPE_SECRETKEY_TEST');
+    
     if (!stripeSecretKey) {
-      console.error('STRIPE_SECRETKEY_TEST environment variable is not set');
-      throw new Error('Stripe configuration missing');
+      console.error(`Missing Stripe secret key for ${stripeMode} mode`);
+      throw new Error(`Stripe ${stripeMode} mode not configured`);
     }
     
     console.log('Stripe key found, length:', stripeSecretKey.length);

@@ -16,9 +16,33 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const stripeSecretKey = Deno.env.get('STRIPE_SECRETKEY_TEST')!;
     
     const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    // Get Stripe mode from settings
+    const { data: settingsData, error: settingsError } = await supabase
+      .from('settings')
+      .select('value')
+      .eq('key', 'stripe_mode')
+      .single();
+    
+    if (settingsError) {
+      console.error('Error fetching stripe mode:', settingsError);
+      throw new Error('Failed to get payment configuration');
+    }
+    
+    const stripeMode = settingsData.value || 'test';
+    console.log('💳 Stripe mode:', stripeMode);
+    
+    // Get appropriate Stripe key based on mode
+    const stripeSecretKey = stripeMode === 'live' 
+      ? Deno.env.get('STRIPE_SECRETKEY_LIVE')
+      : Deno.env.get('STRIPE_SECRETKEY_TEST');
+    
+    if (!stripeSecretKey) {
+      console.error(`Missing Stripe secret key for ${stripeMode} mode`);
+      throw new Error(`Stripe ${stripeMode} mode not configured`);
+    }
     
     const { 
       showSlug, 

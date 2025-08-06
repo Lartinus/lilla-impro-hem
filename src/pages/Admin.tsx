@@ -23,6 +23,7 @@ import { ActorManagement } from '@/components/admin/ActorManagement';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { DiscountCodeManagement } from '@/components/admin/DiscountCodeManagement';
 import { ImageManagement } from '@/components/admin/ImageManagement';
+import { StripeSettingsManagement } from '@/components/admin/StripeSettingsManagement';
 import EmailManagement from '@/components/admin/EmailManagement';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { AdminShowsOverview } from '@/components/admin/AdminShowsOverview';
@@ -157,6 +158,8 @@ const AdminDashboard = () => {
         return <UserManagement />;
       case 'images':
         return <ImageManagement />;
+      case 'stripe':
+        return <StripeSettingsManagement />;
       case 'email-send':
         return <EmailManagement activeTab="send" />;
       case 'email-templates':
