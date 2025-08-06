@@ -106,8 +106,8 @@ const AdminDashboard = () => {
     );
   }
 
-  // Show access denied if not admin
-  if (userRole !== 'admin') {
+  // Show access denied if not admin or superadmin
+  if (!['admin', 'superadmin'].includes(userRole || '')) {
     return (
       <div className="min-h-screen bg-background-gray font-satoshi">
         <Header />

@@ -101,8 +101,8 @@ export const TicketScanning = () => {
       <div className="container pt-6 mx-auto p-6 max-w-2xl">
         <div className="mb-8">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Badge variant={userRole === 'admin' ? 'default' : 'secondary'} className="text-xs">
-              {userRole === 'admin' ? 'Admin' : 'Staff'}
+            <Badge variant={['admin', 'superadmin'].includes(userRole || '') ? 'default' : 'secondary'} className="text-xs">
+              {userRole === 'superadmin' ? 'Superadmin' : userRole === 'admin' ? 'Admin' : 'Staff'}
             </Badge>
             <span>{user.email}</span>
             <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs">
