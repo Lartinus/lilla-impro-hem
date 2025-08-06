@@ -28,9 +28,7 @@ export function createSimpleEmailTemplate(subject: string, content: string): str
     </div>
     
     <div style="background: linear-gradient(135deg, #dc2626, #b91c1c); padding: 32px; color: white !important; text-align: center;">
-      <div style="font-family: 'Tanker', 'Helvetica Neue', sans-serif !important; font-size: 24px; font-weight: 400 !important; margin-bottom: 8px; color: white !important; text-align: center;">
-        LILLA IMPROTEATERN
-      </div>
+      <img src="https://gcimnsbeexkkqragmdzo.supabase.co/storage/v1/object/public/images/logos/LillaImproteatern-white.png" alt="Lilla Improteatern" style="height: 24px; width: auto; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;">
       <div style="font-family: 'Satoshi', 'Helvetica Neue', sans-serif !important; font-size: 14px; opacity: 0.9; margin-bottom: 16px; color: white !important;">
         Improvisationsteater • Kurser • Föreställningar
       </div>
