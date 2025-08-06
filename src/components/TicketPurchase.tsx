@@ -88,7 +88,7 @@ const TicketPurchase = ({
     <div className="mb-6">
       <h2 className="text-content-primary mb-4">Köp biljetter</h2>
       
-      <div className="mb-4 flex flex-col md:flex-row md:gap-4">
+      <div className="mb-4 flex flex-col md:flex-row md:gap-2">
         <div className="mb-4 md:mb-0 flex-1">
           <div className="font-medium text-content-primary mb-3">Pris {ticketPrice}kr</div>
           <div className="flex items-center space-x-4">
