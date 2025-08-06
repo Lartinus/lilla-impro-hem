@@ -118,7 +118,7 @@ export function createUnifiedEmailTemplate(
           <!-- Footer -->
           <tr>
             <td style="background-color: #dc2626 !important; padding: 40px; text-align: center;">
-              <h1 class="tanker-font" style="font-family: 'Tanker', 'Impact', 'Arial Black', 'Franklin Gothic Bold', 'Helvetica Bold', sans-serif; font-size: 32px; color: white !important; margin: 0 0 16px 0; font-weight: 400;">LILLA IMPROTEATERN</h1>
+              <img src="https://improteatern.se/logo/LillaImproteatern-white.png" alt="Lilla Improteatern" style="height: 32px; width: auto; margin: 0 0 16px 0; display: block; margin-left: auto; margin-right: auto;">
               <p style="font-size: 14px; color: rgba(255, 255, 255, 0.9) !important; margin: 0; font-family: 'Satoshi', Arial, sans-serif;">
                 <a href="{UNSUBSCRIBE_URL}" style="color: rgba(255, 255, 255, 0.9) !important; text-decoration: underline;">Avprenumerera</a>
               </p>
