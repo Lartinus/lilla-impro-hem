@@ -179,7 +179,7 @@ export const TicketSalesOverview = ({ showSlug, showTitle, maxTickets }: TicketS
       sale.discount_tickets,
       sale.regular_tickets + sale.discount_tickets,
       (sale.total_amount / 100).toFixed(2),
-      (sale.total_amount / 1.06 / 100).toFixed(2)
+      (sale.total_amount / 1.06 / 100).toFixed(2),
       sale.discount_code || '',
       sale.payment_status === 'paid' ? 'Betald' : 'Återbetald',
       sale.refund_status === 'processed' ? 'Återbetald' : 'Ej återbetald',
