@@ -32,10 +32,23 @@ serve(async (req) => {
 
     // Try to get participants directly - if table doesn't exist, it will throw an error
     try {
-      const { data, error } = await supabase
+      // First try with the new columns (resend tracking)
+      let { data, error } = await supabase
         .from(table_name)
         .select('email, name, phone, created_at, resend_count, last_resent_at')
         .order('created_at', { ascending: true })
+      
+      // If that fails (columns don't exist), try without the new columns
+      if (error && error.message.includes('column')) {
+        console.log('Resend tracking columns not found, trying without them')
+        const fallbackResult = await supabase
+          .from(table_name)
+          .select('email, name, phone, created_at')
+          .order('created_at', { ascending: true })
+        
+        data = fallbackResult.data
+        error = fallbackResult.error
+      }
 
       if (error) {
         console.error('Error getting participants:', error)
