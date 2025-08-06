@@ -245,12 +245,19 @@
   font-style: normal;
 }
 
-/* Primary Rajdhani font - using Medium weight as default */
+/**
+* This is a variable font
+* You can control variable axes as shown below:
+* font-variation-settings: wght 400.0;
+*
+* available axes:
+'wght' (range from 300.0 to 700.0
+*/
 @font-face {
   font-family: 'Rajdhani';
-  src: url('./Rajdhani-Medium.woff2') format('woff2'),
-       url('./Rajdhani-Medium.woff') format('woff');
-  font-weight: 500;
+  src: url('./Rajdhani-Variable.woff2') format('woff2'),
+       url('./Rajdhani-Variable.woff') format('woff');
+  font-weight: 300 700;
   font-display: fallback;
   font-style: normal;
 }
