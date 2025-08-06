@@ -20,7 +20,10 @@ serve(async (req) => {
 
     const { table_name, old_email, new_name, new_email, new_phone } = await req.json()
 
+    console.log('🔧 update-course-participant called with:', { table_name, old_email, new_name, new_email, new_phone })
+
     if (!table_name || !old_email || !new_name || !new_email || !new_phone) {
+      console.error('❌ Missing required parameters:', { table_name, old_email, new_name, new_email, new_phone })
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -63,14 +66,18 @@ serve(async (req) => {
       )
     }
 
+    console.log('🔍 Checking if table exists:', table_name)
+    
     // Check if table exists by trying to query it directly
     const { data: tableCheck, error: tableError } = await supabase
       .from(table_name)
       .select('id')
       .limit(1)
 
+    console.log('📊 Table check result:', { tableCheck, tableError })
+
     if (tableError && tableError.code === 'PGRST116') {
-      console.error('Table does not exist:', table_name, tableError)
+      console.error('❌ Table does not exist:', table_name, tableError)
       return new Response(
         JSON.stringify({ 
           success: false, 
