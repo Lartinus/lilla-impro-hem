@@ -38,9 +38,18 @@ export const EditParticipantDialog = ({
   }, [participant]);
 
   const handleSave = () => {
+    console.log('🔧 EditParticipantDialog handleSave called', { participant, formData });
+    
     if (!participant || !formData.name.trim() || !formData.email.trim() || !formData.phone.trim()) {
+      console.log('❌ Form validation failed', { participant, formData });
       return;
     }
+
+    console.log('✅ Calling onSave with:', participant.email, {
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      phone: formData.phone.trim()
+    });
 
     onSave(participant.email, {
       name: formData.name.trim(),

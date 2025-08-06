@@ -257,6 +257,8 @@ export const useCourseParticipants = () => {
       oldEmail: string; 
       newData: { name: string; email: string; phone: string } 
     }) => {
+      console.log('🔄 updateParticipantMutation called with:', { tableName, oldEmail, newData });
+      
       const { data, error } = await supabase.functions.invoke('update-course-participant', {
         body: {
           table_name: tableName,
@@ -344,6 +346,7 @@ export const useCourseParticipants = () => {
   });
 
   const handleUpdateParticipant = (tableName: string, oldEmail: string, newData: { name: string; email: string; phone: string }) => {
+    console.log('🔧 handleUpdateParticipant called with:', { tableName, oldEmail, newData });
     updateParticipantMutation.mutate({ tableName, oldEmail, newData });
   };
 
