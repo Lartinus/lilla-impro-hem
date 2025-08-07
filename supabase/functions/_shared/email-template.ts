@@ -97,7 +97,7 @@ export function createUnifiedEmailTemplate(
           <!-- Header Image -->
           <tr>
             <td style="padding: 0;">
-              <img src="${backgroundImage}" alt="Header image" style="width: 600px; height: 320px; object-fit: cover; display: block;">
+              <img src="${backgroundImage}" alt="Header image" style="width: 100% !important; max-width: 600px !important; height: auto !important; display: block; margin: 0 auto; object-fit: cover;">
             </td>
           </tr>
           ` : ''}
