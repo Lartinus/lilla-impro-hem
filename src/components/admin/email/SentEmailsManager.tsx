@@ -13,13 +13,24 @@ import { useSentEmails, useDeleteSentEmail, useDeleteMultipleSentEmails, type Se
 import { SentEmailPreviewDialog } from './SentEmailPreviewDialog';
 
 const emailTypeLabels: Record<string, string> = {
-  'bulk': 'Masskicks',
-  'course_confirmation': 'Kursbekräftelse',
-  'ticket_confirmation': 'Biljettbekräftelse',
-  'course_offer': 'Kurserbjudande',
-  'inquiry': 'Förfrågan',
-  'interest_confirmation': 'Intressebekräftelse',
-  'newsletter': 'Nyhetsbrev',
+  bulk: 'Massutskick',
+  manual: 'Manuellt mejl',
+  newsletter: 'Nyhetsbrev',
+  newsletter_confirmation: 'Nyhetsbrevsbekräftelse',
+  email_confirmation: 'E-postbekräftelse',
+  interest_confirmation: 'Bekräftelse intresseanmälan',
+  inquiry_notification: 'Ny förfrågan',
+  inquiry: 'Förfrågan',
+  course_confirmation: 'Kursbekräftelse',
+  course_confirmation_resend: 'Kursbekräftelse (omskick)',
+  course_offer: 'Kurserbjudande',
+  course_offer_reminder: 'Påminnelse – kurserbjudande',
+  waitlist_offer: 'Erbjudande från väntelista',
+  waitlist_confirmation: 'Bekräftelse väntelista',
+  ticket_confirmation: 'Biljettbekräftelse',
+  ticket_confirmation_resend: 'Biljettbekräftelse (omskick)',
+  payment_receipt: 'Kvitto på betalning',
+  refund_receipt: 'Kvitto på återbetalning',
 };
 
 const statusLabels: Record<string, string> = {
@@ -86,22 +97,35 @@ export const SentEmailsManager = () => {
     setIsPreviewOpen(true);
   };
 
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-      case 'sent': return 'default';
-      case 'failed': return 'destructive';
-      default: return 'secondary';
-    }
-  };
+const getStatusBadgeVariant = (status: string) => {
+  switch (status) {
+    case 'sent': return 'default';
+    case 'failed': return 'destructive';
+    default: return 'secondary';
+  }
+};
 
-  const getTypeBadgeVariant = (type: string) => {
-    switch (type) {
-      case 'bulk': return 'default';
-      case 'course_confirmation': return 'secondary';
-      case 'ticket_confirmation': return 'outline';
-      default: return 'secondary';
-    }
-  };
+const getEmailCategory = (type: string): 'course' | 'email' | 'show' => {
+  const t = type.toLowerCase();
+  if (t.includes('course') || t.includes('waitlist')) return 'course';
+  if (t.includes('ticket') || t.includes('show')) return 'show';
+  return 'email';
+};
+
+const getTypeBadgeClasses = (type: string) => {
+  switch (getEmailCategory(type)) {
+    case 'course':
+      return 'bg-[rgb(var(--course-tag-gray))] text-white-override';
+    case 'show':
+      return 'bg-[rgb(var(--action-blue-hover))] text-white-override';
+    default:
+      return 'bg-[rgb(var(--guest-blue-gray))] text-white-override';
+  }
+};
+
+const getEmailTypeLabel = (type: string) => {
+  return emailTypeLabels[type] || type.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+};
 
   if (isLoading) {
     return <div className="p-4">Laddar skickade email...</div>;
@@ -248,9 +272,9 @@ export const SentEmailsManager = () => {
                       </div>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">
-                      <Badge variant={getTypeBadgeVariant(email.email_type)} className="text-xs px-2 py-1">
-                        {emailTypeLabels[email.email_type] || email.email_type}
-                      </Badge>
+<Badge className={`text-xs px-2 py-1 border-transparent ${getTypeBadgeClasses(email.email_type)}`}>
+  {getEmailTypeLabel(email.email_type)}
+</Badge>
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">
                       <Badge variant={getStatusBadgeVariant(email.status)} className="text-xs px-2 py-1">
@@ -261,9 +285,9 @@ export const SentEmailsManager = () => {
                       <div className="max-w-[300px]">
                         <div className="truncate text-sm">{email.subject}</div>
                         <div className="sm:hidden flex gap-1 mt-1">
-                          <Badge variant={getTypeBadgeVariant(email.email_type)} className="text-xs px-1 py-0">
-                            {emailTypeLabels[email.email_type] || email.email_type}
-                          </Badge>
+<Badge className={`text-xs px-1 py-0 border-transparent ${getTypeBadgeClasses(email.email_type)}`}>
+  {getEmailTypeLabel(email.email_type)}
+</Badge>
                           <Badge variant={getStatusBadgeVariant(email.status)} className="text-xs px-1 py-0">
                             {statusLabels[email.status] || email.status}
                           </Badge>
