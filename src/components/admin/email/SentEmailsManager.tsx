@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
 import { Mail, Trash2, Search, Filter, CheckSquare, Square, Eye } from 'lucide-react';
@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationNext } from '@/components/ui/pagination';
 import { useSentEmails, useDeleteSentEmail, useDeleteMultipleSentEmails, type SentEmail } from '@/hooks/useSentEmails';
 import { SentEmailPreviewDialog } from './SentEmailPreviewDialog';
 
@@ -64,12 +65,30 @@ export const SentEmailsManager = () => {
     return matchesSearch && matchesType && matchesStatus;
   });
 
+  // Pagination
+  const PAGE_SIZE = 15;
+  const [currentPage, setCurrentPage] = useState(1);
+  useEffect(() => { setCurrentPage(1); }, [searchTerm, typeFilter, statusFilter]);
+  const totalPages = Math.max(1, Math.ceil(filteredEmails.length / PAGE_SIZE));
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const currentEmails = filteredEmails.slice(startIndex, startIndex + PAGE_SIZE);
+
+  // Keep "Markera alla" in sync with current page selection
+  useEffect(() => {
+    const allSelected = currentEmails.length > 0 && currentEmails.every(e => selectedEmails.has(e.id));
+    setSelectAll(allSelected);
+  }, [currentPage, filteredEmails, selectedEmails]);
+
   const handleSelectAll = () => {
+    const newSelected = new Set(selectedEmails);
     if (selectAll) {
-      setSelectedEmails(new Set());
+      // Unselect all on current page
+      currentEmails.forEach(e => newSelected.delete(e.id));
     } else {
-      setSelectedEmails(new Set(filteredEmails.map(email => email.id)));
+      // Select all on current page
+      currentEmails.forEach(e => newSelected.add(e.id));
     }
+    setSelectedEmails(newSelected);
     setSelectAll(!selectAll);
   };
 
@@ -81,7 +100,7 @@ export const SentEmailsManager = () => {
       newSelected.add(emailId);
     }
     setSelectedEmails(newSelected);
-    setSelectAll(newSelected.size === filteredEmails.length);
+    setSelectAll(currentEmails.length > 0 && currentEmails.every(e => newSelected.has(e.id)));
   };
 
   const handleDeleteSelected = async () => {
@@ -246,7 +265,7 @@ const getEmailTypeLabel = (type: string) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredEmails.map((email) => (
+                {currentEmails.map((email) => (
                   <TableRow key={email.id} className="hover:bg-muted/30">
                     <TableCell>
                       <button
@@ -347,6 +366,24 @@ const getEmailTypeLabel = (type: string) => {
                   ? 'Inga email matchar dina filter'
                   : 'Inga skickade email ännu'
                 }
+              </div>
+            )}
+
+            {filteredEmails.length > 0 && (
+              <div className="flex items-center justify-between p-4">
+                <div className="text-sm text-muted-foreground">
+                  Sida {currentPage} av {totalPages}
+                </div>
+                <Pagination className="justify-end">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious href="#" className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''} onClick={(e) => { e.preventDefault(); if (currentPage > 1) setCurrentPage(currentPage - 1); }} />
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationNext href="#" className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''} onClick={(e) => { e.preventDefault(); if (currentPage < totalPages) setCurrentPage(currentPage + 1); }} />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
               </div>
             )}
           </div>
