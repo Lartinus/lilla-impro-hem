@@ -297,24 +297,6 @@ export const CourseTemplateManagement = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="price">Pris (kr)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  value={editingTemplate.price}
-                  onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, price: parseInt(e.target.value) || 0 } : null)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="discount_price">Rabatterat pris (kr)</Label>
-                <Input
-                  id="discount_price"
-                  type="number"
-                  value={editingTemplate.discount_price || 0}
-                  onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, discount_price: parseInt(e.target.value) || 0 } : null)}
-                />
-              </div>
-              <div className="space-y-2">
                 <Label htmlFor="sessions">Antal tillfällen</Label>
                 <Input
                   id="sessions"
@@ -323,7 +305,7 @@ export const CourseTemplateManagement = () => {
                   onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, sessions: parseInt(e.target.value) || 0 } : null)}
                 />
               </div>
-                <div className="space-y-2">
+              <div className="space-y-2">
                 <Label htmlFor="hours_per_session">Timmar per tillfälle</Label>
                 <Input
                   id="hours_per_session"
@@ -340,6 +322,24 @@ export const CourseTemplateManagement = () => {
                   type="time"
                   value={editingTemplate.start_time || '18:00'}
                   onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, start_time: e.target.value } : null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="price">Pris (kr)</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  value={editingTemplate.price}
+                  onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, price: parseInt(e.target.value) || 0 } : null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="discount_price">Rabatterat pris (kr)</Label>
+                <Input
+                  id="discount_price"
+                  type="number"
+                  value={editingTemplate.discount_price || 0}
+                  onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, discount_price: parseInt(e.target.value) || 0 } : null)}
                 />
               </div>
             </div>
