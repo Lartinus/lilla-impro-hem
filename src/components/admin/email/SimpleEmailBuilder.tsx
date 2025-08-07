@@ -12,6 +12,16 @@ import { ImagePicker } from '../ImagePicker';
 import { supabase } from '@/integrations/supabase/client';
 import { EmailGroup, EmailContact, GroupMember, EmailTemplate } from './types';
 import { createUnifiedEmailTemplate } from '../../../../supabase/functions/_shared/email-template';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface SimpleEmailBuilderProps {
   emailGroups: EmailGroup[];
@@ -26,6 +36,8 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts, emailTemplates 
   const [selectedRecipients, setSelectedRecipients] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [confirmInfo, setConfirmInfo] = useState<{ groupName: string; recipientCount: number } | null>(null);
 
   // Filter out automatic templates (those starting with "AUTO:")
   const nonAutoTemplates = emailTemplates.filter(template => !template.name.startsWith('AUTO:'));
@@ -131,13 +143,11 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts, emailTemplates 
 
     const groupName = selectedRecipients === 'all' ? 'Alla kontakter' : emailGroups.find(g => g.id === selectedRecipients)?.name || 'Okänd grupp';
 
-    // Add confirmation dialog
-    const confirmed = confirm(
-      `Är du säker på att du vill skicka det här mejlet?\n\nÄmne: "${subject}"\nMottagare: ${groupName} (${recipientCount} personer)\n\nMejlet kan inte ångras efter att det skickats.`
-    );
-    
-    if (!confirmed) return;
+    setConfirmInfo({ groupName, recipientCount });
+    setIsConfirmOpen(true);
+  };
 
+  const performSendEmail = async () => {
     setIsLoading(true);
 
     try {
@@ -182,6 +192,8 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts, emailTemplates 
       setBackgroundImage('');
       setSelectedRecipients('');
       setSelectedTemplate('');
+      setIsConfirmOpen(false);
+      setConfirmInfo(null);
     } catch (error: any) {
       console.error('Email sending error:', error);
       toast({
@@ -337,6 +349,30 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts, emailTemplates 
             )}
           </div>
         </div>
+
+        {/* Confirm Dialog */}
+        <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Skicka mejlet?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Är du säker på att du vill skicka detta mejl?
+                <br />
+                Ämne: "{subject || 'Ämne saknas'}"
+                <br />
+                Mottagare: {confirmInfo?.groupName ?? '—'} ({confirmInfo?.recipientCount ?? 0} personer)
+                <br />
+                Mejlet kan inte ångras efter att det skickats.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isLoading}>Avbryt</AlertDialogCancel>
+              <AlertDialogAction onClick={performSendEmail} disabled={isLoading}>
+                {isLoading ? 'Skickar...' : 'Skicka'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {/* Send Button */}
         <div className="flex justify-end pt-4">
