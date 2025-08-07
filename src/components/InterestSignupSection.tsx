@@ -149,7 +149,7 @@ export const InterestSignupSection = () => {
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     Anmäl intresse
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <span className="text-2xl font-bold">→</span>
                   </Button>
                 </div>
               </CardContent>
