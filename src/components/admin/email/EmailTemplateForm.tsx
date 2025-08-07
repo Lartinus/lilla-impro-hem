@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ImagePicker } from '../ImagePicker';
 import { EmailTemplate } from './types';
+import { Heading1, Heading2 } from 'lucide-react';
 
 interface TemplateForm {
   name: string;
@@ -31,6 +32,46 @@ export function EmailTemplateForm({
 }: EmailTemplateFormProps) {
   const updateForm = (updates: Partial<TemplateForm>) => {
     onFormChange({ ...templateForm, ...updates });
+  };
+
+  const insertAtCursor = (textToInsert: string) => {
+    const textarea = document.getElementById('template-content') as HTMLTextAreaElement | null;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart ?? 0;
+    const end = textarea.selectionEnd ?? 0;
+    const current = templateForm.content || '';
+    const newContent = current.substring(0, start) + textToInsert + current.substring(end);
+
+    updateForm({ content: newContent });
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + textToInsert.length, start + textToInsert.length);
+    }, 0);
+  };
+
+  const insertHeader = (level: 1 | 2) => {
+    const textarea = document.getElementById('template-content') as HTMLTextAreaElement | null;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart ?? 0;
+    const end = textarea.selectionEnd ?? 0;
+    const prefix = level === 1 ? 'H1: ' : 'H2: ';
+
+    if (start !== end) {
+      const current = templateForm.content || '';
+      const selectedText = current.substring(start, end);
+      const newContent = current.substring(0, start) + prefix + selectedText + current.substring(end);
+      updateForm({ content: newContent });
+
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + prefix.length, end + prefix.length);
+      }, 0);
+    } else {
+      insertAtCursor(prefix);
+    }
   };
 
   return (
@@ -80,16 +121,38 @@ export function EmailTemplateForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="template-content">Innehåll (enkel text)</Label>
+          <Label htmlFor="template-content">Innehåll</Label>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => insertHeader(1)}
+              className="h-8 px-3"
+            >
+              <Heading1 className="w-4 h-4 mr-1" />
+              Stor rubrik
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => insertHeader(2)}
+              className="h-8 px-3"
+            >
+              <Heading2 className="w-4 h-4 mr-1" />
+              Liten rubrik
+            </Button>
+          </div>
           <Textarea
             id="template-content"
             value={templateForm.content}
             onChange={(e) => updateForm({ content: e.target.value })}
-            placeholder="Skriv din text här...&#10;&#10;Ny rad blir automatiskt nytt stycke."
+            placeholder={"Skriv din text här...\n\nFör rubriker, använd knapparna ovan eller skriv:\nH1: Stor rubrik\nH2: Liten rubrik\n\nVarje rad blir automatiskt ett stycke."}
             rows={12}
           />
           <div className="text-xs text-muted-foreground">
-            Skriv enkel text - varje rad blir ett eget stycke. Inga rubriker eller formatering behövs.
+            Tips: Klicka där du vill sätta in en rubrik och tryck på knappen. Varje ny rad blir ett eget stycke.
           </div>
         </div>
 

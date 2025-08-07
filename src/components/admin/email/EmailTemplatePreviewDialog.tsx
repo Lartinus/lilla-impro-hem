@@ -2,8 +2,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button';
 import { createEmailTemplatePreview } from '@/utils/emailTemplatePreview';
 import { EmailTemplate } from './types';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 
 interface EmailTemplatePreviewDialogProps {
   isOpen: boolean;
@@ -16,44 +14,11 @@ export function EmailTemplatePreviewDialog({
   onClose, 
   template 
 }: EmailTemplatePreviewDialogProps) {
-  // Try to fetch the actual template from database if this looks like a preview template
-  const { data: actualTemplate } = useQuery({
-    queryKey: ['actual-email-template-dialog', template?.name],
-    queryFn: async () => {
-      if (!template) return null;
-      
-      // Map preview template names to actual template names
-      let actualTemplateName = template.name;
-      if (template.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE')) {
-        actualTemplateName = 'AUTO: Biljettbekräftelse';
-      }
-      
-      const { data, error } = await supabase
-        .from('email_templates')
-        .select('*')
-        .eq('name', actualTemplateName)
-        .eq('is_active', true)
-        .maybeSingle();
-      
-      if (error) {
-        console.error('Error fetching actual template:', error);
-        return null;
-      }
-      
-      return data;
-    },
-    enabled: Boolean(template?.name && isOpen)
-  });
-
-  // Use actual template content if available, otherwise fall back to passed template
-  const effectiveTemplate = actualTemplate || template;
+  // Use passed template directly for consistent preview
+  const effectiveTemplate = template;
   
-  // Check if this is a ticket confirmation template (match actual template names)
   const isTicketTemplate = effectiveTemplate?.name?.includes('AUTO: Biljettbekräftelse') || 
-                           effectiveTemplate?.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE') ||
-                           effectiveTemplate?.name?.includes('Biljettbekräftelse') ||
-                           effectiveTemplate?.subject?.includes('biljetter') ||
-                           effectiveTemplate?.content?.includes('biljett');
+                           effectiveTemplate?.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE');
 
   // Use same mock variables as EmailTemplatePreview and edge function
   const mockVariables = isTicketTemplate ? {
@@ -94,12 +59,6 @@ export function EmailTemplatePreviewDialog({
                   isTicketTemplate
                 )
               }}
-              style={{ 
-                transform: 'scale(0.7)',
-                transformOrigin: 'top left',
-                width: '143%',
-                minHeight: '500px'
-              } as React.CSSProperties}
             />
           )}
         </div>

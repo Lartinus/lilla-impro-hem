@@ -1,7 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { createEmailTemplatePreview } from '@/utils/emailTemplatePreview';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 
 interface TemplateForm {
   name: string;
@@ -16,42 +14,11 @@ interface EmailTemplatePreviewProps {
 }
 
 export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps) {
-  // Try to fetch the actual template from database if this looks like a preview template
-  const { data: actualTemplate } = useQuery({
-    queryKey: ['actual-email-template', templateForm.name],
-    queryFn: async () => {
-      // Map preview template names to actual template names
-      let actualTemplateName = templateForm.name;
-      if (templateForm.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE')) {
-        actualTemplateName = 'AUTO: Biljettbekräftelse';
-      }
-      
-      const { data, error } = await supabase
-        .from('email_templates')
-        .select('*')
-        .eq('name', actualTemplateName)
-        .eq('is_active', true)
-        .maybeSingle();
-      
-      if (error) {
-        console.error('Error fetching actual template:', error);
-        return null;
-      }
-      
-      return data;
-    },
-    enabled: Boolean(templateForm.name)
-  });
-
-  // Use actual template content if available, otherwise fall back to form content
-  const effectiveTemplate = actualTemplate || templateForm;
+  // Use form content directly for live preview
+  const effectiveTemplate = templateForm;
   
-  // Check if this is a ticket confirmation template (match actual template names)
   const isTicketTemplate = effectiveTemplate.name?.includes('AUTO: Biljettbekräftelse') || 
-                           effectiveTemplate.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE') ||
-                           effectiveTemplate.name?.includes('Biljettbekräftelse') ||
-                           effectiveTemplate.subject?.includes('biljetter') ||
-                           effectiveTemplate.content?.includes('biljett');
+                           effectiveTemplate.name?.includes('FÖRHANDSVISNING: BILJETTBEKRÄFTELSE');
 
   const mockVariables = isTicketTemplate ? {
     NAMN: 'Anna Andersson',
@@ -109,12 +76,6 @@ export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps
                     isTicketTemplate
                   )
                 }}
-                style={{ 
-                  transform: 'scale(0.8)',
-                  transformOrigin: 'top left',
-                  width: '125%',
-                  minHeight: '500px'
-                } as React.CSSProperties}
               />
             </>
           ) : (
