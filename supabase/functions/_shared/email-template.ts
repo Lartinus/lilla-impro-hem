@@ -11,23 +11,23 @@ function convertTextToHtml(text: string): string {
       // Handle HTML-style headings (case insensitive)
       if (trimmed.match(/^<h1[^>]*>.*<\/h1>$/i)) {
         const content = trimmed.replace(/<\/?h1[^>]*>/gi, '');
-        return `<h1 class="tanker-font" style="font-family: 'Tanker', 'Impact', 'Arial Black', 'Franklin Gothic Bold', 'Helvetica Bold', sans-serif; font-size: 28px; color: #333333 !important; margin: 0 0 24px 0; text-align: left; font-weight: 400; line-height: 1.2;">${content}</h1>`;
+        return `<h1 class="tanker-font" style="font-family: 'Tanker', 'Impact', 'Arial Black', 'Franklin Gothic Bold', 'Helvetica Bold', sans-serif; font-size: 32px; color: #333333 !important; margin: 0 0 24px 0; text-align: left; font-weight: 400; line-height: 1.2;">${content}</h1>`;
       }
       
       if (trimmed.match(/^<h2[^>]*>.*<\/h2>$/i)) {
         const content = trimmed.replace(/<\/?h2[^>]*>/gi, '');
-        return `<h2 style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 20px 0; text-align: left; font-weight: 700; line-height: 1.3;">${content}</h2>`;
+        return `<h2 style="font-family: 'Satoshi', Arial, sans-serif; font-size: 18px; color: #333333 !important; margin: 0 0 20px 0; text-align: left; font-weight: 700; line-height: 1.3;">${content}</h2>`;
       }
       
       // Handle markdown-style headings
       if (trimmed.startsWith('H1:')) {
         const content = trimmed.substring(3).trim();
-        return `<h1 class="tanker-font" style="font-family: 'Tanker', 'Impact', 'Arial Black', 'Franklin Gothic Bold', 'Helvetica Bold', sans-serif; font-size: 28px; color: #333333 !important; margin: 0 0 24px 0; text-align: left; font-weight: 400; line-height: 1.2;">${content}</h1>`;
+        return `<h1 class="tanker-font" style="font-family: 'Tanker', 'Impact', 'Arial Black', 'Franklin Gothic Bold', 'Helvetica Bold', sans-serif; font-size: 32px; color: #333333 !important; margin: 0 0 24px 0; text-align: left; font-weight: 400; line-height: 1.2;">${content}</h1>`;
       }
       
       if (trimmed.startsWith('H2:')) {
         const content = trimmed.substring(3).trim();
-        return `<h2 style="font-family: 'Satoshi', Arial, sans-serif; font-size: 16px; color: #333333 !important; margin: 0 0 20px 0; text-align: left; font-weight: 700; line-height: 1.3;">${content}</h2>`;
+        return `<h2 style="font-family: 'Satoshi', Arial, sans-serif; font-size: 18px; color: #333333 !important; margin: 0 0 20px 0; text-align: left; font-weight: 700; line-height: 1.3;">${content}</h2>`;
       }
       
       // Remove remaining HTML tags for regular paragraphs
@@ -53,6 +53,8 @@ export function createUnifiedEmailTemplate(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="color-scheme" content="light only">
   <title>${subject}</title>
   
@@ -80,7 +82,7 @@ export function createUnifiedEmailTemplate(
     }
   </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #E8E8E8 !important; color-scheme: light only;">
+<body style="margin: 0; padding: 0; background-color: #E8E8E8 !important; color-scheme: light only; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; text-size-adjust: 100%;">
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin: 0; padding: 0; background-color: #E8E8E8 !important;">
     <tr>
       <td style="padding: 0; background-color: #E8E8E8 !important;">

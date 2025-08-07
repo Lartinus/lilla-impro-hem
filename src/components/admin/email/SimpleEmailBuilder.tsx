@@ -157,14 +157,13 @@ export function SimpleEmailBuilder({ emailGroups, emailContacts, emailTemplates 
         return;
       }
 
-      const htmlContent = createUnifiedEmailTemplate(subject, content, backgroundImage);
-
       const { data, error } = await supabase.functions.invoke('send-bulk-email', {
         body: {
           recipients,
           subject,
-          content: htmlContent,
-          group_name: selectedRecipients === 'all' ? 'Alla kontakter' : emailGroups.find(g => g.id === selectedRecipients)?.name
+          content, // send raw content; server will apply unified template
+          group_name: selectedRecipients === 'all' ? 'Alla kontakter' : emailGroups.find(g => g.id === selectedRecipients)?.name,
+          backgroundImage
         }
       });
 

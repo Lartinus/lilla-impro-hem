@@ -19,6 +19,7 @@ interface BulkEmailRequest {
   content: string;
   templateId?: string;
   group_name?: string;
+  backgroundImage?: string;
   attachments?: Array<{
     filename: string;
     url: string;
@@ -38,7 +39,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { recipientGroup, recipients, subject, content, templateId, attachments, group_name }: BulkEmailRequest = await req.json();
+    const { recipientGroup, recipients, subject, content, templateId, attachments, group_name, backgroundImage }: BulkEmailRequest = await req.json();
 
     console.log('Processing bulk email request for group:', recipientGroup || group_name || 'direct recipients');
 
@@ -276,25 +277,24 @@ const handler = async (req: Request): Promise<Response> => {
           }
           let personalizedSubject = finalSubject.replace(/\[NAMN\]/g, firstName);
           
-          // Check if content is already HTML (from SimpleEmailBuilder)
+          // Check if content is already HTML (from previous implementations)
           const isHtml = finalContent.includes('<!DOCTYPE html>') || finalContent.includes('<html');
           
-          let htmlContent;
+          let htmlContent: string;
           if (isHtml) {
             // Content is already formatted HTML, just replace unsubscribe URL
             htmlContent = personalizedContent.replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(recipient.email)}`);
           } else {
-            // Plain text content, use old template system
-            const processedContent = personalizedContent.replace(/\n/g, '<br>');
+            // Plain text content, standardize with unified template
             htmlContent = createUnifiedEmailTemplate(
-              finalSubject, 
+              personalizedSubject, 
               personalizedContent, 
-              template?.background_image
+              backgroundImage || (template?.background_image as string | undefined)
             ).replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(recipient.email)}`);
           }
           
           // Prepare attachments for Resend by downloading from URLs
-          const resendAttachments = [];
+          const resendAttachments: Array<{ filename: string; content: Uint8Array }> = [];
           if (attachments && attachments.length > 0) {
             for (const attachment of attachments) {
               try {
@@ -313,7 +313,7 @@ const handler = async (req: Request): Promise<Response> => {
             }
           }
 
-          return resend.emails.send({
+          const sendResult = await resend.emails.send({
             from: "Lilla Improteatern <noreply@improteatern.se>",
             to: [recipient.email],
             subject: personalizedSubject,
@@ -321,6 +321,8 @@ const handler = async (req: Request): Promise<Response> => {
             text: personalizedContent, // Keep plain text version for fallback
             attachments: resendAttachments.length > 0 ? resendAttachments : undefined,
           });
+
+          return { sendResult, recipient, htmlContent, personalizedContent, personalizedSubject };
         });
 
         const results = await Promise.allSettled(emailPromises);
@@ -331,29 +333,29 @@ const handler = async (req: Request): Promise<Response> => {
             totalSent++;
             console.log(`Email sent successfully to ${recipient.email}`);
             
-            // Log successful email
+            const value = result.value;
+            // Log successful email with actual HTML/content used
             await logSentEmail({
-              recipientEmail: recipient.email,
-              recipientName: recipient.name,
-              subject: subject,
-              content: content,
-              htmlContent: htmlContent,
+              recipientEmail: value.recipient.email,
+              recipientName: value.recipient.name,
+              subject: value.personalizedSubject,
+              content: value.personalizedContent,
+              htmlContent: value.htmlContent,
               emailType: 'bulk',
               sourceFunction: 'send-bulk-email',
-              resendId: result.value?.id,
+              resendId: value.sendResult?.id,
               status: 'sent'
             });
           } else {
             console.error(`Failed to send email to ${recipient.email}:`, result.reason);
             errors.push(`${recipient.email}: ${result.reason}`);
             
-            // Log failed email
+            // Log failed email (we don't have value on rejected, so log basics)
             await logSentEmail({
               recipientEmail: recipient.email,
               recipientName: recipient.name,
               subject: subject,
               content: content,
-              htmlContent: htmlContent,
               emailType: 'bulk',
               sourceFunction: 'send-bulk-email',
               status: 'failed',
