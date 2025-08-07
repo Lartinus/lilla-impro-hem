@@ -302,20 +302,20 @@ const getEmailTypeLabel = (type: string) => {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="h-8 w-8 p-0"
-                          onClick={() => handleViewEmail(email)}
-                          title="Visa email"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
+<Button 
+  variant="ghost" 
+  size="icon" 
+  className="h-8 w-8 p-0 justify-center"
+  onClick={() => handleViewEmail(email)}
+  title="Visa email"
+>
+  <Eye className="h-4 w-4" />
+</Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" title="Radera email">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+<Button variant="ghost" size="icon" className="h-8 w-8 p-0 justify-center" title="Radera email">
+  <Trash2 className="h-4 w-4" />
+</Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
