@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ResponsiveTable } from '@/components/ui/responsive-table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Plus, Edit, Trash2, User, Power, PowerOff, Search } from 'lucide-react';
@@ -11,9 +12,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { useIsMobile } from '@/hooks/use-mobile';
+
 import { ImagePicker } from './ImagePicker';
-import { ActorCard } from './ActorCard';
+
 
 interface Actor {
   id: string;
@@ -33,7 +34,7 @@ interface ActorForm {
 
 export const ActorManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const isMobile = useIsMobile();
+  
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingActor, setEditingActor] = useState<Actor | null>(null);
@@ -224,17 +225,60 @@ export const ActorManagement = () => {
           </p>
         </div>
       ) : (
-        <div className="grid gap-4">
-          {filteredActors.map((actor) => (
-            <ActorCard
-              key={actor.id}
-              actor={actor}
-              onEdit={handleEditActor}
-              onToggleActive={handleToggleActive}
-              onDelete={handleDeleteActor}
-            />
-          ))}
-        </div>
+        <ResponsiveTable>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[56px]">Bild</TableHead>
+                <TableHead>Namn</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Åtgärder</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredActors.map((actor) => (
+                <TableRow key={actor.id}>
+                  <TableCell>
+                    <div className="h-10 w-10 rounded-sm bg-muted flex items-center justify-center overflow-hidden">
+                      {actor.image_url ? (
+                        <img
+                          src={actor.image_url}
+                          alt={actor.name}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <User className="h-5 w-5 text-muted-foreground" />
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="font-medium text-content-primary">{actor.name}</div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={actor.is_active ? 'default' : 'secondary'}>
+                      {actor.is_active ? 'Aktiv' : 'Inaktiv'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right space-x-1">
+                    <Button variant="ghost" size="icon" aria-label="Redigera" onClick={() => handleEditActor(actor)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" aria-label="Växla status" onClick={() => handleToggleActive(actor)}>
+                      {actor.is_active ? (
+                        <PowerOff className="h-4 w-4" />
+                      ) : (
+                        <Power className="h-4 w-4" />
+                      )}
+                    </Button>
+                    <Button variant="ghost" size="icon" aria-label="Radera" onClick={() => handleDeleteActor(actor)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </ResponsiveTable>
       )}
 
       {/* Actor Dialog */}

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ResponsiveTable } from '@/components/ui/responsive-table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Plus, Edit, Trash2, User, Power, PowerOff, Search } from 'lucide-react';
@@ -11,9 +12,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
-import { useIsMobile } from '@/hooks/use-mobile';
+
 import { ImagePicker } from './ImagePicker';
-import { PerformerCard } from './PerformerCard';
+
 
 interface Performer {
   id: string;
@@ -33,7 +34,7 @@ interface PerformerForm {
 
 export const PerformerManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const isMobile = useIsMobile();
+  
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingPerformer, setEditingPerformer] = useState<Performer | null>(null);
@@ -307,17 +308,60 @@ export const PerformerManagement = () => {
           </p>
         </div>
       ) : (
-        <div className="grid gap-4">
-          {filteredPerformers.map((performer) => (
-            <PerformerCard
-              key={performer.id}
-              performer={performer}
-              onEdit={handleEdit}
-              onToggleStatus={(performer) => toggleStatusMutation.mutate(performer)}
-              onDelete={(performer) => deletePerformerMutation.mutate(performer.id)}
-            />
-          ))}
-        </div>
+        <ResponsiveTable>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[56px]">Bild</TableHead>
+                <TableHead>Namn</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Åtgärder</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredPerformers.map((performer) => (
+                <TableRow key={performer.id}>
+                  <TableCell>
+                    <div className="h-10 w-10 rounded-sm bg-muted flex items-center justify-center overflow-hidden">
+                      {performer.image_url ? (
+                        <img
+                          src={performer.image_url}
+                          alt={performer.name}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <User className="h-5 w-5 text-muted-foreground" />
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="font-medium text-content-primary">{performer.name}</div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={performer.is_active ? 'default' : 'secondary'}>
+                      {performer.is_active ? 'Aktiv' : 'Inaktiv'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right space-x-1">
+                    <Button variant="ghost" size="icon" aria-label="Redigera" onClick={() => handleEdit(performer)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" aria-label="Växla status" onClick={() => toggleStatusMutation.mutate(performer)}>
+                      {performer.is_active ? (
+                        <PowerOff className="h-4 w-4" />
+                      ) : (
+                        <Power className="h-4 w-4" />
+                      )}
+                    </Button>
+                    <Button variant="ghost" size="icon" aria-label="Radera" onClick={() => deletePerformerMutation.mutate(performer.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </ResponsiveTable>
       )}
     </div>
   );
