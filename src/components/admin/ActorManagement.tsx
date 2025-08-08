@@ -231,6 +231,7 @@ export const ActorManagement = () => {
               <TableRow>
                 <TableHead className="w-[56px]">Bild</TableHead>
                 <TableHead>Namn</TableHead>
+                <TableHead>Kort bio</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Åtgärder</TableHead>
               </TableRow>
@@ -255,22 +256,30 @@ export const ActorManagement = () => {
                     <div className="font-medium text-content-primary">{actor.name}</div>
                   </TableCell>
                   <TableCell>
+                    <div
+                      className="text-sm text-content-secondary max-w-[48ch]"
+                      style={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2, overflow: 'hidden' }}
+                    >
+                      {actor.bio ? actor.bio : '—'}
+                    </div>
+                  </TableCell>
+                  <TableCell>
                     <Badge variant={actor.is_active ? 'default' : 'secondary'}>
                       {actor.is_active ? 'Aktiv' : 'Inaktiv'}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right space-x-1">
-                    <Button variant="ghost" size="icon" aria-label="Redigera" onClick={() => handleEditActor(actor)}>
+                    <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Redigera" onClick={() => handleEditActor(actor)}>
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" aria-label="Växla status" onClick={() => handleToggleActive(actor)}>
+                    <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Växla status" onClick={() => handleToggleActive(actor)}>
                       {actor.is_active ? (
                         <PowerOff className="h-4 w-4" />
                       ) : (
                         <Power className="h-4 w-4" />
                       )}
                     </Button>
-                    <Button variant="ghost" size="icon" aria-label="Radera" onClick={() => handleDeleteActor(actor)}>
+                    <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Radera" onClick={() => handleDeleteActor(actor)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </TableCell>

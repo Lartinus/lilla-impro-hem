@@ -314,6 +314,7 @@ export const PerformerManagement = () => {
               <TableRow>
                 <TableHead className="w-[56px]">Bild</TableHead>
                 <TableHead>Namn</TableHead>
+                <TableHead>Kort bio</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Åtgärder</TableHead>
               </TableRow>
@@ -338,22 +339,30 @@ export const PerformerManagement = () => {
                     <div className="font-medium text-content-primary">{performer.name}</div>
                   </TableCell>
                   <TableCell>
+                    <div
+                      className="text-sm text-content-secondary max-w-[48ch]"
+                      style={{ display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 2, overflow: 'hidden' }}
+                    >
+                      {performer.bio ? performer.bio : '—'}
+                    </div>
+                  </TableCell>
+                  <TableCell>
                     <Badge variant={performer.is_active ? 'default' : 'secondary'}>
                       {performer.is_active ? 'Aktiv' : 'Inaktiv'}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right space-x-1">
-                    <Button variant="ghost" size="icon" aria-label="Redigera" onClick={() => handleEdit(performer)}>
+                    <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Redigera" onClick={() => handleEdit(performer)}>
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" aria-label="Växla status" onClick={() => toggleStatusMutation.mutate(performer)}>
+                    <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Växla status" onClick={() => toggleStatusMutation.mutate(performer)}>
                       {performer.is_active ? (
                         <PowerOff className="h-4 w-4" />
                       ) : (
                         <Power className="h-4 w-4" />
                       )}
                     </Button>
-                    <Button variant="ghost" size="icon" aria-label="Radera" onClick={() => deletePerformerMutation.mutate(performer.id)}>
+                    <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Radera" onClick={() => deletePerformerMutation.mutate(performer.id)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </TableCell>
