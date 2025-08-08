@@ -126,7 +126,7 @@ export const AdminShowsOverview = () => {
                     <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
-                        {format(new Date(show.show_date), 'dd MMM', { locale: sv })} {show.show_time}
+                        {format(new Date(show.show_date), 'dd MMM', { locale: sv })} {String(show.show_time).slice(0,5)}
                       </span>
                       <span className="flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
