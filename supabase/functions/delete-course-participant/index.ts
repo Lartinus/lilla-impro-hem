@@ -57,7 +57,7 @@ serve(async (req) => {
       .eq('user_id', user.id)
       .single();
 
-    if (roleError || userRole?.role !== 'admin') {
+    if (roleError || !['admin', 'superadmin'].includes(userRole?.role)) {
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -88,10 +88,12 @@ serve(async (req) => {
     }
 
     // Use service role client to bypass RLS completely
+    const emailLower = participant_email.toLowerCase()
     const { data, error } = await supabase
       .from(table_name)
       .delete()
-      .eq('email', participant_email)
+      .eq('email', emailLower)
+      .select('email')
 
     console.log('Delete result:', { data, error })
 
@@ -109,10 +111,24 @@ serve(async (req) => {
       )
     }
 
+    if (!data || data.length === 0) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Participant not found' 
+        }),
+        { 
+          status: 404, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true,
-        message: 'Participant deleted successfully'
+        message: 'Participant deleted successfully',
+        deleted: data.length
       }),
       { 
         status: 200, 

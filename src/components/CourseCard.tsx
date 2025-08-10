@@ -128,17 +128,27 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
         {/* Kursledare flyttas till Praktisk information */}
         
         {/* Practical Information */}
-        <PracticalInfo 
-          practicalInfoText={course.practical_info}
-          startDate={course.start_date}
-          startTime={course.start_time}
-          maxParticipants={course.max_participants}
-          sessions={course.sessions}
-          hoursPerSession={course.hours_per_session}
-          price={course.price}
-          discountPrice={course.discount_price}
-          currentParticipants={course.currentParticipants}
-        />
+        {(() => {
+          const teacherNames = (course.teachers && course.teachers.length > 0)
+            ? course.teachers.map((t: any) => t.name).join(', ')
+            : (course.teacher?.name || '');
+          
+          return (
+            <PracticalInfo 
+              practicalInfoText={course.practical_info}
+              startDate={course.start_date}
+              startTime={course.start_time}
+              maxParticipants={course.max_participants}
+              sessions={course.sessions}
+              hoursPerSession={course.hours_per_session}
+              price={course.price}
+              discountPrice={course.discount_price}
+              currentParticipants={course.currentParticipants}
+              teacherNames={teacherNames}
+            />
+          );
+        })()}
+        
         
         
         

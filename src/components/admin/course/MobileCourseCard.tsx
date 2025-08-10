@@ -166,19 +166,14 @@ export function MobileCourseCard({
                 <Edit className="w-3 h-3 mr-1 flex-shrink-0" />
                 <span className="truncate">Redigera</span>
               </Button>
-<ToggleGroup 
-                type="single" 
-                value={course.use_small_card ? 'small' : 'large'}
-                onValueChange={(val) => {
-                  if (!val) return;
-                  const wantSmall = val === 'small';
-                  if (wantSmall !== course.use_small_card) onToggleSmallCard(course);
-                }}
-                className="flex-1"
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => onToggleSmallCard(course)}
+                className="flex-1 min-w-0 text-xs px-2"
               >
-                <ToggleGroupItem value="large" className="text-xs">Stort</ToggleGroupItem>
-                <ToggleGroupItem value="small" className="text-xs">Kort</ToggleGroupItem>
-              </ToggleGroup>
+                <span className="truncate">{course.use_small_card ? 'Stort kort' : 'Kort kort'}</span>
+              </Button>
               {!showCompleted && (
                 <Button 
                   variant="outline" 
