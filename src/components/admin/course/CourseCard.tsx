@@ -100,31 +100,76 @@ export const CourseCard: React.FC<CourseCardProps> = ({
               )}
             </div>
             
-            {/* Move buttons - compact (only for active courses) */}
-            {!showCompleted && (
-              <div className="flex gap-1 shrink-0">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onMoveUp(course)}
-                  disabled={!canMoveUp}
-                  className="w-7 h-7 p-0 hover:bg-muted"
-                  title="Flytta upp"
+            {/* Right controls: size toggle + move arrows */}
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Desktop segmented toggle in header */}
+              <div className="hidden md:block">
+                <ToggleGroup
+                  type="single"
+                  value={course.use_small_card ? 'small' : 'large'}
+                  onValueChange={(val) => {
+                    if (!val) return
+                    const wantSmall = val === 'small'
+                    if (wantSmall !== !!course.use_small_card) onToggleSmallCard(course)
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    onToggleSmallCard(course)
+                  }}
+                  className="relative h-7 rounded-full bg-background border border-border text-primary-red p-0.5 overflow-hidden select-none"
                 >
-                  <ArrowUp className="w-3 h-3" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onMoveDown(course)}
-                  disabled={!canMoveDown}
-                  className="w-7 h-7 p-0 hover:bg-muted"
-                  title="Flytta ner"
-                >
-                  <ArrowDown className="w-3 h-3" />
-                </Button>
+                  {/* Sliding indicator - white pill */}
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "absolute top-0.5 left-0.5 h-[calc(100%-4px)] w-[calc(50%-4px)] rounded-full bg-background shadow-md ring-1 ring-border transition-[left] duration-200",
+                      course.use_small_card ? "left-[calc(50%+2px)]" : "left-0.5"
+                    )}
+                  />
+                  <ToggleGroupItem
+                    value="large"
+                    className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full data-[state=on]:text-primary-red hover:bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
+                    aria-label="Visa stort kort"
+                  >
+                    Stort
+                  </ToggleGroupItem>
+                  <ToggleGroupItem
+                    value="small"
+                    className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full data-[state=on]:text-primary-red hover:bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
+                    aria-label="Visa litet kort"
+                  >
+                    Litet
+                  </ToggleGroupItem>
+                </ToggleGroup>
               </div>
-            )}
+
+              {/* Move buttons - compact (only for active courses) */}
+              {!showCompleted && (
+                <div className="flex gap-1 shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onMoveUp(course)}
+                    disabled={!canMoveUp}
+                    className="w-7 h-7 p-0 hover:bg-muted"
+                    title="Flytta upp"
+                  >
+                    <ArrowUp className="w-3 h-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onMoveDown(course)}
+                    disabled={!canMoveDown}
+                    className="w-7 h-7 p-0 hover:bg-muted"
+                    title="Flytta ner"
+                  >
+                    <ArrowDown className="w-3 h-3" />
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Course details grid */}
@@ -248,42 +293,6 @@ export const CourseCard: React.FC<CourseCardProps> = ({
               </>
             )}
 
-{/* Desktop: Segmented toggle with sliding indicator */}
-<div className="hidden md:flex items-center">
-  <ToggleGroup
-    type="single"
-    value={course.use_small_card ? 'small' : 'large'}
-    onValueChange={(val) => {
-      if (!val) return
-      const wantSmall = val === 'small'
-      if (wantSmall !== !!course.use_small_card) onToggleSmallCard(course)
-    }}
-    className="relative h-7 rounded-full bg-primary-red text-background p-0.5 overflow-hidden select-none"
-  >
-    {/* Sliding indicator */}
-    <span
-      aria-hidden
-      className={cn(
-        "absolute top-0.5 left-0.5 h-[calc(100%-4px)] w-[calc(50%-4px)] rounded-full bg-background shadow transition-[left] duration-200",
-        course.use_small_card ? "left-[calc(50%+2px)]" : "left-0.5"
-      )}
-    />
-    <ToggleGroupItem
-      value="large"
-      className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full data-[state=on]:text-primary-red hover:bg-transparent focus-visible:ring-0 focus:outline-none"
-      aria-label="Visa stort kort"
-    >
-      Stort
-    </ToggleGroupItem>
-    <ToggleGroupItem
-      value="small"
-      className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full data-[state=on]:text-primary-red hover:bg-transparent focus-visible:ring-0 focus:outline-none"
-      aria-label="Visa litet kort"
-    >
-      Litet
-    </ToggleGroupItem>
-  </ToggleGroup>
-</div>
 
 {/* Mobile fallback: simple button showing current mode */}
 <Button
