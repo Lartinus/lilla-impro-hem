@@ -144,6 +144,34 @@ export const useCourseManagementMutations = (
       });
     }
   });
+  
+  // Toggle small/large card mutation
+  const toggleSmallCardMutation = useMutation({
+    mutationFn: async (course: CourseWithBookings) => {
+      const { error } = await supabase
+        .from('course_instances')
+        .update({ use_small_card: !course.use_small_card })
+        .eq('id', course.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-courses-formatted'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-course-cards'] });
+      toast({
+        title: 'Visningsläge uppdaterat',
+        description: 'Kurskortet har uppdaterats till litet/stort.',
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: 'Fel',
+        description: `Kunde inte ändra visningsläge: ${error.message}`,
+        variant: 'destructive',
+      });
+    },
+  });
 
   // Mark course as completed mutation
   const markCompletedMutation = useMutation({
@@ -333,6 +361,7 @@ export const useCourseManagementMutations = (
     moveCourseDownMutation,
     deleteCourseMutation,
     toggleStatusMutation,
+    toggleSmallCardMutation,
     markCompletedMutation,
     restoreCourseMutation,
     updateCourseMutation,

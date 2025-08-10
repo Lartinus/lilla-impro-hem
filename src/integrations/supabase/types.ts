@@ -213,6 +213,7 @@ export type Database = {
           start_time: string | null
           subtitle: string | null
           table_name: string
+          use_small_card: boolean
           weekday: string | null
         }
         Insert: {
@@ -237,6 +238,7 @@ export type Database = {
           start_time?: string | null
           subtitle?: string | null
           table_name: string
+          use_small_card?: boolean
           weekday?: string | null
         }
         Update: {
@@ -261,6 +263,7 @@ export type Database = {
           start_time?: string | null
           subtitle?: string | null
           table_name?: string
+          use_small_card?: boolean
           weekday?: string | null
         }
         Relationships: [

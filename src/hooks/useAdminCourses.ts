@@ -13,6 +13,7 @@ export interface AdminCourse {
   table_name: string;
   is_active: boolean;
   created_at: string;
+  use_small_card?: boolean;
   instructor?: string;
   instructor_id_1?: string | null;
   instructor_id_2?: string | null;

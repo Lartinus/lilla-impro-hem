@@ -34,6 +34,7 @@ interface CourseCardProps {
   onRestore?: (course: CourseWithBookings) => void;
   onMoveUp: (course: CourseWithBookings) => void;
   onMoveDown: (course: CourseWithBookings) => void;
+  onToggleSmallCard: (course: CourseWithBookings) => void;
   canMoveUp: boolean;
   canMoveDown: boolean;
   sortedCourses: CourseWithBookings[];

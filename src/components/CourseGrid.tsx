@@ -1,4 +1,5 @@
 import CourseCard from '@/components/CourseCard';
+import SmallCourseCard from '@/components/SmallCourseCard';
 
 interface CourseGridProps {
   courses: any[];
@@ -18,11 +19,19 @@ const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
           {courses.map((course, index) => (
-            <CourseCard 
-              key={course.id || index} 
-              course={course}
-              practicalInfo={practicalInfo}
-            />
+            course.use_small_card ? (
+              <SmallCourseCard 
+                key={course.id || index}
+                course={course}
+                practicalInfo={practicalInfo}
+              />
+            ) : (
+              <CourseCard 
+                key={course.id || index} 
+                course={course}
+                practicalInfo={practicalInfo}
+              />
+            )
           ))}
         </div>
       )}

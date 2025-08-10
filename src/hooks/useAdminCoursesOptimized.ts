@@ -12,6 +12,7 @@ interface CourseCardData {
   start_date: string | null;
   table_name: string;
   is_active: boolean;
+  use_small_card?: boolean;
   available: boolean;
   showButton: boolean;
   buttonText: string;
@@ -76,6 +77,7 @@ export const useAdminCourseCards = () => {
           start_date,
           table_name,
           is_active,
+          use_small_card,
           price,
           discount_price,
           instructor_id_1,

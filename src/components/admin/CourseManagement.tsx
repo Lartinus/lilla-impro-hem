@@ -201,6 +201,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     moveCourseDownMutation,
     deleteCourseMutation,
     toggleStatusMutation,
+    toggleSmallCardMutation,
     markCompletedMutation,
     restoreCourseMutation,
     updateCourseMutation,
@@ -718,6 +719,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                 onRestore={course => restoreCourseMutation.mutate(course)}
                 onMoveUp={handleMoveUp}
                 onMoveDown={handleMoveDown}
+                onToggleSmallCard={course => toggleSmallCardMutation.mutate(course)}
                 canMoveUp={index > 0}
                 canMoveDown={index < sortedCourses.length - 1}
                 sortedCourses={sortedCourses}
@@ -741,6 +743,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                 onRestore={course => restoreCourseMutation.mutate(course)}
                 onMoveUp={handleMoveUp}
                 onMoveDown={handleMoveDown}
+                onToggleSmallCard={course => toggleSmallCardMutation.mutate(course)}
                 canMoveUp={index > 0}
                 canMoveDown={index < sortedCourses.length - 1}
               />

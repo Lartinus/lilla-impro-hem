@@ -21,6 +21,7 @@ export interface CourseInstance {
   sort_order?: number;
   start_time?: string | null;
   completed_at?: string | null;
+  use_small_card?: boolean;
 }
 
 export interface CourseWithBookings extends CourseInstance {
