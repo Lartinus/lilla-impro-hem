@@ -210,9 +210,7 @@ export const useCourseParticipants = () => {
   });
 
   const handleDeleteParticipant = (email: string, tableName: string) => {
-    if (confirm('Är du säker på att du vill radera denna deltagare från kursen?')) {
-      deleteParticipantMutation.mutate({ email, tableName });
-    }
+    deleteParticipantMutation.mutate({ email, tableName });
   };
 
   const handleAddParticipant = (tableName: string) => {

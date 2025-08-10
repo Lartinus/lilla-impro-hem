@@ -53,6 +53,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   onRestore,
   onMoveUp,
   onMoveDown,
+  onToggleSmallCard,
   canMoveUp,
   canMoveDown,
   sortedCourses
@@ -245,6 +246,15 @@ export const CourseCard: React.FC<CourseCardProps> = ({
                 )}
               </>
             )}
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onToggleSmallCard(course)}
+              className="flex items-center gap-1.5 text-xs"
+            >
+              {course.use_small_card ? 'Stort kort' : 'Kort kort'}
+            </Button>
 
             <AlertDialog>
               <AlertDialogTrigger asChild>

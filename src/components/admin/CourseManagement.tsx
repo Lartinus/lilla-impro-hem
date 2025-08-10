@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { 
   ArrowUpDown, 
   ArrowUp, 
@@ -944,16 +945,36 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                                         </div>
                                       </PopoverContent>
                                    </Popover>
-                                   <Button
-                                     variant="destructive"
-                                     size="sm"
-                                     onClick={() => selectedCourse && handleDeleteParticipant(participant.email, selectedCourse.table_name)}
-                                     disabled={deleteParticipantMutation.isPending}
-                                     className="p-2"
-                                     title="Radera deltagare"
-                                   >
-                                     <UserMinus className="w-3 h-3" />
-                                   </Button>
+                                   <AlertDialog>
+                                     <AlertDialogTrigger asChild>
+                                       <Button
+                                         variant="destructive"
+                                         size="sm"
+                                         disabled={deleteParticipantMutation.isPending}
+                                         className="p-2"
+                                         title="Radera deltagare"
+                                       >
+                                         <UserMinus className="w-3 h-3" />
+                                       </Button>
+                                     </AlertDialogTrigger>
+                                     <AlertDialogContent>
+                                       <AlertDialogHeader>
+                                         <AlertDialogTitle>Ta bort deltagare?</AlertDialogTitle>
+                                         <AlertDialogDescription>
+                                           Detta kan inte ångras. {participant.name} ({participant.email}) tas bort från kursen.
+                                         </AlertDialogDescription>
+                                       </AlertDialogHeader>
+                                       <AlertDialogFooter>
+                                         <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                                         <AlertDialogAction
+                                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                           onClick={() => selectedCourse && handleDeleteParticipant(participant.email, selectedCourse.table_name)}
+                                         >
+                                           Ta bort
+                                         </AlertDialogAction>
+                                       </AlertDialogFooter>
+                                     </AlertDialogContent>
+                                   </AlertDialog>
                                  </div>
                                </TableCell>
                              </TableRow>
