@@ -48,7 +48,7 @@ const ShowInfo = ({ title, date, location, mapLink, description }: ShowInfoProps
       
       <div 
         className="text-content-secondary mb-6 text-base body-text" 
-        dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(description) }}
+        dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(description?.trim?.() ? description : "Mer info kommer snart.") }}
       />
     </>
   );

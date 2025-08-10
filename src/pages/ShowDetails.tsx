@@ -182,26 +182,10 @@ const ShowDetails = () => {
               </div>
 
               {/* Description */}
-              {formattedShow.description && (
                 <div className="mb-6">
-                  <p dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(formattedShow.description) }} />
+                  <p dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml((formattedShow.description && formattedShow.description.trim() !== '') ? formattedShow.description : "Mer info kommer snart.") }} />
                 </div>
-              )}
 
-              {/* Practical info */}
-              {formattedShow.practicalInfo && formattedShow.practicalInfo.length > 0 && (
-                <div className="mb-8">
-                  <h3 className="text-xl font-bold mb-4">Praktisk information</h3>
-                  <div className="space-y-2">
-                    {formattedShow.practicalInfo.map((item, index) => (
-                      <div key={index} className="flex items-start space-x-3">
-                        <div className="w-2 h-2 bg-red-600 rounded-full flex-shrink-0 mt-2"></div>
-                        <p className="text-gray-700">{item}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
 
               {/* Ticket purchase section */}
               <div className="mb-12">
