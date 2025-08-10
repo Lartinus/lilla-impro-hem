@@ -58,9 +58,9 @@ const normalizedDiscount = typeof course.discount_price === 'number' && course.d
         </div>
 
         {/* Short description */}
-        <div className="min-h-[24px]">
+        <div className="min-h-[24px] mb-6">
           <div
-            className="mt-4 text-sm body-text [&>p]:mb-0.5 [&>p]:mt-0"
+            className="mt-4 text-sm body-text [&>p]:mb-0.5 [&>p]:mt-0 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0 [&>*:first-child]:mt-0"
             dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
           />
         </div>
