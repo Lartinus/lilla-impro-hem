@@ -24,9 +24,9 @@ const SmallCourseCard = ({ course }: SmallCourseCardProps) => {
   const shouldShowButton = course.showButton && !isWorkshops;
   const courseAvailability = isHouseTeams ? false : course.available;
 
-  // Normalize prices (some legacy Improboost instances were stored in öre)
-  const normalizedPrice = isImproboost ? Math.round((course.price || 0) / 100) : course.price;
-  const normalizedDiscount = isImproboost ? Math.round((course.discount_price || 0) / 100) : course.discount_price;
+// Normalize prices for legacy data stored in öre
+const normalizedPrice = typeof course.price === 'number' && course.price >= 10000 ? Math.round(course.price / 100) : course.price;
+const normalizedDiscount = typeof course.discount_price === 'number' && course.discount_price >= 10000 ? Math.round(course.discount_price / 100) : course.discount_price;
 
   let finalButtonText = "Betala med Stripe";
   if (isHouseTeams) {
@@ -48,6 +48,15 @@ const SmallCourseCard = ({ course }: SmallCourseCardProps) => {
           {course.subtitle && <h3 className="text-base leading-tight">{course.subtitle}</h3>}
         </div>
 
+        {/* Dashed line like full course card */}
+        <div className="pt-1 my-1">
+          <div className="flex items-center justify-center relative mb-1">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t-2 border-dashed border-black"></div>
+            </div>
+          </div>
+        </div>
+
         {/* Short description */}
         <div className="text-sm body-text [&>p]:mb-0.5 [&>p]:mt-0"
              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }} />
@@ -63,14 +72,9 @@ const SmallCourseCard = ({ course }: SmallCourseCardProps) => {
           price={normalizedPrice}
           discountPrice={normalizedDiscount}
           currentParticipants={course.currentParticipants}
+          teacherNames={teacherNames}
         />
 
-        {/* Teacher names (text only) */}
-        {teacherNames && (
-          <div className="text-sm -mt-2">
-            <span className="font-medium">Kursledare:</span> {teacherNames}
-          </div>
-        )}
 
         {/* Booking button */}
         {shouldShowButton && (

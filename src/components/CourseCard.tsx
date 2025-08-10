@@ -1,10 +1,7 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import CourseBookingForm from '@/components/CourseBookingForm';
-import CourseLeaderInfo from '@/components/CourseLeaderInfo';
 import { PracticalInfo } from '@/components/PracticalInfo';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
-import { ArrowRight } from 'lucide-react';
 
 interface Teacher {
   id: number;
@@ -128,24 +125,7 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           </div>
         </div>
         
-        {/* Show all teachers */}
-        {course.teachers && course.teachers.length > 0 ? (
-          <CourseLeaderInfo 
-            courseLeaders={course.teachers.map(teacher => ({
-              id: parseInt(teacher.id),
-              name: teacher.name,
-              image: teacher.image,
-              bio: teacher.bio
-            }))} 
-          />
-        ) : course.teacher ? (
-          <CourseLeaderInfo courseLeaders={[{
-            id: parseInt(course.teacher.id),
-            name: course.teacher.name,
-            image: course.teacher.image,
-            bio: course.teacher.bio
-          }]} />
-        ) : null}
+        {/* Kursledare flyttas till Praktisk information */}
         
         {/* Practical Information */}
         <PracticalInfo 

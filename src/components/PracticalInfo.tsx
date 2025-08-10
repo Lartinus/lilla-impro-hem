@@ -12,6 +12,7 @@ interface PracticalInfoProps {
   additionalInfo?: string;
   practicalInfoText?: string;
   currentParticipants?: number;
+  teacherNames?: string; // New: include teachers in practical info
 }
 
 export const PracticalInfo = ({ 
@@ -24,7 +25,8 @@ export const PracticalInfo = ({
   discountPrice,
   additionalInfo,
   practicalInfoText,
-  currentParticipants
+  currentParticipants,
+  teacherNames
 }: PracticalInfoProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -90,8 +92,12 @@ export const PracticalInfo = ({
                  !line.includes('Ordinarie pris:') && 
                  !line.includes('Rabatterat pris:');
         });
-      
       items.push(...textItems);
+    }
+
+    // Include teachers
+    if (teacherNames && teacherNames.trim().length > 0) {
+      items.push(`Kursledare: ${teacherNames}`);
     }
     
     if (additionalInfo) {
