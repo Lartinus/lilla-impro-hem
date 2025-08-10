@@ -60,7 +60,7 @@ export function MobileCourseCard({
   return (
     <Card>
       <CardContent className="p-4">
-        <div className="flex items-start justify-between mb-3">
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 mb-3">
           <div className="flex items-center gap-2">
             <div className="flex flex-col">
               <Button
@@ -84,52 +84,54 @@ export function MobileCourseCard({
             </div>
             <span className="text-xs text-muted-foreground">#{course.sort_order || 0}</span>
           </div>
-          <Badge variant={course.is_active ? "default" : "secondary"}>
+
+          {/* Center: Mobile size toggle */}
+          <div className="flex justify-center">
+            <ToggleGroup
+              type="single"
+              value={course.use_small_card ? 'small' : 'large'}
+              onValueChange={(val) => {
+                if (!val) return
+                const wantSmall = val === 'small'
+                if (wantSmall !== !!course.use_small_card) onToggleSmallCard(course)
+              }}
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onToggleSmallCard(course)
+              }}
+              className="relative h-7 rounded-full bg-primary-red text-background p-0.5 overflow-hidden select-none shadow"
+            >
+              {/* Sliding indicator - white pill */}
+              <span
+                aria-hidden
+                className={cn(
+                  "absolute top-0.5 left-0.5 h-[calc(100%-4px)] w-[calc(50%-4px)] rounded-full bg-background shadow-md ring-1 ring-primary-red transition-[left] duration-200",
+                  course.use_small_card ? "left-[calc(50%+2px)]" : "left-0.5"
+                )}
+              />
+              <ToggleGroupItem
+                value="large"
+                className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full text-background data-[state=on]:text-primary-red bg-transparent hover:!bg-transparent data-[state=on]:!bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
+                aria-label="Visa stort kort"
+              >
+                Stort
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="small"
+                className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full text-background data-[state=on]:text-primary-red bg-transparent hover:!bg-transparent data-[state=on]:!bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
+                aria-label="Visa litet kort"
+              >
+                Litet
+              </ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+
+          <Badge variant={course.is_active ? "default" : "secondary"} className="justify-self-end">
             {course.is_active ? 'Aktiv' : 'Inaktiv'}
           </Badge>
         </div>
 
-        {/* Mobile: size toggle centered at top */}
-        <div className="flex justify-center mb-3">
-          <ToggleGroup
-            type="single"
-            value={course.use_small_card ? 'small' : 'large'}
-            onValueChange={(val) => {
-              if (!val) return
-              const wantSmall = val === 'small'
-              if (wantSmall !== !!course.use_small_card) onToggleSmallCard(course)
-            }}
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              onToggleSmallCard(course)
-            }}
-            className="relative h-7 rounded-full bg-primary-red text-background p-0.5 overflow-hidden select-none shadow"
-          >
-            {/* Sliding indicator - white pill */}
-            <span
-              aria-hidden
-              className={cn(
-                "absolute top-0.5 left-0.5 h-[calc(100%-4px)] w-[calc(50%-4px)] rounded-full bg-background shadow-md ring-1 ring-primary-red transition-[left] duration-200",
-                course.use_small_card ? "left-[calc(50%+2px)]" : "left-0.5"
-              )}
-            />
-            <ToggleGroupItem
-              value="large"
-              className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full text-background data-[state=on]:text-primary-red bg-transparent hover:!bg-transparent data-[state=on]:!bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
-              aria-label="Visa stort kort"
-            >
-              Stort
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              value="small"
-              className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full text-background data-[state=on]:text-primary-red bg-transparent hover:!bg-transparent data-[state=on]:!bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
-              aria-label="Visa litet kort"
-            >
-              Litet
-            </ToggleGroupItem>
-          </ToggleGroup>
-        </div>
 
         <div className="space-y-3">
           <div>
