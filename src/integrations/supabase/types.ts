@@ -316,17 +316,19 @@ export type Database = {
         }
         Relationships: []
       }
-      course_niv__2___improv_comedy__l_ngform_1754330903758: {
+      course_niv__2___improv_comedy_1754818557979: {
         Row: {
           address: string | null
           city: string | null
           created_at: string
           email: string
           id: string
+          last_resent_at: string | null
           message: string | null
           name: string
           phone: string
           postal_code: string | null
+          resend_count: number | null
         }
         Insert: {
           address?: string | null
@@ -334,10 +336,12 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
+          last_resent_at?: string | null
           message?: string | null
           name: string
           phone: string
           postal_code?: string | null
+          resend_count?: number | null
         }
         Update: {
           address?: string | null
@@ -345,10 +349,12 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          last_resent_at?: string | null
           message?: string | null
           name?: string
           phone?: string
           postal_code?: string | null
+          resend_count?: number | null
         }
         Relationships: []
       }
