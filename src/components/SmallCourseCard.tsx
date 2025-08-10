@@ -55,29 +55,29 @@ const normalizedDiscount = typeof course.discount_price === 'number' && course.d
               <div className="w-full border-t-2 border-dashed border-black"></div>
             </div>
           </div>
-        </div>
-
-        {/* Short description */}
-        <div className="min-h-[24px] mb-6">
-          <div
-            className="mt-4 text-sm body-text [&>p]:mb-0.5 [&>p]:mt-0 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0 [&>*:first-child]:mt-0"
-            dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
-          />
+          <div className="min-h-[24px]">
+            <div
+              className="mt-4 text-sm body-text [&>p]:mb-0.5 [&>p]:mt-0 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0 [&>*:first-child]:mt-0"
+              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
+            />
+          </div>
         </div>
 
         {/* Practical information */}
-        <PracticalInfo 
-          practicalInfoText={course.practical_info}
-          startDate={course.start_date}
-          startTime={course.start_time}
-          maxParticipants={course.max_participants}
-          sessions={course.sessions}
-          hoursPerSession={course.hours_per_session}
-          price={normalizedPrice}
-          discountPrice={normalizedDiscount}
-          currentParticipants={course.currentParticipants}
-          teacherNames={teacherNames}
-        />
+        <div className="mt-6">
+          <PracticalInfo 
+            practicalInfoText={course.practical_info}
+            startDate={course.start_date}
+            startTime={course.start_time}
+            maxParticipants={course.max_participants}
+            sessions={course.sessions}
+            hoursPerSession={course.hours_per_session}
+            price={normalizedPrice}
+            discountPrice={normalizedDiscount}
+            currentParticipants={course.currentParticipants}
+            teacherNames={teacherNames}
+          />
+        </div>
 
 
         {/* Booking button */}
