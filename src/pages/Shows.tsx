@@ -63,13 +63,37 @@ export default function Shows() {
     return adminShows.map(show => formatAdminShowForCard(show));
   }, [adminShows]);
 
-  // Filter shows based on selected tags
+  // Split into upcoming and past and sort by nearest date/time
+  const { upcomingShows, pastShows } = useMemo(() => {
+    const now = new Date();
+    const parseDT = (s: { date: string; time: string }) => new Date(`${s.date}T${(s.time || '00:00')}`);
+
+    const upcoming = shows
+      .filter(s => parseDT(s) >= now)
+      .sort((a, b) => parseDT(a).getTime() - parseDT(b).getTime());
+
+    const past = shows
+      .filter(s => parseDT(s) < now)
+      .sort((a, b) => parseDT(b).getTime() - parseDT(a).getTime());
+
+    return { upcomingShows: upcoming, pastShows: past };
+  }, [shows]);
+
+  // Filter upcoming shows based on selected tags (always date-sorted)
   const filteredShows = useMemo(() => {
-    if (selectedTags.length === 0) return shows;
-    return shows.filter(show => 
+    if (selectedTags.length === 0) return upcomingShows;
+    return upcomingShows.filter(show => 
       show.tag && selectedTags.includes(show.tag.name)
     );
-  }, [shows, selectedTags]);
+  }, [upcomingShows, selectedTags]);
+
+  // Filter past shows when tags are selected
+  const filteredPastShows = useMemo(() => {
+    if (selectedTags.length === 0) return pastShows;
+    return pastShows.filter(show => 
+      show.tag && selectedTags.includes(show.tag.name)
+    );
+  }, [pastShows, selectedTags]);
 
   // Handle tag click
   const handleTagClick = (tagName: string) => {
@@ -215,6 +239,22 @@ export default function Shows() {
                   </div>
                 )}
               </section>
+
+              {/* Genomförda föreställningar */}
+              {pastShows.length > 0 && (
+                <section>
+                  <h1>Genomförda föreställningar</h1>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {filteredPastShows.map((show) => (
+                      <ShowCardSimple 
+                        key={show.id}
+                        show={show}
+                        onImageLoad={handleImageLoad}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
 
             {/* Newsletter signup section - gray box */}
