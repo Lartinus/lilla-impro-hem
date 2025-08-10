@@ -2,6 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import CourseBookingForm from '@/components/CourseBookingForm';
 import { PracticalInfo } from '@/components/PracticalInfo';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
+import CourseLeaderInfo from '@/components/CourseLeaderInfo';
 
 interface Teacher {
   id: number;
@@ -125,7 +126,23 @@ const CourseCard = ({ course, practicalInfo }: CourseCardProps) => {
           </div>
         </div>
         
-        {/* Kursledare flyttas till Praktisk information */}
+        {/* Kursledare */}
+        {(() => {
+          const leaders = (Array.isArray(course.teachers) && course.teachers.length > 0)
+            ? course.teachers
+            : (course.teacher ? [course.teacher] : []);
+          const courseLeaders = leaders
+            .filter((t: any) => t && (t.name || t.bio || t.image))
+            .map((t: any, idx: number) => ({
+              id: Number((t as any).id) || idx + 1,
+              name: t.name,
+              image: t.image || null,
+              bio: t.bio || ''
+            }));
+          return courseLeaders.length ? (
+            <CourseLeaderInfo courseLeaders={courseLeaders as any} />
+          ) : null;
+        })()}
         
         {/* Practical Information */}
         {(() => {
