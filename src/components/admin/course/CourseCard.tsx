@@ -258,18 +258,18 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       const wantSmall = val === 'small'
       if (wantSmall !== !!course.use_small_card) onToggleSmallCard(course)
     }}
-    className="rounded-full bg-primary-red text-background p-0.5"
+    className="rounded-full bg-primary-red text-background p-0.5 shadow"
   >
     <ToggleGroupItem
       value="large"
-      className="px-4 py-1.5 text-xs rounded-full transition-colors data-[state=on]:bg-background data-[state=on]:text-primary-red"
+      className="h-9 px-4 text-xs rounded-full transition-all duration-200 data-[state=on]:bg-background data-[state=on]:text-primary-red data-[state=on]:shadow"
       aria-label="Visa stort kort"
     >
       Stort
     </ToggleGroupItem>
     <ToggleGroupItem
       value="small"
-      className="px-4 py-1.5 text-xs rounded-full transition-colors data-[state=on]:bg-background data-[state=on]:text-primary-red"
+      className="h-9 px-4 text-xs rounded-full transition-all duration-200 data-[state=on]:bg-background data-[state=on]:text-primary-red data-[state=on]:shadow"
       aria-label="Visa litet kort"
     >
       Litet
