@@ -54,6 +54,21 @@ const normalizedDiscount = typeof course.discount_price === 'number' && course.d
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t-2 border-dashed border-black"></div>
             </div>
+            {(() => {
+              const remainingSpots = course.max_participants && course.currentParticipants !== undefined 
+                ? course.max_participants - course.currentParticipants 
+                : null;
+              const isSoldOut = remainingSpots !== null && remainingSpots <= 0;
+              const showFewSpotsWarning = remainingSpots !== null && remainingSpots <= 5 && remainingSpots > 0;
+              
+              return (isSoldOut || showFewSpotsWarning) ? (
+                <div className="relative bg-[#E7E7E7] px-2">
+                  <div className="inline-flex items-center justify-center w-[120px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-primary border-primary text-white">
+                    {isSoldOut ? "Fullbokad!" : "Få platser kvar"}
+                  </div>
+                </div>
+              ) : null;
+            })()}
           </div>
           <div className="min-h-[24px]">
             <div
