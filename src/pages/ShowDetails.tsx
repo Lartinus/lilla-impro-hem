@@ -41,8 +41,8 @@ const ShowDetails = () => {
     location: show.venue,
     mapLink: show.venue_maps_url,
     description: show.description,
-    ticketPrice: (show.regular_price || 0) / 100, // convert from öre to kr for UI
-    discountPrice: (show.discount_price || 0) / 100, // convert from öre to kr for UI
+    ticketPrice: show.regular_price, // values stored in kronor in admin_shows
+    discountPrice: show.discount_price, // values stored in kronor in admin_shows
     totalTickets: show.max_tickets || 100,
     performers: show.performers.map(p => ({
       id: parseInt(p.id.slice(-8), 16),

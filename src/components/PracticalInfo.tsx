@@ -67,7 +67,8 @@ export const PracticalInfo = ({
     }
     
     if (price && price > 0) {
-      items.push(`Ordinarie pris: ${formatPriceSEK(price)}`);
+      const normalizedPrice = price >= 10000 ? Math.round(price / 100) : price;
+      items.push(`Ordinarie pris: ${formatPriceSEK(normalizedPrice)}`);
     }
     
     if (discountPrice && discountPrice > 0) {

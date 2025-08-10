@@ -18,10 +18,15 @@ const SmallCourseCard = ({ course }: SmallCourseCardProps) => {
   // Determine behavior based on course title
   const isHouseTeams = course.course_title?.includes("House teams") || course.course_title?.includes("fortsättning");
   const isWorkshops = course.course_title?.includes("Helgworkshop") || course.course_title?.includes("specialkurs");
+  const isImproboost = course.course_title?.toLowerCase?.().includes('improboost');
 
   // Hide button for workshops
   const shouldShowButton = course.showButton && !isWorkshops;
   const courseAvailability = isHouseTeams ? false : course.available;
+
+  // Normalize prices (some legacy Improboost instances were stored in öre)
+  const normalizedPrice = isImproboost ? Math.round((course.price || 0) / 100) : course.price;
+  const normalizedDiscount = isImproboost ? Math.round((course.discount_price || 0) / 100) : course.discount_price;
 
   let finalButtonText = "Betala med Stripe";
   if (isHouseTeams) {
@@ -55,8 +60,8 @@ const SmallCourseCard = ({ course }: SmallCourseCardProps) => {
           maxParticipants={course.max_participants}
           sessions={course.sessions}
           hoursPerSession={course.hours_per_session}
-          price={course.price}
-          discountPrice={course.discount_price}
+          price={normalizedPrice}
+          discountPrice={normalizedDiscount}
           currentParticipants={course.currentParticipants}
         />
 
@@ -78,15 +83,15 @@ const SmallCourseCard = ({ course }: SmallCourseCardProps) => {
             buttonVariant={isHouseTeams ? 'blue' : 'default'}
             maxParticipants={course.maxParticipants}
             isSoldOut={isSoldOut}
-            courseInstance={course.price && course.price > 0 ? {
+            courseInstance={normalizedPrice && normalizedPrice > 0 ? {
               id: course.id?.toString?.() || String(course.id),
               course_title: course.course_title,
               table_name: course.table_name || '',
-              price: course.price,
-              discount_price: course.discount_price || course.price,
+              price: normalizedPrice,
+              discount_price: normalizedDiscount || normalizedPrice,
               max_participants: course.max_participants || course.maxParticipants
             } : undefined}
-            isPaidCourse={course.price && course.price > 0}
+            isPaidCourse={!!normalizedPrice && normalizedPrice > 0}
           />
         )}
       </CardContent>
