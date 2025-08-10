@@ -20,6 +20,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { CourseWithBookings, Performer } from '@/types/courseManagement';
 import { useWaitlistManagement } from '@/hooks/useWaitlistManagement';
 import { WaitlistDialog } from '../WaitlistDialog';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 interface CourseCardProps {
   course: CourseWithBookings;
@@ -247,14 +248,45 @@ export const CourseCard: React.FC<CourseCardProps> = ({
               </>
             )}
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onToggleSmallCard(course)}
-              className="flex items-center gap-1.5 text-xs"
-            >
-              {course.use_small_card ? 'Stort kort' : 'Kort kort'}
-            </Button>
+{/* Desktop: Segmented toggle shows current state */}
+<div className="hidden md:flex items-center">
+  <ToggleGroup
+    type="single"
+    value={course.use_small_card ? 'small' : 'large'}
+    onValueChange={(val) => {
+      if (!val) return
+      const wantSmall = val === 'small'
+      if (wantSmall !== !!course.use_small_card) onToggleSmallCard(course)
+    }}
+    className="rounded-full border border-border overflow-hidden"
+ >
+    <ToggleGroupItem
+      value="large"
+      className="px-3 py-1.5 text-xs data-[state=on]:bg-accent data-[state=on]:text-foreground"
+      aria-label="Visa stort kort"
+    >
+      Stort
+    </ToggleGroupItem>
+    <ToggleGroupItem
+      value="small"
+      className="px-3 py-1.5 text-xs border-l border-border data-[state=on]:bg-accent data-[state=on]:text-foreground"
+      aria-label="Visa litet kort"
+    >
+      Litet
+    </ToggleGroupItem>
+  </ToggleGroup>
+</div>
+
+{/* Mobile fallback: simple button showing current mode */}
+<Button
+  variant="outline"
+  size="sm"
+  onClick={() => onToggleSmallCard(course)}
+  className="flex items-center gap-1.5 text-xs md:hidden"
+>
+  {course.use_small_card ? 'Kort kort' : 'Stort kort'}
+</Button>
+
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
