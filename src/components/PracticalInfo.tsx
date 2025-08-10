@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatPrice } from '@/lib/utils';
+import { formatPriceSEK } from '@/lib/utils';
 
 interface PracticalInfoProps {
   sessions?: number;
@@ -67,11 +67,11 @@ export const PracticalInfo = ({
     }
     
     if (price && price > 0) {
-      items.push(`Ordinarie pris: ${formatPrice(price)}`);
+      items.push(`Ordinarie pris: ${formatPriceSEK(price)}`);
     }
     
     if (discountPrice && discountPrice > 0) {
-      items.push(`Rabatterat pris: ${formatPrice(discountPrice)} (pensionär eller student)`);
+      items.push(`Rabatterat pris: ${formatPriceSEK(discountPrice)} (pensionär eller student)`);
     }
     
     // Add any additional practical info text at the end

@@ -6,9 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Format price from öre to SEK with proper formatting
- * @param amountInOre - Amount in öre (Swedish currency subdivision)
- * @returns Formatted price string (e.g., "300 kr")
+ * Format price from öre to SEK (for values stored in öre)
  */
 export function formatPrice(amountInOre: number): string {
   const amountInSEK = amountInOre / 100;
@@ -16,9 +14,14 @@ export function formatPrice(amountInOre: number): string {
 }
 
 /**
- * Format price from öre to SEK as currency using Intl.NumberFormat
- * @param amountInOre - Amount in öre
- * @returns Formatted currency string (e.g., "300 kr")
+ * Format price from kronor to SEK (for values stored in kronor)
+ */
+export function formatPriceSEK(amountInSEK: number): string {
+  return `${(amountInSEK || 0).toFixed(0)} kr`;
+}
+
+/**
+ * Format currency from öre to SEK using Intl (kept for existing ticket flows)
  */
 export function formatCurrency(amountInOre: number): string {
   const amountInSEK = amountInOre / 100;

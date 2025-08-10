@@ -71,9 +71,9 @@ serve(async (req) => {
       apiVersion: "2023-10-16",
     });
 
-    // Calculate total amount based on price type (prices are now in öre)
-    const totalAmountInOre = useDiscountPrice ? discountPrice : price;
-    const totalAmountInSEK = totalAmountInOre / 100; // Convert to SEK for Stripe
+    // Calculate total amount based on price type (prices are provided in kronor)
+    const totalAmountInSEK = useDiscountPrice ? discountPrice : price;
+    const totalAmountInOre = Math.round(totalAmountInSEK * 100); // Convert to öre for Stripe
     const priceType = useDiscountPrice ? "Studentpris" : "Ordinarie pris";
 
     console.log('Creating session with amount:', totalAmountInSEK, 'SEK (', totalAmountInOre, 'öre) type:', priceType);
