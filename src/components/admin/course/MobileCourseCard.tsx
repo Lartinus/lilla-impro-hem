@@ -172,7 +172,7 @@ export function MobileCourseCard({
                 onClick={() => onToggleSmallCard(course)}
                 className="flex-1 min-w-0 text-xs px-2"
               >
-                <span className="truncate">{course.use_small_card ? 'Stort kort' : 'Kort kort'}</span>
+                <span className="truncate">{course.use_small_card ? 'Kort kort' : 'Stort kort'}</span>
               </Button>
               {!showCompleted && (
                 <Button 
