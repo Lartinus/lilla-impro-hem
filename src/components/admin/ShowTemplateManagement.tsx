@@ -6,8 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
 import { Plus, Edit2, Trash2, Save, X, ChevronUp, ChevronDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -174,7 +172,7 @@ const ShowTemplateManagement = () => {
       discount_price: Math.round((parseFloat(formData.get('discount_price') as string) || 0) * 100),
       max_tickets: parseInt(formData.get('max_tickets') as string) || 100,
       description: formData.get('description') as string,
-      is_active: formData.get('is_active') === 'on',
+      is_active: true,
       sort_order: template.sort_order
     };
 
@@ -266,14 +264,6 @@ const ShowTemplateManagement = () => {
                   />
                 </div>
                 
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="is_active"
-                    name="is_active"
-                    defaultChecked={editingTemplate?.is_active ?? true}
-                  />
-                  <Label htmlFor="is_active">Aktiv</Label>
-                </div>
               </div>
               
               <div>
@@ -316,9 +306,6 @@ const ShowTemplateManagement = () => {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="font-semibold">{template.name}</h3>
-                    <Badge variant={template.is_active ? "default" : "secondary"}>
-                      {template.is_active ? "Aktiv" : "Inaktiv"}
-                    </Badge>
                   </div>
                   <p className="text-sm text-muted-foreground mb-1">
                     Mall: {template.title_template}

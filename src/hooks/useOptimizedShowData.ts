@@ -13,7 +13,6 @@ export const useVenuesOptimized = () => {
       const { data, error } = await supabase
         .from('venues')
         .select('id, name, address, maps_url, is_active, sort_order')
-        .eq('is_active', true)
         .order('sort_order');
       
       if (error) throw error;
@@ -34,7 +33,6 @@ export const useActorsOptimized = () => {
       const { data, error } = await supabase
         .from('actors')
         .select('id, name, bio, image_url, is_active')
-        .eq('is_active', true)
         .order('name');
       
       if (error) throw error;
@@ -55,7 +53,6 @@ export const useShowTemplatesOptimized = () => {
       const { data, error } = await supabase
         .from('show_templates')
         .select('*')
-        .eq('is_active', true)
         .order('sort_order');
       
       if (error) throw error;

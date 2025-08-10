@@ -4,9 +4,9 @@ import { supabase } from '@/integrations/supabase/client';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ResponsiveTable } from '@/components/ui/responsive-table';
-import { Badge } from '@/components/ui/badge';
+
 import { Button } from '@/components/ui/button';
-import { Plus, Edit, Trash2, User, Power, PowerOff, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, User, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -141,12 +141,6 @@ export const ActorManagement = () => {
     setIsDialogOpen(true);
   };
 
-  const handleToggleActive = (actor: Actor) => {
-    updateActorMutation.mutate({
-      id: actor.id,
-      data: { is_active: !actor.is_active }
-    });
-  };
 
   const handleDeleteActor = (actor: Actor) => {
     if (confirm(`Är du säker på att du vill radera "${actor.name}"? Detta kan inte ångras.`)) {
@@ -232,7 +226,7 @@ export const ActorManagement = () => {
                 <TableHead className="w-[56px]">Bild</TableHead>
                 <TableHead>Namn</TableHead>
                 <TableHead>Kort bio</TableHead>
-                <TableHead>Status</TableHead>
+                
                 <TableHead className="text-right">Åtgärder</TableHead>
               </TableRow>
             </TableHeader>
@@ -264,20 +258,10 @@ export const ActorManagement = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={actor.is_active ? 'default' : 'secondary'}>
-                      {actor.is_active ? 'Aktiv' : 'Inaktiv'}
-                    </Badge>
                   </TableCell>
                   <TableCell className="text-right space-x-1">
                     <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Redigera" onClick={() => handleEditActor(actor)}>
                       <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Växla status" onClick={() => handleToggleActive(actor)}>
-                      {actor.is_active ? (
-                        <PowerOff className="h-4 w-4" />
-                      ) : (
-                        <Power className="h-4 w-4" />
-                      )}
                     </Button>
                     <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Radera" onClick={() => handleDeleteActor(actor)}>
                       <Trash2 className="h-4 w-4" />

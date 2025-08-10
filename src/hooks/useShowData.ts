@@ -55,7 +55,6 @@ export const useShowData = (showCompleted: boolean = false) => {
       const { data, error } = await supabase
         .from('venues')
         .select('*')
-        .eq('is_active', true)
         .order('sort_order');
       
       if (error) throw error;
@@ -69,7 +68,6 @@ export const useShowData = (showCompleted: boolean = false) => {
       const { data, error } = await supabase
         .from('actors')
         .select('*')
-        .eq('is_active', true)
         .order('name');
       
       if (error) throw error;
@@ -83,7 +81,6 @@ export const useShowData = (showCompleted: boolean = false) => {
       const { data, error } = await supabase
         .from('show_templates')
         .select('*')
-        .eq('is_active', true)
         .order('sort_order');
       
       if (error) throw error;

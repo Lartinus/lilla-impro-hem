@@ -3,13 +3,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Switch } from '@/components/ui/switch';
-import { Plus, Edit, Trash2, MapPin, Power, PowerOff } from 'lucide-react';
+
+import { Plus, Edit, Trash2, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -28,7 +28,6 @@ interface VenueForm {
   name: string;
   address: string;
   maps_url: string;
-  is_active: boolean;
 }
 
 // Venue Row Component
@@ -47,11 +46,6 @@ function VenueRow({ venue, onEdit, onToggleActive, onDelete }: {
         </div>
       </TableCell>
       <TableCell>
-        <Badge variant={venue.is_active ? "default" : "secondary"}>
-          {venue.is_active ? 'Aktiv' : 'Inaktiv'}
-        </Badge>
-      </TableCell>
-      <TableCell>
         <div className="flex gap-2">
           <Button 
             variant="outline" 
@@ -60,18 +54,6 @@ function VenueRow({ venue, onEdit, onToggleActive, onDelete }: {
           >
             <Edit className="w-4 h-4 mr-1" />
             Redigera
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => onToggleActive(venue)}
-          >
-            {venue.is_active ? (
-              <PowerOff className="w-4 h-4 mr-1" />
-            ) : (
-              <Power className="w-4 h-4 mr-1" />
-            )}
-            {venue.is_active ? 'Inaktivera' : 'Aktivera'}
           </Button>
           <Button 
             variant="destructive" 
@@ -100,8 +82,7 @@ export const VenueManagement = () => {
   const [newVenue, setNewVenue] = useState<VenueForm>({
     name: '',
     address: '',
-    maps_url: '',
-    is_active: true
+    maps_url: ''
   });
 
   const { toast } = useToast();
@@ -140,8 +121,7 @@ export const VenueManagement = () => {
       setNewVenue({
         name: '',
         address: '',
-        maps_url: '',
-        is_active: true
+        maps_url: ''
       });
       toast({
         title: "Plats skapad",
@@ -195,19 +175,12 @@ export const VenueManagement = () => {
     setNewVenue({
       name: venue.name,
       address: venue.address || '',
-      maps_url: venue.maps_url || '',
-      is_active: venue.is_active
+      maps_url: venue.maps_url || ''
     });
     setIsEditMode(true);
     setIsDialogOpen(true);
   };
 
-  const handleToggleActive = (venue: Venue) => {
-    updateVenueMutation.mutate({
-      id: venue.id,
-      data: { is_active: !venue.is_active }
-    });
-  };
 
   const handleDeleteVenue = (venue: Venue) => {
     deleteVenueMutation.mutate(venue.id);
@@ -241,8 +214,7 @@ export const VenueManagement = () => {
           setNewVenue({
             name: '',
             address: '',
-            maps_url: '',
-            is_active: true
+            maps_url: ''
           });
           setIsDialogOpen(true);
         }}>
@@ -261,9 +233,6 @@ export const VenueManagement = () => {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <Badge variant={venue.is_active ? "default" : "secondary"}>
-                        {venue.is_active ? 'Aktiv' : 'Inaktiv'}
-                      </Badge>
                     </div>
                     <h4 className="font-medium">{venue.name}</h4>
                     {venue.address && (
@@ -283,18 +252,6 @@ export const VenueManagement = () => {
                   >
                     <Edit className="w-4 h-4 mr-1" />
                     Redigera
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleToggleActive(venue)}
-                  >
-                    {venue.is_active ? (
-                      <PowerOff className="w-4 h-4 mr-1" />
-                    ) : (
-                      <Power className="w-4 h-4 mr-1" />
-                    )}
-                    {venue.is_active ? 'Inaktivera' : 'Aktivera'}
                   </Button>
                   <Button 
                     variant="destructive" 
@@ -318,7 +275,7 @@ export const VenueManagement = () => {
               <TableRow>
                 <TableHead>Namn</TableHead>
                 <TableHead>Adress</TableHead>
-                <TableHead>Status</TableHead>
+                
                 <TableHead>Åtgärder</TableHead>
               </TableRow>
             </TableHeader>
@@ -328,7 +285,6 @@ export const VenueManagement = () => {
                   key={venue.id}
                   venue={venue}
                   onEdit={handleEditVenue}
-                  onToggleActive={handleToggleActive}
                   onDelete={handleDeleteVenue}
                 />
               ))}
@@ -389,14 +345,6 @@ export const VenueManagement = () => {
               />
             </div>
 
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="is_active"
-                checked={newVenue.is_active}
-                onCheckedChange={(checked) => setNewVenue(prev => ({ ...prev, is_active: checked }))}
-              />
-              <Label htmlFor="is_active">Aktiv plats</Label>
-            </div>
 
             <div className="flex justify-end gap-2">
               <Button
