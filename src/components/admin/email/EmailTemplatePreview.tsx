@@ -33,7 +33,7 @@ export function EmailTemplatePreview({ templateForm }: EmailTemplatePreviewProps
     qr_data: 'LIT-2024-1215-001-MOCK'
   } : {
     NAMN: 'Anna Andersson', 
-    KURS: 'Nivå 1 - Scenarbete & Improv Comedy',
+    KURS: 'Nivå 1 – Improv Comedy',
     STARTDATUM: '15 januari 2025',
     STARTTID: '18:00'
   };

@@ -219,9 +219,9 @@ export const useCourseManagementMutations = (
               case 'helgworkshop':
                 return formData.customName;
               case 'niv1':
-                return 'Nivå 1 - Scenarbete & Improv Comedy';
+                return 'Nivå 1 – Improv Comedy';
               case 'niv2':
-                return 'Nivå 2 - Långform improviserad komik';
+                return 'Nivå 2 – Improv Comedy';
               case 'houseteam':
                 return 'House Team & fortsättning';
               default:

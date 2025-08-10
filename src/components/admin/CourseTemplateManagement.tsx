@@ -284,7 +284,7 @@ export const CourseTemplateManagement = () => {
                   id="title_template"
                   value={editingTemplate.title_template}
                   onChange={(e) => setEditingTemplate(prev => prev ? { ...prev, title_template: e.target.value } : null)}
-                  placeholder="t.ex. Nivå 1 - Scenarbete & Improv Comedy"
+                  placeholder="t.ex. Nivå 1 – Improv Comedy"
                 />
               </div>
               <div className="space-y-2">

@@ -22,7 +22,7 @@ export const getTemplateData = (courseType: string, courseTemplates: CourseTempl
   // Fallback to legacy mapping for backward compatibility
   const legacyTemplates = {
     'niv1': {
-      title_template: 'Nivå 1 - Scenarbete & Improv Comedy',
+      title_template: 'Nivå 1 – Improv Comedy',
       subtitle: 'Grundkurs i improvisationsteater',
       course_info: 'En introduktionskurs för nybörjare inom improvisationsteater.',
       practical_info: 'Ta med bekväma kläder och vara beredd att ha kul!',
@@ -34,7 +34,7 @@ export const getTemplateData = (courseType: string, courseTemplates: CourseTempl
       start_time: '18:00',
     },
     'niv2': {
-      title_template: 'Nivå 2 - Långform improviserad komik',
+      title_template: 'Nivå 2 – Improv Comedy',
       subtitle: 'Fördjupningskurs i improvisationsteater',
       course_info: 'En fortsättningskurs för dig som redan har grundläggande kunskaper.',
       practical_info: 'Kräver tidigare erfarenhet av improvisationsteater.',
@@ -85,9 +85,9 @@ export const generateCourseTitle = (courseData: any, courseTemplates: CourseTemp
     case 'custom':
       return courseData.customName;
     case 'niv1':
-      return 'Nivå 1 - Scenarbete & Improv Comedy';
+      return 'Nivå 1 – Improv Comedy';
     case 'niv2':
-      return 'Nivå 2 - Långform improviserad komik';
+      return 'Nivå 2 – Improv Comedy';
     case 'helgworkshop':
       return courseData.customName;
     case 'houseteam':
