@@ -117,26 +117,26 @@ export const CourseCard: React.FC<CourseCardProps> = ({
                     e.stopPropagation()
                     onToggleSmallCard(course)
                   }}
-                  className="relative h-7 rounded-full bg-background border border-border text-primary-red p-0.5 overflow-hidden select-none"
+                  className="relative h-7 rounded-full bg-primary-red text-background p-0.5 overflow-hidden select-none shadow"
                 >
                   {/* Sliding indicator - white pill */}
                   <span
                     aria-hidden
                     className={cn(
-                      "absolute top-0.5 left-0.5 h-[calc(100%-4px)] w-[calc(50%-4px)] rounded-full bg-background shadow-md ring-1 ring-border transition-[left] duration-200",
+                      "absolute top-0.5 left-0.5 h-[calc(100%-4px)] w-[calc(50%-4px)] rounded-full bg-background shadow-md ring-1 ring-primary-red transition-[left] duration-200",
                       course.use_small_card ? "left-[calc(50%+2px)]" : "left-0.5"
                     )}
                   />
                   <ToggleGroupItem
                     value="large"
-                    className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full text-primary-red data-[state=on]:text-primary-red bg-transparent hover:!bg-transparent data-[state=on]:!bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
+                    className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full text-background data-[state=on]:text-primary-red bg-transparent hover:!bg-transparent data-[state=on]:!bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
                     aria-label="Visa stort kort"
                   >
                     Stort
                   </ToggleGroupItem>
                   <ToggleGroupItem
                     value="small"
-                    className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full text-primary-red data-[state=on]:text-primary-red bg-transparent hover:!bg-transparent data-[state=on]:!bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
+                    className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full text-background data-[state=on]:text-primary-red bg-transparent hover:!bg-transparent data-[state=on]:!bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
                     aria-label="Visa litet kort"
                   >
                     Litet
