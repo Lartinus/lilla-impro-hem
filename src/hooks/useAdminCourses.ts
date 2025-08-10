@@ -50,7 +50,6 @@ export const useAdminCourses = () => {
       const { data: courseInstances, error } = await supabase
         .from('course_instances')
         .select('*')
-        .eq('is_active', true)
         .order('sort_order', { ascending: true });
 
       if (error) throw error;
@@ -59,7 +58,7 @@ export const useAdminCourses = () => {
       const { data: performers, error: performersError } = await supabase
         .from('performers')
         .select('*')
-        .eq('is_active', true);
+        ;
 
       if (performersError) throw performersError;
 

@@ -102,7 +102,6 @@ export const useAdminCourseCards = () => {
             .from('performers')
             .select('id, name, image_url, bio')
             .in('id', instructorIds)
-            .eq('is_active', true)
         : { data: [] };
 
       // Get booking counts for all courses in parallel
@@ -191,7 +190,6 @@ export const useAdminCourseDetails = (courseId?: string) => {
             .from('performers')
             .select('id, name, image_url, bio')
             .in('id', instructorIds)
-            .eq('is_active', true)
         : { data: [] };
 
       const teachers = instructorIds.map(id => {

@@ -4,9 +4,9 @@ import { supabase } from '@/integrations/supabase/client';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ResponsiveTable } from '@/components/ui/responsive-table';
-import { Badge } from '@/components/ui/badge';
+
 import { Button } from '@/components/ui/button';
-import { Plus, Edit, Trash2, User, Power, PowerOff, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, User, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -121,24 +121,6 @@ export const PerformerManagement = () => {
     }
   });
 
-  // Toggle status mutation
-  const toggleStatusMutation = useMutation({
-    mutationFn: async (performer: Performer) => {
-      const { error } = await supabase
-        .from('performers')
-        .update({ is_active: !performer.is_active })
-        .eq('id', performer.id);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-performers'] });
-      toast({
-        title: "Status uppdaterad",
-        description: "Kursledarens status har ändrats",
-      });
-    }
-  });
 
   // Delete performer mutation
   const deletePerformerMutation = useMutation({
@@ -315,7 +297,7 @@ export const PerformerManagement = () => {
                 <TableHead className="w-[56px]">Bild</TableHead>
                 <TableHead>Namn</TableHead>
                 <TableHead>Kort bio</TableHead>
-                <TableHead>Status</TableHead>
+                
                 <TableHead className="text-right">Åtgärder</TableHead>
               </TableRow>
             </TableHeader>
@@ -347,20 +329,10 @@ export const PerformerManagement = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={performer.is_active ? 'default' : 'secondary'}>
-                      {performer.is_active ? 'Aktiv' : 'Inaktiv'}
-                    </Badge>
                   </TableCell>
                   <TableCell className="text-right space-x-1">
                     <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Redigera" onClick={() => handleEdit(performer)}>
                       <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Växla status" onClick={() => toggleStatusMutation.mutate(performer)}>
-                      {performer.is_active ? (
-                        <PowerOff className="h-4 w-4" />
-                      ) : (
-                        <Power className="h-4 w-4" />
-                      )}
                     </Button>
                     <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Radera" onClick={() => deletePerformerMutation.mutate(performer.id)}>
                       <Trash2 className="h-4 w-4" />

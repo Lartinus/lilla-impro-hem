@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
+
 import { Separator } from '@/components/ui/separator';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Plus, Edit, Trash2, Save, X } from 'lucide-react';
@@ -25,7 +25,7 @@ interface CourseTemplate {
   sessions: number;
   hours_per_session: number;
   start_time?: string;
-  is_active: boolean;
+  
 }
 
 export const CourseTemplateManagement = () => {
@@ -135,31 +135,6 @@ export const CourseTemplateManagement = () => {
     },
   });
 
-  // Mutation för att växla aktiv status
-  const toggleActiveMutation = useMutation({
-    mutationFn: async ({ templateId, isActive }: { templateId: string; isActive: boolean }) => {
-      const { error } = await supabase
-        .from('course_templates')
-        .update({ is_active: isActive })
-        .eq('id', templateId);
-      
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['course-templates'] });
-      toast({
-        title: "Status uppdaterad",
-        description: "Mallens status har uppdaterats.",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Fel",
-        description: "Kunde inte uppdatera status: " + error.message,
-        variant: "destructive",
-      });
-    },
-  });
 
   const handleEdit = (template: CourseTemplate) => {
     setEditingTemplate({ ...template });
@@ -180,7 +155,7 @@ export const CourseTemplateManagement = () => {
       sessions: 8,
       hours_per_session: 2,
       start_time: '18:00',
-      is_active: true,
+      
     });
     setIsCreatingNew(true);
   };
@@ -214,15 +189,6 @@ export const CourseTemplateManagement = () => {
     deleteMutation.mutate(templateId);
   };
 
-  const toggleActive = (templateId: string) => {
-    const template = templates.find(t => t.id === templateId);
-    if (template) {
-      toggleActiveMutation.mutate({ 
-        templateId, 
-        isActive: !template.is_active 
-      });
-    }
-  };
 
   if (isLoading) {
     return (
@@ -386,16 +352,11 @@ export const CourseTemplateManagement = () => {
 
       <div className="grid gap-4">
         {templates.map((template) => (
-          <Card key={template.id} className={template.is_active ? '' : 'opacity-60'}>
+          <Card key={template.id}>
             <CardContent className="p-6">
               <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                 <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-2">
                     <h3 className="text-lg font-semibold">{template.name}</h3>
-                    <Badge variant={template.is_active ? "default" : "secondary"}>
-                      {template.is_active ? 'Aktiv' : 'Inaktiv'}
-                    </Badge>
-                  </div>
                   <p className="text-sm text-muted-foreground">{template.title_template}</p>
                   {template.subtitle && (
                     <p className="text-sm text-muted-foreground italic">{template.subtitle}</p>
@@ -414,15 +375,6 @@ export const CourseTemplateManagement = () => {
                 </div>
                 
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => toggleActive(template.id)}
-                    className="text-xs"
-                    disabled={toggleActiveMutation.isPending}
-                  >
-                    {template.is_active ? 'Inaktivera' : 'Aktivera'}
-                  </Button>
                   <Button
                     variant="outline"
                     size="sm"

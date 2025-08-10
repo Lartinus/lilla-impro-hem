@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, User, Power, PowerOff } from 'lucide-react';
+import { Edit, Trash2, User } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 interface Performer {
@@ -42,12 +42,7 @@ export function PerformerCard({ performer, onEdit, onToggleStatus, onDelete }: P
           </div>
           
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-2">
               <h3 className="text-lg font-semibold text-foreground">{performer.name}</h3>
-              <Badge variant={performer.is_active ? "default" : "secondary"} className="flex-shrink-0">
-                {performer.is_active ? 'Aktiv' : 'Inaktiv'}
-              </Badge>
-            </div>
           </div>
         </div>
 
@@ -72,19 +67,6 @@ export function PerformerCard({ performer, onEdit, onToggleStatus, onDelete }: P
             Redigera
           </Button>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onToggleStatus(performer)}
-            className="flex-1 sm:flex-none"
-          >
-            {performer.is_active ? (
-              <PowerOff className="h-4 w-4 mr-2" />
-            ) : (
-              <Power className="h-4 w-4 mr-2" />
-            )}
-            {performer.is_active ? 'Inaktivera' : 'Aktivera'}
-          </Button>
 
           <AlertDialog>
             <AlertDialogTrigger asChild>

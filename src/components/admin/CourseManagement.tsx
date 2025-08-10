@@ -92,7 +92,6 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       const { data, error } = await supabase
         .from('performers')
         .select('*')
-        .eq('is_active', true)
         .order('name');
       
       if (error) throw error;
@@ -108,7 +107,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       const { data, error } = await supabase
         .from('course_templates')
         .select('*')
-        .eq('is_active', true)
+        
         .order('name');
       
       if (error) throw error;
