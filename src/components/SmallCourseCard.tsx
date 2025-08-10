@@ -40,41 +40,47 @@ const normalizedDiscount = typeof course.discount_price === 'number' && course.d
     : (course.teacher?.name || '');
 
   return (
-    <Card className="bg-[#E7E7E7] transition-all duration-300 flex flex-col border-none shadow-none rounded-none">
-      <CardContent className="p-4 flex flex-col">
-        {/* Titles */}
-        <div className="mb-1 flex flex-col justify-start">
-          <h2 className="mb-2">{course.course_title}</h2>
-          {course.subtitle && (<h3>{course.subtitle}</h3>)}
-        </div>
-
-        {/* Dashed line like full course card */}
-        <div className="pt-1 my-1">
-          <div className="flex items-center justify-center relative mb-1">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t-2 border-dashed border-black"></div>
-            </div>
-            {(() => {
-              const remainingSpots = course.max_participants && course.currentParticipants !== undefined 
-                ? course.max_participants - course.currentParticipants 
-                : null;
-              const isSoldOut = remainingSpots !== null && remainingSpots <= 0;
-              const showFewSpotsWarning = remainingSpots !== null && remainingSpots <= 5 && remainingSpots > 0;
-              
-              return (isSoldOut || showFewSpotsWarning) ? (
-                <div className="relative bg-[#E7E7E7] px-2">
-                  <div className="inline-flex items-center justify-center w-[120px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-primary border-primary text-white">
-                    {isSoldOut ? "Fullbokad!" : "Få platser kvar"}
-                  </div>
-                </div>
-              ) : null;
-            })()}
+     <Card className="bg-[#E7E7E7] transition-all duration-300 flex flex-col course-card border-none shadow-none rounded-none">
+      <CardContent className="p-4 flex flex-col flex-1">
+        <div className="flex-1">
+          <div className="mb-1 flex flex-col justify-start">
+            <h2 className="mb-2">
+              {course.course_title}
+            </h2>
+            {course.subtitle && (
+              <h3>{course.subtitle}</h3>
+            )}
           </div>
-          <div className="min-h-[24px]">
-            <div
-              className="mt-4 text-base body-text [&>p]:mb-0.5 [&>p]:mt-0 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0 [&>*:first-child]:mt-0"
-              dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
-            />
+          
+          {/* Dashed line with optional "Få platser kvar" tag in the middle */}
+          <div className="pt-1 my-1">
+            <div className="flex items-center justify-center relative mb-1">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t-2 border-dashed border-black"></div>
+              </div>
+              {(() => {
+                const remainingSpots = course.max_participants && course.currentParticipants !== undefined 
+                  ? course.max_participants - course.currentParticipants 
+                  : null;
+                const isSoldOut = remainingSpots !== null && remainingSpots <= 0;
+                const showFewSpotsWarning = remainingSpots !== null && remainingSpots <= 5 && remainingSpots > 0;
+                
+                return (isSoldOut || showFewSpotsWarning) ? (
+                  <div className="relative bg-[#E7E7E7] px-2">
+                    <div className="inline-flex items-center justify-center w-[120px] h-[22px] text-[12px] rounded-full border-2 font-rajdhani font-medium bg-primary border-primary text-white">
+                      {isSoldOut ? "Fullbokad!" : "Få platser kvar"}
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+            </div>
+            
+            <div className="min-h-[24px]">
+              <div 
+                className="mt-4 text-base body-text [&>p]:mb-0.5 [&>p]:mt-0 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0 [&>*:first-child]:mt-0"
+                dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
+              />
+            </div>
           </div>
         </div>
 
