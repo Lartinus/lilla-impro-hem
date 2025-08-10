@@ -19,6 +19,7 @@ import { CourseWithBookings, Performer } from '@/types/courseManagement';
 import { useWaitlistManagement } from '@/hooks/useWaitlistManagement';
 import { WaitlistDialog } from '../WaitlistDialog';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { cn } from '@/lib/utils';
 
 interface MobileCourseCardProps {
   course: CourseWithBookings;
@@ -86,6 +87,48 @@ export function MobileCourseCard({
           <Badge variant={course.is_active ? "default" : "secondary"}>
             {course.is_active ? 'Aktiv' : 'Inaktiv'}
           </Badge>
+        </div>
+
+        {/* Mobile: size toggle centered at top */}
+        <div className="flex justify-center mb-3">
+          <ToggleGroup
+            type="single"
+            value={course.use_small_card ? 'small' : 'large'}
+            onValueChange={(val) => {
+              if (!val) return
+              const wantSmall = val === 'small'
+              if (wantSmall !== !!course.use_small_card) onToggleSmallCard(course)
+            }}
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              onToggleSmallCard(course)
+            }}
+            className="relative h-7 rounded-full bg-primary-red text-background p-0.5 overflow-hidden select-none shadow"
+          >
+            {/* Sliding indicator - white pill */}
+            <span
+              aria-hidden
+              className={cn(
+                "absolute top-0.5 left-0.5 h-[calc(100%-4px)] w-[calc(50%-4px)] rounded-full bg-background shadow-md ring-1 ring-primary-red transition-[left] duration-200",
+                course.use_small_card ? "left-[calc(50%+2px)]" : "left-0.5"
+              )}
+            />
+            <ToggleGroupItem
+              value="large"
+              className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full text-background data-[state=on]:text-primary-red bg-transparent hover:!bg-transparent data-[state=on]:!bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
+              aria-label="Visa stort kort"
+            >
+              Stort
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="small"
+              className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full text-background data-[state=on]:text-primary-red bg-transparent hover:!bg-transparent data-[state=on]:!bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
+              aria-label="Visa litet kort"
+            >
+              Litet
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
 
         <div className="space-y-3">
@@ -165,14 +208,6 @@ export function MobileCourseCard({
               >
                 <Edit className="w-3 h-3 mr-1 flex-shrink-0" />
                 <span className="truncate">Redigera</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => onToggleSmallCard(course)}
-                className="flex-1 min-w-0 text-xs px-2"
-              >
-                <span className="truncate">{course.use_small_card ? 'Kort kort' : 'Stort kort'}</span>
               </Button>
               {!showCompleted && (
                 <Button 
