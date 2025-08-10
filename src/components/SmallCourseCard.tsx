@@ -41,7 +41,7 @@ const normalizedDiscount = typeof course.discount_price === 'number' && course.d
 
   return (
     <Card className="bg-[#E7E7E7] transition-all duration-300 flex flex-col border-none shadow-none rounded-none">
-      <CardContent className="p-4 flex flex-col gap-3">
+      <CardContent className="p-4 flex flex-col">
         {/* Titles */}
         <div>
           <h2 className="mb-1">{course.course_title}</h2>
