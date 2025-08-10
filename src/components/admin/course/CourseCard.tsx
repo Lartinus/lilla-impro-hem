@@ -129,14 +129,14 @@ export const CourseCard: React.FC<CourseCardProps> = ({
                   />
                   <ToggleGroupItem
                     value="large"
-                    className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full data-[state=on]:text-primary-red hover:bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
+                    className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full text-primary-red data-[state=on]:text-primary-red bg-transparent hover:!bg-transparent data-[state=on]:!bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
                     aria-label="Visa stort kort"
                   >
                     Stort
                   </ToggleGroupItem>
                   <ToggleGroupItem
                     value="small"
-                    className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full data-[state=on]:text-primary-red hover:bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
+                    className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full text-primary-red data-[state=on]:text-primary-red bg-transparent hover:!bg-transparent data-[state=on]:!bg-transparent focus-visible:ring-0 focus:outline-none pointer-events-none"
                     aria-label="Visa litet kort"
                   >
                     Litet
