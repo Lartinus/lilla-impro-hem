@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { formatPrice } from '@/lib/utils';
+import { formatPriceSEK } from '@/lib/utils';
 
 interface TicketPurchaseProps {
   onPurchase: (data: { regularTickets: number; discountTickets: number; discountCode: string; discountValidation?: { valid: boolean; discountAmount: number; error?: string } }) => void;
@@ -91,7 +91,7 @@ const TicketPurchase = ({
       
       <div className="mb-4 flex flex-col md:flex-row md:gap-2">
         <div className="mb-4 md:mb-0 flex-shrink-0">
-          <div className="font-medium text-content-primary mb-3">Pris {formatPrice(ticketPrice)}</div>
+          <div className="font-medium text-content-primary mb-3">Pris {formatPriceSEK(ticketPrice)}</div>
           <div className="flex items-center space-x-4">
             <div className="relative w-24 border border-black bg-transparent flex items-center">
               <button
@@ -115,7 +115,7 @@ const TicketPurchase = ({
         </div>
 
         <div className="flex-shrink-0">
-          <div className="font-medium text-content-primary mb-3">Student/pensionär/kursare {formatPrice(discountPrice)}</div>
+          <div className="font-medium text-content-primary mb-3">Student/pensionär/kursare {formatPriceSEK(discountPrice)}</div>
           <div className="relative w-24 border border-black bg-transparent flex items-center">
             <button
               onClick={() => setDiscountTickets(Math.max(0, discountTickets - 1))}

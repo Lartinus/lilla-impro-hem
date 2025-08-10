@@ -15,6 +15,7 @@ import { useAdminShows } from '@/hooks/useAdminShows';
 
 import { MapPin, MoveLeft } from 'lucide-react';
 import { convertMarkdownToHtml } from '@/utils/markdownHelpers';
+import { formatPriceSEK } from '@/lib/utils';
 
 const ShowDetails = () => {
   const { slug } = useParams();
@@ -40,8 +41,8 @@ const ShowDetails = () => {
     location: show.venue,
     mapLink: show.venue_maps_url,
     description: show.description,
-    ticketPrice: show.regular_price,
-    discountPrice: show.discount_price,
+    ticketPrice: (show.regular_price || 0) / 100, // convert from öre to kr for UI
+    discountPrice: (show.discount_price || 0) / 100, // convert from öre to kr for UI
     totalTickets: show.max_tickets || 100,
     performers: show.performers.map(p => ({
       id: parseInt(p.id.slice(-8), 16),
@@ -165,7 +166,7 @@ const ShowDetails = () => {
                 <h3>
                   {formattedShow.ticketPrice === 0 && formattedShow.discountPrice === 0 
                     ? '0 kr' 
-                    : `${formattedShow.ticketPrice} kr / ${formattedShow.discountPrice} kr`
+                    : `${formatPriceSEK(formattedShow.ticketPrice)} / ${formatPriceSEK(formattedShow.discountPrice)}`
                   }
                 </h3>
               </div>
