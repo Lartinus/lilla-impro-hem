@@ -328,15 +328,15 @@ export const PerformerManagement = () => {
                       {performer.bio ? performer.bio : '—'}
                     </div>
                   </TableCell>
-                  <TableCell>
-                  </TableCell>
-                  <TableCell className="text-right space-x-1">
-                    <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Redigera" onClick={() => handleEdit(performer)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="items-center justify-center" aria-label="Radera" onClick={() => deletePerformerMutation.mutate(performer.id)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <Button variant="ghost" size="icon" aria-label="Redigera" onClick={() => handleEdit(performer)}>
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" aria-label="Radera" onClick={() => deletePerformerMutation.mutate(performer.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

@@ -31,10 +31,9 @@ interface VenueForm {
 }
 
 // Venue Row Component
-function VenueRow({ venue, onEdit, onToggleActive, onDelete }: {
+function VenueRow({ venue, onEdit, onDelete }: {
   venue: Venue;
   onEdit: (venue: Venue) => void;
-  onToggleActive: (venue: Venue) => void;
   onDelete: (venue: Venue) => void;
 }) {
   return (
