@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { getCurrentCourseBookings } from './useCourseInstances';
+import { buildDefaultSubtitle } from '@/utils/courseSubtitle';
 
 export interface AdminCourse {
   id: string;
@@ -97,17 +98,10 @@ export const useAdminCourses = () => {
           // Use first teacher as primary teacher for backward compatibility
           const primaryTeacher = teachers.length > 0 ? teachers[0] : null;
 
-          // Create a more descriptive subtitle that includes schedule info
-          let subtitle = instance.subtitle || '';
-          if (instance.start_date && instance.start_time) {
-            const startDate = new Date(instance.start_date);
-            const weekdays = ['söndagar', 'måndagar', 'tisdagar', 'onsdagar', 'torsdagar', 'fredagar', 'lördagar'];
-            const weekday = weekdays[startDate.getDay()];
-            const time = instance.start_time.substring(0, 5); // Remove seconds
-            subtitle = `${weekday.charAt(0).toUpperCase() + weekday.slice(1)} ${time}, startdatum ${startDate.toLocaleDateString('sv-SE', { day: 'numeric', month: 'long' })}`;
-          } else if (instance.start_date) {
-            subtitle = `Startar ${new Date(instance.start_date).toLocaleDateString('sv-SE')}`;
-          }
+          // Use custom subtitle if present, otherwise build default from date/time
+          const subtitle = (instance.subtitle && instance.subtitle.trim().length > 0)
+            ? instance.subtitle
+            : buildDefaultSubtitle(instance.start_date, instance.start_time);
           
           return {
             ...instance,

@@ -2,6 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { getCurrentCourseBookings } from './useCourseInstances';
+import { buildDefaultSubtitle } from '@/utils/courseSubtitle';
 
 // Lightweight interface for course cards
 interface CourseCardData {
@@ -138,6 +139,9 @@ export const useAdminCourseCards = () => {
           
           return {
             ...instance,
+            subtitle: (instance.subtitle && instance.subtitle.trim().length > 0)
+              ? instance.subtitle
+              : buildDefaultSubtitle(instance.start_date, instance.start_time),
             available: true,
             showButton: true,
             buttonText: 'Anmäl dig',
@@ -202,15 +206,10 @@ export const useAdminCourseDetails = (courseId?: string) => {
 
       const primaryTeacher = teachers.length > 0 ? teachers[0] : null;
 
-      // Create detailed subtitle with schedule info
-      let subtitle = instance.subtitle || '';
-      if (instance.start_date && instance.start_time) {
-        const startDate = new Date(instance.start_date);
-        const weekdays = ['söndagar', 'måndagar', 'tisdagar', 'onsdagar', 'torsdagar', 'fredagar', 'lördagar'];
-        const weekday = weekdays[startDate.getDay()];
-        const time = instance.start_time.substring(0, 5);
-        subtitle = `${weekday.charAt(0).toUpperCase() + weekday.slice(1)} ${time}, startdatum ${startDate.toLocaleDateString('sv-SE', { day: 'numeric', month: 'long' })}`;
-      }
+      // Use custom subtitle if present, otherwise build it from date/time
+      const subtitle = (instance.subtitle && instance.subtitle.trim().length > 0)
+        ? instance.subtitle
+        : buildDefaultSubtitle(instance.start_date, instance.start_time);
 
       const fullCourse = {
         ...instance,

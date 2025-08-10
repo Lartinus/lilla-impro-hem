@@ -29,6 +29,7 @@ import {
 import { RepeatablePracticalInfo } from './RepeatablePracticalInfo';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { buildDefaultSubtitle } from '@/utils/courseSubtitle';
 
 // Import types and utilities
 import {
@@ -80,6 +81,9 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
     courseInfo: '',
     practicalInfo: ''
   });
+
+  const [showCustomSubtitle, setShowCustomSubtitle] = useState(false);
+
 
   // Fetch performers from local database
   const { data: performers } = useQuery({
@@ -245,6 +249,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       courseInfo: '',
       practicalInfo: ''
     });
+    setShowCustomSubtitle(false);
   };
 
   const handleEditCourse = (course: CourseWithBookings) => {
@@ -274,15 +279,17 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
       courseInfo: course.course_info || '',
       practicalInfo: course.practical_info || ''
     });
+    setShowCustomSubtitle(Boolean((course.subtitle || '').trim()));
     
     setIsDialogOpen(true);
   };
 
   const handleSubmit = () => {
+    const formDataToSave = { ...newCourse, subtitle: showCustomSubtitle ? newCourse.subtitle : '' };
     if (isEditMode && editingCourse) {
-      updateCourseMutation.mutate({ course: editingCourse, formData: newCourse });
+      updateCourseMutation.mutate({ course: editingCourse, formData: formDataToSave });
     } else {
-      createCourseMutation.mutate(newCourse);
+      createCourseMutation.mutate(formDataToSave);
     }
   };
 
@@ -391,15 +398,16 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                           courseInfo: '',
                           practicalInfo: ''
                         }));
+                        setShowCustomSubtitle(false);
                       } else {
-                        // Fill with template data
+                        // Fill with template data (no default custom subtitle)
                         const templateData = getTemplateData(value, courseTemplates);
                         if (templateData) {
                           setNewCourse(prev => ({
                             ...prev,
                             courseType: value,
                             customName: templateData.title_template || '',
-                            subtitle: templateData.subtitle || '',
+                            subtitle: '',
                             sessions: templateData.sessions,
                             hoursPerSession: templateData.hours_per_session,
                             startTime: templateData.start_time || '18:00',
@@ -409,6 +417,7 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                             courseInfo: templateData.course_info || '',
                             practicalInfo: templateData.practical_info || ''
                           }));
+                          setShowCustomSubtitle(false);
                         }
                       }
                     }}
@@ -591,13 +600,35 @@ export const CourseManagement = ({ showCompleted = false }: { showCompleted?: bo
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="subtitle">Underrubrik (valfritt)</Label>
-                  <Input
-                    id="subtitle"
-                    value={newCourse.subtitle}
-                    onChange={(e) => setNewCourse({...newCourse, subtitle: e.target.value})}
-                    placeholder="Kort beskrivning av kursen"
-                  />
+                  <Label htmlFor="subtitle">Underrubrik</Label>
+                  {!showCustomSubtitle ? (
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-sm text-muted-foreground">
+                        Standard: {buildDefaultSubtitle(newCourse.startDate ?? null, newCourse.startTime || null) || '—'}
+                      </p>
+                      <Button variant="outline" size="sm" onClick={() => setShowCustomSubtitle(true)}>
+                        Egen underrubrik
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <Input
+                        id="subtitle"
+                        value={newCourse.subtitle}
+                        onChange={(e) => setNewCourse({...newCourse, subtitle: e.target.value})}
+                        placeholder="Skriv egen underrubrik"
+                      />
+                      <div className="flex justify-end">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => { setShowCustomSubtitle(false); setNewCourse({...newCourse, subtitle: ''}); }}
+                        >
+                          Använd standard
+                        </Button>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <div className="grid gap-2">
