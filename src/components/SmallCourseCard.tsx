@@ -43,9 +43,9 @@ const normalizedDiscount = typeof course.discount_price === 'number' && course.d
     <Card className="bg-[#E7E7E7] transition-all duration-300 flex flex-col border-none shadow-none rounded-none">
       <CardContent className="p-4 flex flex-col">
         {/* Titles */}
-        <div>
-          <h2 className="mb-1">{course.course_title}</h2>
-          {course.subtitle && <h3 className="text-base leading-tight">{course.subtitle}</h3>}
+        <div className="mb-1 flex flex-col justify-start">
+          <h2 className="mb-2">{course.course_title}</h2>
+          {course.subtitle && (<h3>{course.subtitle}</h3>)}
         </div>
 
         {/* Dashed line like full course card */}
@@ -57,7 +57,7 @@ const normalizedDiscount = typeof course.discount_price === 'number' && course.d
           </div>
           <div className="min-h-[24px]">
             <div
-              className="mt-4 text-sm body-text [&>p]:mb-0.5 [&>p]:mt-0 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0 [&>*:first-child]:mt-0"
+              className="mt-4 text-base body-text [&>p]:mb-0.5 [&>p]:mt-0 [&>h1]:mb-0 [&>h2]:mb-0 [&>h3]:mb-0 [&>h4]:mb-0 [&>h5]:mb-0 [&>h6]:mb-0 [&>*:first-child]:mt-0"
               dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(course.description || '') }}
             />
           </div>
