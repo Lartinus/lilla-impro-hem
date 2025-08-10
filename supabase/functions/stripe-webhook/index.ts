@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
@@ -28,8 +29,20 @@ serve(async (req) => {
       throw new Error('No signature provided');
     }
 
-    // Parse the webhook event
-    const event = JSON.parse(body);
+    const stripeKey = Deno.env.get('STRIPE_SECRETKEY_TEST') || Deno.env.get('STRIPE_SECRETKEY_LIVE') || '';
+    const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
+
+    let event: any;
+    try {
+      event = stripe.webhooks.constructEvent(body, signature, stripeWebhookSecret);
+    } catch (err) {
+      console.error('Invalid webhook signature:', err);
+      return new Response(JSON.stringify({ error: 'Invalid signature' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     console.log('Received webhook event:', event.type, 'Session ID:', event.data?.object?.id);
     
     if (event.type === 'checkout.session.completed') {

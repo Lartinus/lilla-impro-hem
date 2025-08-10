@@ -59,9 +59,22 @@ serve(async (req) => {
       buyerPhone 
     } = await req.json();
 
-    // Calculate total
-    const regularTotal = regularTickets * ticketPrice;
-    const discountTotal = discountTickets * discountPrice;
+    // Fetch official prices from database and calculate total (prices in SEK)
+    const { data: showData, error: showError } = await supabase
+      .from('admin_shows')
+      .select('regular_price, discount_price, is_active')
+      .eq('slug', showSlug)
+      .single();
+
+    if (showError || !showData?.is_active) {
+      console.error('Show not available or fetch failed:', showError);
+      throw new Error('Show not available');
+    }
+
+    const unitRegular = Number(showData.regular_price ?? 0);
+    const unitDiscount = Number(showData.discount_price ?? 0);
+    const regularTotal = regularTickets * unitRegular;
+    const discountTotal = discountTickets * unitDiscount;
     let totalAmount = regularTotal + discountTotal;
     
     // Apply discount code if provided

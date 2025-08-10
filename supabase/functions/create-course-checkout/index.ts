@@ -71,11 +71,23 @@ serve(async (req) => {
       apiVersion: "2023-10-16",
     });
 
-    // Calculate total amount based on price type (prices are provided in kronor)
-    const totalAmountInSEK = useDiscountPrice ? discountPrice : price;
-    const totalAmountInOre = Math.round(totalAmountInSEK * 100); // Convert to öre for Stripe
-    const priceType = useDiscountPrice ? "Studentpris" : "Ordinarie pris";
+    // Fetch official prices from DB (prices are in SEK)
+    const { data: courseInstance, error: ciError } = await supabase
+      .from('course_instances')
+      .select('price, discount_price, is_active')
+      .eq('id', courseInstanceId)
+      .single();
 
+    if (ciError || !courseInstance?.is_active) {
+      console.error('Course not available or fetch failed:', ciError);
+      throw new Error('Course not available');
+    }
+
+    const dbPrice = Number(courseInstance.price ?? 0);
+    const dbDiscount = Number(courseInstance.discount_price ?? 0);
+    const totalAmountInSEK = useDiscountPrice ? dbDiscount : dbPrice;
+    const totalAmountInOre = Math.round(totalAmountInSEK * 100); // Convert to öre
+    const priceType = useDiscountPrice ? "Studentpris" : "Ordinarie pris";
     console.log('Creating session with amount:', totalAmountInSEK, 'SEK (', totalAmountInOre, 'öre) type:', priceType);
 
     // Create Stripe checkout session
