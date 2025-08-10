@@ -248,7 +248,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
               </>
             )}
 
-{/* Desktop: Segmented toggle shows current state */}
+{/* Desktop: Segmented toggle with sliding indicator */}
 <div className="hidden md:flex items-center">
   <ToggleGroup
     type="single"
@@ -258,18 +258,26 @@ export const CourseCard: React.FC<CourseCardProps> = ({
       const wantSmall = val === 'small'
       if (wantSmall !== !!course.use_small_card) onToggleSmallCard(course)
     }}
-    className="rounded-full bg-primary-red text-background p-0.5 shadow"
+    className="relative h-7 rounded-full bg-primary-red text-background p-0.5 overflow-hidden select-none"
   >
+    {/* Sliding indicator */}
+    <span
+      aria-hidden
+      className={cn(
+        "absolute top-0.5 left-0.5 h-[calc(100%-4px)] w-[calc(50%-4px)] rounded-full bg-background shadow transition-[left] duration-200",
+        course.use_small_card ? "left-[calc(50%+2px)]" : "left-0.5"
+      )}
+    />
     <ToggleGroupItem
       value="large"
-      className="h-9 px-4 text-xs rounded-full transition-all duration-200 data-[state=on]:bg-background data-[state=on]:text-primary-red data-[state=on]:shadow"
+      className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full data-[state=on]:text-primary-red hover:bg-transparent focus-visible:ring-0 focus:outline-none"
       aria-label="Visa stort kort"
     >
       Stort
     </ToggleGroupItem>
     <ToggleGroupItem
       value="small"
-      className="h-9 px-4 text-xs rounded-full transition-all duration-200 data-[state=on]:bg-background data-[state=on]:text-primary-red data-[state=on]:shadow"
+      className="relative z-10 inline-flex h-7 px-3 items-center justify-center text-[11px] font-medium rounded-full data-[state=on]:text-primary-red hover:bg-transparent focus-visible:ring-0 focus:outline-none"
       aria-label="Visa litet kort"
     >
       Litet
