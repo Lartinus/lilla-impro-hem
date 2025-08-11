@@ -51,6 +51,7 @@ export const useAdminShowCards = (showCompleted: boolean = false) => {
     queryFn: async (): Promise<ShowCardData[]> => {
       console.log('🎭 Fetching optimized show cards...');
       
+      let query = supabase
         .from('admin_shows')
         .select(`
           *,
@@ -89,8 +90,8 @@ export const useAdminShowCards = (showCompleted: boolean = false) => {
       
       const formattedData = (data || []).map(show => ({
         ...show,
-        performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
-        show_tags: (show.admin_show_tags || []).map((rel: any) => rel.show_tags).filter(Boolean)
+        performers: (show as any).show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
+        show_tags: (((show as any).admin_show_tags) || []).map((rel: any) => rel.show_tags).filter(Boolean)
       })) as ShowCardData[];
       
       console.log(`🎭 Fetched ${formattedData.length} optimized show cards`);
@@ -110,6 +111,7 @@ export const useAdminShowDetails = (showId?: string) => {
       
       console.log(`🎭 Fetching full show details for ${showId}...`);
       
+      const { data, error } = await supabase
         .from('admin_shows')
         .select(`
           *,
@@ -142,8 +144,8 @@ export const useAdminShowDetails = (showId?: string) => {
       
       const formattedShow = {
         ...data,
-        performers: data.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
-        show_tags: (data.admin_show_tags || []).map((rel: any) => rel.show_tags).filter(Boolean)
+        performers: (data as any).show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
+        show_tags: (((data as any).admin_show_tags) || []).map((rel: any) => rel.show_tags).filter(Boolean)
       } as FullShowData;
       
       console.log(`🎭 Fetched full details for show: ${formattedShow.title}`);

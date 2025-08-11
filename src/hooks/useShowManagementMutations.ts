@@ -37,9 +37,9 @@ export const useShowManagementMutations = () => {
       }
       // Add tag relations
       if (tag_ids && tag_ids.length > 0) {
-        const { error: tagsError } = await supabase
+        const { error: tagsError } = await (supabase as any)
           .from('admin_show_tags')
-          .insert(tag_ids.map(tagId => ({ show_id: show.id, tag_id: tagId })));
+          .insert(tag_ids.map((tagId: string) => ({ show_id: show.id, tag_id: tagId })));
         if (tagsError) throw tagsError;
       }
 
@@ -116,18 +116,19 @@ export const useShowManagementMutations = () => {
       }
 
       // Update tags - remove old and add new
-      const { error: deleteTagsError } = await supabase
+      const { error: deleteTagsError } = await (supabase as any)
         .from('admin_show_tags')
         .delete()
         .eq('show_id', id);
       if (deleteTagsError) throw deleteTagsError;
 
       if (tag_ids && tag_ids.length > 0) {
-        const { error: insertTagsError } = await supabase
+        const { error: insertTagsError } = await (supabase as any)
           .from('admin_show_tags')
-          .insert(tag_ids.map(tagId => ({ show_id: id, tag_id: tagId })));
+          .insert(tag_ids.map((tagId: string) => ({ show_id: id, tag_id: tagId })));
         if (insertTagsError) throw insertTagsError;
       }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
       queryClient.invalidateQueries({ queryKey: ['admin-show-cards'] });

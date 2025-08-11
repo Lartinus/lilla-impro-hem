@@ -45,8 +45,8 @@ export const useShowData = (showCompleted: boolean = false) => {
       
       return (data || []).map(show => ({
         ...show,
-        performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
-        show_tags: (show.admin_show_tags || []).map((rel: any) => rel.show_tags).filter(Boolean)
+        performers: (show as any).show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
+        show_tags: (((show as any).admin_show_tags) || []).map((rel: any) => rel.show_tags).filter(Boolean)
       })) as AdminShowWithPerformers[];
     }
   });

@@ -8,6 +8,7 @@ export const useAdminShows = () => {
     queryFn: async () => {
       console.log('🎭 Fetching admin shows...');
       
+      const { data, error } = await supabase
         .from('admin_shows')
         .select(`
           id,
@@ -56,12 +57,40 @@ export const useAdminShows = () => {
         throw error;
       }
       
-      const formattedData = (data || []).map(show => ({
+      // Fetch tags for all shows (separate queries since no DB relation is defined)
+      const showsArr = data || [];
+      const showIds = showsArr.map((s: any) => s.id);
+      let tagRelations: Array<{ show_id: string; tag_id: string }> = [];
+      let tagsList: any[] = [];
+      if (showIds.length > 0) {
+        const { data: rels } = await (supabase as any)
+          .from('admin_show_tags')
+          .select('show_id, tag_id')
+          .in('show_id', showIds);
+        tagRelations = rels || [];
+
+        const { data: tags } = await supabase
+          .from('show_tags')
+          .select('*')
+          .eq('is_active', true);
+        tagsList = tags || [];
+      }
+
+      const tagById = new Map(tagsList.map((t: any) => [t.id, t]));
+      const tagsByShow = new Map<string, any[]>();
+      for (const rel of tagRelations) {
+        const t = tagById.get(rel.tag_id);
+        if (t) {
+          const arr = tagsByShow.get(rel.show_id) || [];
+          arr.push(t);
+          tagsByShow.set(rel.show_id, arr);
+        }
+      }
+      
+      const formattedData = (showsArr).map((show: any) => ({
         ...show,
-        performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
-        show_tags: (show.admin_show_tags || [])
-          .map((rel: any) => rel.show_tags)
-          .filter(Boolean)
+        performers: (show.show_performers || []).map((sp: any) => sp.actors).filter(Boolean) || [],
+        show_tags: tagsByShow.get(show.id) || []
       })) as AdminShowWithPerformers[];
       
       console.log('🎭 Formatted admin shows:', formattedData);
