@@ -90,7 +90,7 @@ const ShowCardSimple = ({
             <div className="pt-1 my-1">
               <div className="flex items-center justify-center relative mb-1">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t-2 border-dashed border-black"></div>
+                  <div className="w-full border-t-2 mt-1 border-dashed border-black"></div>
                 </div>
                 {(show.tagsDetailed && show.tagsDetailed.length > 0) ? (
                   <div className="relative bg-[#E7E7E7] px-2 inline-flex items-center justify-center gap-2 flex-nowrap">
