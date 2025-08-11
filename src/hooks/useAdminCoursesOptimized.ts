@@ -81,6 +81,7 @@ export const useAdminCourseCards = () => {
           price,
           discount_price,
           instructor_id_1,
+          instructor_id_2,
           sort_order,
           max_participants,
           course_info,
@@ -94,10 +95,12 @@ export const useAdminCourseCards = () => {
 
       if (error) throw error;
 
-      // Get minimal performer data for primary instructors only
-      const instructorIds = courseInstances
-        ?.map(c => c.instructor_id_1)
-        .filter(Boolean) || [];
+      // Get minimal performer data for BOTH instructors
+      const instructorIds = Array.from(new Set(
+        (courseInstances || [])
+          .flatMap(c => [c.instructor_id_1, c.instructor_id_2])
+          .filter(Boolean) as string[]
+      ));
 
       const { data: performers } = instructorIds.length > 0 
         ? await supabase
@@ -124,19 +127,23 @@ export const useAdminCourseCards = () => {
 
       const formattedCourses = coursesWithBookingCounts
         .map(instance => {
-          const instructor = instance.instructor_id_1 
-            ? performers?.find(p => p.id === instance.instructor_id_1)
-            : null;
+          // Build teachers array in order (instructor 1, then 2)
+          const teacherIds = [instance.instructor_id_1, instance.instructor_id_2].filter(Boolean) as string[];
+          const teachers = teacherIds
+            .map((id) => {
+              const p = performers?.find((pp: any) => pp.id === id);
+              return p
+                ? {
+                    id: p.id,
+                    name: p.name,
+                    image: p.image_url?.replace('public/', '/') || null,
+                    bio: p.bio || '',
+                  }
+                : null;
+            })
+            .filter(Boolean) as Array<{ id: string; name: string; image: string | null; bio: string }>;
 
-          const teacher = instructor ? {
-            id: instructor.id,
-            name: instructor.name,
-            image: instructor.image_url?.replace('public/', '/') || null,
-            bio: instructor.bio || ''
-          } : null;
-
-          // Create teachers array for multiple instructors
-          const teachers = teacher ? [teacher] : [];
+          const teacher = teachers.length > 0 ? teachers[0] : null;
           
           return {
             ...instance,
@@ -149,7 +156,7 @@ export const useAdminCourseCards = () => {
             teacher,
             teachers,
             currentParticipants: instance.currentParticipants,
-            description: instance.course_info || `${instance.course_title} - skapat från administratörspanelen.`
+            description: instance.course_info || `${instance.course_title} - skapat från administratörspanelen.`,
           };
         })
         .filter(course => {
