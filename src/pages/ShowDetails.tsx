@@ -171,12 +171,14 @@ const ShowDetails = () => {
                 </h3>
               </div>
 
-              {/* Dashed line with centered tag */}
+              {/* Dashed line with centered tags */}
               <div className="mb-6 relative flex items-center">
                 <div className="border-t-2 border-dashed border-gray-800 flex-1"></div>
                 {show?.show_tags && show.show_tags.length > 0 && (
-                  <div className="absolute left-1/2 transform -translate-x-1/2 bg-gray-100 px-2">
-                    <ShowTag name={show.show_tags[0].name} color={show.show_tags[0].color} />
+                  <div className="absolute left-1/2 transform -translate-x-1/2 bg-gray-100 px-2 flex gap-2 flex-wrap items-center justify-center">
+                    {show.show_tags.map((t) => (
+                      <ShowTag key={t.id} name={t.name} color={t.color} />
+                    ))}
                   </div>
                 )}
               </div>

@@ -111,6 +111,7 @@ export const formatAdminShowForCard = (show: AdminShowWithPerformers) => ({
   totalTickets: show.max_tickets || 100,
   description: show.description,
   tags: (show.show_tags || []).map(t => t.name),
+  tagsDetailed: (show.show_tags || []).map(t => ({ name: t.name, color: t.color })),
   tag: (show.show_tags && show.show_tags.length > 0) ? {
     name: show.show_tags[0].name,
     color: show.show_tags[0].color

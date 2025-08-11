@@ -20,6 +20,7 @@ interface SimpleShow {
     name: string;
     color: string;
   } | null;
+  tagsDetailed?: { name: string; color: string }[];
 }
 
 interface ShowCardSimpleProps {
@@ -91,11 +92,17 @@ const ShowCardSimple = ({
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t-2 border-dashed border-black"></div>
                 </div>
-                {show.tag && (
+                {(show.tagsDetailed && show.tagsDetailed.length > 0) ? (
+                  <div className="relative bg-[#E7E7E7] px-2 flex gap-2 flex-wrap items-center justify-center">
+                    {show.tagsDetailed.map((t, idx) => (
+                      <ShowTag key={`${t.name}-${idx}`} name={t.name} color={t.color} size="small" />
+                    ))}
+                  </div>
+                ) : show.tag ? (
                   <div className="relative bg-[#E7E7E7] px-2">
                     <ShowTag name={show.tag.name} color={show.tag.color} size="small" />
                   </div>
-                )}
+                ) : null}
               </div>
               
               <div className="min-h-[24px]">
