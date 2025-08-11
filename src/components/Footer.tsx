@@ -38,7 +38,9 @@ export default function Footer() {
             
             <p className="text-sm mb-6" style={{ color: 'rgb(var(--white))' }}>
               Org. nr: 559537-8786<br />
-              kontakt@improteatern.se
+              <a href="mailto:kontakt@improteatern.se" className="underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white" style={{ color: 'rgb(var(--white))' }}>
+                kontakt@improteatern.se
+              </a>
             </p>
             
             <p className="font-tanker text-[18px] leading-relaxed" style={{ color: 'rgb(var(--white))' }}>

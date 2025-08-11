@@ -214,8 +214,12 @@ const PurchaseForm = ({
       
       <div className="space-y-4 mb-6 max-w-md">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Namn</label>
+          <label htmlFor="buyer-name" className="block text-sm font-medium text-gray-700 mb-1">Namn</label>
           <Input
+            id="buyer-name"
+            name="name"
+            autoComplete="name"
+            autoCapitalize="words"
             value={purchaseData.name}
             onChange={(e) => setPurchaseData({...purchaseData, name: e.target.value})}
             className="rounded-none text-gray-900"
@@ -223,9 +227,12 @@ const PurchaseForm = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">E-post (hit skickas biljetterna)</label>
+          <label htmlFor="buyer-email" className="block text-sm font-medium text-gray-700 mb-1">E-post (hit skickas biljetterna)</label>
           <Input
+            id="buyer-email"
+            name="email"
             type="email"
+            autoComplete="email"
             value={purchaseData.email}
             onChange={handleEmailChange}
             onBlur={handleEmailBlur}
@@ -237,9 +244,13 @@ const PurchaseForm = ({
           )}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Telefonnummer</label>
+          <label htmlFor="buyer-phone" className="block text-sm font-medium text-gray-700 mb-1">Telefonnummer</label>
           <Input
+            id="buyer-phone"
+            name="phone"
             type="tel"
+            autoComplete="tel"
+            inputMode="tel"
             value={purchaseData.phone}
             onChange={handlePhoneChange}
             onBlur={handlePhoneBlur}
