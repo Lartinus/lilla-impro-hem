@@ -200,7 +200,7 @@ export const useShowManagementMutations = () => {
       // Copy tags
       const showTags = (show as any).show_tags as Array<{ id: string }>|undefined;
       if (showTags && showTags.length > 0) {
-        const { error: tagsError } = await supabase
+        const { error: tagsError } = await (supabase as any)
           .from('admin_show_tags')
           .insert(showTags.map(t => ({ show_id: newShow.id, tag_id: t.id })));
         if (tagsError) throw tagsError;
