@@ -174,9 +174,9 @@ const ShowDetails = () => {
               {/* Dashed line with centered tag */}
               <div className="mb-6 relative flex items-center">
                 <div className="border-t-2 border-dashed border-gray-800 flex-1"></div>
-                {show?.show_tag && (
+                {show?.show_tags && show.show_tags.length > 0 && (
                   <div className="absolute left-1/2 transform -translate-x-1/2 bg-gray-100 px-2">
-                    <ShowTag name={show.show_tag.name} color={show.show_tag.color} />
+                    <ShowTag name={show.show_tags[0].name} color={show.show_tags[0].color} />
                   </div>
                 )}
               </div>

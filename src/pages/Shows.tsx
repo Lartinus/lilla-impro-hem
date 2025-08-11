@@ -82,17 +82,21 @@ export default function Shows() {
   // Filter upcoming shows based on selected tags (always date-sorted)
   const filteredShows = useMemo(() => {
     if (selectedTags.length === 0) return upcomingShows;
-    return upcomingShows.filter(show => 
-      show.tag && selectedTags.includes(show.tag.name)
-    );
+    return upcomingShows.filter(show => {
+      const hasTags = (show as any).tags as string[] | undefined;
+      return (hasTags && hasTags.some(tag => selectedTags.includes(tag))) ||
+             (show.tag && selectedTags.includes(show.tag.name));
+    });
   }, [upcomingShows, selectedTags]);
 
   // Filter past shows when tags are selected
   const filteredPastShows = useMemo(() => {
     if (selectedTags.length === 0) return pastShows;
-    return pastShows.filter(show => 
-      show.tag && selectedTags.includes(show.tag.name)
-    );
+    return pastShows.filter(show => {
+      const hasTags = (show as any).tags as string[] | undefined;
+      return (hasTags && hasTags.some(tag => selectedTags.includes(tag))) ||
+             (show.tag && selectedTags.includes(show.tag.name));
+    });
   }, [pastShows, selectedTags]);
 
   // Handle tag click

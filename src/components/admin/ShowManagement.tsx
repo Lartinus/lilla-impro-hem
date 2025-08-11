@@ -55,14 +55,7 @@ const ShowManagement = ({ showCompleted = false }: ShowManagementProps) => {
     return {
       ...show,
       performers: show.performers || [],
-      show_tag: show.show_tag ? {
-        id: show.tag_id || '',
-        name: show.show_tag.name,
-        color: show.show_tag.color,
-        description: null,
-        is_active: true,
-        sort_order: 0
-      } : null
+      show_tags: show.show_tags || []
     };
   };
 
@@ -382,7 +375,7 @@ const ShowFormWrapper = ({
         max_tickets: initialShow.max_tickets || 100,
         is_active: initialShow.is_active,
         performer_ids: initialShow.performers?.map(p => p.id) || [],
-        tag_id: initialShow.tag_id || null
+        tag_ids: (initialShow.show_tags || []).map(t => t.id)
       };
     }
     
@@ -400,9 +393,9 @@ const ShowFormWrapper = ({
       discount_price: 0,
       max_tickets: 100,
       is_active: true,
-      performer_ids: [],
-      tag_id: null
-    };
+        performer_ids: [],
+        tag_ids: []
+      };
   });
 
   const [selectedTemplate, setSelectedTemplate] = useState('');

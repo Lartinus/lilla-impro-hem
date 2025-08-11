@@ -23,7 +23,6 @@ export interface AdminShow {
   max_tickets?: number;
   is_active: boolean;
   sort_order?: number;
-  tag_id?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -35,7 +34,7 @@ export interface AdminShowWithPerformers extends AdminShow {
     bio: string;
     image_url?: string | null;
   }>;
-  show_tag?: ShowTag | null;
+  show_tags?: ShowTag[];
 }
 
 export interface NewShowForm {
@@ -53,7 +52,7 @@ export interface NewShowForm {
   max_tickets: number;
   is_active: boolean;
   performer_ids: string[];
-  tag_id?: string | null;
+  tag_ids: string[];
 }
 
 export interface ShowTemplate {

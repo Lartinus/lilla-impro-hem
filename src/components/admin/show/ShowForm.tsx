@@ -167,22 +167,32 @@ export function ShowForm({
       </div>
 
       <div>
-        <Label htmlFor="tag">Tag (valfritt)</Label>
-        <select
-          id="tag"
-          value={newShow.tag_id || ''}
-          onChange={(e) => setNewShow(prev => ({ ...prev, tag_id: e.target.value || null }))}
-          className="w-full px-3 py-2 border border-input bg-background rounded-md"
-        >
-          <option value="">Ingen tag...</option>
-          {showTags?.map((tag) => (
-            <option key={tag.id} value={tag.id}>
-              {tag.name}
-            </option>
-          ))}
-        </select>
+        <Label>Taggar (valfritt)</Label>
+        <div className="flex flex-wrap gap-3 mt-2">
+          {showTags?.map((tag) => {
+            const checked = (newShow.tag_ids || []).includes(tag.id);
+            return (
+              <label key={tag.id} className="inline-flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={(e) => {
+                    const isChecked = e.target.checked;
+                    setNewShow(prev => ({
+                      ...prev,
+                      tag_ids: isChecked
+                        ? [...(prev.tag_ids || []), tag.id]
+                        : (prev.tag_ids || []).filter(id => id !== tag.id)
+                    }));
+                  }}
+                />
+                <span>{tag.name}</span>
+              </label>
+            );
+          })}
+        </div>
         <p className="text-xs text-muted-foreground mt-1">
-          Välj en tag för att kategorisera föreställningen
+          Välj en eller flera taggar för att kategorisera föreställningen
         </p>
       </div>
 

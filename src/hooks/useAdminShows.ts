@@ -8,7 +8,6 @@ export const useAdminShows = () => {
     queryFn: async () => {
       console.log('🎭 Fetching admin shows...');
       
-      const { data, error } = await supabase
         .from('admin_shows')
         .select(`
           id,
@@ -26,7 +25,6 @@ export const useAdminShows = () => {
           max_tickets,
           is_active,
           sort_order,
-          tag_id,
           created_at,
           updated_at,
           show_performers (
@@ -37,13 +35,15 @@ export const useAdminShows = () => {
               image_url
             )
           ),
-          show_tags (
-            id,
-            name,
-            description,
-            color,
-            is_active,
-            sort_order
+          admin_show_tags (
+            show_tags (
+              id,
+              name,
+              description,
+              color,
+              is_active,
+              sort_order
+            )
           )
         `)
         .eq('is_active', true)
@@ -59,7 +59,9 @@ export const useAdminShows = () => {
       const formattedData = (data || []).map(show => ({
         ...show,
         performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
-        show_tag: show.show_tags || null
+        show_tags: (show.admin_show_tags || [])
+          .map((rel: any) => rel.show_tags)
+          .filter(Boolean)
       })) as AdminShowWithPerformers[];
       
       console.log('🎭 Formatted admin shows:', formattedData);
@@ -79,8 +81,9 @@ export const formatAdminShowForCard = (show: AdminShowWithPerformers) => ({
   image: show.image_url,
   totalTickets: show.max_tickets || 100,
   description: show.description,
-  tag: show.show_tag ? {
-    name: show.show_tag.name,
-    color: show.show_tag.color
+  tags: (show.show_tags || []).map(t => t.name),
+  tag: (show.show_tags && show.show_tags.length > 0) ? {
+    name: show.show_tags[0].name,
+    color: show.show_tags[0].color
   } : null
 });

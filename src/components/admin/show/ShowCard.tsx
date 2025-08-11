@@ -56,8 +56,12 @@ export function ShowCard({
                 <Badge variant={show.is_active ? "default" : "secondary"} className="shrink-0">
                   {show.is_active ? 'Aktiv' : 'Inaktiv'}
                 </Badge>
-                {show.show_tag && (
-                  <ShowTag name={show.show_tag.name} color={show.show_tag.color} size="small" />
+                {show.show_tags && show.show_tags.length > 0 && (
+                  <div className="flex items-center gap-1 flex-wrap">
+                    {show.show_tags.map((t) => (
+                      <ShowTag key={t.id} name={t.name} color={t.color} size="small" />
+                    ))}
+                  </div>
                 )}
               </div>
               <h3 className="text-lg font-semibold leading-tight text-foreground">{show.title}</h3>

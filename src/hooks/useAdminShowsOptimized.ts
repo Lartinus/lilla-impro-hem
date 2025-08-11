@@ -19,7 +19,6 @@ interface ShowCardData {
   image_url?: string | null;
   is_active: boolean;
   sort_order?: number;
-  tag_id?: string | null;
   created_at: string;
   updated_at: string;
   performers: Array<{
@@ -28,10 +27,11 @@ interface ShowCardData {
     bio: string;
     image_url?: string | null;
   }>;
-  show_tag?: {
+  show_tags?: Array<{
+    id: string;
     name: string;
     color: string;
-  } | null;
+  }>;
 }
 
 // Full show data for detail views
@@ -51,7 +51,6 @@ export const useAdminShowCards = (showCompleted: boolean = false) => {
     queryFn: async (): Promise<ShowCardData[]> => {
       console.log('🎭 Fetching optimized show cards...');
       
-      let query = supabase
         .from('admin_shows')
         .select(`
           *,
@@ -63,9 +62,12 @@ export const useAdminShowCards = (showCompleted: boolean = false) => {
               image_url
             )
           ),
-          show_tags (
-            name,
-            color
+          admin_show_tags (
+            show_tags (
+              id,
+              name,
+              color
+            )
           )
         `);
         // Note: For admin view, we don't filter by is_active to allow editing of hidden shows
@@ -88,7 +90,7 @@ export const useAdminShowCards = (showCompleted: boolean = false) => {
       const formattedData = (data || []).map(show => ({
         ...show,
         performers: show.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
-        show_tag: show.show_tags || null
+        show_tags: (show.admin_show_tags || []).map((rel: any) => rel.show_tags).filter(Boolean)
       })) as ShowCardData[];
       
       console.log(`🎭 Fetched ${formattedData.length} optimized show cards`);
@@ -108,7 +110,6 @@ export const useAdminShowDetails = (showId?: string) => {
       
       console.log(`🎭 Fetching full show details for ${showId}...`);
       
-      const { data, error } = await supabase
         .from('admin_shows')
         .select(`
           *,
@@ -120,13 +121,15 @@ export const useAdminShowDetails = (showId?: string) => {
               image_url
             )
           ),
-          show_tags (
-            id,
-            name,
-            color,
-            description,
-            is_active,
-            sort_order
+          admin_show_tags (
+            show_tags (
+              id,
+              name,
+              color,
+              description,
+              is_active,
+              sort_order
+            )
           )
         `)
         .eq('id', showId)
@@ -140,7 +143,7 @@ export const useAdminShowDetails = (showId?: string) => {
       const formattedShow = {
         ...data,
         performers: data.show_performers?.map((sp: any) => sp.actors).filter(Boolean) || [],
-        show_tag: data.show_tags || null
+        show_tags: (data.admin_show_tags || []).map((rel: any) => rel.show_tags).filter(Boolean)
       } as FullShowData;
       
       console.log(`🎭 Fetched full details for show: ${formattedShow.title}`);

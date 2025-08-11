@@ -66,8 +66,12 @@ export function ShowRow({
         </div>
       </TableCell>
       <TableCell>
-        {show.show_tag ? (
-          <ShowTag name={show.show_tag.name} color={show.show_tag.color} size="small" />
+        {show.show_tags && show.show_tags.length > 0 ? (
+          <div className="flex flex-wrap gap-1">
+            {show.show_tags.map((t) => (
+              <ShowTag key={t.id} name={t.name} color={t.color} size="small" />
+            ))}
+          </div>
         ) : (
           <span className="text-muted-foreground text-sm">Ingen tag</span>
         )}

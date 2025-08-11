@@ -80,9 +80,11 @@ export function MobileShowCard({
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <span>{show.venue}</span>
               </div>
-              {show.show_tag && (
-                <div className="flex items-center gap-2 mt-2">
-                  <ShowTag name={show.show_tag.name} color={show.show_tag.color} size="small" />
+              {show.show_tags && (
+                <div className="flex items-center gap-2 mt-2 flex-wrap">
+                  {show.show_tags.map((t) => (
+                    <ShowTag key={t.id} name={t.name} color={t.color} size="small" />
+                  ))}
                 </div>
               )}
             </div>

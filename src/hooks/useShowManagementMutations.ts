@@ -9,11 +9,11 @@ export const useShowManagementMutations = () => {
 
   const createShowMutation = useMutation({
     mutationFn: async ({ showData, showsLength }: { showData: NewShowForm; showsLength: number }) => {
-      const { performer_ids, ...showFields } = showData;
+      const { performer_ids, tag_ids, ...showFields } = showData;
       
       const { data: show, error: showError } = await supabase
         .from('admin_shows')
-        .insert([{
+        .insert([{ 
           ...showFields,
           sort_order: showsLength + 1
         }])
@@ -34,6 +34,13 @@ export const useShowManagementMutations = () => {
           );
 
         if (performerError) throw performerError;
+      }
+      // Add tag relations
+      if (tag_ids && tag_ids.length > 0) {
+        const { error: tagsError } = await supabase
+          .from('admin_show_tags')
+          .insert(tag_ids.map(tagId => ({ show_id: show.id, tag_id: tagId })));
+        if (tagsError) throw tagsError;
       }
 
       return show;
@@ -76,7 +83,7 @@ export const useShowManagementMutations = () => {
 
   const updateFullShowMutation = useMutation({
     mutationFn: async ({ id, showData }: { id: string; showData: NewShowForm }) => {
-      const { performer_ids, ...showFields } = showData;
+      const { performer_ids, tag_ids, ...showFields } = showData;
       
       // Update show data
       const { error: showError } = await supabase
@@ -107,7 +114,20 @@ export const useShowManagementMutations = () => {
 
         if (performerError) throw performerError;
       }
-    },
+
+      // Update tags - remove old and add new
+      const { error: deleteTagsError } = await supabase
+        .from('admin_show_tags')
+        .delete()
+        .eq('show_id', id);
+      if (deleteTagsError) throw deleteTagsError;
+
+      if (tag_ids && tag_ids.length > 0) {
+        const { error: insertTagsError } = await supabase
+          .from('admin_show_tags')
+          .insert(tag_ids.map(tagId => ({ show_id: id, tag_id: tagId })));
+        if (insertTagsError) throw insertTagsError;
+      }
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-shows'] });
       queryClient.invalidateQueries({ queryKey: ['admin-show-cards'] });
@@ -174,6 +194,15 @@ export const useShowManagementMutations = () => {
           );
 
         if (performerError) throw performerError;
+      }
+
+      // Copy tags
+      const showTags = (show as any).show_tags as Array<{ id: string }>|undefined;
+      if (showTags && showTags.length > 0) {
+        const { error: tagsError } = await supabase
+          .from('admin_show_tags')
+          .insert(showTags.map(t => ({ show_id: newShow.id, tag_id: t.id })));
+        if (tagsError) throw tagsError;
       }
 
       return newShow;

@@ -40,5 +40,5 @@ export const getDefaultShowForm = () => ({
   max_tickets: 100,
   is_active: true,
   performer_ids: [],
-  tag_id: null
+  tag_ids: []
 });
