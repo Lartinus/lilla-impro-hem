@@ -27,12 +27,30 @@ const CoursePaymentSuccess = () => {
       if (!sessionId) return;
 
       try {
-        // Get course purchase details
+        // Call fallback verifier to finalize payment, create participant, and send email
+        const { data: verifyResp, error: verifyErr } = await supabase.functions.invoke('verify-course-payment', {
+          body: { sessionId },
+        });
+
+        if (!verifyErr && verifyResp?.purchase) {
+          setCourseDetails({
+            courseTitle: verifyResp.purchase.courseTitle,
+            buyerName: verifyResp.purchase.buyerName,
+            buyerEmail: verifyResp.purchase.buyerEmail,
+            totalAmount: verifyResp.purchase.totalAmount,
+            paymentStatus: verifyResp.purchase.paymentStatus,
+            created_at: verifyResp.purchase.created_at,
+            isFromOffer: Boolean(verifyResp.fromOffer),
+          });
+          return;
+        }
+
+        // Fallback: just read purchase to show info
         const { data: purchase } = await supabase
           .from('course_purchases')
           .select('*')
           .eq('stripe_session_id', sessionId)
-          .single();
+          .maybeSingle();
 
         if (purchase) {
           setCourseDetails({
@@ -41,20 +59,18 @@ const CoursePaymentSuccess = () => {
             buyerEmail: purchase.buyer_email,
             totalAmount: purchase.total_amount,
             paymentStatus: purchase.payment_status,
-            created_at: purchase.created_at
+            created_at: purchase.created_at,
           });
 
-          // Check if this was from a course offer and handle backup processing
+          // Offer-specific minimal fallback (legacy)
           const { data: offer } = await supabase
             .from('course_offers')
             .select('*')
             .eq('stripe_session_id', sessionId)
-            .single();
+            .maybeSingle();
 
           if (offer && offer.status !== 'paid') {
-            console.log('Processing course offer payment manually...');
-            
-            // Add to course table if not already done
+            console.log('Processing course offer payment manually (legacy)...');
             if (purchase.course_table_name) {
               await supabase.rpc('insert_course_booking', {
                 table_name: purchase.course_table_name,
@@ -68,13 +84,11 @@ const CoursePaymentSuccess = () => {
               });
             }
 
-            // Remove from waitlist
             await supabase.rpc('remove_from_waitlist', {
               course_instance_id_param: offer.course_instance_id,
               email_param: offer.waitlist_email
             });
 
-            // Update offer status
             await supabase
               .from('course_offers')
               .update({ 

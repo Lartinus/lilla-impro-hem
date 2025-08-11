@@ -103,3 +103,6 @@ verify_jwt = false
 
 [functions.update-discount-usage]
 verify_jwt = false
+
+[functions.verify-course-payment]
+verify_jwt = false
