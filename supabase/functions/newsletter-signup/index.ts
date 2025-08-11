@@ -137,9 +137,7 @@ const handler = async (req: Request): Promise<Response> => {
       emailSubject = emailSubject.replace(regex, value);
     });
     
-    // Create unified email HTML
-    const emailHtml = createUnifiedEmailTemplate(emailSubject, emailContent);
-    
+    const emailHtml = createUnifiedEmailTemplate(emailSubject, emailContent, undefined, { showUnsubscribe: false });
     const emailResponse = await resend.emails.send({
       from: "Lilla Improteatern <noreply@improteatern.se>",
       to: [cleanEmail],

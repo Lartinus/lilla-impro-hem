@@ -43,7 +43,8 @@ function convertTextToHtml(text: string): string {
 export function createUnifiedEmailTemplate(
   subject: string, 
   content: string, 
-  backgroundImage?: string
+  backgroundImage?: string,
+  options?: { showUnsubscribe?: boolean }
 ): string {
   // Always convert content to clean HTML
   const cleanContent = convertTextToHtml(content);
@@ -123,9 +124,11 @@ export function createUnifiedEmailTemplate(
               <a href="https://improteatern.se" style="display: block; text-decoration: none;">
                 <img src="https://gcimnsbeexkkqragmdzo.supabase.co/storage/v1/object/public/images/LillaImproteatern-white.png" alt="Lilla Improteatern" style="height: 32px; width: auto; margin: 0 0 16px 0; display: block; margin-left: auto; margin-right: auto;">
               </a>
+              ${options?.showUnsubscribe === false ? '' : `
               <p style="font-size: 14px; color: rgba(255, 255, 255, 0.9) !important; margin: 0; font-family: 'Satoshi', Arial, sans-serif;">
                 <a href="{UNSUBSCRIBE_URL}" style="color: rgba(255, 255, 255, 0.9) !important; text-decoration: underline;">Avprenumerera</a>
               </p>
+              `}
             </td>
           </tr>
         </table>

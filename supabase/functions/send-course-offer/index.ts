@@ -147,7 +147,9 @@ Välkommen!
 
     const htmlContent = createUnifiedEmailTemplate(
       emailSubject,
-      emailContent
+      emailContent,
+      undefined,
+      { showUnsubscribe: false }
     );
 
     const emailResponse = await resend.emails.send({

@@ -124,8 +124,9 @@ const handler = async (req: Request): Promise<Response> => {
     const htmlContent = createUnifiedEmailTemplate(
       personalizedSubject, 
       formattedContent, 
-      template.background_image
-    ).replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(email)}`);
+      template.background_image,
+      { showUnsubscribe: false }
+    );
 
     // Send the email
     console.log('Sending interest confirmation email using template:', template.name);

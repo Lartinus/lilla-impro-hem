@@ -132,13 +132,12 @@ Biljettkod: ${purchase.ticket_code}
 
 Visa denna QR-kod vid entrén. Om ni köpt flera biljetter och sällskapet kommer vi olika tider använder alla samma QR-kod.`;
 
-    // Create styled email using unified template (let it handle all formatting)
     const htmlContent = createUnifiedEmailTemplate(
       personalizedSubject, 
       contentWithTicketInfo, 
-      template.background_image
+      template.background_image,
+      { showUnsubscribe: false }
     )
-    .replace('{UNSUBSCRIBE_URL}', `https://improteatern.se/avprenumerera?email=${encodeURIComponent(purchase.buyer_email)}`)
     .replace('[QR_CODE_PLACEHOLDER]', `<div style="margin: 20px 0;"><img src="${qrCodeUrl}" alt="QR Code" style="max-width: 200px; display: block;"></div>`);
 
     // Send the email with tags for better tracking

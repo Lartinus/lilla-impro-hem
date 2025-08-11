@@ -151,12 +151,12 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('DEBUG: Processed content after variable replacement:', processedContent);
     console.log('DEBUG: Content lines:', processedContent.split('\n'));
 
-    // Send raw content to createUnifiedEmailTemplate - it will handle all formatting
     const htmlContent = createUnifiedEmailTemplate(
       personalizedSubject, 
       processedContent, 
-      template?.background_image
-    ).replace('{UNSUBSCRIBE_URL}', 'https://improteatern.se/avprenumerera');
+      template?.background_image,
+      { showUnsubscribe: false }
+    );
 
     console.log('DEBUG: Generated HTML content preview:', htmlContent.substring(0, 500));
 
@@ -250,7 +250,7 @@ Med vänliga hälsningar
 Lilla Improteatern`;
 
   const textWithBreaks = emailContent.replace(/\n/g, '<br>');
-  const htmlContent = createUnifiedEmailTemplate(subject, textWithBreaks);
+  const htmlContent = createUnifiedEmailTemplate(subject, textWithBreaks, undefined, { showUnsubscribe: false });
 
   const emailResponse = await resend.emails.send({
     from: "Lilla Improteatern <noreply@improteatern.se>",
