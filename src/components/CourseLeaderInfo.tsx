@@ -28,7 +28,7 @@ export default function CourseLeaderInfo({ courseLeaders }: CourseLeaderInfoProp
                 fallbackText="Ingen bild"
                 preferredSize="small"
               />
-              <div className="flex-1 min-w-0 -mb-2">
+              <div className="flex-1 min-w-0 -mb-4">
                 <p className="font-bold text-sm mb-1">{courseLeader.name}</p>
                 <div
                   className="leading-relaxed break-words [&>p]:text-[14px] 4md:[&>p]:text-[14px]"
