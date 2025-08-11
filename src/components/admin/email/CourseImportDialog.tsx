@@ -37,21 +37,8 @@ export function CourseImportDialog({ emailGroups, groupMemberCounts }: CourseImp
         .order('course_title', { ascending: true });
 
       if (error) throw error;
-
-      // Include only courses that have an existing booking table
-      const validated = await Promise.all(
-        (data || []).map(async (course: any) => {
-          if (!course?.table_name || !course.table_name.trim()) return null;
-          try {
-            const { data: exists } = await supabase.rpc('table_exists', { table_name: course.table_name });
-            return exists ? course : null;
-          } catch {
-            return null;
-          }
-        })
-      );
-
-      return validated.filter(Boolean);
+      // Only keep courses with a valid booking table name
+      return (data || []).filter((c: any) => c?.table_name && c.table_name.trim() !== '');
     }
   });
 
