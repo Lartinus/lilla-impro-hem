@@ -9,6 +9,8 @@ import { Download } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { EmailGroup } from './types';
+import { format } from 'date-fns';
+import { sv } from 'date-fns/locale';
 
 interface CourseImportDialogProps {
   emailGroups: EmailGroup[];
@@ -140,7 +142,7 @@ export function CourseImportDialog({ emailGroups, groupMemberCounts }: CourseImp
                   .filter((course) => course.table_name && course.table_name.trim() !== '')
                   .map((course) => (
                     <SelectItem key={course.table_name} value={course.table_name}>
-                      {course.course_title}
+                      {`${course.course_title}${course.start_date ? ` — ${format(new Date(course.start_date), 'd MMM yyyy', { locale: sv })}${course.start_time ? ` kl. ${String(course.start_time).slice(0,5)}` : ''}` : ''}`}
                     </SelectItem>
                   ))}
               </SelectContent>
