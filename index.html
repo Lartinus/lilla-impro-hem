@@ -1,8 +1,8 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
   <head>
-    <meta charset="sv" />
+    <meta charset="utf-8" />
     <!-- Favicon för alla enheter och plattformar - optimerad ordning med cache-busting -->
     <link rel="icon" href="/favicon/FaviconRed.svg?v=2" type="image/svg+xml">
     <link rel="icon" href="/favicon/favicon_io/favicon-32x32.png?v=2" type="image/png" sizes="32x32">
@@ -32,43 +32,10 @@
     <link rel="preconnect" href="https://js.stripe.com" crossorigin>
     <link rel="dns-prefetch" href="https://improteatern.supabase.co">
     
-    <!-- Preload critical fonts with WOFF2 format for better compression -->
-    <link rel="preload" href="/fonts/tanker.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/satoshi.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Preload only the critical hero image (correct path) -->
+    <link rel="preload" href="/uploads/images/Rosenqvist-6315.jpg" as="image" type="image/jpeg">
     
-    <!-- Preload hero images in multiple formats with priority -->
-    <link rel="preload" href="/uploads/images/Rosenqvist-6301.avif" as="image" type="image/avif">
-    <link rel="preload" href="/uploads/images/Rosenqvist-6301.webp" as="image" type="image/webp">
-    <link rel="preload" href="/uploads/images/kurser_LIT_2024.avif" as="image" type="image/avif">
-    <link rel="preload" href="/uploads/images/kurser_LIT_2024.webp" as="image" type="image/webp">
-    
-    <!-- Self-hosted fonts with optimized loading and display swap -->
-    <style>
-      @font-face {
-        font-family: 'Tanker';
-        src: url('/fonts/tanker.woff2') format('woff2'),
-             url('/fonts/tanker.woff') format('woff');
-        font-weight: 400;
-        font-style: normal;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Satoshi';
-        src: url('/fonts/satoshi.woff2') format('woff2'),
-             url('/fonts/satoshi.woff') format('woff');
-        font-weight: 400;
-        font-style: normal;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: 'Rajdhani';
-        src: url('/fonts/rajdhani.woff2') format('woff2'),
-             url('/fonts/rajdhani.woff') format('woff');
-        font-weight: 400;
-        font-style: normal;
-        font-display: swap;
-      }
-    </style>
+    <!-- Removed invalid self-hosted @font-face declarations to avoid 404s and improve FCP -->
     
     <!-- Fallback external fonts loaded asynchronously -->
     <link href="https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -96,7 +63,7 @@
     </style>
     
     <!-- Stripe.js loaded asynchronously -->
-    <link rel="preload" href="https://js.stripe.com/v3/" as="script">
+    
     <script src="https://js.stripe.com/v3/" async></script>
   </head>
 
