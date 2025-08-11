@@ -32,8 +32,8 @@ export function CourseImportDialog({ emailGroups, groupMemberCounts }: CourseImp
       const { data, error } = await supabase
         .from('course_instances')
         .select('*')
-        .eq('is_active', true)
-        .order('course_title');
+        .order('start_date', { ascending: false })
+        .order('course_title', { ascending: true });
 
       if (error) throw error;
       return data;
