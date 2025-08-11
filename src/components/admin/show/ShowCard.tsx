@@ -1,14 +1,15 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeOff, Edit, Trash2, ArrowUp, ArrowDown, MapPin, Clock, Calendar, Users } from 'lucide-react';
+import { Eye, EyeOff, Edit, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import ShowTag from '@/components/ShowTag';
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import type { AdminShowWithPerformers } from '@/types/showManagement';
-
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 interface ShowCardProps {
   show: AdminShowWithPerformers;
   index: number;
@@ -36,6 +37,23 @@ export function ShowCard({
   const canMoveDown = index < totalShows - 1;
 
   const formattedDate = format(new Date(show.show_date), 'dd MMM yyyy', { locale: sv });
+  const combinedDateTime = `${formattedDate} kl. ${show.show_time.substring(0, 5)}`;
+
+  const totalTickets = show.max_tickets ?? 0;
+  const { data: availableTickets } = useQuery({
+    queryKey: ['available-tickets', show.slug, totalTickets],
+    enabled: !!show.slug && !!totalTickets,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_available_tickets', {
+        show_slug_param: show.slug,
+        total_tickets: totalTickets,
+      });
+      if (error) throw error;
+      return data as number;
+    },
+    staleTime: 60 * 1000,
+  });
+  const soldTickets = totalTickets ? Math.max(0, totalTickets - (availableTickets ?? totalTickets)) : 0;
 
   return (
     <Card className={cn(
@@ -98,12 +116,14 @@ export function ShowCard({
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 py-3 border-t border-border/50">
             <div className="space-y-1">
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Datum</span>
-              <div className="text-sm font-medium">{formattedDate}</div>
+              <div className="text-sm font-medium">{combinedDateTime}</div>
             </div>
             
             <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Tid</span>
-              <div className="text-sm font-medium">{show.show_time.substring(0, 5)}</div>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Biljetter</span>
+              <div className="text-sm font-medium">
+                {totalTickets ? `${soldTickets}/${totalTickets}` : '—'}
+              </div>
             </div>
 
             <div className="space-y-1">

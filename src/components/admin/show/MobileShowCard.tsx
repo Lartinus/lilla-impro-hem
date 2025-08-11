@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Edit, Trash2, Eye, EyeOff, ChevronUp, ChevronDown } from 'lucide-react';
 import ShowTag from '@/components/ShowTag';
 import type { AdminShowWithPerformers } from '@/types/showManagement';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface MobileShowCardProps {
   show: AdminShowWithPerformers;
@@ -31,6 +33,22 @@ export function MobileShowCard({
 }: MobileShowCardProps) {
   const canMoveUp = index > 0;
   const canMoveDown = index < totalShows - 1;
+
+  const totalTickets = show.max_tickets ?? 0;
+  const { data: availableTickets } = useQuery({
+    queryKey: ['available-tickets', show.slug, totalTickets],
+    enabled: !!show.slug && !!totalTickets,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_available_tickets', {
+        show_slug_param: show.slug,
+        total_tickets: totalTickets,
+      });
+      if (error) throw error;
+      return data as number;
+    },
+    staleTime: 60 * 1000,
+  });
+  const soldTickets = totalTickets ? Math.max(0, totalTickets - (availableTickets ?? totalTickets)) : 0;
 
   return (
     <Card className="p-4 sm:p-6 border-2 border-border/50 hover:border-border transition-colors">
@@ -79,6 +97,9 @@ export function MobileShowCard({
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <span>{show.venue}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span>Biljetter: {totalTickets ? `${soldTickets}/${totalTickets}` : '—'}</span>
               </div>
               {show.show_tags && (
                 <div className="flex items-center gap-2 mt-2 flex-wrap">
