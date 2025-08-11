@@ -99,7 +99,7 @@ export default function OptimizedImage({
     
     // Preload critical images immediately
     if (priority) {
-      preloadCriticalImage(originalSrc, 'webp');
+      preloadCriticalImage(originalSrc, 'original');
     }
     
     // If image is already cached, add minimal delay for smooth animation
