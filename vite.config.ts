@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
+import PluginCritical from "rollup-plugin-critical";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -35,6 +36,18 @@ export default defineConfig(({ mode }) => ({
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
       },
+      plugins: mode === 'production'
+        ? [
+            PluginCritical({
+              criticalUrl: 'dist',
+              criticalBase: 'dist',
+              criticalPages: [{ uri: 'index.html', template: 'index' }],
+              criticalConfig: {
+                inline: true,
+              },
+            }),
+          ]
+        : [],
     },
     chunkSizeWarningLimit: 500,
     target: 'es2020',
