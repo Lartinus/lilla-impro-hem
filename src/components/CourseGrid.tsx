@@ -1,5 +1,6 @@
 import CourseCard from '@/components/CourseCard';
 import SmallCourseCard from '@/components/SmallCourseCard';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface CourseGridProps {
   courses: any[];
@@ -7,6 +8,7 @@ interface CourseGridProps {
 }
 
 const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
+  const isMobile = useIsMobile();
   return (
     <div>
       {/* Kurskort */}
@@ -18,8 +20,9 @@ const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
-          {courses.map((course, index) => (
-            course.use_small_card ? (
+          {courses.map((course, index) => {
+            const useSmall = isMobile && course.use_small_card;
+            return useSmall ? (
               <SmallCourseCard 
                 key={course.id || index}
                 course={course}
@@ -31,8 +34,8 @@ const CourseGrid = ({ courses, practicalInfo }: CourseGridProps) => {
                 course={course}
                 practicalInfo={practicalInfo}
               />
-            )
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
