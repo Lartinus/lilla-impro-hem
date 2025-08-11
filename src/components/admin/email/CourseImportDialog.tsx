@@ -37,8 +37,8 @@ export function CourseImportDialog({ emailGroups, groupMemberCounts }: CourseImp
         .order('course_title', { ascending: true });
 
       if (error) throw error;
-      // Only keep courses with a valid booking table name
-      return (data || []).filter((c: any) => c?.table_name && c.table_name.trim() !== '');
+      // Return all active courses; we'll disable selection for those without a booking table
+      return data || [];
     }
   });
 
@@ -140,13 +140,19 @@ export function CourseImportDialog({ emailGroups, groupMemberCounts }: CourseImp
                 <SelectValue placeholder="Välj en kurs att importera från" />
               </SelectTrigger>
               <SelectContent>
-                {courseInstances
-                  .filter((course) => course.table_name && course.table_name.trim() !== '')
-                  .map((course) => (
-                    <SelectItem key={course.table_name} value={course.table_name}>
-                      {`${course.course_title}${course.start_date ? ` — ${format(new Date(course.start_date), 'd MMM yyyy', { locale: sv })}${course.start_time ? ` kl. ${String(course.start_time).slice(0,5)}` : ''}` : ''}`}
+                {courseInstances.map((course: any) => {
+                  const hasTable = !!(course.table_name && String(course.table_name).trim() !== '');
+                  const label = `${course.course_title}${course.start_date ? ` — ${format(new Date(course.start_date), 'd MMM yyyy', { locale: sv })}${course.start_time ? ` kl. ${String(course.start_time).slice(0,5)}` : ''}` : ''}${hasTable ? '' : ' — Saknar deltagarlista'}`;
+                  return (
+                    <SelectItem
+                      key={hasTable ? course.table_name : course.id}
+                      value={hasTable ? course.table_name : `no-table-${course.id}`}
+                      disabled={!hasTable}
+                    >
+                      {label}
                     </SelectItem>
-                  ))}
+                  );
+                })}
               </SelectContent>
             </Select>
           </div>
