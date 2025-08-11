@@ -106,3 +106,6 @@ verify_jwt = false
 
 [functions.verify-course-payment]
 verify_jwt = false
+
+[functions.verify-ticket-payment]
+verify_jwt = false

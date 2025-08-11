@@ -29,14 +29,24 @@ const TicketPaymentSuccess = () => {
       }
 
       try {
+        // Fallback: verify payment via Edge Function (handles marking as paid + sending email)
+        try {
+          await supabase.functions.invoke('verify-ticket-payment', {
+            body: { sessionId },
+          });
+        } catch (e) {
+          console.error('verify-ticket-payment failed (continuing):', e);
+        }
+
+        // Then fetch the paid purchase details to display to the user
         const { data: purchase, error } = await supabase
           .from('ticket_purchases')
           .select('*')
           .eq('stripe_session_id', sessionId)
           .eq('payment_status', 'paid')
-          .single();
+          .maybeSingle();
 
-        if (error || !purchase) {
+        if (!purchase || error) {
           console.error('Error fetching ticket details:', error);
           setLoading(false);
           return;
@@ -47,7 +57,7 @@ const TicketPaymentSuccess = () => {
           showDate: purchase.show_date,
           showLocation: purchase.show_location,
           buyerName: purchase.buyer_name,
-          totalTickets: purchase.regular_tickets + purchase.discount_tickets,
+          totalTickets: (purchase.regular_tickets || 0) + (purchase.discount_tickets || 0),
           ticketCode: purchase.ticket_code,
         });
       } catch (error) {
