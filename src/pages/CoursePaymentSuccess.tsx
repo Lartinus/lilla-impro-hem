@@ -124,7 +124,7 @@ const CoursePaymentSuccess = () => {
                   Tack för din kursbokning!
                 </h1>
                 <p className="text-muted-foreground">
-                  Din betalning har genomförts och din plats är reserverad.
+                  Din betalning har genomförts och din plats är garanterad.
                 </p>
               </div>
 
@@ -133,7 +133,7 @@ const CoursePaymentSuccess = () => {
                   Nästa steg
                 </h2>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>Du kommer att få ett bekräftelsemail inom kort</li>
+                  <li>Du kommer att få ett bekräftelsemail inom kort. Kolla även din skräppost.</li>
                   <li>Kursinformation och praktiska detaljer skickas senast en vecka före kursstart</li>
                   <li>Hör av dig till oss om du har några frågor</li>
                 </ul>
