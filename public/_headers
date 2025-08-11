@@ -1,15 +1,18 @@
-
 # CDN-friendly caching headers
-/*
-  Cache-Control: public, max-age=31536000, immutable
 
-# HTML files - cache at CDN, validate in browser
+# HTML root and SPA entry - cache at CDN, validate in browser
+/
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=60, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=60, must-revalidate
+
 /*.html
   Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=60, must-revalidate
 
-# API routes - no cache
-/api/*
-  Cache-Control: no-cache, no-store, must-revalidate
+# Assets - long cache
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
 
 # Fonts - long cache
 /fonts/*
@@ -18,3 +21,11 @@
 # Images - long cache
 /uploads/*
   Cache-Control: public, max-age=2592000
+
+# Favicon - long cache
+/favicon/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# API routes - no cache
+/api/*
+  Cache-Control: no-cache, no-store, must-revalidate
