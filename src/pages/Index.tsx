@@ -22,10 +22,8 @@ export default function Index() {
     window.scrollTo(0, 0);
   }, []);
 
-  // Show skeleton while images are loading
-  if (!isLoaded) {
-    return <IndexSkeleton />
-  }
+  // Render page immediately; image component handles its own skeleton
+
   return (
     <div className="relative min-h-screen">
       <Header />

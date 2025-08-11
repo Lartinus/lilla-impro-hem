@@ -52,7 +52,7 @@ export default function ServiceBoxes() {
               preferredSize="medium"
               responsive={true}
               sizes="(min-width: 690px) 33vw, 100vw"
-              priority={idx === 0} // First image gets priority
+              priority={false}
             />
             <div className="absolute inset-0 bg-black/20" />
           </div>
