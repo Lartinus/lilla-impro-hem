@@ -93,7 +93,7 @@ const ShowCardSimple = ({
                   <div className="w-full border-t-2 border-dashed border-black"></div>
                 </div>
                 {(show.tagsDetailed && show.tagsDetailed.length > 0) ? (
-                  <div className="relative bg-[#E7E7E7] px-2 flex gap-2 flex-wrap items-center justify-center">
+                  <div className="relative bg-[#E7E7E7] px-2 inline-flex items-center justify-center gap-2 flex-nowrap">
                     {show.tagsDetailed.map((t, idx) => (
                       <ShowTag key={`${t.name}-${idx}`} name={t.name} color={t.color} size="small" />
                     ))}
