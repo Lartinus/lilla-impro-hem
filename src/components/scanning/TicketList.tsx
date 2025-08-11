@@ -58,23 +58,31 @@ export const TicketList: React.FC = () => {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
-  // Get unique shows for filter
+  // Fetch upcoming shows (all shows whose date hasn't passed)
+  const { data: upcomingShows = [] } = useQuery({
+    queryKey: ['upcoming-shows-for-scanning'],
+    queryFn: async () => {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const { data, error } = await supabase
+        .from('admin_shows')
+        .select('id, title, slug, show_date')
+        .gte('show_date', todayStr)
+        .order('show_date', { ascending: true });
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60_000,
+  });
+
+  // Build show options for dropdown from upcoming shows
   const shows = React.useMemo(() => {
-    const uniqueShows = tickets.reduce((acc, ticket) => {
-      const showKey = `${ticket.show_title}|||${ticket.show_date}`;
-      if (!acc.some(show => show.key === showKey)) {
-        acc.push({
-          key: showKey,
-          title: ticket.show_title,
-          date: ticket.show_date,
-          display: `${ticket.show_title} (${format(new Date(ticket.show_date), 'd MMM', { locale: sv })})`
-        });
-      }
-      return acc;
-    }, [] as any[]);
-    
-    return uniqueShows.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  }, [tickets]);
+    return (upcomingShows as any[]).map((s) => ({
+      key: `${s.title}|||${s.show_date}`,
+      title: s.title,
+      date: s.show_date,
+      display: `${s.title} (${format(new Date(s.show_date), 'd MMM', { locale: sv })})`,
+    }));
+  }, [upcomingShows]);
 
   // Filter tickets
   const filteredTickets = React.useMemo(() => {
