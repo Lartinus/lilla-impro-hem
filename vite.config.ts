@@ -39,7 +39,7 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 500,
     target: 'es2020',
     cssCodeSplit: false, // Bundle CSS for better caching
-    sourcemap: false, // Disable sourcemaps for faster builds
+    sourcemap: true, // Enable sourcemaps for better debugging and SEO audits
   },
   
   // Minimal dependency optimization
