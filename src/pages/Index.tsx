@@ -9,10 +9,7 @@ import { ArrowDown } from 'lucide-react'
 
 // All images that need to be loaded on the homepage
 const HOMEPAGE_IMAGES = [
-  '/uploads/images/Rosenqvist-6315.jpg', // Hero image
-  '/uploads/images/Improvision2024.jpg',    // Service box 1
-  '/uploads/images/kurser_LIT_2024.jpg',    // Service box 2
-  '/uploads/images/corporate_LIT_2024.jpg'  // Service box 3
+  '/uploads/images/Rosenqvist-6315.jpg' // Hero image
 ]
 
 export default function Index() {
