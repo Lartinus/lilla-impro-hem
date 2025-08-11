@@ -1,10 +1,11 @@
+
 # CDN-friendly caching headers
 /*
   Cache-Control: public, max-age=31536000, immutable
 
-# HTML files - short cache
+# HTML files - cache at CDN, validate in browser
 /*.html
-  Cache-Control: public, max-age=300
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=60, must-revalidate
 
 # API routes - no cache
 /api/*
