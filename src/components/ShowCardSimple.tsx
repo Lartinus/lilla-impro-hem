@@ -87,7 +87,7 @@ const ShowCardSimple = ({
               <h3>{formatDateTime(show.date, show.time)}</h3>
             </div>
             
-            <div className="mt-4 mb-1 pt-1">
+            <div className="mb-1 pt-1">
               <div className="flex items-center justify-center relative mb-1">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t-2 border-dashed border-black"></div>
