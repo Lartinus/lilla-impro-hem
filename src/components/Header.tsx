@@ -72,7 +72,7 @@ export default function Header() {
                   key={to}
                   to={to}
                   onClick={() => setOpen(false)}
-                  className={`font-tanker uppercase text-2xl lg:text-3xl transition-colors ${
+                  className={`font-tanker text-2xl lg:text-3xl transition-colors normal-case ${
                     isActive ? 'text-primary-foreground' : 'text-primary-foreground hover:text-white'
                   }`}
                 >
