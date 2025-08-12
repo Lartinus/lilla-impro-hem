@@ -140,24 +140,24 @@ export default function VanligaFragor() {
               <section>
                 <p className="mb-1 font-semibold">Kan jag börja utan tidigare erfarenhet?</p>
                 <p className="mb-3">Absolut! Det viktiga är att du vill lära dig Improv Comedy och vill stå på scen och improvisera komiska scener.</p>
-                <p className="font-semibold">Varför har ni krav på att klara av nivå 1 innan man går nivå 2?</p>
-                <p>Vi vill att både du och gruppen ska ha grunden för att kunna jobba vidare med längre shower. Du får gå om nivå 1 med rabatterat pris.</p>
-                <p className="font-semibold">Får jag feedback?</p>
-                <p>Ja. Alla våra kurser innehåller personlig återkoppling och individuell utveckling.</p>
-                <p className="font-semibold">Behöver jag vara rolig?</p>
-                <p>Nej. Humor kommer ur samspelet – vi lär dig teknikerna.</p>
-                <p className="font-semibold">Kommer jag stå på scen?</p>
-                <p>Ja. Alla kurser avslutas med ett uppspel inför publik.</p>
-                <p className="font-semibold">Hur stora är grupperna?</p>
-                <p>Max 12 deltagare – så att alla får mycket scen- och lärartid.</p>
-                <p className="font-semibold">Kan jag gå flera gånger?</p>
-                <p>Ja. Många går om nivåkurser med nya verktyg och scener varje gång.</p>
-                <p className="font-semibold">Kan jag ta igen missade tillfällen?</p>
-                <p>Vi försöker alltid hjälpa dig att ta igen missade tillfällen om det finns plats i andra grupper. Hör av dig så ser vi vad som går att ordna.</p>
-                <p className="font-semibold">Kan jag byta kurs om dagen inte passar?</p>
-                <p>Om det finns platser i en annan grupp hjälper vi dig att byta. Ju tidigare du frågar desto större chans att du kan byta.</p>
-                <p className="font-semibold">Jag behöver avboka kursen. Kan jag få pengarna tillbaka?</p>
-                <p>Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter återbetalas du bara 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart ger vi ingen återbetalning. Vid utebliven närvaro sker ingen återbetalning.</p>
+                <p className="mb-1 font-semibold">Varför har ni krav på att klara av nivå 1 innan man går nivå 2?</p>
+                <p className="mb-3">Vi vill att både du och gruppen ska ha grunden för att kunna jobba vidare med längre shower. Du får gå om nivå 1 med rabatterat pris.</p>
+                <p className="mb-1 font-semibold">Får jag feedback?</p>
+                <p className="mb-3">Ja. Alla våra kurser innehåller personlig återkoppling och individuell utveckling.</p>
+                <p className="mb-1 font-semibold">Behöver jag vara rolig?</p>
+                <p className="mb-3">Nej. Humor kommer ur samspelet – vi lär dig teknikerna.</p>
+                <p className="mb-1 font-semibold">Kommer jag stå på scen?</p>
+                <p className="mb-3">Ja. Alla kurser avslutas med ett uppspel inför publik.</p>
+                <p className="mb-1 font-semibold">Hur stora är grupperna?</p>
+                <p className="mb-3">Max 12 deltagare – så att alla får mycket scen- och lärartid.</p>
+                <p className="mb-1 font-semibold">Kan jag gå flera gånger?</p>
+                <p className="mb-3">Ja. Många går om nivåkurser med nya verktyg och scener varje gång.</p>
+                <p className="mb-1 font-semibold">Kan jag ta igen missade tillfällen?</p>
+                <p className="mb-3">Vi försöker alltid hjälpa dig att ta igen missade tillfällen om det finns plats i andra grupper. Hör av dig så ser vi vad som går att ordna.</p>
+                <p className="mb-1 font-semibold">Kan jag byta kurs om dagen inte passar?</p>
+                <p className="mb-3">Om det finns platser i en annan grupp hjälper vi dig att byta. Ju tidigare du frågar desto större chans att du kan byta.</p>
+                <p className="mb-1 font-semibold">Jag behöver avboka kursen. Kan jag få pengarna tillbaka?</p>
+                <p className="mb-3">Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter återbetalas du bara 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart ger vi ingen återbetalning. Vid utebliven närvaro sker ingen återbetalning.</p>
               </section>
             </div>
           </article>
