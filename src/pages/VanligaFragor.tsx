@@ -139,7 +139,7 @@ export default function VanligaFragor() {
               
               <section>
                 <p className="font-semibold">Kan jag börja utan tidigare erfarenhet?</p>
-                <p className="mb-1">Absolut! Det viktiga är att du vill lära dig Improv Comedy och vill stå på scen och improvisera komiska scener.</p>
+                <p className="mt-1 mb-3">Absolut! Det viktiga är att du vill lära dig Improv Comedy och vill stå på scen och improvisera komiska scener.</p>
                 <p className="font-semibold">Varför har ni krav på att klara av nivå 1 innan man går nivå 2?</p>
                 <p>Vi vill att både du och gruppen ska ha grunden för att kunna jobba vidare med längre shower. Du får gå om nivå 1 med rabatterat pris.</p>
                 <p className="font-semibold">Får jag feedback?</p>
