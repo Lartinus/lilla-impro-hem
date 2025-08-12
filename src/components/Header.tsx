@@ -8,6 +8,7 @@ const navItems = [
   { to: '/boka-oss', label: 'Boka oss' },
   { to: '/lokal', label: 'Lokal' },
   { to: '/om-oss', label: 'Om oss & kontakt' },
+  { to: '/integritet', label: 'Integritet & cookies' },
 ];
 
 export default function Header() {

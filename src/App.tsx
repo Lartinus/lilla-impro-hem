@@ -48,6 +48,7 @@ const LazyPaymentPages = React.lazy(() =>
 );
 const LazyNewsletterConfirmation = React.lazy(() => import('@/pages/NewsletterConfirmation'));
 const LazyUnsubscribe = React.lazy(() => import('@/pages/Unsubscribe'));
+const LazyIntegritet = React.lazy(() => import('@/pages/Integritet'));
 
 
 function AppContent() {
@@ -181,6 +182,15 @@ function AppContent() {
               } 
             />
             
+            {/* Integritetspolicy */}
+            <Route 
+              path="/integritet" 
+              element={
+                <Suspense fallback={null}>
+                  <LazyIntegritet />
+                </Suspense>
+              } 
+            />
             
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />

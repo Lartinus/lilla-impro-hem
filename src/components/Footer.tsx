@@ -6,8 +6,9 @@ const footerNavItems = [
   { to: '/kurser', label: 'KURSER' },
   { to: '/forestallningar', label: 'FÖRESTÄLLNINGAR' },
   { to: '/boka-oss', label: 'BOKA OSS' },
+  { to: '/lokal', label: 'LOKAL' },
   { to: '/om-oss', label: 'OM OSS' },
-  { to: '/om-oss', label: 'KONTAKT' },
+  { to: '/integritet', label: 'INTEGRITET & COOKIES' },
 ];
 
 export default function Footer() {
