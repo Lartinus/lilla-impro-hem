@@ -29,37 +29,32 @@ const TicketPaymentSuccess = () => {
       }
 
       try {
-        // Fallback: verify payment via Edge Function (handles marking as paid + sending email)
         try {
-          await supabase.functions.invoke('verify-ticket-payment', {
+          const { data, error } = await supabase.functions.invoke('verify-ticket-payment', {
             body: { sessionId },
           });
-        } catch (e) {
-          console.error('verify-ticket-payment failed (continuing):', e);
-        }
 
-        // Then fetch the paid purchase details to display to the user
-        const { data: purchase, error } = await supabase
-          .from('ticket_purchases')
-          .select('*')
-          .eq('stripe_session_id', sessionId)
-          .eq('payment_status', 'paid')
-          .maybeSingle();
+          if (error) {
+            console.error('verify-ticket-payment error:', error);
+            return;
+          }
 
-        if (!purchase || error) {
+          if (data?.success && data?.purchase) {
+            const p = data.purchase as TicketDetails;
+            setTicketDetails({
+              showTitle: p.showTitle,
+              showDate: p.showDate,
+              showLocation: p.showLocation,
+              buyerName: p.buyerName,
+              totalTickets: p.totalTickets,
+              ticketCode: p.ticketCode,
+            });
+          } else {
+            console.warn('verify-ticket-payment returned no purchase info');
+          }
+        } catch (error) {
           console.error('Error fetching ticket details:', error);
-          setLoading(false);
-          return;
         }
-
-        setTicketDetails({
-          showTitle: purchase.show_title,
-          showDate: purchase.show_date,
-          showLocation: purchase.show_location,
-          buyerName: purchase.buyer_name,
-          totalTickets: (purchase.regular_tickets || 0) + (purchase.discount_tickets || 0),
-          ticketCode: purchase.ticket_code,
-        });
       } catch (error) {
         console.error('Error fetching ticket details:', error);
       } finally {
