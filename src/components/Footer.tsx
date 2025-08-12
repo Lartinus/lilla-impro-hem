@@ -2,13 +2,13 @@
 import { Link } from 'react-router-dom';
 
 const footerNavItems = [
-  { to: '/', label: 'Hem' },
-  { to: '/kurser', label: 'Kurser' },
-  { to: '/forestallningar', label: 'Föreställningar' },
-  { to: '/boka-oss', label: 'Boka oss' },
-  { to: '/lokal', label: 'Lokal' },
-  { to: '/om-oss', label: 'Om oss' },
-  { to: '/integritet', label: 'Integritet & cookies' },
+  { to: '/', label: 'HEM' },
+  { to: '/kurser', label: 'KURSER' },
+  { to: '/forestallningar', label: 'FÖRESTÄLLNINGAR' },
+  { to: '/boka-oss', label: 'BOKA OSS' },
+  { to: '/lokal', label: 'LOKAL' },
+  { to: '/om-oss', label: 'OM OSS' },
+  { to: '/integritet', label: 'INTEGRITET & COOKIES' },
 ];
 
 export default function Footer() {
@@ -23,7 +23,7 @@ export default function Footer() {
               <Link
                 key={to + label}
                 to={to}
-                className="font-satoshi text-sm tracking-wider hover:opacity-80 transition-colors underline normal-case"
+                className="font-satoshi text-sm uppercase tracking-wider hover:opacity-80 transition-colors underline"
                 style={{ color: 'rgb(var(--white))' }}
               >
                 {label}
