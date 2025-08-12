@@ -45,7 +45,7 @@ export default function AnlitaOss() {
                 {/* Corporate section */}
                 <section className="space-y-4 pt-6 border-t border-gray-200">
                   <h2>Workshops & Events för er organisation</h2>
-                  <p className="font-bold">
+                  <p className="font-semibold">
                     Vill ni ha skratt, samarbete och kunskap i samma paket?
                   </p>
                   <p>
@@ -56,7 +56,7 @@ export default function AnlitaOss() {
                   </p>
 
                   <div className="space-y-4">
-                    <p className="font-bold">Vi erbjuder bland annat:</p>
+                    <p className="font-semibold">Vi erbjuder bland annat:</p>
                     <ul className="space-y-2">
                       {[
                         ["Teambuilding-workshops", "Stärk samspel och gruppdynamik"],
@@ -66,7 +66,7 @@ export default function AnlitaOss() {
                         <li key={i} className="flex items-start space-x-3">
                           <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>
                           <div>
-                            <span className="font-bold">{title}</span>
+                            <span className="font-semibold">{title}</span>
                             <span> – {description}</span>
                           </div>
                         </li>
@@ -80,7 +80,7 @@ export default function AnlitaOss() {
                   </p>
 
                   <div className="space-y-4">
-                    <p className="font-bold">Exempel på tillfällen vi passar extra bra för:</p>
+                    <p className="font-semibold">Exempel på tillfällen vi passar extra bra för:</p>
                     <ul className="space-y-2 text-black">
                       {[
                         "Konferenser, kickoff och personaldagar",
@@ -96,7 +96,7 @@ export default function AnlitaOss() {
                   </div>
 
                   <div className="pt-6 border-t border-gray-200">
-                    <p className="mb-4 font-bold">Berätta om er organisation och vad ni är ute efter:</p>
+                    <p className="mb-4 font-semibold">Berätta om er organisation och vad ni är ute efter:</p>
                     <CorporateInquiryForm />
                   </div>
                 </section>
@@ -104,7 +104,7 @@ export default function AnlitaOss() {
                 {/* Private section */}
                 <section className="space-y-4 pt-6 border-t border-gray-200">
                   <h2>Underhållning & upplevelse till ert firande</h2>
-                  <p className="font-bold">
+                  <p className="font-semibold">
                     Ordnar du en privat tillställning och vill ge någon en upplevelse de aldrig glömmer?
                   </p>
                   <p>
@@ -115,7 +115,7 @@ export default function AnlitaOss() {
                   </p>
 
                   <div className="space-y-4">
-                    <p className="font-bold">Vad ni kan boka:</p>
+                    <p className="font-semibold">Vad ni kan boka:</p>
                     <ul className="space-y-3">
                       {[
                         ["Impropass", "En skrattig, spontan och oförglömlig aktivitet – inga förkunskaper krävs."],
@@ -125,7 +125,7 @@ export default function AnlitaOss() {
                         <li key={i} className="flex items-start space-x-3">
                           <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>
                           <div>
-                            <span className="font-bold">{title}</span>
+                            <span className="font-semibold">{title}</span>
                             <span> – {description}</span>
                           </div>
                         </li>
@@ -139,7 +139,7 @@ export default function AnlitaOss() {
                   </p>
 
                   <div className="space-y-4">
-                    <p className="font-bold">Exempel på tillfällen vi passar bra för:</p>
+                    <p className="font-semibold">Exempel på tillfällen vi passar bra för:</p>
                     <ul className="space-y-2">
                       {[
                         "Möhippor & svensexor",
@@ -155,7 +155,7 @@ export default function AnlitaOss() {
                   </div>
 
                   <div className="pt-6 border-t border-gray-200">
-                    <p className="mb-4 font-bold">Vill du veta mer eller boka oss?</p>
+                    <p className="mb-4 font-semibold">Vill du veta mer eller boka oss?</p>
                     <PrivateInquiryForm />
                   </div>
                 </section>
