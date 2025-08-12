@@ -26,7 +26,7 @@ export default function Footer() {
                 <Link
                   key={to + label}
                   to={to}
-                  className={`font-satoshi text-sm tracking-wider hover:opacity-80 transition-colors ${isPrivacy ? 'normal-case' : 'uppercase'}`}
+                  className={`font-satoshi text-sm tracking-wider hover:opacity-80 transition-colors underline ${isPrivacy ? 'normal-case' : 'uppercase'}`}
                   style={{ color: 'rgb(var(--white))' }}
                 >
                   {display}

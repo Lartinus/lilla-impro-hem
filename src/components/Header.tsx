@@ -75,7 +75,7 @@ export default function Header() {
                   onClick={() => setOpen(false)}
                   className={`${
                     isPrivacy ? 'font-satoshi normal-case' : 'font-tanker uppercase'
-                  } text-base transition-colors ${
+                  } text-2xl lg:text-3xl transition-colors ${
                     isActive ? 'text-primary-foreground' : 'text-primary-foreground hover:text-white'
                   }`}
                 >
