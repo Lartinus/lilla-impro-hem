@@ -19,16 +19,20 @@ export default function Footer() {
           
           {/* #2 Länkdelen - först på mobil, sist på desktop */}
           <nav className="flex flex-col space-y-2 order-1 md:order-2 md:text-right">
-            {footerNavItems.map(({ to, label }) => (
-              <Link
-                key={to + label}
-                to={to}
-                className="font-satoshi text-sm uppercase tracking-wider hover:opacity-80 transition-colors underline"
-                style={{ color: 'rgb(var(--white))' }}
-              >
-                {label}
-              </Link>
-            ))}
+            {footerNavItems.map(({ to, label }) => {
+              const isPrivacy = to === '/integritet';
+              const display = isPrivacy ? 'Integritet & cookies' : label;
+              return (
+                <Link
+                  key={to + label}
+                  to={to}
+                  className={`font-satoshi text-sm tracking-wider hover:opacity-80 transition-colors underline ${isPrivacy ? 'normal-case' : 'uppercase'}`}
+                  style={{ color: 'rgb(var(--white))' }}
+                >
+                  {display}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* #1 Logotyp-delen - andra på mobil, först på desktop */}

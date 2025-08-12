@@ -67,16 +67,19 @@ export default function Header() {
             <nav className="flex flex-col items-end space-y-2 pb-6 pt-4">
             {navItems.map(({ to, label }) => {
               const isActive = pathname === to;
+              const isPrivacy = to === '/integritet';
               return (
                 <Link
                   key={to}
                   to={to}
                   onClick={() => setOpen(false)}
-                  className={`font-tanker uppercase text-2xl lg:text-3xl transition-colors ${
+                  className={`${
+                    isPrivacy ? 'font-satoshi normal-case' : 'font-tanker uppercase'
+                  } text-2xl lg:text-3xl transition-colors ${
                     isActive ? 'text-primary-foreground' : 'text-primary-foreground hover:text-white'
                   }`}
                 >
-                  {label}
+                  {isPrivacy ? 'Integritet & cookies' : label}
                 </Link>
               );
             })}
