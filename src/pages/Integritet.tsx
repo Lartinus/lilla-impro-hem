@@ -80,8 +80,14 @@ export default function Integritet() {
               <section className="space-y-2">
                 <h2>Vilka uppgifter vi behandlar</h2>
                 <p>
-                  Vi behandlar i första hand uppgifter som du själv lämnar till oss, såsom namn, e-postadress,
+                  Vi behandlar i första hand uppgifter som du själv lämnar till oss, såsom namn, e‑postadress,
                   telefonnummer och meddelanden i samband med kontakt, bokning eller avtal.
+                </p>
+                <p>
+                  Vid kurs- och biljettbokningar kan vi även samla in adress, postnummer och ort samt eventuella
+                  meddelanden kopplade till bokningen. För företagsförfrågningar kan företagsnamn förekomma.
+                  Betalningsrelaterad information (t.ex. belopp, betalningsstatus och referenser) hanteras –
+                  men kortuppgifter behandlas enbart av vår betalningsleverantör (vi lagrar aldrig kortnummer).
                 </p>
               </section>
 
@@ -91,6 +97,9 @@ export default function Integritet() {
                   <li>Svara på förfrågningar och ge support – berättigat intresse.</li>
                   <li>Hantera bokningar/avtal och leverera tjänster – avtal.</li>
                   <li>Fullgöra rättsliga skyldigheter (t.ex. bokföring) – rättslig förpliktelse.</li>
+                  <li>Skicka nyhetsbrev och erbjudanden – samtycke.</li>
+                  <li>Kommunicera med befintliga kunder om liknande tjänster – berättigat intresse.</li>
+                  <li>Hantera väntelistor och riktade erbjudanden – avtal/berättigat intresse.</li>
                 </ul>
                 <p>Sådant som kräver samtycke behandlas endast om du uttryckligen samtycker.</p>
                 <p>Vi samlar inte in mer än nödvändigt, säljer inte personuppgifter och delar inte för marknadsföringssyften.</p>
@@ -101,7 +110,7 @@ export default function Integritet() {
                 <p>
                   Vi sparar uppgifter endast så länge de behövs för ovanstående ändamål eller så länge lag kräver.
                   Därefter raderas eller anonymiseras de. Du kan när som helst begära att vi raderar dina uppgifter,
-                  med förbehåll för lagkrav.
+                  med förbehåll för lagkrav. Exempel: bokföringsunderlag måste enligt lag sparas i upp till sju (7) år.
                 </p>
               </section>
 
@@ -116,17 +125,27 @@ export default function Integritet() {
               <section className="space-y-2">
                 <h2>Delning till tredje part</h2>
                 <p>
-                  Vi delar bara uppgifter med leverantörer som behövs för att leverera våra tjänster (t.ex. IT-drift)
-                  och då enligt personuppgiftsbiträdesavtal. Ingen försäljning eller delning för marknadsföring.
+                  Vi delar endast uppgifter med leverantörer som behövs för att leverera våra tjänster och då enligt
+                  personuppgiftsbiträdesavtal eller likvärdiga skydd. Ingen försäljning eller delning för marknadsföring.
                 </p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Supabase – drift av databas, lagring och serverfunktioner.</li>
+                  <li>Stripe – betalningshantering (vi lagrar inga kortuppgifter).</li>
+                  <li>Resend – utskick av transaktionsmejl (t.ex. bekräftelser och kvitton).</li>
+                </ul>
               </section>
 
               <section className="space-y-2">
                 <h2>Cookies och spårning</h2>
-                <p>Vi sätter inga egna cookies och använder ingen spårning via t.ex. tredjeparts-pixlar eller analytics-skript.</p>
+                <p>Vi använder inga analys- eller marknadsföringscookies och har inga spårningspixlar på webbplatsen.</p>
                 <p>
-                  Inbäddat innehåll från tredje part (t.ex. videospelare) kan sätta egna cookies enligt respektive leverantörs villkor.
-                  Vi försöker undvika detta eller använda ”no-cookie”-lösningar där det är möjligt.
+                  Vid betalning via Stripe kan cookies sättas på Stripes egna domäner i syfte att möjliggöra säker checkout.
+                  Inbäddat innehåll från tredje part (t.ex. videospelare) kan också sätta egna cookies enligt respektive leverantörs villkor.
+                </p>
+                <p>
+                  Vi kan ladda tekniska skript för drift/underhåll av webbplatsen (t.ex. vår sidredigerare) som inte används
+                  för marknadsföringsspårning. Admininloggning hanterar sessioner via säker tokenlagring i webbläsaren
+                  och använder inte cookies för detta.
                 </p>
               </section>
 
