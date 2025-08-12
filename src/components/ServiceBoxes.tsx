@@ -14,7 +14,7 @@ const services: Service[] = [
   {
     title: 'Föreställningar',
     subtitle: 'Med stor bredd och mycket skratt',
-    cta: 'Kommande föreställningar',
+    cta: 'Kommande',
     link: '/forestallningar',
     image: '/uploads/images/Improvision2024.jpg',
   },
