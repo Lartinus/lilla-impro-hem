@@ -70,6 +70,10 @@
    ========================================================================== */
 
 /* Body & text rendering */
+html {
+  font-synthesis-weight: none;
+  font-synthesis-style: none;
+}
 body {
   font-family: 'Satoshi', sans-serif;
   background-color: rgb(var(--background));
@@ -103,7 +107,7 @@ h2 {
 h3 {
   font-family:    'Rajdhani', sans-serif;
   font-size:      16px;
-  font-weight:    550;
+  font-weight:    600;
   color:          rgb(var(--text-black));
   margin-bottom:  8px;
   line-height:    1.1;
