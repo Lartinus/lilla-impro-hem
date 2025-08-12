@@ -74,11 +74,10 @@ export const useTicketBooking = () => {
       const sessionId = getSessionId();
       console.log('Clearing booking for session ID:', sessionId);
       
-      // Remove booking from database
-      const { error } = await supabase
-        .from('ticket_bookings')
-        .delete()
-        .eq('session_id', sessionId);
+      // Remove booking from database via secure RPC (bypasses RLS safely)
+      const { error } = await (supabase as any).rpc('delete_ticket_booking', {
+        session_id_param: sessionId,
+      });
       
       if (error) {
         console.error('Error clearing booking from database:', error);

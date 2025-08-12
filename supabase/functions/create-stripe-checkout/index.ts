@@ -135,11 +135,16 @@ serve(async (req) => {
         throw new Error('Failed to store free ticket');
       }
 
-      // Update discount code usage if valid discount was applied
+      // Update discount code usage if valid discount was applied (server-side)
       if (discountCode?.trim()) {
         try {
-          await supabase.functions.invoke('update-discount-usage', {
-            body: { code: discountCode.trim() }
+          await fetch(`${supabaseUrl}/functions/v1/update-discount-usage`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${supabaseKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ code: discountCode.trim() }),
           });
         } catch (error) {
           console.error('Error updating discount usage:', error);

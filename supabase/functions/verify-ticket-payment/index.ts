@@ -107,12 +107,16 @@ serve(async (req) => {
     // Update discount usage if applicable
     try {
       if (purchase.discount_code) {
-        const sbAnon = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY") ?? "", { auth: { persistSession: false } });
-        const { data: discResp, error: discErr } = await sbAnon.functions.invoke("update-discount-usage", {
-          body: { code: purchase.discount_code },
+        const resp = await fetch(`${supabaseUrl}/functions/v1/update-discount-usage`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${serviceKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ code: purchase.discount_code }),
         });
-        if (discErr) console.warn("[verify-ticket-payment] Discount usage update error:", discErr);
-        else console.log("[verify-ticket-payment] Discount usage updated:", discResp);
+        if (!resp.ok) console.warn('[verify-ticket-payment] Discount usage update failed:', await resp.text());
+        else console.log('[verify-ticket-payment] Discount usage updated');
       }
     } catch (e) {
       console.warn("[verify-ticket-payment] Exception updating discount usage:", e);
@@ -120,12 +124,16 @@ serve(async (req) => {
 
     // Send confirmation email
     try {
-      const sbAnon = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY") ?? "", { auth: { persistSession: false } });
-      const { data: emailResp, error: emailErr } = await sbAnon.functions.invoke("send-ticket-confirmation", {
-        body: purchase,
+      const emailResp = await fetch(`${supabaseUrl}/functions/v1/send-ticket-confirmation`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${serviceKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(purchase),
       });
-      if (emailErr) console.error("[verify-ticket-payment] Email send error:", emailErr);
-      else console.log("[verify-ticket-payment] Confirmation email sent:", emailResp);
+      if (!emailResp.ok) console.error('[verify-ticket-payment] Email send error:', await emailResp.text());
+      else console.log('[verify-ticket-payment] Confirmation email sent');
     } catch (e) {
       console.error("[verify-ticket-payment] Exception sending email:", e);
     }

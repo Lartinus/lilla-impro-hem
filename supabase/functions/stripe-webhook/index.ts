@@ -71,8 +71,13 @@ serve(async (req) => {
         // Update discount code usage if discount was applied
         if (ticketPurchase.discount_code) {
           try {
-            await supabase.functions.invoke('update-discount-usage', {
-              body: { code: ticketPurchase.discount_code }
+            await fetch(`${supabaseUrl}/functions/v1/update-discount-usage`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${supabaseKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ code: ticketPurchase.discount_code }),
             });
             console.log(`Updated usage for discount code: ${ticketPurchase.discount_code}`);
           } catch (error) {

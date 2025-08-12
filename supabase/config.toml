@@ -90,7 +90,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.get-course-bookings]
-verify_jwt = false
+verify_jwt = true
 
 [functions.stripe-webhook]
 verify_jwt = false
@@ -102,7 +102,7 @@ verify_jwt = true
 verify_jwt = false
 
 [functions.update-discount-usage]
-verify_jwt = false
+verify_jwt = true
 
 [functions.verify-course-payment]
 verify_jwt = false
