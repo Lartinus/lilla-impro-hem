@@ -9,6 +9,7 @@ const footerNavItems = [
   { to: '/lokal', label: 'LOKAL' },
   { to: '/om-oss', label: 'OM OSS' },
   { to: '/integritet', label: 'INTEGRITET & COOKIES' },
+  { to: '/vanliga-fragor', label: 'VANLIGA FRÅGOR' },
 ];
 
 export default function Footer() {
@@ -18,22 +19,22 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row md:justify-between md:items-start space-y-8 md:space-y-0">
           
           {/* #2 Länkdelen - först på mobil, sist på desktop */}
-          <nav className="flex flex-col space-y-2 order-1 md:order-2 md:text-right">
-            {footerNavItems.map(({ to, label }) => {
-              const isPrivacy = to === '/integritet';
-              const display = isPrivacy ? 'Integritet & cookies' : label;
-              return (
-                <Link
-                  key={to + label}
-                  to={to}
-                  className={`font-satoshi text-sm tracking-wider hover:opacity-80 transition-colors ${isPrivacy ? 'normal-case no-underline' : 'uppercase underline'}`}
-                  style={{ color: 'rgb(var(--white))' }}
-                >
-                  {display}
-                </Link>
-              );
-            })}
-          </nav>
+      <nav className="flex flex-col space-y-2 order-1 md:order-2 md:text-right">
+        {footerNavItems.map(({ to, label }) => {
+          const isSpecial = to === '/integritet' || to === '/vanliga-fragor';
+          const display = to === '/integritet' ? 'Integritet & cookies' : to === '/vanliga-fragor' ? 'Vanliga frågor' : label;
+          return (
+            <Link
+              key={to + label}
+              to={to}
+              className={`font-satoshi text-sm tracking-wider hover:opacity-80 transition-colors ${isSpecial ? 'normal-case no-underline' : 'uppercase underline'}`}
+              style={{ color: 'rgb(var(--white))' }}
+            >
+              {display}
+            </Link>
+          );
+        })}
+      </nav>
 
           {/* #1 Logotyp-delen - andra på mobil, först på desktop */}
           <div className="md:max-w-md order-2 md:order-1">

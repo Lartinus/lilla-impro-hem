@@ -49,7 +49,7 @@ const LazyPaymentPages = React.lazy(() =>
 const LazyNewsletterConfirmation = React.lazy(() => import('@/pages/NewsletterConfirmation'));
 const LazyUnsubscribe = React.lazy(() => import('@/pages/Unsubscribe'));
 const LazyIntegritet = React.lazy(() => import('@/pages/Integritet'));
-
+const LazyVanligaFragor = React.lazy(() => import('@/pages/VanligaFragor'));
 
 function AppContent() {
   const location = useLocation();
@@ -188,6 +188,16 @@ function AppContent() {
               element={
                 <Suspense fallback={null}>
                   <LazyIntegritet />
+                </Suspense>
+              } 
+            />
+
+            {/* Vanliga frågor */}
+            <Route 
+              path="/vanliga-fragor" 
+              element={
+                <Suspense fallback={null}>
+                  <LazyVanligaFragor />
                 </Suspense>
               } 
             />

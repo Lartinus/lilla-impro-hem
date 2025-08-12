@@ -9,6 +9,7 @@ const navItems = [
   { to: '/lokal', label: 'Lokal' },
   { to: '/om-oss', label: 'Om oss & kontakt' },
   { to: '/integritet', label: 'Integritet & cookies' },
+  { to: '/vanliga-fragor', label: 'Vanliga frågor' },
 ];
 
 export default function Header() {
@@ -67,19 +68,20 @@ export default function Header() {
             <nav className="flex flex-col items-end space-y-2 pb-6 pt-4">
             {navItems.map(({ to, label }) => {
               const isActive = pathname === to;
-              const isPrivacy = to === '/integritet';
+              const isSpecial = to === '/integritet' || to === '/vanliga-fragor';
+              const isFirstSpecial = to === '/integritet';
               return (
                 <Link
                   key={to}
                   to={to}
                   onClick={() => setOpen(false)}
                   className={`${
-                    isPrivacy ? 'font-satoshi normal-case text-lg mt-4' : 'font-tanker uppercase text-2xl lg:text-3xl'
+                    isSpecial ? `font-satoshi normal-case text-lg ${isFirstSpecial ? 'mt-4' : ''}` : 'font-tanker uppercase text-2xl lg:text-3xl'
                   } transition-colors ${
                     isActive ? 'text-primary-foreground' : 'text-primary-foreground hover:text-white'
                   }`}
                 >
-                  {isPrivacy ? 'Integritet & cookies' : label}
+                  {to === '/integritet' ? 'Integritet & cookies' : label}
                 </Link>
               );
             })}
