@@ -142,22 +142,22 @@ export default function VanligaFragor() {
                 <p>Absolut! Det viktiga är att du vill lära dig Improv Comedy och vill stå på scen och improvisera komiska scener.</p>
               </section>
 
-              <section className="space-y-2">
+              <section>
                 <p className="font-satoshi font-semibold">Varför har ni krav på att klara av nivå 1 innan man går nivå 2?</p>
                 <p>Vi vill att både du och gruppen ska ha grunden för att kunna jobba vidare med längre shower. Du får gå om nivå 1 med rabatterat pris.</p>
               </section>
 
-              <section className="space-y-2">
+              <section>
                 <p className="font-satoshi font-semibold">Får jag feedback?</p>
                 <p>Ja. Alla våra kurser innehåller personlig återkoppling och individuell utveckling.</p>
               </section>
 
-              <section className="space-y-2">
+              <section>
                 <p className="font-satoshi font-semibold">Behöver jag vara rolig?</p>
                 <p>Nej. Humor kommer ur samspelet – vi lär dig teknikerna.</p>
               </section>
 
-              <section className="space-y-2">
+              <section>
                 <p className="font-satoshi font-semibold">Kommer jag stå på scen?</p>
                 <p>Ja. Alla kurser avslutas med ett uppspel inför publik.</p>
               </section>
