@@ -50,44 +50,25 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Create a client with the user's token to verify they're admin
-    const userSupabase = createClient(supabaseUrl, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjaW1uc2JlZXhra3FyYWdtZHpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MzI5MTEsImV4cCI6MjA2NDEwODkxMX0.Pwq8q3IP60BkTkl9TdMa5PWOVSayKaMXVY8Z3XJ-1UA', {
-      global: {
-        headers: {
-          Authorization: authHeader
-        }
-      }
+    // Create a client with the user's token to verify they're admin (use anon key + caller JWT)
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const userSupabase = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: authHeader } },
     });
 
-    // Extract the token and verify the user
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await userSupabase.auth.getUser();
-    
-    if (authError || !user) {
-      console.error('Authentication failed:', authError);
+    // Verify current user is admin/superadmin via RPC (respects RLS)
+    const { data: isAdmin, error: roleError } = await userSupabase.rpc('current_user_is_admin');
+    if (roleError) {
+      console.error('Role check failed:', roleError);
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
-        {
-          status: 401,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    // Check if user has admin role using the user's client
-    const { data: userRoles, error: roleError } = await userSupabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id);
-
-    if (roleError || !userRoles?.some(role => role.role === 'admin')) {
-      console.error('User does not have admin role:', { user: user.id, userRoles, roleError });
+    if (!isAdmin) {
       return new Response(
         JSON.stringify({ error: 'Insufficient permissions' }),
-        {
-          status: 403,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 

@@ -18,6 +18,51 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
+    // Require admin authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'No authorization header' 
+        }),
+        { 
+          status: 401, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
+
+    const userSupabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    , { global: { headers: { Authorization: authHeader } } });
+    const { data: isAdmin, error: roleError } = await userSupabase.rpc('current_user_is_admin');
+    if (roleError) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Unauthorized' 
+        }),
+        { 
+          status: 401, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
+    if (!isAdmin) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Admin access required' 
+        }),
+        { 
+          status: 403, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
+
     const { table_name, participant_email } = await req.json()
 
     if (!table_name || !participant_email) {

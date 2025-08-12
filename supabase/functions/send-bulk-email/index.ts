@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { supabase } from "../_shared/supabase.ts";
 import { logSentEmail } from "../_shared/email-logger.ts";
 import { createUnifiedEmailTemplate } from "../_shared/email-template.ts";
@@ -39,6 +40,24 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Require admin authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'No authorization header' }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const userSupabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    );
+    const { data: isAdmin, error: roleError } = await userSupabase.rpc('current_user_is_admin');
+    if (roleError) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    if (!isAdmin) {
+      return new Response(JSON.stringify({ error: 'Admin access required' }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const { recipientGroup, recipients, subject, content, templateId, attachments, group_name, backgroundImage }: BulkEmailRequest = await req.json();
 
     console.log('Processing bulk email request for group:', recipientGroup || group_name || 'direct recipients');
