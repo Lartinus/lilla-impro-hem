@@ -162,27 +162,27 @@ export default function VanligaFragor() {
                 <p>Ja. Alla kurser avslutas med ett uppspel inför publik.</p>
               </section>
 
-              <section className="space-y-2">
+              <section>
                 <p className="font-satoshi font-semibold">Hur stora är grupperna?</p>
                 <p>Max 12 deltagare – så att alla får mycket scen- och lärartid.</p>
               </section>
 
-              <section className="space-y-2">
+              <section>
                 <p className="font-satoshi font-semibold">Kan jag gå flera gånger?</p>
                 <p>Ja. Många går om nivåkurser med nya verktyg och scener varje gång.</p>
               </section>
 
-              <section className="space-y-2">
+              <section>
                 <p className="font-satoshi font-semibold">Kan jag ta igen missade tillfällen?</p>
                 <p>Vi försöker alltid hjälpa dig att ta igen missade tillfällen om det finns plats i andra grupper. Hör av dig så ser vi vad som går att ordna.</p>
               </section>
 
-              <section className="space-y-2">
+              <section>
                 <p className="font-satoshi font-semibold">Kan jag byta kurs om dagen inte passar?</p>
                 <p>Om det finns platser i en annan grupp hjälper vi dig att byta. Ju tidigare du frågar desto större chans att du kan byta.</p>
               </section>
 
-              <section className="space-y-2">
+              <section>
                 <p className="font-satoshi font-semibold">Jag behöver avboka kursen. Kan jag få pengarna tillbaka?</p>
                 <p>Avbokning är kostnadsfri fram till 30 dagar före kursstart. Därefter återbetalas du bara 50 % av kursavgiften. Vid avbokning senare än 14 dagar före kursstart ger vi ingen återbetalning. Vid utebliven närvaro sker ingen återbetalning.</p>
               </section>
