@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { supabase } from "../_shared/supabase.ts";
 import { createUnifiedEmailTemplate } from "../_shared/email-template.ts";
 import { logSentEmail } from "../_shared/email-logger.ts";
@@ -16,9 +17,21 @@ serve(async (req) => {
 
   try {
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    
     if (!resendApiKey) {
       throw new Error('RESEND_API_KEY not configured');
+    }
+
+    // Authorization: require admin or internal (service) invocation
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const authHeader = req.headers.get('Authorization') || '';
+    const userClient = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: authHeader } } });
+    const { data: isAdmin, error: adminError } = await userClient.rpc('current_user_is_admin');
+    if (!isAdmin && !adminError) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const purchase = await req.json();

@@ -138,13 +138,8 @@ serve(async (req) => {
       // Update discount code usage if valid discount was applied (server-side)
       if (discountCode?.trim()) {
         try {
-          await fetch(`${supabaseUrl}/functions/v1/update-discount-usage`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${supabaseKey}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ code: discountCode.trim() }),
+          await supabase.functions.invoke('update-discount-usage', {
+            body: { code: discountCode.trim() },
           });
         } catch (error) {
           console.error('Error updating discount usage:', error);

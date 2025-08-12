@@ -107,15 +107,10 @@ serve(async (req) => {
     // Update discount usage if applicable
     try {
       if (purchase.discount_code) {
-        const resp = await fetch(`${supabaseUrl}/functions/v1/update-discount-usage`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${serviceKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ code: purchase.discount_code }),
+        const { error: updDiscErr } = await sb.functions.invoke('update-discount-usage', {
+          body: { code: purchase.discount_code },
         });
-        if (!resp.ok) console.warn('[verify-ticket-payment] Discount usage update failed:', await resp.text());
+        if (updDiscErr) console.warn('[verify-ticket-payment] Discount usage update failed:', updDiscErr);
         else console.log('[verify-ticket-payment] Discount usage updated');
       }
     } catch (e) {
@@ -124,15 +119,10 @@ serve(async (req) => {
 
     // Send confirmation email
     try {
-      const emailResp = await fetch(`${supabaseUrl}/functions/v1/send-ticket-confirmation`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${serviceKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(purchase),
+      const { error: emailErr } = await sb.functions.invoke('send-ticket-confirmation', {
+        body: purchase,
       });
-      if (!emailResp.ok) console.error('[verify-ticket-payment] Email send error:', await emailResp.text());
+      if (emailErr) console.error('[verify-ticket-payment] Email send error:', emailErr);
       else console.log('[verify-ticket-payment] Confirmation email sent');
     } catch (e) {
       console.error("[verify-ticket-payment] Exception sending email:", e);

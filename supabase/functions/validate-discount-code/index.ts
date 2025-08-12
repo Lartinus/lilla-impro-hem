@@ -19,10 +19,12 @@ serve(async (req) => {
     
     const { code, totalAmount } = await req.json();
 
-    if (!code || !totalAmount) {
+    const trimmed = (code || '').toString().trim().toUpperCase();
+
+    if (!trimmed || trimmed.length < 3 || typeof totalAmount !== 'number') {
       return new Response(JSON.stringify({ 
         valid: false, 
-        error: 'Kod och totalbelopp krävs' 
+        error: 'Ogiltig förfrågan' 
       }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -33,12 +35,11 @@ serve(async (req) => {
     const { data: discountCode, error } = await supabase
       .from('discount_codes')
       .select('*')
-      .eq('code', code.toUpperCase())
+      .eq('code', trimmed)
       .eq('is_active', true)
       .single();
 
     if (error || !discountCode) {
-      console.log('Discount code not found or inactive:', code);
       return new Response(JSON.stringify({ 
         valid: false, 
         error: 'Rabattkoden är ogiltig' 
@@ -89,10 +90,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       valid: true,
-      discountAmount,
-      discountType: discountCode.discount_type,
-      discountValue: discountCode.discount_amount,
-      code: discountCode.code
+      discountAmount
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });

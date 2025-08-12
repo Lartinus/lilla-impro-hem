@@ -71,35 +71,29 @@ serve(async (req) => {
         // Update discount code usage if discount was applied
         if (ticketPurchase.discount_code) {
           try {
-            await fetch(`${supabaseUrl}/functions/v1/update-discount-usage`, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${supabaseKey}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ code: ticketPurchase.discount_code }),
+            const { error: updErr } = await supabase.functions.invoke('update-discount-usage', {
+              body: { code: ticketPurchase.discount_code },
             });
-            console.log(`Updated usage for discount code: ${ticketPurchase.discount_code}`);
+            if (updErr) {
+              console.error('Error updating discount code usage:', updErr);
+            } else {
+              console.log(`Updated usage for discount code: ${ticketPurchase.discount_code}`);
+            }
           } catch (error) {
             console.error('Error updating discount code usage:', error);
           }
         }
         
         // Send ticket confirmation email
-        const emailResponse = await fetch(`${supabaseUrl}/functions/v1/send-ticket-confirmation`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${supabaseKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(ticketPurchase),
-        });
-        
-        if (!emailResponse.ok) {
-          console.error('Failed to send ticket confirmation email:', await emailResponse.text());
-        } else {
-          console.log('Ticket confirmation email sent successfully');
-        }
+          const { error: emailErr } = await supabase.functions.invoke('send-ticket-confirmation', {
+            body: ticketPurchase,
+          });
+          
+          if (emailErr) {
+            console.error('Failed to send ticket confirmation email:', emailErr);
+          } else {
+            console.log('Ticket confirmation email sent successfully');
+          }
       } else {
         // Try to update course purchase
         const { error: courseUpdateError } = await supabase
@@ -182,19 +176,14 @@ serve(async (req) => {
           // Send course confirmation email for all successful course bookings
           if (!insertError) {
             console.log('Sending course confirmation email to:', coursePurchase.buyer_email);
-            await fetch(`${supabaseUrl}/functions/v1/send-course-confirmation`, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${supabaseKey}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
+            const { error: courseEmailErr } = await supabase.functions.invoke('send-course-confirmation', {
+              body: {
                 email: coursePurchase.buyer_email,
                 name: coursePurchase.buyer_name,
                 phone: phoneToUse,
                 courseTitle: coursePurchase.course_title,
                 isAvailable: true
-              }),
+              },
             });
           }
         } else {

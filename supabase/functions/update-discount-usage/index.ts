@@ -29,6 +29,22 @@ serve(async (req) => {
       });
     }
 
+    // Authorization: only admins or internal (service-role) calls
+    const supabaseUrl2 = Deno.env.get('SUPABASE_URL')!;
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const authHeader = req.headers.get('Authorization') || '';
+    const userClient = createClient(supabaseUrl2, anonKey, { global: { headers: { Authorization: authHeader } } });
+    const { data: isAdmin, error: adminError } = await userClient.rpc('current_user_is_admin');
+    if (!isAdmin && !adminError) {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'Otillåten förfrågan' 
+      }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     // Increment usage counter
     const { data, error } = await supabase
       .from('discount_codes')
