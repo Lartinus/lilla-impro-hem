@@ -76,7 +76,7 @@ export default function Header() {
                   to={to}
                   onClick={() => setOpen(false)}
                   className={`${
-                    isSpecial ? `font-satoshi normal-case text-lg ${isFirstSpecial ? 'mt-4' : ''}` : 'font-tanker uppercase text-2xl lg:text-3xl'
+                    isSpecial ? `font-satoshi normal-case text-base ${isFirstSpecial ? 'mt-8' : ''}` : 'font-tanker uppercase text-2xl lg:text-3xl'
                   } transition-colors ${
                     isActive ? 'text-primary-foreground' : 'text-primary-foreground hover:text-white'
                   }`}
