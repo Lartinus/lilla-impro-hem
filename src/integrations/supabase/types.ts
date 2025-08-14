@@ -603,6 +603,30 @@ export type Database = {
           },
         ]
       }
+      course_reservations: {
+        Row: {
+          course_instance_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          session_id: string
+        }
+        Insert: {
+          course_instance_id: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          session_id: string
+        }
+        Update: {
+          course_instance_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          session_id?: string
+        }
+        Relationships: []
+      }
       course_templates: {
         Row: {
           course_info: string | null
@@ -1468,9 +1492,20 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      cleanup_expired_course_reservations: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       create_course_booking_table: {
         Args: { table_name: string }
         Returns: undefined
+      }
+      create_course_reservation: {
+        Args: { course_instance_id_param: string; session_id_param: string }
+        Returns: {
+          expires_at: string
+          reservation_id: string
+        }[]
       }
       create_interest_group_if_not_exists: {
         Args: { signup_title: string }
@@ -1498,6 +1533,10 @@ export type Database = {
       }
       delete_course_participant_admin: {
         Args: { p_participant_email: string; p_table_name: string }
+        Returns: boolean
+      }
+      delete_course_reservation: {
+        Args: { session_id_param: string }
         Returns: boolean
       }
       delete_ticket_booking: {
@@ -1531,6 +1570,15 @@ export type Database = {
           activity_title: string
           activity_type: string
           details: Json
+        }[]
+      }
+      get_course_availability: {
+        Args: { course_instance_id_param: string }
+        Returns: {
+          available_spots: number
+          current_bookings: number
+          current_reservations: number
+          max_participants: number
         }[]
       }
       get_course_booking_count: {
