@@ -102,16 +102,8 @@ export const useOptimizedMetadata = () => {
   };
 
   const loadCommonTimezones = async (): Promise<string[]> => {
-    // Return common timezones instead of querying all 500+ from pg_timezone_names
-    return [
-      'UTC',
-      'Europe/Stockholm',
-      'Europe/London',
-      'America/New_York',
-      'America/Los_Angeles',
-      'Asia/Tokyo',
-      'Australia/Sydney'
-    ];
+    // Swedish site - only need Swedish timezone
+    return ['Europe/Stockholm'];
   };
 
   const invalidateCache = () => {
