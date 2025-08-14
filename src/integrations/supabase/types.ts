@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -43,6 +43,45 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      admin_show_tags: {
+        Row: {
+          created_at: string
+          id: string
+          show_id: string
+          sort_order: number | null
+          tag_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          show_id: string
+          sort_order?: number | null
+          tag_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          show_id?: string
+          sort_order?: number | null
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_show_tags_show_id_fkey"
+            columns: ["show_id"]
+            isOneToOne: false
+            referencedRelation: "admin_shows"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_show_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "show_tags"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       admin_shows: {
         Row: {
@@ -320,6 +359,48 @@ export type Database = {
         Relationships: []
       }
       course_niv__2___improv_comedy_1754818557979: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          email: string
+          id: string
+          last_resent_at: string | null
+          message: string | null
+          name: string
+          phone: string
+          postal_code: string | null
+          resend_count: number | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          last_resent_at?: string | null
+          message?: string | null
+          name: string
+          phone: string
+          postal_code?: string | null
+          resend_count?: number | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          last_resent_at?: string | null
+          message?: string | null
+          name?: string
+          phone?: string
+          postal_code?: string | null
+          resend_count?: number | null
+        }
+        Relationships: []
+      }
+      course_niv__2___improv_comedy_1754920621478: {
         Row: {
           address: string | null
           city: string | null
@@ -1350,14 +1431,14 @@ export type Database = {
     Functions: {
       add_course_participant: {
         Args: {
-          table_name: string
-          participant_name: string
-          participant_email: string
-          participant_phone?: string
           participant_address?: string
-          participant_postal_code?: string
           participant_city?: string
+          participant_email: string
           participant_message?: string
+          participant_name: string
+          participant_phone?: string
+          participant_postal_code?: string
+          table_name: string
         }
         Returns: boolean
       }
@@ -1368,19 +1449,19 @@ export type Database = {
       add_to_waitlist: {
         Args: {
           course_instance_id_param: string
-          name_param: string
           email_param: string
-          phone_param: string
           message_param?: string
+          name_param: string
+          phone_param: string
         }
         Returns: boolean
       }
       admin_delete_participant: {
-        Args: { table_name: string; participant_email: string }
+        Args: { participant_email: string; table_name: string }
         Returns: boolean
       }
       check_duplicate_course_booking: {
-        Args: { table_name: string; email_address: string }
+        Args: { email_address: string; table_name: string }
         Returns: boolean
       }
       cleanup_expired_bookings: {
@@ -1397,10 +1478,10 @@ export type Database = {
       }
       create_ticket_booking: {
         Args: {
-          show_slug_param: string
-          regular_tickets_param: number
           discount_tickets_param: number
+          regular_tickets_param: number
           session_id_param: string
+          show_slug_param: string
         }
         Returns: {
           booking_id: string
@@ -1412,11 +1493,15 @@ export type Database = {
         Returns: boolean
       }
       delete_course_participant: {
-        Args: { table_name: string; participant_email: string }
+        Args: { participant_email: string; table_name: string }
         Returns: boolean
       }
       delete_course_participant_admin: {
-        Args: { p_table_name: string; p_participant_email: string }
+        Args: { p_participant_email: string; p_table_name: string }
+        Returns: boolean
+      }
+      delete_ticket_booking: {
+        Args: { session_id_param: string }
         Returns: boolean
       }
       drop_course_booking_table: {
@@ -1442,9 +1527,9 @@ export type Database = {
       get_contact_activities: {
         Args: { contact_email: string }
         Returns: {
-          activity_type: string
-          activity_title: string
           activity_date: string
+          activity_title: string
+          activity_type: string
           details: Json
         }[]
       }
@@ -1462,20 +1547,20 @@ export type Database = {
       get_ticket_by_qr: {
         Args: { qr_data_param: string }
         Returns: {
+          buyer_email: string
+          buyer_name: string
+          discount_tickets: number
           id: string
-          show_title: string
+          partial_scan: boolean
+          payment_status: string
+          regular_tickets: number
+          scanned_at: string
+          scanned_status: boolean
+          scanned_tickets: number
           show_date: string
           show_location: string
-          buyer_name: string
-          buyer_email: string
-          regular_tickets: number
-          discount_tickets: number
+          show_title: string
           total_amount: number
-          scanned_status: boolean
-          scanned_at: string
-          payment_status: string
-          scanned_tickets: number
-          partial_scan: boolean
         }[]
       }
       get_waitlist_count: {
@@ -1484,8 +1569,8 @@ export type Database = {
       }
       has_role: {
         Args:
-          | { _user_id: string; _role: Database["public"]["Enums"]["app_role"] }
-          | { _user_id: string; _role: string }
+          | { _role: Database["public"]["Enums"]["app_role"]; _user_id: string }
+          | { _role: string; _user_id: string }
         Returns: boolean
       }
       import_course_to_group: {
@@ -1494,14 +1579,14 @@ export type Database = {
       }
       insert_course_booking: {
         Args: {
-          table_name: string
+          booking_address?: string
+          booking_city?: string
+          booking_email: string
+          booking_message?: string
           booking_name: string
           booking_phone: string
-          booking_email: string
-          booking_address?: string
           booking_postal_code?: string
-          booking_city?: string
-          booking_message?: string
+          table_name: string
         }
         Returns: undefined
       }
@@ -1514,14 +1599,14 @@ export type Database = {
         Returns: boolean
       }
       log_security_event: {
-        Args: { p_action: string; p_target_user_id?: string; p_details?: Json }
+        Args: { p_action: string; p_details?: Json; p_target_user_id?: string }
         Returns: undefined
       }
       move_course_participant: {
         Args: {
           from_table_name: string
-          to_table_name: string
           participant_email: string
+          to_table_name: string
         }
         Returns: boolean
       }
@@ -1539,31 +1624,31 @@ export type Database = {
       }
       update_partial_ticket_scan: {
         Args: {
-          ticket_id_param: string
-          scanned_tickets_param: number
           admin_user_id_param: string
+          scanned_tickets_param: number
+          ticket_id_param: string
         }
         Returns: boolean
       }
       update_ticket_contact_details: {
         Args: {
-          ticket_id_param: string
-          new_buyer_name: string
-          new_buyer_email: string
-          new_buyer_phone: string
           admin_user_id_param: string
+          new_buyer_email: string
+          new_buyer_name: string
+          new_buyer_phone: string
+          ticket_id_param: string
         }
         Returns: boolean
       }
       update_ticket_resend_tracking: {
-        Args: { ticket_id_param: string; admin_user_id_param: string }
+        Args: { admin_user_id_param: string; ticket_id_param: string }
         Returns: boolean
       }
       update_ticket_scan_status: {
         Args: {
-          ticket_id_param: string
-          scanned_param: boolean
           admin_user_id_param: string
+          scanned_param: boolean
+          ticket_id_param: string
         }
         Returns: boolean
       }
