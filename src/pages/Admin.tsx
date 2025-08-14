@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useAdminStats } from '@/hooks/useAdminStats';
+import { useRealtimeAdminUpdates } from '@/hooks/useRealtimeAdminUpdates';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
