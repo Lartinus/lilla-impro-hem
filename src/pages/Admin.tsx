@@ -38,6 +38,9 @@ const AdminDashboard = () => {
     window.scrollTo(0, 0);
   }, []);
   const { data: stats, isLoading: statsLoading } = useAdminStats();
+  
+  // Set up real-time updates for admin data
+  useRealtimeAdminUpdates();
   const [showSignUp, setShowSignUp] = React.useState(false);
   const [activeSection, setActiveSection] = React.useState('overview');
   const [expandedSections, setExpandedSections] = React.useState({
