@@ -65,7 +65,7 @@ export default function Header() {
       {open && (
         <div className="fixed left-0 right-0 top-[85px] z-40 bg-primary-red text-primary-foreground main-nav is-open">
           <div className="container mx-auto px-6 lg:px-8">
-            <nav className="flex flex-col items-end space-y-2 pb-6 pt-4">
+            <nav className="flex flex-col items-end pb-6 pt-4">
             {navItems.map(({ to, label }) => {
               const isActive = pathname === to;
               const isSpecial = to === '/integritet' || to === '/vanliga-fragor';
@@ -76,7 +76,9 @@ export default function Header() {
                   to={to}
                   onClick={() => setOpen(false)}
                   className={`${
-                    isSpecial ? `font-satoshi normal-case text-base ${isFirstSpecial ? 'mt-8' : ''}` : 'font-tanker uppercase text-2xl lg:text-3xl'
+                    isSpecial 
+                      ? `font-satoshi normal-case text-base ${isFirstSpecial ? 'mt-8 mb-2' : 'mb-2'}` 
+                      : 'font-tanker uppercase text-2xl lg:text-3xl mb-2'
                   } transition-colors ${
                     isActive ? 'text-primary-foreground' : 'text-primary-foreground hover:text-white'
                   }`}
