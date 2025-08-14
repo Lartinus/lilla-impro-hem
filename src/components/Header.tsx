@@ -71,20 +71,24 @@ export default function Header() {
               const isSpecial = to === '/integritet' || to === '/vanliga-fragor';
               const isFirstSpecial = to === '/integritet';
               return (
-                <Link
-                  key={to}
-                  to={to}
-                  onClick={() => setOpen(false)}
-                  className={`${
-                    isSpecial 
-                      ? `font-satoshi normal-case text-base ${isFirstSpecial ? 'mt-8 mb-2' : 'mb-2'}` 
-                      : 'font-tanker uppercase text-2xl lg:text-3xl mb-2'
-                  } transition-colors ${
-                    isActive ? 'text-primary-foreground' : 'text-primary-foreground hover:text-white'
-                  }`}
-                >
-                  {to === '/integritet' ? 'Integritet & cookies' : label}
-                </Link>
+                <React.Fragment key={to}>
+                  {isFirstSpecial && (
+                    <div className="w-24 h-px bg-primary-foreground/30 mt-6 mb-4" />
+                  )}
+                  <Link
+                    to={to}
+                    onClick={() => setOpen(false)}
+                    className={`${
+                      isSpecial 
+                        ? `font-satoshi normal-case text-base mb-2` 
+                        : 'font-tanker uppercase text-2xl lg:text-3xl mb-2'
+                    } transition-colors ${
+                      isActive ? 'text-primary-foreground' : 'text-primary-foreground hover:text-white'
+                    }`}
+                  >
+                    {to === '/integritet' ? 'Integritet & cookies' : label}
+                  </Link>
+                </React.Fragment>
               );
             })}
             </nav>
