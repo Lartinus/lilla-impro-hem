@@ -87,7 +87,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.send-course-confirmation]
-verify_jwt = true
+verify_jwt = false
 
 [functions.get-course-bookings]
 verify_jwt = true
@@ -102,10 +102,10 @@ verify_jwt = true
 verify_jwt = false
 
 [functions.update-discount-usage]
-verify_jwt = true
+verify_jwt = false
 
 [functions.send-ticket-confirmation]
-verify_jwt = true
+verify_jwt = false
 
 [functions.verify-course-payment]
 verify_jwt = false

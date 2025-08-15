@@ -144,6 +144,7 @@ serve(async (req) => {
             logStep('Updating discount code usage', { code: ticketPurchase.discount_code });
             const { error: updErr } = await supabase.functions.invoke('update-discount-usage', {
               body: { code: ticketPurchase.discount_code },
+              headers: { 'X-Internal-Secret': Deno.env.get('INTERNAL_FUNCTION_SECRET') || '' },
             });
             if (updErr) {
               logStep('ERROR: Failed to update discount code usage', { error: updErr });
@@ -160,6 +161,7 @@ serve(async (req) => {
           logStep('Sending ticket confirmation email', { email: ticketPurchase.buyer_email });
           const { error: emailErr } = await supabase.functions.invoke('send-ticket-confirmation', {
             body: ticketPurchase,
+            headers: { 'X-Internal-Secret': Deno.env.get('INTERNAL_FUNCTION_SECRET') || '' },
           });
           
           if (emailErr) {
@@ -287,6 +289,7 @@ serve(async (req) => {
                   courseTitle: coursePurchase.course_title,
                   isAvailable: true
                 },
+                headers: { 'X-Internal-Secret': Deno.env.get('INTERNAL_FUNCTION_SECRET') || '' },
               });
               
               if (courseEmailErr) {

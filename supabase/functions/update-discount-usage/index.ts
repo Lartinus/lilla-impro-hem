@@ -4,7 +4,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-internal-secret',
 };
 
 serve(async (req) => {
@@ -29,20 +29,26 @@ serve(async (req) => {
       });
     }
 
-    // Authorization: only admins or internal (service-role) calls
-    const supabaseUrl2 = Deno.env.get('SUPABASE_URL')!;
-    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    const authHeader = req.headers.get('Authorization') || '';
-    const userClient = createClient(supabaseUrl2, anonKey, { global: { headers: { Authorization: authHeader } } });
-    const { data: isAdmin, error: adminError } = await userClient.rpc('current_user_is_admin');
-    if (!isAdmin && !adminError) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        error: 'Otillåten förfrågan' 
-      }), {
-        status: 403,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
+    // Authorization: internal secret OR admin JWT
+    const internalSecret = req.headers.get('x-internal-secret') || '';
+    const expectedSecret = Deno.env.get('INTERNAL_FUNCTION_SECRET') || '';
+    const isInternal = expectedSecret && internalSecret === expectedSecret;
+
+    if (!isInternal) {
+      const supabaseUrl2 = Deno.env.get('SUPABASE_URL')!;
+      const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+      const authHeader = req.headers.get('Authorization') || '';
+      const userClient = createClient(supabaseUrl2, anonKey, { global: { headers: { Authorization: authHeader } } });
+      const { data: isAdmin } = await userClient.rpc('current_user_is_admin');
+      if (!isAdmin) {
+        return new Response(JSON.stringify({ 
+          success: false, 
+          error: 'Otillåten förfrågan' 
+        }), {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
     }
 
     // Increment usage counter

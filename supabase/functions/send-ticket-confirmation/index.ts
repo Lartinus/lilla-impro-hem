@@ -7,7 +7,7 @@ import { logSentEmail } from "../_shared/email-logger.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-internal-secret',
 };
 
 serve(async (req) => {
@@ -21,17 +21,23 @@ serve(async (req) => {
       throw new Error('RESEND_API_KEY not configured');
     }
 
-    // Authorization: require admin or internal (service) invocation
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    const authHeader = req.headers.get('Authorization') || '';
-    const userClient = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: authHeader } } });
-    const { data: isAdmin, error: adminError } = await userClient.rpc('current_user_is_admin');
-    if (!isAdmin && !adminError) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 403,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    // Authorization: internal secret OR admin JWT
+    const internalSecret = req.headers.get('x-internal-secret') || '';
+    const expectedSecret = Deno.env.get('INTERNAL_FUNCTION_SECRET') || '';
+    const isInternal = expectedSecret && internalSecret === expectedSecret;
+
+    if (!isInternal) {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+      const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+      const authHeader = req.headers.get('Authorization') || '';
+      const userClient = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: authHeader } } });
+      const { data: isAdmin } = await userClient.rpc('current_user_is_admin');
+      if (!isAdmin) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
     }
 
     const purchase = await req.json();
